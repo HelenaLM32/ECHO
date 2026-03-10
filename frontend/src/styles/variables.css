@@ -4,3 +4,12 @@
     --white: #F8F8F8;
     --orange: #E95E23;
 }
+
+/* css variable example:
+
+.ejemplo{
+    background-color: var(--true-white);
+    color: var(--black)
+}
+
+*/
