@@ -1,4 +1,6 @@
 import './App.css'
+import './styles/globals.css';
+import './styles/variables.css';
 import Register from './pages/Register/Register';
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home';
