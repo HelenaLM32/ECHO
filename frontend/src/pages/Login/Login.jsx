@@ -53,7 +53,7 @@ function Login() {
     <div className="login-container">
     <div className="login-cont">
       
-        <h2>Bienvenido de nuevo</h2>
+        <h1>Bienvenido de nuevo</h1>
         <form onSubmit={handleSubmit}>
           <input
             type="email"
@@ -71,17 +71,28 @@ function Login() {
             required
             disabled={loadingUsers}
           />
-          <button type="submit" disabled={loadingUsers}>
-            {loadingUsers ? "Verificando..." : "Entrar"}
+          <button className="btn-iniciar" type="submit" disabled={loadingUsers}>
+            {loadingUsers ? "Verificando..." : "Iniciar sesión"}
           </button>
-          <button
-            type="button"
-            className="register-btn"
-            onClick={() => navigate("/register")}
-            disabled={loadingUsers}
-          >
-            Aún no eres miembro? Regístrate ahora
-          </button>
+
+          <div className="div-linia"></div>
+
+          <div className="div-circulos">
+              <div className="circulo"></div>
+              <div className="circulo"></div>
+              <div className="circulo"></div>
+          </div>
+
+          <p className="register-text">
+  Aún no eres miembro?{" "}
+  <span
+    className="register-link"
+    onClick={() => navigate("/register")}
+  >
+    Regístrate ahora
+  </span>
+</p>
+
         </form>
 
         {loadingUsers && <p className="status-text">Cargando...</p>}
