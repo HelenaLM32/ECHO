@@ -1,0 +1,36 @@
+.login-container {
+    background-color: #F3F3F3;
+    display: grid;
+    grid-template-columns: 70% 30%;
+    min-height: 100vh; 
+}
+
+.login-cont {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 70px;
+}
+
+.login-cont2 {
+    background-color: #282828;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: beige;
+}
+
+.login-cont2 h1{
+    margin: 0;
+}
+
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 300px;
+}
