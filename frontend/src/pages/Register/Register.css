@@ -1,0 +1,30 @@
+.main{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.left{
+    width: 75%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--true-white);
+    color: var(--black);
+}
+
+.title{
+    font-size: 96px;
+}
+
+.right{
+    width: 25%;
+    height: 100%;
+    background-color: var(--black);
+    color: var(--white);
+}
+
