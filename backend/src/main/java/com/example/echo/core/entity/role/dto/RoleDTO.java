@@ -3,7 +3,7 @@ package com.example.echo.core.entity.role.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-
+import com.example.echo.core.entity.user.dto.UserDTO;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,7 +25,7 @@ public class RoleDTO {
 
     @ManyToMany(mappedBy = "roles")
     @JsonIgnore
-    private Set<com.example.echo.core.entity.user.dto.UserDTO> users = new HashSet<>();
+    private Set<UserDTO> users = new HashSet<>();
 
     protected RoleDTO() {
     }
@@ -37,7 +37,7 @@ public class RoleDTO {
 
     public Integer getId() { return id; }
     public String getName() { return name; }
-    public Set<com.example.echo.core.entity.user.dto.UserDTO> getUsers() { return users; }
+    public Set<UserDTO> getUsers() { return users; }
 
     public void setId(Integer id) { this.id = id; }
     public void setName(String name) { this.name = name; }
