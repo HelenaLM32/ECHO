@@ -14,4 +14,7 @@ public interface RoleRepository {
     RoleDTO save(RoleDTO role);
 
     List<RoleDTO> findAll();
+
+    void deleteById(Integer id);
+
 }

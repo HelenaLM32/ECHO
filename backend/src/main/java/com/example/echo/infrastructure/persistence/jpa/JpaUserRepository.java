@@ -1,5 +1,6 @@
 package com.example.echo.infrastructure.persistence.jpa;
 
+import com.example.echo.core.entity.items.dto.ItemDTO;
 import com.example.echo.core.entity.user.dto.UserDTO;
 import com.example.echo.core.entity.user.persistence.UserRepository;
 
@@ -16,9 +17,8 @@ public interface JpaUserRepository extends JpaRepository<UserDTO, Integer>, User
 
     boolean existsByEmail(String email);
 
-    @SuppressWarnings("unchecked")
     @Transactional
-    UserDTO save(UserDTO user);
+    UserDTO save(ItemDTO user);
 
     void deleteById(Integer id);
 }

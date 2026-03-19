@@ -35,12 +35,25 @@ public class RoleDTO {
         this.name = name;
     }
 
-    public Integer getId() { return id; }
-    public String getName() { return name; }
-    public Set<UserDTO> getUsers() { return users; }
+    public Integer getId() {
+        return id;
+    }
 
-    public void setId(Integer id) { this.id = id; }
-    public void setName(String name) { this.name = name; }
+    public String getName() {
+        return name;
+    }
+
+    public Set<UserDTO> getUsers() {
+        return users;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     @Override
     public String toString() {
