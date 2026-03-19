@@ -1,0 +1,129 @@
+.login-container {
+    background-color: #FFFFFF;
+    display: grid;
+    grid-template-columns: 70% 30%;
+    min-height: 100vh; 
+    
+}
+
+.login-cont {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 70px;
+}
+
+.login-cont h1{
+    font-family: Arial, sans-serif;
+    font-size: 80px;
+    letter-spacing: -1.8px;
+}
+
+.login-cont input {
+    background-color: #F3F3F3;       
+    border: 1px solid #F3F3F3;       
+    border-radius: 25px;             
+    height: 50px;                    
+    padding: 0 20px;                  
+    color: #979797;                   
+    font-size: 16px;   
+               
+}
+
+.login-cont input:focus {
+    outline: none;                                
+    border-color: #F3F3F3;                        
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);     
+}
+
+.login-cont2 {
+    background-color: #282828;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: #E95E23;
+}
+
+.login-cont2 h1 {
+    font-family: Arial, sans-serif;
+    font-size: 250px;
+    margin: 0;
+    margin-bottom: -60px;    
+    line-height: 1;
+}
+
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.btn-iniciar{
+    margin-top: 60px;
+    background-color: #282828;       
+    border: 1px solid #282828;       
+    border-radius: 25px;             
+    height: 50px;                    
+    padding: 0 20px;                  
+    color: #FFFFFF;                   
+    font-size: 16px;  
+    transition: 0.3s ease;     
+
+}
+
+.btn-iniciar:hover:not(:disabled) {
+    background-color: #E95E23;
+    border-color: #E95E23;
+    cursor: pointer;
+}
+
+
+.div-linia{
+    height: 1px;
+    background-color: #282828;
+    margin-top: 20px;
+}
+
+.div-circulos {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;  
+    margin-top: 40px;
+    gap: 10px;               
+}
+
+.circulo{
+    width: 54px;
+    height: 54px;
+    background-color: #282828;
+    border-radius: 100%;
+}
+
+
+
+.register-text {
+    color: #282828;          
+    font-size: 16px;          
+    font-family: Arial, sans-serif;
+    margin-top: 50px;
+    text-align: center;        
+    width: 100%; 
+}
+
+.register-link {
+  color: #E95E23;           
+  cursor: pointer;          
+  font-weight: bold;  
+  transition: 0.3s ease;      
+}
+
+.register-link:hover:not(:disabled) {
+ color: #282828;
+    cursor: pointer;    
+}
+

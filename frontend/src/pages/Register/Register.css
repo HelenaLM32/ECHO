@@ -1,30 +1,131 @@
-.main{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+.register-container {
+    background-color: #FFFFFF;
+    display: grid;
+    grid-template-columns: 70% 30%;
+    min-height: 100vh;
 }
 
-.left{
-    width: 75%;
-    height: 100%;
+
+
+.register-cont {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: var(--true-white);
-    color: var(--black);
+    padding: 70px;
 }
 
-.title{
-    font-size: 96px;
+.register-cont h1 {
+    font-family: Arial, sans-serif;
+    font-size: 80px;
+    letter-spacing: -1.8px;
 }
 
-.right{
-    width: 25%;
-    height: 100%;
-    background-color: var(--black);
-    color: var(--white);
+
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 600px;
 }
 
+.register-cont input {
+    background-color: #F3F3F3;
+    border: 1px solid #F3F3F3;
+    border-radius: 25px;
+    height: 50px;
+    padding: 0 20px;
+    color: #979797;
+    font-size: 16px;
+}
+
+.register-cont input:focus {
+    outline: none;
+    border-color: #F3F3F3;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+
+.btn-register {
+    margin-top: 60px;
+    background-color: #282828;
+    border: 1px solid #282828;
+    border-radius: 25px;
+    height: 50px;
+    padding: 0 20px;
+    color: #FFFFFF;
+    font-size: 16px;
+    transition: 0.3s ease;
+}
+
+.btn-register:hover:not(:disabled) {
+    background-color: #E95E23;
+    border-color: #E95E23;
+    cursor: pointer;
+}
+
+
+.register-line {
+    height: 1px;
+    background-color: #282828;
+    margin-top: 20px;
+}
+
+
+.register-circles {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 40px;
+    gap: 10px;
+}
+
+.register-circle {
+    width: 54px;
+    height: 54px;
+    background-color: #282828;
+    border-radius: 100%;
+}
+
+
+
+.register-text {
+    color: #282828;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    margin-top: 50px;
+    text-align: center;
+    width: 100%;
+}
+
+.register-link {
+    color: #E95E23;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
+
+.register-link:hover {
+    color: #282828;
+}
+
+
+
+.register-cont2 {
+    background-color: #282828;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: #FFFFFF;
+}
+
+.register-cont2 h1 {
+    font-family: Arial, sans-serif;
+    font-size: 250px;
+    margin: 0;
+    margin-bottom: -60px;
+    line-height: 1;
+}
