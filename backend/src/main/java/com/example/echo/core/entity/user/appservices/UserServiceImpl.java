@@ -30,8 +30,6 @@ public class UserServiceImpl implements UserService {
 
     private Serializer<UserDTO> serializer;
 
-    // Internal helpers (clean code design, as in SoftLearning)
-
     @SuppressWarnings("unchecked")
     private Serializer<UserDTO> jsonSerializer() {
         return (Serializer<UserDTO>) SerializersCatalog.getInstance(Serializers.JSON_USER);
@@ -67,13 +65,14 @@ public class UserServiceImpl implements UserService {
         }
 
         Set<RoleDTO> resolvedRoles = new HashSet<>();
-        if (dto.getRoles() != null) {
+        if (dto.getRoles() != null && !dto.getRoles().isEmpty()) {
             for (RoleDTO roleDTO : dto.getRoles()) {
                 RoleDTO found = roleRepository.findByName(roleDTO.getName())
                         .orElseThrow(() -> new ServiceException("Role not found: " + roleDTO.getName()));
                 resolvedRoles.add(found);
             }
         }
+
         dto.setRoles(resolvedRoles);
         return userRepository.save(dto);
     }
@@ -93,8 +92,6 @@ public class UserServiceImpl implements UserService {
         dto.setRoles(resolvedRoles);
         return userRepository.save(dto);
     }
-
-    // Interface implementation
 
     @SuppressWarnings("unchecked")
     @Override

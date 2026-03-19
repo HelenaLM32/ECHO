@@ -20,9 +20,9 @@ public class User {
     }
 
     public static User getInstance(String email, String username, String password,
-                                   Boolean isActive, Set<Role> roles) throws BuildException {
+            Boolean isActive) throws BuildException {
         User u = new User();
-        String message = u.userDataValidation(email, username, password, isActive, roles);
+        String message = u.userDataValidation(email, username, password, isActive);
         if (message.isEmpty()) {
             return u;
         }
@@ -30,7 +30,7 @@ public class User {
     }
 
     protected String userDataValidation(String email, String username, String password,
-                                        Boolean isActive, Set<Role> roles) {
+            Boolean isActive) {
         String message = "";
 
         if (setEmail(email) != 0) {
@@ -43,12 +43,6 @@ public class User {
             message += "Password inválido; ";
         }
         this.isActive = (isActive == null) ? true : isActive;
-
-        if (roles == null || roles.isEmpty()) {
-            message += "Roles no pueden estar vacíos; ";
-        } else {
-            this.roles = roles;
-        }
 
         return message.trim();
     }
@@ -77,12 +71,29 @@ public class User {
         return -1;
     }
 
-    public Integer getId() { return id; }
-    public String getEmail() { return email; }
-    public String getUsername() { return username; }
-    public String getPassword() { return password; }
-    public Boolean getIsActive() { return isActive; }
-    public Set<Role> getRoles() { return roles; }
+    public Integer getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
 
     @Override
     public String toString() {
