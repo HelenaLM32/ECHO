@@ -12,35 +12,39 @@ import java.util.Set;
 public class UserMapper {
 
     public static User userFromDTO(UserDTO dto) throws BuildException {
-        Set<Role> roles = new HashSet<>();
-        if (dto.getRoles() != null) {
-            for (RoleDTO roleDTO : dto.getRoles()) {
-                roles.add(RoleMapper.roleFromDTO(roleDTO));
-            }
-        }
-
-        return User.getInstance(
+        User user = User.getInstance(
                 dto.getEmail(),
                 dto.getUsername(),
                 dto.getPassword(),
-                dto.getIsActive(),
-                roles);
-    }
+                dto.getIsActive());
 
-    public static UserDTO dtoFromUser(User user) {
-        Set<RoleDTO> roleDTOs = new HashSet<>();
-        if (user.getRoles() != null) {
-            for (Role role : user.getRoles()) {
-                roleDTOs.add(RoleMapper.dtoFromRole(role));
+        if (dto.getRoles() != null) {
+            for (RoleDTO roleDTO : dto.getRoles()) {
+                Role role = Role.getInstance(roleDTO.getName());
+                user.getRoles().add(role);
             }
         }
 
-        return new UserDTO(
+        return user;
+    }
+
+    public static UserDTO dtoFromUser(User user) {
+        UserDTO dto = new UserDTO(
                 user.getId(),
                 user.getEmail(),
                 user.getUsername(),
                 user.getPassword(),
                 user.getIsActive(),
-                roleDTOs);
+                null);
+
+        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
+            Set<RoleDTO> rolesDTO = new HashSet<>();
+            for (Role role : user.getRoles()) {
+                rolesDTO.add(new RoleDTO(role.getId(), role.getName()));
+            }
+            dto.setRoles(rolesDTO);
+        }
+
+        return dto;
     }
 }
