@@ -18,3 +18,4 @@ target/
 .project
 .DS_Store
 Thumbs.db
+application.properties
