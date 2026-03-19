@@ -1,5 +1,5 @@
-CREATE DATABASE echo_db;
-USE echo_db;
+CREATE DATABASE echo;
+USE echo;
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
