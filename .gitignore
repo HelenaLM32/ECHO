@@ -7,6 +7,7 @@ coverage/
 target/
 *.jar
 *.war
+*.log
 *.class
 .mvn/wrapper/maven-wrapper.jar
 .idea/
