@@ -1,0 +1,3 @@
+java -jar echo.jar --spring.profiles.active=prod
+
+### Esto de arriba es para indicarle a spring que use el perfil ded produccion para no tener que cambiar todo el rato y evitar cosas de CORS
