@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
 
-
+//esto fuera de aqui, nada de apis
 const USERS_API = "http://localhost:8082/api/users";
 
 
