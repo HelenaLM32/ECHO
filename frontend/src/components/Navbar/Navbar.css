@@ -2,20 +2,25 @@
     display: flex;
     justify-content: space-between;
     padding: 10px;
-    width: 95%;
     margin: 0 auto;
     position: sticky;
     top: 0;
+    background-color: var(--true-white);
+}
+
+.nav-bar.nav-bar-auth {
+  position: absolute;
 }
 
 
 
 .nav-left{
+    display: block;
     width: 75px;
 }
 
 .nav-right{
-    display: flex;
+    /* display: block; */
     gap: 10px;
     display: flex;
     justify-content: center;
