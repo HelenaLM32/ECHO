@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Home.css";
+import ItemsList from "../../components/ItemsList/ItemsList";
 
 export default function Home() {
+  const [filtro, setFiltro] = useState("");
+
   return (
     <div className="home-container">
       <div className="home-container-top">
@@ -21,19 +24,23 @@ export default function Home() {
       <div className="home-container-search-section">
         <input
           type="text"
-          placeholder="Buscar artistas..."
+          placeholder="Buscar..."
           className="search-bar"
         />
-        <select  className="filter-button" onChange={(e) => setFiltro(e.target.value)} defaultValue="">
-          <option value="" disabled>
-            Filtrar
-          </option>
+        {/* <select
+          className="filter-button"
+          onChange={(e) => setFiltro(e.target.value)}
+          defaultValue=""
+        >
+          <option value="" disabled>Filtrar</option>
           <option value="activo">filtro 1</option>
           <option value="inactivo">filtro 2</option>
           <option value="pendiente">filtro 3</option>
-        </select>
+        </select> */}
       </div>
-      <div className="home-container-item-section">item section</div>
+      <div className="home-container-item-section">
+        <ItemsList />
+      </div>
     </div>
   );
 }
