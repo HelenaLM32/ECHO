@@ -1,8 +1,9 @@
 node_modules/
 build/
 dist/
-.env
-.env.local
+# al final descomentamos esto del gitignore para evitar subir archivos de configuracion del entorno ya que esta la api dentro
+# .env
+# .env.local
 coverage/
 target/
 *.jar
