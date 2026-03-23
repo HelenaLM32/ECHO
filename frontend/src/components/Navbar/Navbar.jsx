@@ -7,11 +7,11 @@ export default function Navbar() {
 
   return (
     <div className="nav-bar">
-      <div className="left">
+      <div className="nav-left">
         <Link to="/"><img className="logo" src="logo.svg" alt="" /></Link>
       </div>
 
-      <div className="right">
+      <div className="nav-right">
         {/* luego lo cambiamos no se preocupen tigeres */}
         {user ? (
           <>
@@ -20,11 +20,11 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <Link to="/login" className="btn btn-primary">
-              LOGIN
-            </Link>
             <Link to="/register" className="btn btn-secondary">
-              REGISTER
+              Registrarse
+            </Link>
+            <Link to="/login" className="btn btn-primary">
+              Iniciar sesión
             </Link>
           </>
         )}

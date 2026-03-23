@@ -27,8 +27,7 @@
     height: 50px;                    
     padding: 0 20px;                  
     color: #979797;                   
-    font-size: 16px;   
-               
+    font-size: 16px;             
 }
 
 .login-cont input:focus {
@@ -128,3 +127,13 @@ form {
     cursor: pointer;    
 }
 
+
+/* nav specific styles */
+
+.nav-right{
+    display: none !important;
+}
+
+.nav-bar{
+    position: absolute;
+}
