@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 245.25 152.89">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        fill: none;
+      }
+
+      .cls-3 {
+        fill: #1d1d1b;
+        stroke: #1d1d1b;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-4 {
+        clip-path: url(#clippath);
+      }
+    </style>
+    <clipPath id="clippath">
+      <circle class="cls-2" cx="120.97" cy="62.87" r="60.39"/>
+    </clipPath>
+  </defs>
+  <g id="Capa_2" data-name="Capa 2">
+    <polygon class="cls-3" points="45.87 46.12 55.78 17.09 92.62 29.44 120.12 .75 143.41 28.59 186.85 19.56 198.95 48.08 234.08 46.37 217.49 73.6 244.04 94.62 207.92 100.11 207.75 130.61 162.25 123.97 152.89 150.88 117.06 128.84 82.68 150.88 66.74 120.06 30.93 128.84 33.9 99.97 1.08 94.42 24.46 72.58 11.96 46.98 45.87 46.12"/>
+  </g>
+  <g id="Capa_3" data-name="Capa 3">
+    <g class="cls-4">
+      <circle class="cls-1" cx="120.97" cy="92.5" r="60.39"/>
+    </g>
+  </g>
+  <g id="Capa_5" data-name="Capa 5">
+    <circle class="cls-3" cx="133.68" cy="85.89" r="37.37"/>
+  </g>
+</svg>
