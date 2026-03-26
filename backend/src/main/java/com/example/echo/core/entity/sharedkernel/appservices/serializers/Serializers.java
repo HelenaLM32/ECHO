@@ -4,5 +4,7 @@ public enum Serializers {
     JSON_USER,
     XML_USER,
     JSON_ROLE,
-    XML_ROLE
+    XML_ROLE,
+    JSON_ITEM,
+    XML_ITEM
 }
