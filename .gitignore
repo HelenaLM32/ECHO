@@ -1,4 +1,6 @@
 node_modules/
+package-lock.json
+package.json
 build/
 dist/
 # al final descomentamos esto del gitignore para evitar subir archivos de configuracion del entorno ya que esta la api dentro
