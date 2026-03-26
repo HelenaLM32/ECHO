@@ -10,9 +10,9 @@ function ItemProduct({ id, creatorId, title, description, basePrice, itemType })
       </div>
       <p>{description}</p>
       <div className="item-product-footer">
-        <span>ID: {id}</span>
-        <span>Creator: {creatorId}</span>
-        <span>{basePrice}€</span>
+        <span>{id}</span>
+        <span>{creatorId}</span>
+        <span>{basePrice}</span>
       </div>
     </div>
   );
