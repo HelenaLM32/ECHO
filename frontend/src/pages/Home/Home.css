@@ -38,16 +38,18 @@
   flex-direction: column;
   height: 200px;
 }
+
 .home-container-item-section {
   justify-content: center;
   align-items: center;
+  display: flex;
+  flex-wrap: wrap;
   margin-top: 50px;
   width: 100%;
-  display: flex;
   gap: 70px;
-  flex-direction: row;
   margin-bottom: 100px;
 }
+
 .search-bar {
   background-color: var(--white);
   border: 1px solid #797979;
@@ -65,10 +67,23 @@
   color: white;
   font-weight: 600;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 20px;
   height: 60px;
-  width: 300px;
+  width: 330px;
   border-radius: 100px;
+  transition: all 0.3s ease;
+}
+
+.button-top:hover {
+  transform: scale(1.1);
+  background-color: var(--gray-dark);
+  border: 0.5px solid var(--gray-stroke);
+  color: var(--orange);
+  width: 30%;
+}
+
+#texto-h1-echo {
+  color: var(--orange);
 }
 
 #top-h1-text {
@@ -76,6 +91,7 @@
   width: 70%;
   font-size: 100px;
   margin-left: 100px;
+  letter-spacing: -6px;
 }
 
 #top-p-text {
@@ -87,15 +103,17 @@
 }
 
 .search-bar {
-    background-color: var(--white);
-    padding-left: 20px;
-    width: 60%;
+  border-color: var(--gray-stroke);
+  background-color: var(--gray-dark);
+  padding-left: 20px;
+  width: 90%;
+  height: 55px;
 }
 
 .filter-button {
-    text-align: center;
-    width: 100px;
-    height: 40px;
-    border: none;
-    border-radius: 100px;
+  text-align: center;
+  width: 100px;
+  height: 40px;
+  border: none;
+  border-radius: 100px;
 }

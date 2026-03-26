@@ -5,11 +5,13 @@ import ItemsList from "../../components/ItemsList/ItemsList";
 export default function Home() {
   const [filtro, setFiltro] = useState("");
 
+ 
+
   return (
     <div className="home-container">
       <div className="home-container-top">
         <div id="home-container-top-text">
-          <h1 id="top-h1-text">Descubre a los mejores artistas en ECHO</h1>
+          <h1 id="top-h1-text">Descubre a los mejores artistas en <span id="texto-h1-echo">ECHO</span></h1>
           <p id="top-p-text">
             Una plataforma integral para ayudar a contratantes y creadores a
             navegar por el mundo creativo, desde la inspiración hasta la
@@ -24,7 +26,7 @@ export default function Home() {
       <div className="home-container-search-section">
         <input
           type="text"
-          placeholder="Buscar..."
+          placeholder="Buscar en Echo..."
           className="search-bar"
         />
         {/* <select
