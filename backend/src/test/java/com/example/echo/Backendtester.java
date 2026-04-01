@@ -6,9 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.example.echo.core.entity.items.dto.ItemDTO;
 import com.example.echo.core.entity.user.dto.UserDTO;
+import com.example.echo.core.entity.role.dto.RoleDTO;
 
 import com.example.echo.infrastructure.persistence.jpa.JpaItemRepository;
 import com.example.echo.infrastructure.persistence.jpa.JpaUserRepository;
+import com.example.echo.infrastructure.persistence.jpa.JpaRoleRepository;
 
 @SpringBootApplication
 public class Backendtester {
@@ -51,6 +53,20 @@ public class Backendtester {
          * -------------------------
          */
 
+        JpaRoleRepository roleRepo = context.getBean(JpaRoleRepository.class);
+
+        System.out.println("\n *****   Java Roles list  ***** \n");
+        roleRepo.findAll().forEach(System.out::println);
+
+        System.out.println("\n *****   Add a new Java Role  ***** \n");
+        roleRepo.save(new RoleDTO(null, "ROLE_TEST"));
+
+        System.out.println("\n *****   Find role by name  ***** \n");
+        roleRepo.findByName("ROLE_TEST").ifPresent(System.out::println);
+
+        System.out.println("\n *****   Find role by id  ***** \n");
+        roleRepo.findById(1).ifPresent(System.out::println);
+
         JpaItemRepository itemRepo = context.getBean(JpaItemRepository.class);
 
         System.out.println("\n *****   Java Items by creator id  ***** \n");
@@ -64,6 +80,23 @@ public class Backendtester {
 
         System.out.println("\n *****   Find item by id  ***** \n");
         itemRepo.findById(1).ifPresent(System.out::println);
+
+        JpaUserRepository userRepo = context.getBean(JpaUserRepository.class);
+
+        System.out.println("\n *****   Java Users list  ***** \n");
+        userRepo.findAll().forEach(System.out::println);
+
+        System.out.println("\n *****   Add a new Java User  ***** \n");
+        userRepo.save(new UserDTO(null, "jane.doe@example.com", "Jane Doe", "pass", true, null));
+
+        System.out.println("\n *****   Find user by email  ***** \n");
+        userRepo.findByEmail("jane.doe@example.com").ifPresent(System.out::println);
+
+        System.out.println("\n *****   Find user by id  ***** \n");
+        userRepo.findById(1).ifPresent(System.out::println);
+
+        System.out.println("\n *****   Delete user by email  ***** \n");
+        userRepo.deleteByEmail("jane.doe@example.com");
 
     }
 }
