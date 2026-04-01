@@ -14,12 +14,17 @@ import jakarta.transaction.Transactional;
 public interface JpaRoleRepository extends JpaRepository<RoleDTO, Integer>, RoleRepository {
 
     //añadir findById
+    @Override
+    Optional<RoleDTO> findById(Integer id);
+
     Optional<RoleDTO> findByName(String name);
 
     boolean existsByName(String name);
 
+    @Override
     @Transactional
     RoleDTO save(RoleDTO role);
 
-    void deleteById(String id);
+    @Override
+    void deleteById(Integer id);
 }
