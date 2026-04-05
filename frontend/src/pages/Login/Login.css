@@ -127,13 +127,3 @@ form {
     cursor: pointer;    
 }
 
-
-/* nav specific styles */
-
-.nav-right{
-    display: none !important;
-}
-
-.nav-bar{
-    position: absolute;
-}
