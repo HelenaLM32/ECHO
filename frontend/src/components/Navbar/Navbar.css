@@ -4,11 +4,16 @@
     padding: 10px;
     width: 95%;
     margin: 0 auto;
-    position: sticky;
     top: 0;
 }
 
+.nav-absolute {
+  position: absolute;
+}
 
+.nav-sticky {
+  position: sticky;
+}
 
 .nav-left{
     width: 75px;
