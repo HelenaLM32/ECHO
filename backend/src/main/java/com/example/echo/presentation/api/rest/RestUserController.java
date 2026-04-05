@@ -3,17 +3,13 @@ package com.example.echo.presentation.api.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.core.entity.user.appservices.UserService;
+import com.example.echo.security.JwtUtil;
 
 @RestController
 @RequestMapping("/users")
@@ -21,6 +17,9 @@ public class RestUserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    ObjectMapper mapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getAllUsers() {
@@ -45,8 +44,12 @@ public class RestUserController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> register(@RequestBody String userJson) {
         try {
-            return ResponseEntity.ok(userService.registerFromJson(userJson));
-        } catch (ServiceException e) {
+            String responseJson = userService.registerFromJson(userJson);
+            ObjectNode userNode = (ObjectNode) mapper.readTree(responseJson);
+            String token = JwtUtil.generateToken(userNode.get("email").asText());
+            userNode.put("token", token);
+            return ResponseEntity.ok(userNode.toString());
+        } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
@@ -56,8 +59,12 @@ public class RestUserController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> login(@RequestBody String loginJson) {
         try {
-            return ResponseEntity.ok(userService.loginFromJson(loginJson));
-        } catch (ServiceException e) {
+            String responseJson = userService.loginFromJson(loginJson);
+            ObjectNode userNode = (ObjectNode) mapper.readTree(responseJson);
+            String token = JwtUtil.generateToken(userNode.get("email").asText());
+            userNode.put("token", token);
+            return ResponseEntity.ok(userNode.toString());
+        } catch (Exception e) {
             return ResponseEntity.status(401).body(e.getMessage());
         }
     }

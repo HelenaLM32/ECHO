@@ -10,13 +10,11 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- la relacion entre los users y lso roles
 CREATE TABLE roles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) UNIQUE NOT NULL
 );
 
--- el delete cascade es q si se borra el user se borran los campos relacionados con el
 CREATE TABLE user_roles (
     user_id INT,
     role_id INT,
@@ -24,16 +22,29 @@ CREATE TABLE user_roles (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
 );
--- para guardar los catalogos, si lo hacemos dentro del user es mas follon y no es practico
+
 CREATE TABLE profiles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNIQUE NOT NULL,
     public_name VARCHAR(100) NOT NULL,
     bio TEXT,
-    social_links VARCHAR(255),
+    location VARCHAR(100),
+    avatar_url VARCHAR(255),
+    banner_url VARCHAR(255),
+    linkedin VARCHAR(255),
+    instagram VARCHAR(255),
+    twitter VARCHAR(255),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
--- en el item type se especifica si es producto o servicio!!
+
+CREATE TABLE follows (
+    follower_id INT,
+    following_id INT,
+    PRIMARY KEY (follower_id, following_id),
+    FOREIGN KEY (follower_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (following_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 CREATE TABLE items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     creator_id INT NOT NULL,
@@ -95,7 +106,6 @@ CREATE TABLE order_messages (
     FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- el check protege q no se metan otros valores fuera del rango!!
 CREATE TABLE reviews (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
