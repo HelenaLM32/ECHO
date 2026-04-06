@@ -3,17 +3,20 @@
   justify-content: center;
   flex-direction: column;
   width: 100%;
+  background-color: var(--white);
 }
 
 .home-container-top {
+  justify-items: center;
   display: flex;
   width: 100%;
   height: 750px;
-  margin-bottom: 10px;
+  margin-bottom: 100px;
   flex-direction: column;
 }
 
 #home-container-top-text {
+  align-items: center;
   display: flex;
   width: 100%;
   height: 80%;
@@ -29,6 +32,15 @@
   height: 40%;
 }
 
+.home-container-sections {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+  flex-direction: column;
+}
+
 .home-container-search-section {
   display: flex;
   justify-content: center;
@@ -36,7 +48,7 @@
   margin-bottom: 20px;
   width: 100%;
   flex-direction: column;
-  height: 200px;
+  height: 50px;
 }
 
 .home-container-item-section {
@@ -44,6 +56,7 @@
   align-items: center;
   display: flex;
   flex-wrap: wrap;
+  flex-direction: row;
   margin-top: 50px;
   width: 100%;
   gap: 70px;
@@ -76,10 +89,10 @@
 
 .button-top:hover {
   transform: scale(1.1);
-  background-color: var(--gray-dark);
+  background-color: var(--true-white);
   border: 0.5px solid var(--gray-stroke);
   color: var(--orange);
-  width: 30%;
+  width: 20%;
 }
 
 #texto-h1-echo {
@@ -87,10 +100,11 @@
 }
 
 #top-h1-text {
+  text-align: center;
+  font-weight: bolder;
   margin-top: 100px;
-  width: 70%;
+  width: 75%;
   font-size: 100px;
-  margin-left: 100px;
   letter-spacing: -6px;
 }
 
@@ -104,10 +118,11 @@
 
 .search-bar {
   border-color: var(--gray-stroke);
-  background-color: var(--gray-dark);
-  padding-left: 20px;
+  background-color: var(--white);
+  padding-left: 40px;
+  font-size: 17px;
   width: 90%;
-  height: 55px;
+  height: 50px;
 }
 
 .filter-button {
