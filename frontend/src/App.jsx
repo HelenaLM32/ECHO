@@ -18,11 +18,15 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={
-          <ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>
-        }/>
+        {/* Tu propio perfil */}
+  <Route path="/profile" element={
+    <ProtectedRoute>
+      <Profile />
+    </ProtectedRoute>
+  }/>
+
+  {/* Perfiles de otros usuarios */}
+  <Route path="/profile/:userId" element={<Profile />} />
       </Routes>
     </AuthProvider>
   )

@@ -21,20 +21,16 @@ export default function Navbar() {
       {!isAuthPage && (
         <div className="nav-right">
           {user ? (
-            <>
-              <Link to="/profile" className="btn btn-secondary">Perfil</Link>
-              <button className="btn btn-primary" onClick={logout}>Logout</button>
-            </>
-          ) : (
-            <>
-              <Link to="/register" className="btn btn-secondary">
-                Registrarse
-              </Link>
-              <Link to="/login" className="btn btn-primary">
-                Iniciar sesión
-              </Link>
-            </>
-          )}
+  <>
+    <Link to="/profile" className="btn btn-secondary">Perfil</Link>  {/* tu perfil */}
+    <button className="btn btn-primary" onClick={logout}>Logout</button>
+  </>
+) : (
+  <>
+    <Link to="/register" className="btn btn-secondary">Registrarse</Link>
+    <Link to="/login" className="btn btn-primary">Iniciar sesión</Link>
+  </>
+)}
         </div>
       )}
     </div>
