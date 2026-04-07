@@ -16,17 +16,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/users/login", "/users/register").permitAll()
-                .requestMatchers(HttpMethod.GET, "/products/**").permitAll() 
-                .requestMatchers(HttpMethod.POST, "/products/**").authenticated()
-                .requestMatchers(HttpMethod.PUT, "/products/**").authenticated()
-                .requestMatchers(HttpMethod.DELETE, "/products/**").authenticated()
-                .requestMatchers("/users/**").authenticated()
-                .anyRequest().permitAll()
-            )
-            .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        // Rutas públicas
+                        .requestMatchers("/users/login", "/users/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/profiles/**").permitAll() // perfiles públicos
+
+                        // Rutas que requieren autenticación
+                        .requestMatchers(HttpMethod.POST, "/products/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/products/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/products/**").authenticated()
+                        .requestMatchers("/users/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/profiles/**").authenticated() // editar perfil
+
+                        // Todo lo demás
+                        .anyRequest().permitAll())
+                .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

@@ -37,6 +37,8 @@ CREATE TABLE profiles (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+
+
 CREATE TABLE follows (
     follower_id INT,
     following_id INT,
