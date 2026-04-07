@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ItemProduct from "../ItemProduct/ItemProduct.jsx";
 import { API_URL } from "../../services/config.js";
+import "./ItemsList.css";
 
 const MOCK_ITEMS = [
   { id: 1, creatorId: 10, title: "Diseño de logo", description: "Creación de logo profesional", basePrice: 150.0, itemType: "Diseño" },
@@ -22,9 +23,6 @@ function ItemsList() {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        // const res = await fetch(`${API_URL}/items`);
-        // if (!res.ok) throw new Error("Error al obtener los items");
-        // setItems(await res.json());
         setItems(MOCK_ITEMS); // <- mock para probar
       } catch (error) {
         setError(error.message);
@@ -39,13 +37,14 @@ function ItemsList() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <>
+    <div
+      className="items-list-container"
+      style={{ display: "flex", gap: 50, flexWrap: "wrap", justifyContent: "center" }}
+    >
       {items.map((item) => (
-        <ItemProduct 
-        // key={item.id} {...item}
-         />
+        <ItemProduct key={item.id} {...item} />
       ))}
-    </>
+    </div>
   );
 }
 

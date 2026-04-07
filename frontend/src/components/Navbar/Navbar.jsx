@@ -7,8 +7,12 @@ export default function Navbar() {
   const location = useLocation();
 
   const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
+  
+
 
   return (
+
+
     <div className={`nav-bar ${isAuthPage ? "nav-absolute" : "nav-sticky"}`}>
       <div className="nav-left">
         <Link to="/"><img className="logo" src="logo.svg" alt="" /></Link>
@@ -18,8 +22,8 @@ export default function Navbar() {
         <div className="nav-right">
           {user ? (
   <>
-    <Link to="/profile" className="user-name">Perfil</Link>  {/* tu perfil */}
-    <button onClick={logout}>Logout</button>
+    <Link to="/profile" className="btn btn-secondary">Perfil</Link>  {/* tu perfil */}
+    <button className="btn btn-primary" onClick={logout}>Logout</button>
   </>
 ) : (
   <>

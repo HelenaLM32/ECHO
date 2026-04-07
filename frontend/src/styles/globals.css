@@ -8,3 +8,8 @@ body {
     padding: 0;
     color: var(--black);
 }
+
+::selection {
+    background: color-mix(in srgb, var(--orange-secondary) 35%, transparent) ; /* color de fondo al seleccionar */
+
+}
