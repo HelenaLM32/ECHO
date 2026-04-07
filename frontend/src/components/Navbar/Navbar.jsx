@@ -22,8 +22,8 @@ export default function Navbar() {
         <div className="nav-right">
           {user ? (
             <>
-              <Link to="/profile" className="user-name">Perfil</Link>
-              <button onClick={logout}>Logout</button>
+              <Link to="/profile" className="btn btn-secondary">Perfil</Link>
+              <button className="btn btn-primary" onClick={logout}>Logout</button>
             </>
           ) : (
             <>

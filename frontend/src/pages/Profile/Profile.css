@@ -137,6 +137,7 @@
 
 
 .section-button-profile {
+  transition: 150ms;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -152,6 +153,7 @@
 }
 
 .second-section-button-profile {
+  transition: 150ms;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -167,6 +169,7 @@
 }
 
 .section-button-profile:hover {
+  transition: 150ms;
   background-color: var(--orange);
   color: var(--white);
   border: 1px solid var(--orange);
@@ -174,6 +177,7 @@
 }
 
 .second-section-button-profile:hover {
+  transition: 150ms;
   background-color: var(--orange);
   color: var(--white);
   border: 1px solid var(--orange);
