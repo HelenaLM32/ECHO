@@ -11,16 +11,17 @@ export default function Profile() {
       <div className="profile-header-container">
         <img src="" alt="" />
       </div>
-        <div className="profile-main-container-nav">nav</div>
+      <div className="profile-main-container-nav"></div>
 
       <div className="profile-main-container">
         <div className="profile-main-container-left">
           <div id="main-container-left-nameinfo">
+            <img src="" alt="" className="icon-profile" />
             <p id="username">{user.username}</p>
             <p id="location">Ubicacion</p>
           </div>
           <div id="main-container-left-buttons">
-             <div  className="btn-profile" id="btn-secondary-profile">
+            <div className="btn-profile" id="btn-secondary-profile">
               Editar informacion del perfil
             </div>
             <div className="btn-profile" id="btn-primary-profile">
@@ -41,7 +42,8 @@ export default function Profile() {
 
           </div>
           <div id="main-container-right-proyects">
-            2
+            <h3 className="h3-profile">Proyectos</h3>
+            <div className="create-project-box"></div>
           </div>
           <div id="main-container-right-section">
             <div className="second-section-button-profile">Calendario</div>
