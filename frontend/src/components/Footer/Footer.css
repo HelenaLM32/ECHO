@@ -2,7 +2,7 @@
 	background: #262626; /* dark background like image */
 	color: #eee;
 	/* make footer taller */
-	padding: 100px 24px 80px 24px;
+	padding: 100px 400px 80px 24px;
 	position: relative;
 	overflow: hidden; /* hide any stray anti-aliased edges */
 }
@@ -44,7 +44,7 @@
 }
 
 .footer-right {
-	flex: 0 0 300px;
+	flex: 0 0 100px;
 	display: flex;
 	flex-direction: column;
 	gap: 24px;
@@ -81,16 +81,16 @@
 .footer-watermark {
 	position: absolute;
 	right: 8px; /* tight to the right edge */
-	bottom: 8px; /* tight to the bottom edge */
+	bottom: -50px; /* tight to the bottom edge */
 	font-size: 260px;
-	color: rgba(255,255,255,0.06);
-	font-weight: 800;
+	color: var(--white);
+	font-weight: 600;
 	letter-spacing: 6px;
 	transform: none; /* horizontal */
-	pointer-events: none;
-	white-space: nowrap;
 	z-index: 0; /* behind content */
 	line-height: 1;
+	transform: scaleX(-1);
+
 }
 
 @media (max-width: 900px) {

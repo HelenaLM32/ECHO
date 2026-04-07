@@ -7,8 +7,12 @@ export default function Navbar() {
   const location = useLocation();
 
   const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
+  
+
 
   return (
+
+
     <div className={`nav-bar ${isAuthPage ? "nav-absolute" : "nav-sticky"}`}>
       <div className="nav-left">
         <Link to="/"><img className="logo" src="logo.svg" alt="" /></Link>

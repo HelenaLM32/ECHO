@@ -20,6 +20,9 @@ public class Item {
     /** Item type (e.g. "PRODUCT", "SERVICE"). */
     private String itemType;
 
+    /** Optional category id (nullable). */
+    private Integer categoryId;
+
     // Protected so only the package (and subclasses) can instantiate directly.
     protected Item() {
     }
@@ -29,10 +32,12 @@ public class Item {
                                    String title,
                                    String description,
                                    Double basePrice,
-                                   String itemType) throws BuildException {
+                                   String itemType,
+                                   Integer categoryId) throws BuildException {
         Item item = new Item();
-        String message = item.itemDataValidation(creatorId, title, description, basePrice, itemType);
+        String message = item.itemDataValidation(creatorId, title, description, basePrice, itemType, categoryId);
         if (message.isEmpty()) {
+            item.categoryId = categoryId;
             return item;
         }
         throw new BuildException(message);
@@ -45,7 +50,8 @@ public class Item {
                                         String title,
                                         String description,
                                         Double basePrice,
-                                        String itemType) {
+                                        String itemType,
+                                        Integer categoryId) {
         String message = "";
 
         if (setCreatorId(creatorId) != 0) { 
@@ -62,6 +68,11 @@ public class Item {
         }
         if (setItemType(itemType) != 0) {
             message += "Item type inválido; ";
+        }
+
+        // categoryId is optional: when provided it must be positive
+        if (setCategoryId(categoryId) != 0) {
+            message += "Category id inválido; ";
         }
 
         return message.trim();
@@ -115,6 +126,18 @@ public class Item {
         return -1;
     }
 
+    protected int setCategoryId(Integer categoryId) {
+        if (categoryId == null) {
+            this.categoryId = null;
+            return 0;
+        }
+        if (Check.isPositive(categoryId)) {
+            this.categoryId = categoryId;
+            return 0;
+        }
+        return -1;
+    }
+
     // --------------------------------------------------
     // Public getters
     // --------------------------------------------------
@@ -143,9 +166,13 @@ public class Item {
         return itemType;
     }
 
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
     @Override
     public String toString() {
         return "Item{id=" + id + ", creatorId=" + creatorId + ", title='" + title + "', basePrice=" + basePrice +
-                ", itemType='" + itemType + "'}";
+                ", itemType='" + itemType + "', categoryId=" + categoryId + "}";
     }
 }

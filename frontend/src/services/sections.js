@@ -1,22 +1,23 @@
 import { API_URL } from "./config.js";
 
+/**
+ * Fetch categories from backend and return minimal shape for SectionsList.
+ * Returns array of { id, name }. If any error occurs, returns empty array.
+ */
 export async function fetchSections() {
-    // Cuando el backend esté listo, reemplazar este mock por:
-    // const res = await fetch(`${API_URL}/sections`);
-    // if (!res.ok) throw new Error('Error al obtener secciones');
-    // return await res.json();
-
-    // Mock inicial para desarrollo local
-    return [
-        { id: "for-you", name: "Para ti" },
-        { id: "following", name: "Siguiendo" },
-        { id: "best-of-echo", name: "Lo mejor de ECHO" },
-        { id: "graphic-design", name: "Diseño Gráfico" },
-        { id: "photography", name: "Fotografía" },
-        { id: "illustration", name: "Ilustración" },
-        { id: "3d-art", name: "Arte 3D" },
-        { id: "architecture", name: "Arquitectura" },
-        { id: "fashion", name: "Moda" },
-
-    ];
+    try {
+        const res = await fetch(`${API_URL}/categories`);
+        if (!res.ok) {
+            console.error("fetchSections: server responded", res.status);
+            return [];
+        }
+        const data = await res.json();
+        // Map backend Category DTO to the minimal shape the UI needs.
+        return Array.isArray(data)
+            ? data.map((c) => ({ id: c.id, name: c.name }))
+            : [];
+    } catch (err) {
+        console.error("fetchSections error:", err);
+        return [];
+    }
 }
