@@ -5,10 +5,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.core.entity.user.appservices.UserService;
+import com.example.echo.core.entity.user.dto.UserDTO;
 import com.example.echo.security.JwtUtil;
 
 @RestController
@@ -54,15 +56,24 @@ public class RestUserController {
         }
     }
 
-    @PostMapping(value = "/login",
+@PostMapping(value = "/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> login(@RequestBody String loginJson) {
         try {
             String responseJson = userService.loginFromJson(loginJson);
             ObjectNode userNode = (ObjectNode) mapper.readTree(responseJson);
-            String token = JwtUtil.generateToken(userNode.get("email").asText());
+            String email = userNode.get("email").asText();
+            
+            String token = JwtUtil.generateToken(email);
             userNode.put("token", token);
+
+            UserDTO user = userService.findByEmail(email);
+            ArrayNode rolesArray = userNode.putArray("roles");
+            for (com.example.echo.core.entity.role.dto.RoleDTO r : user.getRoles()) {
+                rolesArray.add(r.getName());
+            }
+
             return ResponseEntity.ok(userNode.toString());
         } catch (Exception e) {
             return ResponseEntity.status(401).body(e.getMessage());

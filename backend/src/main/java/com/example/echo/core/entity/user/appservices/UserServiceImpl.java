@@ -9,6 +9,7 @@ import com.example.echo.core.entity.user.dto.UserDTO;
 import com.example.echo.core.entity.role.dto.RoleDTO;
 import com.example.echo.core.entity.user.dto.UserLoginDTO;
 import com.example.echo.core.entity.user.mappers.UserMapper;
+import com.example.echo.core.entity.user.model.User;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.Serializer;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.Serializers;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.SerializersCatalog;
@@ -148,5 +149,11 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             throw new ServiceException("Login error: " + e.getMessage());
         }
+    }
+
+    @Override
+    public UserDTO findByEmail(String email) throws ServiceException {
+        return userRepository.findByEmail(email)
+            .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
     }
 }
