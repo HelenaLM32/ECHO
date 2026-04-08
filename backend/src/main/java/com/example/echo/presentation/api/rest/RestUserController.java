@@ -1,5 +1,7 @@
 package com.example.echo.presentation.api.rest;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -7,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+import com.example.echo.core.entity.role.dto.RoleDTO;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.core.entity.user.appservices.UserService;
 import com.example.echo.core.entity.user.dto.UserDTO;
@@ -48,7 +50,7 @@ public class RestUserController {
         try {
             String responseJson = userService.registerFromJson(userJson);
             ObjectNode userNode = (ObjectNode) mapper.readTree(responseJson);
-            String token = JwtUtil.generateToken(userNode.get("email").asText());
+            String token = JwtUtil.generateToken(userNode.get("email").asText(), List.of("USER"));
             userNode.put("token", token);
             return ResponseEntity.ok(userNode.toString());
         } catch (Exception e) {
@@ -65,14 +67,18 @@ public class RestUserController {
             ObjectNode userNode = (ObjectNode) mapper.readTree(responseJson);
             String email = userNode.get("email").asText();
             
-            String token = JwtUtil.generateToken(email);
-            userNode.put("token", token);
-
             UserDTO user = userService.findByEmail(email);
+            
             ArrayNode rolesArray = userNode.putArray("roles");
-            for (com.example.echo.core.entity.role.dto.RoleDTO r : user.getRoles()) {
+            List<String> roleNames = new java.util.ArrayList<>();
+            
+            for (RoleDTO r : user.getRoles()) {
                 rolesArray.add(r.getName());
+                roleNames.add(r.getName());
             }
+
+            String token = JwtUtil.generateToken(email, roleNames);
+            userNode.put("token", token);
 
             return ResponseEntity.ok(userNode.toString());
         } catch (Exception e) {

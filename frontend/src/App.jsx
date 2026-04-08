@@ -9,6 +9,8 @@ import Register from './pages/Register/Register';
 import Navbar from './components/Navbar/Navbar';
 import Profile from './pages/Profile/Profile';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import Admin from './pages/Admin/Admin';
+import AdminRoute from './components/AdminRoute/AdminRoute';
 
 export default function App() {
   return (
@@ -23,6 +25,14 @@ export default function App() {
             <Profile />
           </ProtectedRoute>
         }/>
+        <Route 
+        path="/admin" 
+        element={
+          <AdminRoute>
+            <Admin />
+          </AdminRoute>
+        } 
+      />
       </Routes>
     </AuthProvider>
   )
