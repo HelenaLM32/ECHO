@@ -23,3 +23,19 @@
     font-weight: 600;
     margin-bottom: 8px;
 }
+
+span {
+    color: var(--gray-dark);
+}
+
+div {
+    color: var(--gray-dark);
+}
+
+h3 {
+    color: var(--gray-dark);
+}
+
+p {
+    color: var(--gray-dark);
+}

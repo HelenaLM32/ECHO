@@ -44,6 +44,12 @@ public class ItemDTO {
     @JacksonXmlProperty(localName = "item_type")
     private String itemType;
 
+    // FK to categories(id) - nullable
+    @Column(name = "category_id")
+    @JsonProperty("categoryId")
+    @JacksonXmlProperty(localName = "category_id")
+    private Integer categoryId;
+
     protected ItemDTO() {
     }
 
@@ -52,13 +58,15 @@ public class ItemDTO {
             String title,
             String description,
             Double basePrice,
-            String itemType) {
+            String itemType,
+            Integer categoryId) {
         this.id = id;
         this.creatorId = creatorId;
         this.title = title;
         this.description = description;
         this.basePrice = basePrice;
         this.itemType = itemType;
+        this.categoryId = categoryId;
     }
 
     public Integer getId() {
@@ -85,6 +93,10 @@ public class ItemDTO {
         return itemType;
     }
 
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -109,9 +121,13 @@ public class ItemDTO {
         this.itemType = itemType;
     }
 
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
     @Override
     public String toString() {
         return "ItemDTO{id=" + id + ", creatorId=" + creatorId + ", title='" + title + "', basePrice=" + basePrice +
-                ", itemType='" + itemType + "'}";
+            ", itemType='" + itemType + "', categoryId=" + categoryId + "}";
     }
 }

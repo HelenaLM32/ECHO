@@ -13,11 +13,12 @@ public class ItemMapper {
         }
 
         return Item.getInstance(
-                dto.getCreatorId(),
-                dto.getTitle(),
-                dto.getDescription(),
-                dto.getBasePrice(),
-                dto.getItemType());
+            dto.getCreatorId(),
+            dto.getTitle(),
+            dto.getDescription(),
+            dto.getBasePrice(),
+            dto.getItemType(),
+            dto.getCategoryId());
     }
 
     public static ItemDTO dtoFromItem(Item item) {
@@ -26,11 +27,12 @@ public class ItemMapper {
         }
 
         return new ItemDTO(
-                item.getId(),
-                item.getCreatorId(),
-                item.getTitle(),
-                item.getDescription(),
-                item.getBasePrice(),
-                item.getItemType());
+            item.getId(),
+            item.getCreatorId(),
+            item.getTitle(),
+            item.getDescription(),
+            item.getBasePrice(),
+            item.getItemType(),
+            item.getCategoryId());
     }
 }

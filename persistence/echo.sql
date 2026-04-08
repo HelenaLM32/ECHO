@@ -37,6 +37,8 @@ CREATE TABLE profiles (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+
+
 CREATE TABLE follows (
     follower_id INT,
     following_id INT,
@@ -115,3 +117,39 @@ CREATE TABLE reviews (
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+/* Insert default roles
+CAMBIOS NUEVOS PARA CATEGORIAS!!!!!!!!!!!!!!!!!!!!!!
+Nueva tabla de categorias, y cambios en items para relacionarlos,
+1 item solo puede tener 1 categoria, demomento
+
+
+CREATE TABLE categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL,        -- 'Fotografía', 'Ilustración', 'Arte 3D'
+    slug VARCHAR(100) UNIQUE NOT NULL,        -- 'fotografia', 'ilustracion', 'arte-3d'
+    description TEXT,
+    icon_url VARCHAR(255),
+    is_active BOOLEAN DEFAULT TRUE
+);
+
+
+ALTER TABLE items
+    ADD COLUMN category_id INT,
+    ADD FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL;
+
+
+
+INSERCIONES DE CATEGORIAS , PROVISIONALES, SE PUEDEN CAMBIAR DESPUES
+
+INSERT INTO categories (name, slug, description, icon_url, is_active) VALUES
+    ('Para ti',          'for-you',       'Contenido personalizado para ti',              NULL,  TRUE),
+    ('Siguiendo',        'following',     'Contenido de los creadores que sigues',         NULL,  TRUE),
+    ('Lo mejor de ECHO', 'best-of-echo',  'Lo más destacado de la plataforma',            NULL,  TRUE),
+    ('Diseño Gráfico',   'graphic-design','Identidad visual, branding y diseño editorial', NULL, TRUE),
+    ('Fotografía',       'photography',   'Fotografía artística, retrato y documental',    NULL, TRUE),
+    ('Ilustración',      'illustration',  'Ilustración digital y tradicional',             NULL, TRUE),
+    ('Arte 3D',          '3d-art',        'Modelado, escultura y render 3D',               NULL, TRUE),
+    ('Arquitectura',     'architecture',  'Proyectos arquitectónicos y visualización',     NULL, TRUE),
+    ('Moda',             'fashion',       'Diseño de moda, textil e indumentaria',         NULL, TRUE);
+ */

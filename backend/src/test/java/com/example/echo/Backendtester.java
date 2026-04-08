@@ -73,7 +73,8 @@ public class Backendtester {
         itemRepo.findByCreatorId(1).forEach(System.out::println);
 
         System.out.println("\n *****   Add a new Java Item  ***** \n");
-        itemRepo.save(new ItemDTO(null, 1, "producto ejemplo", "descripcion ejemplo", 29.99, "PRODUCTO"));
+        // categoryId is not set here (null)
+        itemRepo.save(new ItemDTO(null, 1, "producto ejemplo", "descripcion ejemplo", 29.99, "PRODUCTO", null));
 
         System.out.println("\n *****   List all items  ***** \n");
         itemRepo.findAll().forEach(System.out::println);
