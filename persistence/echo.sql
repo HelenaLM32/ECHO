@@ -118,12 +118,6 @@ CREATE TABLE reviews (
     FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-/* Insert default roles
-CAMBIOS NUEVOS PARA CATEGORIAS!!!!!!!!!!!!!!!!!!!!!!
-Nueva tabla de categorias, y cambios en items para relacionarlos,
-1 item solo puede tener 1 categoria, demomento
-
-
 CREATE TABLE categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) UNIQUE NOT NULL,        -- 'Fotografía', 'Ilustración', 'Arte 3D'
@@ -140,8 +134,6 @@ ALTER TABLE items
 
 
 
-INSERCIONES DE CATEGORIAS , PROVISIONALES, SE PUEDEN CAMBIAR DESPUES
-
 INSERT INTO categories (name, slug, description, icon_url, is_active) VALUES
     ('Para ti',          'for-you',       'Contenido personalizado para ti',              NULL,  TRUE),
     ('Siguiendo',        'following',     'Contenido de los creadores que sigues',         NULL,  TRUE),
@@ -152,4 +144,3 @@ INSERT INTO categories (name, slug, description, icon_url, is_active) VALUES
     ('Arte 3D',          '3d-art',        'Modelado, escultura y render 3D',               NULL, TRUE),
     ('Arquitectura',     'architecture',  'Proyectos arquitectónicos y visualización',     NULL, TRUE),
     ('Moda',             'fashion',       'Diseño de moda, textil e indumentaria',         NULL, TRUE);
- */

@@ -1,10 +1,14 @@
 package com.example.echo.infrastructure.persistence.jpa;
 
-import com.example.echo.core.entity.profile.model.Profile;
-import com.example.echo.core.entity.profile.persistence.ProfileRepository;
-import jakarta.persistence.*;
-import org.springframework.stereotype.Repository;
 import java.util.Optional;
+
+import org.springframework.stereotype.Repository;
+
+import com.example.echo.core.entity.profile.dto.ProfileDTO;
+import com.example.echo.core.entity.profile.persistence.ProfileRepository;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @Repository
 public class JpaProfileRepository implements ProfileRepository {
@@ -13,7 +17,7 @@ public class JpaProfileRepository implements ProfileRepository {
     private EntityManager em;
 
     @Override
-    public Profile save(Profile profile) {
+    public ProfileDTO save(ProfileDTO profile) {
         if (profile.getId() == null) {
             em.persist(profile);
             return profile;
@@ -22,9 +26,9 @@ public class JpaProfileRepository implements ProfileRepository {
     }
 
     @Override
-    public Optional<Profile> findByUserId(Integer userId) {
+    public Optional<ProfileDTO> findByUserId(Integer userId) {
         return em.createQuery(
-                "SELECT p FROM Profile p WHERE p.userId = :userId", Profile.class)
+                "SELECT p FROM ProfileDTO p WHERE p.userId = :userId", ProfileDTO.class)
                 .setParameter("userId", userId)
                 .getResultList()
                 .stream()
@@ -32,7 +36,7 @@ public class JpaProfileRepository implements ProfileRepository {
     }
 
     @Override
-    public Optional<Profile> findById(Integer id) {
-        return Optional.ofNullable(em.find(Profile.class, id));
+    public Optional<ProfileDTO> findById(Integer id) {
+        return Optional.ofNullable(em.find(ProfileDTO.class, id));
     }
 }
