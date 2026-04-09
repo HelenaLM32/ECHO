@@ -9,6 +9,7 @@ import { fetchSections } from "../../services/sections";
 export default function Home() {
   const [filtro, setFiltro] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [animateIn, setAnimateIn] = useState(false);
   const navigate = useNavigate();
   const params = useParams();
 
@@ -29,12 +30,21 @@ export default function Home() {
     return () => (mounted = false);
   }, [params.slug]);
 
-  // Handler passed to SectionsList: set selected and navigate
+  //Animacion de entrada del texto
+  useEffect(() => {
+    const t = setTimeout(() => setAnimateIn(true), 60);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Handler de las categorias
   const handleSelect = (section) => {
     setSelectedCategory(section);
+
+    /* Esto es para mas adelante cuando exista el enrutador de paginas por categoria.
     if (section && section.slug) {
       navigate(`/category/${section.slug}`);
     }
+    */
   };
 
 
@@ -44,7 +54,16 @@ export default function Home() {
 
       {/* Si no hay categoria seleccionada */}
       {!selectedCategory && (
-        <div className="home-container-top">
+        <div className={`home-container-top ${animateIn ? 'animate-in' : ''}`}>
+          {/* decorative blobs (8 total) */}
+          <div className="decor-blob deco-1" aria-hidden="true" />
+          <div className="decor-blob deco-2" aria-hidden="true" />
+          <div className="decor-blob deco-3" aria-hidden="true" />
+          <div className="decor-blob deco-4" aria-hidden="true" />
+          <div className="decor-blob deco-5" aria-hidden="true" />
+          <div className="decor-blob deco-6" aria-hidden="true" />
+          <div className="decor-blob deco-7" aria-hidden="true" />
+          <div className="decor-blob deco-8" aria-hidden="true" />
           <div id="home-container-top-text">
             <h1 id="top-h1-text">DESCUBRE A LOS MEJORES ARTISTAS EN <span id="texto-h1-echo">ECHO</span></h1>
           </div>
