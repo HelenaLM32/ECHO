@@ -15,6 +15,12 @@ const MOCK_ITEMS = [
   { id: 8, creatorId: 17, title: "Diseño de interfaz", description: "Diseño de interfaz para aplicación móvil", basePrice: 300.0, itemType: "Diseño" }
 ];
 
+// Añadidos dos items extra para probar 5 por fila con más contenido
+MOCK_ITEMS.push(
+  { id: 9, creatorId: 18, title: "Animación 2D", description: "Animación corta para redes sociales", basePrice: 220.0, itemType: "Animación" },
+  { id: 10, creatorId: 19, title: "Edición de video", description: "Edición profesional de video", basePrice: 250.0, itemType: "Video" }
+);
+
 function ItemsList() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,10 +43,7 @@ function ItemsList() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div
-      className="items-list-container"
-      style={{ display: "flex", gap: 50, flexWrap: "wrap", justifyContent: "center" }}
-    >
+    <div className="items-list-container">
       {items.map((item) => (
         <ItemProduct key={item.id} {...item} />
       ))}

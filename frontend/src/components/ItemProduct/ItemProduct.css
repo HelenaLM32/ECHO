@@ -4,11 +4,11 @@
     align-items: center;
     padding: 16px;
     border-radius: 8px;
-    width: 15%;
-    height: 250px;
+    width: 100%;
+    max-width: 320px; /* aumentar ancho máximo para cajas más anchas */
+    height: 250px; /* altura original, no más largas */
     background-color: var(--gray-dark);
-    flex: 0 0 calc(15% - 16px);
-    min-width: 18%;
+    box-sizing: border-box;
 }
 
 .item-product-footer {

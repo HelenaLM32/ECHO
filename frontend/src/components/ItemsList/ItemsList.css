@@ -1,3 +1,20 @@
 .items-list-container {
-    gap: 50px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 40px 22px; 
+    width: 100%;
+    box-sizing: border-box;
+    justify-items: center;
+}
+
+@media (max-width: 1200px) {
+    .items-list-container { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 900px) {
+    .items-list-container { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 600px) {
+    .items-list-container { grid-template-columns: repeat(2, 1fr); gap: 16px; }
 }
