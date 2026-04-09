@@ -1,6 +1,7 @@
 package com.example.echo.core.entity.profile.model;
 
 public class Profile {
+
     private Integer id;
     private Integer userId;
     private String publicName;
@@ -10,9 +11,10 @@ public class Profile {
     private String bannerUrl;
     private String linkedin;
     private String instagram;
+
     private String twitter;
 
-    protected Profile() {
+    public Profile() {
     }
 
     public static Profile getInstance(Integer userId) {
@@ -25,8 +27,16 @@ public class Profile {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public Integer getUserId() {
         return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public String getPublicName() {

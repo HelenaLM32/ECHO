@@ -1,5 +1,13 @@
 package com.example.echo.core.entity.profile.appservices;
 
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.echo.core.entity.profile.dto.ProfileDTO;
+import com.example.echo.core.entity.profile.mappers.ProfileMapper;
 import com.example.echo.core.entity.profile.model.Profile;
 import com.example.echo.core.entity.profile.persistence.ProfileRepository;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
@@ -8,10 +16,6 @@ import com.example.echo.core.entity.user.persistence.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -28,19 +32,25 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public String getByUserIdToJson(Integer userId) throws ServiceException {
-        Optional<Profile> optProfile = profileRepository.findByUserId(userId);
+        Optional<ProfileDTO> optProfileDTO = profileRepository.findByUserId(userId);
         Optional<UserDTO> optUser = userRepository.findById(userId);
 
-        if (optUser.isEmpty())
+        if (optUser.isEmpty()) {
             throw new ServiceException("Usuario no encontrado");
+        }
 
         UserDTO user = optUser.get();
 
-        Profile profile = optProfile.orElseGet(() -> {
-            Profile newProfile = Profile.getInstance(userId);
-            newProfile.setPublicName(user.getUsername());
-            return profileRepository.save(newProfile);
-        });
+        Profile profile;
+        if (optProfileDTO.isPresent()) {
+            profile = ProfileMapper.profileFromDTO(optProfileDTO.get());
+        } else {
+            profile = Profile.getInstance(userId);
+            profile.setPublicName(user.getUsername());
+            ProfileDTO newProfileDTO = ProfileMapper.dtoFromProfile(profile);
+            profileRepository.save(newProfileDTO);
+            profile.setId(newProfileDTO.getId()); // set the generated id
+        }
 
         ObjectNode node = mapper.createObjectNode();
         node.put("id", profile.getId());
@@ -63,32 +73,43 @@ public class ProfileServiceImpl implements ProfileService {
     public String updateFromJson(Integer userId, String profileJson) throws ServiceException {
         try {
             JsonNode node = mapper.readTree(profileJson);
-            Optional<Profile> optProfile = profileRepository.findByUserId(userId);
+            Optional<ProfileDTO> optProfileDTO = profileRepository.findByUserId(userId);
 
-            Profile profile = optProfile.orElseGet(() -> {
-                Profile p = Profile.getInstance(userId);
-                p.setPublicName("");
-                return p;
-            });
+            Profile profile;
+            if (optProfileDTO.isPresent()) {
+                profile = ProfileMapper.profileFromDTO(optProfileDTO.get());
+            } else {
+                profile = Profile.getInstance(userId);
+                profile.setPublicName("");
+            }
 
-            if (node.has("publicName"))
+            if (node.has("publicName")) {
                 profile.setPublicName(node.get("publicName").asText());
-            if (node.has("bio"))
+            }
+            if (node.has("bio")) {
                 profile.setBio(node.get("bio").asText());
-            if (node.has("location"))
+            }
+            if (node.has("location")) {
                 profile.setLocation(node.get("location").asText());
-            if (node.has("avatarUrl"))
+            }
+            if (node.has("avatarUrl")) {
                 profile.setAvatarUrl(node.get("avatarUrl").asText());
-            if (node.has("bannerUrl"))
+            }
+            if (node.has("bannerUrl")) {
                 profile.setBannerUrl(node.get("bannerUrl").asText());
-            if (node.has("linkedin"))
+            }
+            if (node.has("linkedin")) {
                 profile.setLinkedin(node.get("linkedin").asText());
-            if (node.has("instagram"))
+            }
+            if (node.has("instagram")) {
                 profile.setInstagram(node.get("instagram").asText());
-            if (node.has("twitter"))
+            }
+            if (node.has("twitter")) {
                 profile.setTwitter(node.get("twitter").asText());
+            }
 
-            profileRepository.save(profile);
+            ProfileDTO updatedDTO = ProfileMapper.dtoFromProfile(profile);
+            profileRepository.save(updatedDTO);
             return getByUserIdToJson(userId);
 
         } catch (Exception e) {

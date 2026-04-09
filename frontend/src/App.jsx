@@ -33,16 +33,8 @@ export default function App() {
           </AdminRoute>
         } 
       />
-        {/* Tu propio perfil */}
-  <Route path="/profile" element={
-    <ProtectedRoute>
-      <Profile />
-    </ProtectedRoute>
-  }/>
-
-  {/* Perfiles de otros usuarios */}
-  <Route path="/profile/:userId" element={<Profile />} />
-      </Routes>
-    </AuthProvider>
+    <Route path="/profile/:userId" element={<Profile />} />
+        </Routes>
+      </AuthProvider>
   )
 }
