@@ -1,6 +1,7 @@
 package com.example.echo.core.entity.user.appservices;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 
 import com.example.echo.core.entity.user.persistence.UserRepository;
@@ -28,6 +29,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    // Spring inyecta aquí el BCryptPasswordEncoder que declaramos en SecurityConfig.
+    // Lo usaremos para hashear al guardar y para comparar al hacer login.
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private Serializer<UserDTO> serializer;
 
@@ -75,6 +81,9 @@ public class UserServiceImpl implements UserService {
         }
 
         dto.setRoles(resolvedRoles);
+        // Antes de guardar el usuario nuevo, convertimos su contraseña en un hash BCrypt.
+        // Si alguien vuelca la base de datos solo verá "$2a$10$xyz..." y no la contraseña real.
+        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         return userRepository.save(dto);
     }
 
@@ -91,6 +100,16 @@ public class UserServiceImpl implements UserService {
             }
         }
         dto.setRoles(resolvedRoles);
+
+        // Al editar un usuario, comprobamos si la contraseña que llega ya está hasheada.
+        // Los hashes BCrypt siempre empiezan por "$2a$", "$2b$" o "$2y$".
+        // Si ya está hasheada la dejamos tal cual; si no (es texto plano), la hasheamos.
+        // Esto evita que una contraseña ya cifrada se vuelva a cifrar y quede inutilizable.
+        if (!dto.getPassword().startsWith("$2a$") && !dto.getPassword().startsWith("$2b$")
+                && !dto.getPassword().startsWith("$2y$")) {
+            dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
         return userRepository.save(dto);
     }
 
@@ -139,8 +158,31 @@ public class UserServiceImpl implements UserService {
             UserDTO user = userRepository.findByEmail(loginDTO.getEmail())
                     .orElseThrow(() -> new ServiceException("Email not found"));
 
-            if (!user.getPassword().equals(loginDTO.getPassword())) {
+            String storedPassword = user.getPassword(); // contraseña que está en la BD (hash o texto plano)
+            String rawPassword = loginDTO.getPassword();  // contraseña que envió el usuario al hacer login
+
+            // Detectamos si la contraseña guardada ya está en formato BCrypt.
+            // Un hash BCrypt siempre comienza por "$2a$", "$2b$" o "$2y$".
+            boolean isBcrypt = storedPassword.startsWith("$2a$") || storedPassword.startsWith("$2b$")
+                    || storedPassword.startsWith("$2y$");
+
+            // Si está hasheada usamos passwordEncoder.matches() que sabe comparar aunque el hash sea diferente
+            // cada vez (BCrypt añade algo llamado "salt" que lo hace así a propósito).
+            // Si todavía es texto plano (usuarios anteriores al fix) comparamos directamente.
+            boolean validPassword = isBcrypt
+                    ? passwordEncoder.matches(rawPassword, storedPassword)
+                    : storedPassword.equals(rawPassword);
+
+            if (!validPassword) {
                 throw new ServiceException("Incorrect password");
+            }
+
+            // Migración automática: si el usuario tenía contraseña en texto plano y acaba de hacer
+            // login con éxito, aprovechamos para guardar ya la versión hasheada en la BD.
+            // Así los usuarios antiguos se migran solos la primera vez que entran, sin que notes nada.
+            if (!isBcrypt) {
+                user.setPassword(passwordEncoder.encode(rawPassword));
+                userRepository.save(user);
             }
 
             return jsonSerializer().serialize(user);

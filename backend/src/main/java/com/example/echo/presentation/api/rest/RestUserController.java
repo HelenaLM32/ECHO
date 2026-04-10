@@ -50,6 +50,9 @@ public class RestUserController {
         try {
             String responseJson = userService.registerFromJson(userJson);
             ObjectNode userNode = (ObjectNode) mapper.readTree(responseJson);
+            // Eliminamos el campo "password" del JSON antes de enviarlo al cliente.
+            // El frontend nunca necesita la contraseña (ni siquiera el hash); solo el token.
+            userNode.remove("password");
             String token = JwtUtil.generateToken(userNode.get("email").asText(), List.of("USER"));
             userNode.put("token", token);
             return ResponseEntity.ok(userNode.toString());
@@ -65,6 +68,9 @@ public class RestUserController {
         try {
             String responseJson = userService.loginFromJson(loginJson);
             ObjectNode userNode = (ObjectNode) mapper.readTree(responseJson);
+            // Igual que en el registro: borramos la contraseña del JSON de respuesta.
+            // Nunca debe viajar por la red de vuelta al navegador, ni hasheada.
+            userNode.remove("password");
             String email = userNode.get("email").asText();
             
             UserDTO user = userService.findByEmail(email);
