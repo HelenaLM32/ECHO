@@ -1,6 +1,8 @@
 package com.example.echo.presentation.api.rest;
 
 import java.util.List;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -53,9 +55,22 @@ public class RestUserController {
             // Eliminamos el campo "password" del JSON antes de enviarlo al cliente.
             // El frontend nunca necesita la contraseña (ni siquiera el hash); solo el token.
             userNode.remove("password");
-            String token = JwtUtil.generateToken(userNode.get("email").asText(), List.of("USER"));
-            userNode.put("token", token);
-            return ResponseEntity.ok(userNode.toString());
+                String token = JwtUtil.generateToken(userNode.get("email").asText(), List.of("USER"));
+
+                /*
+                 * Guardar JWT en cookie httpOnly para no exponerlo a JS.
+                 * - httpOnly protege contra XSS.
+                 * - secure debe activarse en producción (HTTPS).
+                 */
+                ResponseCookie cookie = ResponseCookie.from("JWT", token)
+                    .httpOnly(true)
+                    .secure(false)
+                    .path("/")
+                    .maxAge(JwtUtil.getExpirationSeconds())
+                    .sameSite("Lax")
+                    .build();
+
+                return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(userNode.toString());
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
@@ -68,9 +83,7 @@ public class RestUserController {
         try {
             String responseJson = userService.loginFromJson(loginJson);
             ObjectNode userNode = (ObjectNode) mapper.readTree(responseJson);
-            // Igual que en el registro: borramos la contraseña del JSON de respuesta.
-            // Nunca debe viajar por la red de vuelta al navegador, ni hasheada.
-            userNode.remove("password");
+            userNode.remove("password"); // Igual que en el registro: borramos la contraseña del JSON de respuesta.
             String email = userNode.get("email").asText();
             
             UserDTO user = userService.findByEmail(email);
@@ -83,10 +96,24 @@ public class RestUserController {
                 roleNames.add(r.getName());
             }
 
-            String token = JwtUtil.generateToken(email, roleNames);
-            userNode.put("token", token);
+                String token = JwtUtil.generateToken(email, roleNames);
 
-            return ResponseEntity.ok(userNode.toString());
+                /*
+                 * Guardamos el JWT en una cookie httpOnly y NO lo devolvemos en el body.
+                 * El frontend debe usar `fetch(..., { credentials: 'include' })`.
+                 */
+                
+                ResponseCookie cookie = ResponseCookie.from("JWT", token)
+                    .httpOnly(true)
+                    .secure(false) // set to true in production (HTTPS) (hace que la cookie viaje cifrada o no)
+                    .path("/")
+                    .maxAge(JwtUtil.getExpirationSeconds())
+                    .sameSite("Lax")
+                    .build();
+
+                return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                    .body(userNode.toString());
         } catch (Exception e) {
             return ResponseEntity.status(401).body(e.getMessage());
         }

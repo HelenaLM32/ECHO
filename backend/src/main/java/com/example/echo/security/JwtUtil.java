@@ -13,6 +13,11 @@ public class JwtUtil {
     private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private static final long EXPIRATION_TIME = 86400000;
 
+    // devuelve el tiempo de expiracion en SEGUNDOS (sirve para las cookies, necesario)
+    public static long getExpirationSeconds() {
+        return EXPIRATION_TIME / 1000L;
+    }
+
     public static String generateToken(String email, List<String> roles) {
         return Jwts.builder()
                 .setSubject(email)

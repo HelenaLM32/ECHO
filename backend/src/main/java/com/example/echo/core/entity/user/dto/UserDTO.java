@@ -1,6 +1,7 @@
 package com.example.echo.core.entity.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import jakarta.persistence.*;
@@ -28,8 +29,7 @@ public class UserDTO {
     private String username;
 
     @Column(nullable = false)
-    @JsonProperty("password")
-    @JacksonXmlProperty(localName = "password")
+    @JsonIgnore // No incluir la contraseña en la serialización JSON/XML (SEGURIDAD!)
     private String password;
 
     @Column(name = "is_active")

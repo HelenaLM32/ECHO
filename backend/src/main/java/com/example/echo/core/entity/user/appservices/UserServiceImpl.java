@@ -20,6 +20,9 @@ import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.GrantedAuthority;
 
 @Controller
 public class UserServiceImpl implements UserService {
@@ -31,7 +34,6 @@ public class UserServiceImpl implements UserService {
     private RoleRepository roleRepository;
 
     // Spring inyecta aquí el BCryptPasswordEncoder que declaramos en SecurityConfig.
-    // Lo usaremos para hashear al guardar y para comparar al hacer login.
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -71,18 +73,14 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("Email already registered: " + dto.getEmail());
         }
 
+        // Seguridad: ignorar roles que envíe el cliente al registrarse.
+        // Asignar siempre el rol por defecto 'USER'.
+        RoleDTO userRole = roleRepository.findByName("USER")
+            .orElseThrow(() -> new ServiceException("Role not found: USER"));
         Set<RoleDTO> resolvedRoles = new HashSet<>();
-        if (dto.getRoles() != null && !dto.getRoles().isEmpty()) {
-            for (RoleDTO roleDTO : dto.getRoles()) {
-                RoleDTO found = roleRepository.findByName(roleDTO.getName())
-                        .orElseThrow(() -> new ServiceException("Role not found: " + roleDTO.getName()));
-                resolvedRoles.add(found);
-            }
-        }
-
+        resolvedRoles.add(userRole);
         dto.setRoles(resolvedRoles);
         // Antes de guardar el usuario nuevo, convertimos su contraseña en un hash BCrypt.
-        // Si alguien vuelca la base de datos solo verá "$2a$10$xyz..." y no la contraseña real.
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         return userRepository.save(dto);
     }
@@ -91,19 +89,34 @@ public class UserServiceImpl implements UserService {
         UserDTO dto = this.checkInputData(userJson);
         this.getById(dto.getId());
 
+        // Solo ADMIN puede cambiar roles. Si el llamador no es ADMIN conservamos los roles actuales.
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean callerIsAdmin = false;
+        if (auth != null && auth.getAuthorities() != null) {
+            for (GrantedAuthority ga : auth.getAuthorities()) {
+                if ("ADMIN".equals(ga.getAuthority())) {
+                    callerIsAdmin = true;
+                    break;
+                }
+            }
+        }
+
         Set<RoleDTO> resolvedRoles = new HashSet<>();
-        if (dto.getRoles() != null) {
+        if (callerIsAdmin && dto.getRoles() != null) {
             for (RoleDTO roleDTO : dto.getRoles()) {
                 RoleDTO found = roleRepository.findByName(roleDTO.getName())
                         .orElseThrow(() -> new ServiceException("Role not found: " + roleDTO.getName()));
                 resolvedRoles.add(found);
             }
+        } else {
+            UserDTO existing = this.getDTO(dto.getId());
+            if (existing != null && existing.getRoles() != null) {
+                resolvedRoles.addAll(existing.getRoles());
+            }
         }
         dto.setRoles(resolvedRoles);
 
-        // Al editar un usuario, comprobamos si la contraseña que llega ya está hasheada.
         // Los hashes BCrypt siempre empiezan por "$2a$", "$2b$" o "$2y$".
-        // Si ya está hasheada la dejamos tal cual; si no (es texto plano), la hasheamos.
         // Esto evita que una contraseña ya cifrada se vuelva a cifrar y quede inutilizable.
         if (!dto.getPassword().startsWith("$2a$") && !dto.getPassword().startsWith("$2b$")
                 && !dto.getPassword().startsWith("$2y$")) {
@@ -162,12 +175,10 @@ public class UserServiceImpl implements UserService {
             String rawPassword = loginDTO.getPassword();  // contraseña que envió el usuario al hacer login
 
             // Detectamos si la contraseña guardada ya está en formato BCrypt.
-            // Un hash BCrypt siempre comienza por "$2a$", "$2b$" o "$2y$".
             boolean isBcrypt = storedPassword.startsWith("$2a$") || storedPassword.startsWith("$2b$")
                     || storedPassword.startsWith("$2y$");
 
             // Si está hasheada usamos passwordEncoder.matches() que sabe comparar aunque el hash sea diferente
-            // cada vez (BCrypt añade algo llamado "salt" que lo hace así a propósito).
             // Si todavía es texto plano (usuarios anteriores al fix) comparamos directamente.
             boolean validPassword = isBcrypt
                     ? passwordEncoder.matches(rawPassword, storedPassword)
@@ -177,9 +188,7 @@ public class UserServiceImpl implements UserService {
                 throw new ServiceException("Incorrect password");
             }
 
-            // Migración automática: si el usuario tenía contraseña en texto plano y acaba de hacer
-            // login con éxito, aprovechamos para guardar ya la versión hasheada en la BD.
-            // Así los usuarios antiguos se migran solos la primera vez que entran, sin que notes nada.
+            // Migración automática: hasheamos la contraseña en la base de datos si no estaba hasheada.
             if (!isBcrypt) {
                 user.setPassword(passwordEncoder.encode(rawPassword));
                 userRepository.save(user);

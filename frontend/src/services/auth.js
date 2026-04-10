@@ -7,6 +7,8 @@ export const loginService = async (email, password) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ email, password }),
+    // Incluir credenciales para aceptar la cookie httpOnly enviada por el servidor.
+    credentials: 'include',
   });
 
   if (!res.ok) {
@@ -24,6 +26,8 @@ export const registerService = async (email, username, password) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ email, username, password }),
+    // Igual que en login: aceptar la cookie httpOnly del servidor
+    credentials: 'include',
   });
 
   if (!res.ok) {

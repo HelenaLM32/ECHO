@@ -32,6 +32,7 @@ public class SecurityConfig {
                 
                 .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/profiles/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
 
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
 
@@ -41,7 +42,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/profiles/**").authenticated()
                 .requestMatchers("/users/**").authenticated()
                 
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
             )
             .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
@@ -62,7 +63,6 @@ public class SecurityConfig {
     }
 
     // Con este bean le decimos a Spring qué algoritmo usar para hashear contraseñas.
-    // BCrypt es el estándar: convierte "1234" en algo como "$2a$10$..." (irreversible).
     // Cualquier clase que necesite cifrar o verificar contraseñas lo inyecta con @Autowired.
     @Bean
     public PasswordEncoder passwordEncoder() {
