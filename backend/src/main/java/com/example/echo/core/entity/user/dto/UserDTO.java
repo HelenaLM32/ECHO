@@ -29,7 +29,9 @@ public class UserDTO {
     private String username;
 
     @Column(nullable = false)
-    @JsonIgnore // No incluir la contraseña en la serialización JSON/XML (SEGURIDAD!)
+    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
+    // Permitir que la contraseña se lea desde el JSON de entrada (write-only)
+    // pero no se incluya en las respuestas JSON.
     private String password;
 
     @Column(name = "is_active")
