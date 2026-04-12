@@ -66,6 +66,7 @@ export default function Home() {
           <div className="decor-blob deco-8" aria-hidden="true" />
           <div id="home-container-top-text">
             <h1 id="top-h1-text">DESCUBRE A LOS MEJORES ARTISTAS EN <span id="texto-h1-echo">ECHO</span></h1>
+            <h3 id="top-h3-text">Explora el trabajo de nuestros talentosos artistas, inspirate y conecta con ellos subiendo proyectos o contratando servicios</h3>
           </div>
           <div id="home-container-top-buttons">
             <div className="button-top">Contratar a un autonomo</div>
@@ -80,6 +81,9 @@ export default function Home() {
           placeholder="Buscar en Echo..."
           className="search-bar"
         />
+        <div className="filter-button">
+            <span id="filter-button-text">Filtro</span>
+        </div>
       </div>
       <div className="home-container-sections">
         <SectionsList onSelect={handleSelect} />

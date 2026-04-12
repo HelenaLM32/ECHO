@@ -1,38 +1,101 @@
-.nav-bar{
+.nav-bar {
     display: flex;
-    justify-content: space-between;
-    padding: 10px;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 8px;
     width: 100%;
     margin: 0 auto;
     top: 0;
 }
 
+
 .nav-absolute {
-  position: absolute;
+    position: absolute;
 }
 
 .nav-sticky {
-  position: sticky;
-  width: 95%;
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    background-color: var(--true-white);
+    border-bottom: var(--gray-stroke) 1px solid;
+    box-shadow: 0px 2px 4px rgba(148, 148, 148, 0.1);
+
 }
 
-.nav-left{
+.nav-left {
     width: 75px;
-    
+    margin-left:20px ;
+
 }
 
-.nav-right{
+.nav-links {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-left: 60px;
+}
+
+
+.nav-item {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 8px 6px 20px; 
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--black);
+    font-weight: 500;
+}
+
+.nav-item::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%) scale(0);
+    width: 7px;
+    height: 7px;
+    background: var(--orange);
+    border-radius: 50%;
+    transition: transform 0.12s ease, opacity 0.12s ease;
+    opacity: 0;
+}
+
+.nav-item:hover::before,
+.nav-item:focus::before,
+.nav-item.active::before {
+    transform: translateY(-50%) scale(1);
+    opacity: 1;
+}
+
+.nav-item:hover .nav-item-label,
+.nav-item:focus .nav-item-label {
+    color: var(--black-secondary);
+}
+
+.nav-item-label {
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--black-secondary);
+}
+
+.nav-right {
     display: flex;
     gap: 10px;
-    display: flex;
     justify-content: center;
     align-items: center;
+    margin-left: auto;
+    margin-right: 30px;
 }
 
-.btn{
+.btn {
     padding-left: 30px;
     padding-right: 30px;
-    height:30px;
+    height: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -42,18 +105,18 @@
     cursor: pointer;
 }
 
-.btn-secondary{
+.btn-secondary {
     background-color: var(--orange);
     color: var(--white);
     transition: 0.2s ease-in-out;
 }
 
-.btn-secondary:hover{
-    background-color: var(--black);
-    color:var(--white);
+.btn-secondary:hover {
+    background-color: var(--black-secondary);
+    color: var(--white);
 }
 
-.btn-primary{
+.btn-primary {
     background-color: var(--white);
     color: var(--orange);
     transition: 0.2s ease-in-out;
@@ -61,7 +124,7 @@
 }
 
 
-.btn-primary:hover{
-    background-color: var(--black);
-    color:var(--white);
+.btn-primary:hover {
+    background-color: var(--black-secondary);
+    color: var(--white);
 }
