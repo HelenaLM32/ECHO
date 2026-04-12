@@ -497,7 +497,7 @@ export default function Admin() {
       </section>
 
       <section className="dev-card">
-        <h2>Actualizar Status</h2>
+        <h2>Actualizar Status TEMPORALMENTE NO FUNCIONA ERROR DE CORS</h2>
         <form className="dev-form" onSubmit={handleStatusUpdate}>
           <label>
             Order
