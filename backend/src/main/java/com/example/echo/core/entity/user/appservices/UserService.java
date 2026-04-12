@@ -18,4 +18,6 @@ public interface UserService {
     String loginFromJson(String loginJson) throws ServiceException;
 
     UserDTO findByEmail(String email) throws ServiceException;
+
+    String addRoleToUserFromJson(String json) throws ServiceException;
 }

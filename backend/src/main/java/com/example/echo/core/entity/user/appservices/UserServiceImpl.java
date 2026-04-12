@@ -156,4 +156,33 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email)
             .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
     }
+
+    @Override
+    public String addRoleToUserFromJson(String json) throws ServiceException {
+        try {
+            Serializer<UserDTO> ser = new JacksonSerializer<>();
+            com.fasterxml.jackson.databind.JsonNode node = 
+                new com.fasterxml.jackson.databind.ObjectMapper().readTree(json);
+            
+            Integer userId = node.get("userId").asInt();
+            String roleName = node.get("roleName").asText();
+            
+            UserDTO user = this.getById(userId);
+            RoleDTO role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new ServiceException("Role not found: " + roleName));
+            
+            if (user.getRoles() == null) {
+                user.setRoles(new HashSet<>());
+            }
+            
+            user.getRoles().add(role);
+            UserDTO updated = userRepository.save(user);
+            
+            return jsonSerializer().serialize(updated);
+        } catch (ServiceException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ServiceException("Error adding role to user: " + e.getMessage());
+        }
+    }
 }

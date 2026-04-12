@@ -3,6 +3,7 @@ package com.example.echo.presentation.api.rest;
 import com.example.echo.core.entity.ordermessages.appservices.OrderMessageService;
 import com.example.echo.core.entity.orders.appservices.OrderService;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
+import com.example.echo.core.entity.user.appservices.UserService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class RestAdminDevController {
 
     @Autowired
     private OrderMessageService orderMessageService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -73,6 +77,15 @@ public class RestAdminDevController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payload inválido");
+        }
+    }
+
+    @PostMapping(value = "/users/assign-role", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> assignRoleToUser(@RequestBody String payloadJson) {
+        try {
+            return ResponseEntity.ok(userService.addRoleToUserFromJson(payloadJson));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 }

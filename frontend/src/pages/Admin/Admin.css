@@ -116,7 +116,7 @@
 .dev-form select,
 .dev-form textarea,
 .dev-inline-actions select {
-  width: 100%;
+  /* width: 100%; */
   background: #101010;
   color: var(--white);
   border: 1px solid rgba(255, 255, 255, 0.12);

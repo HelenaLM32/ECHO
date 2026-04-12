@@ -7,6 +7,7 @@ export default function Navbar() {
   const location = useLocation();
 
   const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
+  const isAdmin = user?.roles?.includes("ADMIN");
 
 
 
@@ -37,6 +38,7 @@ export default function Navbar() {
         <div className="nav-right">
           {user ? (
             <>
+              {isAdmin && <Link to="/admin" className="btn btn-primary">Admin</Link>}
               <Link to="/orders" className="btn btn-secondary">Mis encargos</Link>
               <Link to="/profile" className="btn btn-secondary">Perfil</Link>
               <div className="btn btn-primary" onClick={logout}>Logout</div>

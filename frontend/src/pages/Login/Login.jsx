@@ -32,7 +32,7 @@ export default function Login() {
       <div className="login-cont">
         <h1>Bienvenido de nuevo</h1>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="login-form">
           <input
             type="email"
             placeholder="Correo electrónico..."
