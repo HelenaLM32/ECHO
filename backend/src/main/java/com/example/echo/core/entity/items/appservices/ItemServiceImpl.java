@@ -20,6 +20,7 @@ public class ItemServiceImpl implements ItemService {
 
     private Serializer<ItemDTO> serializer;
 
+    @SuppressWarnings("unchecked")
     private Serializer<ItemDTO> jsonSerializer() {
         return (Serializer<ItemDTO>) SerializersCatalog.getInstance(Serializers.JSON_ITEM);
     }
@@ -58,6 +59,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public String getAllToJson() throws ServiceException {
         try {
             Serializer<ItemDTO> ser = (Serializer<ItemDTO>) SerializersCatalog.getInstance(Serializers.JSON_ITEM);
@@ -73,12 +75,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public String registerFromJson(String itemJson) throws ServiceException {
         this.serializer = (Serializer<ItemDTO>) SerializersCatalog.getInstance(Serializers.JSON_ITEM);
         return jsonSerializer().serialize(this.newItem(itemJson));
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public String updateFromJson(String itemJson) throws ServiceException {
         this.serializer = (Serializer<ItemDTO>) SerializersCatalog.getInstance(Serializers.JSON_ITEM);
         return jsonSerializer().serialize(this.updateItem(itemJson));

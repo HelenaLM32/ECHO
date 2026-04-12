@@ -40,7 +40,9 @@ public class JwtUtil {
 
     public static List<String> extractRoles(String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-        return claims.get("roles", List.class);
+        @SuppressWarnings("unchecked")
+        List<String> roles = claims.get("roles", List.class);
+        return roles;
     }
 
     public static boolean validateToken(String token) {

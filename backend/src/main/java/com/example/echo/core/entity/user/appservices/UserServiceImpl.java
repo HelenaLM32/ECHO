@@ -160,7 +160,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public String addRoleToUserFromJson(String json) throws ServiceException {
         try {
-            Serializer<UserDTO> ser = new JacksonSerializer<>();
             com.fasterxml.jackson.databind.JsonNode node = 
                 new com.fasterxml.jackson.databind.ObjectMapper().readTree(json);
             
