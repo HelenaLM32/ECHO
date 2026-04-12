@@ -1,0 +1,123 @@
+.orders-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.orders-page__title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--white);
+  margin: 0 0 2rem;
+}
+
+.orders-section {
+  margin-bottom: 2.5rem;
+}
+
+.orders-section__heading {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--orange);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 1rem;
+}
+
+.orders-empty {
+  color: var(--gray-dark-secondary);
+  font-size: 0.9rem;
+}
+
+.orders-error {
+  color: #ff6b6b;
+}
+
+.orders-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.order-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: var(--black-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  transition: border-color 0.2s;
+}
+
+.order-card:hover {
+  border-color: var(--orange);
+}
+
+.order-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.order-card__title {
+  font-size: 0.975rem;
+  font-weight: 700;
+  color: var(--white);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.order-card__meta {
+  font-size: 0.8rem;
+  color: var(--gray-dark-secondary);
+  margin: 0;
+}
+
+.order-card__price {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--orange);
+  margin: 0;
+}
+
+.order-card__status {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 20px;
+  width: fit-content;
+  margin-bottom: 0.25rem;
+}
+
+.order-card__status--pending     { background: rgba(255, 200, 0, 0.15);  color: #ffc800; }
+.order-card__status--in_progress { background: rgba(0, 180, 255, 0.15);  color: #00b4ff; }
+.order-card__status--completed   { background: rgba(0, 200, 100, 0.15);  color: #00c864; }
+.order-card__status--cancelled   { background: rgba(255, 80, 80, 0.15);  color: #ff5050; }
+
+
+.order-card__link {
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
+  background: var(--orange);
+  color: var(--white);
+  border-radius: 6px;
+  font-size: 0.825rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.order-card__link:hover {
+  background: var(--orange-secondary);
+}

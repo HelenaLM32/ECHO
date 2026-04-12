@@ -6,5 +6,7 @@ public enum Serializers {
     JSON_ROLE,
     XML_ROLE,
     JSON_ITEM,
-    XML_ITEM
+    XML_ITEM,
+    JSON_ORDER,
+    JSON_ORDER_MESSAGE
 }

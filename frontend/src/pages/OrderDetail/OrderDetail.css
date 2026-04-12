@@ -1,0 +1,107 @@
+.od-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.od-back-btn {
+  width: fit-content;
+  background: none;
+  border: none;
+  color: var(--orange);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.15s;
+}
+
+.od-back-btn:hover { opacity: 0.75; }
+
+.od-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  background: var(--black-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  flex-wrap: wrap;
+}
+
+.od-header__title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--white);
+  margin: 0 0 0.25rem;
+}
+
+.od-header__sub {
+  font-size: 0.875rem;
+  color: var(--gray-dark-secondary);
+  margin: 0 0 0.25rem;
+}
+
+.od-header__price {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--orange);
+  margin: 0;
+}
+
+.od-header__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.od-status {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.od-status--pending     { background: rgba(255, 200, 0, 0.15);  color: #ffc800; }
+.od-status--in_progress { background: rgba(0, 180, 255, 0.15);  color: #00b4ff; }
+.od-status--completed   { background: rgba(0, 200, 100, 0.15);  color: #00c864; }
+.od-status--cancelled   { background: rgba(255, 80, 80, 0.15);  color: #ff5050; }
+
+.od-status-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.od-status-btn {
+  padding: 0.35rem 0.875rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.od-status-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.od-status-btn--in_progress { background: rgba(0, 180, 255, 0.2);  color: #00b4ff; }
+.od-status-btn--completed   { background: rgba(0, 200, 100, 0.2);  color: #00c864; }
+.od-status-btn--cancelled   { background: rgba(255, 80, 80, 0.15); color: #ff5050; }
+
+.od-status-btn:hover:not(:disabled) { opacity: 0.8; }
+
+.od-error {
+  font-size: 0.875rem;
+  color: #ff6b6b;
+  margin: 0;
+}

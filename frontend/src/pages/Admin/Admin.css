@@ -1,51 +1,228 @@
 .admin-container {
-  max-width: 1000px;
-  margin: 40px auto;
+  max-width: 1200px;
+  margin: 36px auto;
   padding: 20px;
+}
+
+.admin-container h1 {
+  color: var(--white);
+  margin: 0 0 16px;
 }
 
 .admin-tabs {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 .admin-tabs button {
-  padding: 10px 20px;
-  border: 1px solid #ccc;
-  background: #f9f9f9;
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #1f1f1f;
+  color: var(--white);
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-weight: 600;
 }
 
 .admin-tabs button.active {
-  background: #333;
-  color: white;
-  border-color: #333;
+  background: var(--orange);
+  color: var(--white);
+  border-color: var(--orange);
 }
 
 .admin-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
+  background: #181818;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .admin-table th,
 .admin-table td {
   padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--white);
+}
+
+.btn-delete,
+.btn-primary,
+.btn-secondary {
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
 }
 
 .btn-delete {
   background: #dc3545;
   color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
+  padding: 7px 12px;
 }
 
-.btn-delete:hover {
-  background: #c82333;
+.btn-primary {
+  background: var(--orange);
+  color: white;
+  padding: 10px 14px;
+}
+
+.btn-secondary {
+  background: #2a2a2a;
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 10px 14px;
+}
+
+.dev-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.dev-card {
+  background: #181818;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.dev-card h2 {
+  margin: 0 0 12px;
+  color: var(--white);
+  font-size: 1rem;
+}
+
+.dev-card-wide {
+  grid-column: 1 / -1;
+}
+
+.dev-form {
+  display: grid;
+  gap: 10px;
+}
+
+.dev-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--gray-dark-secondary);
+  font-size: 0.86rem;
+}
+
+.dev-form input,
+.dev-form select,
+.dev-form textarea,
+.dev-inline-actions select {
+  width: 100%;
+  background: #101010;
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.dev-inline-actions {
+  display: flex;
+  gap: 10px;
+  align-items: end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.dev-inline-actions label {
+  display: grid;
+  gap: 6px;
+  color: var(--gray-dark-secondary);
+  min-width: 260px;
+}
+
+.dev-orders-grid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 10px;
+}
+
+.dev-order-item {
+  background: #101010;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.dev-order-item h3 {
+  margin: 0 0 8px;
+  color: var(--white);
+  font-size: 0.94rem;
+}
+
+.dev-order-item p {
+  margin: 0 0 6px;
+  color: var(--gray-dark-secondary);
+  font-size: 0.84rem;
+}
+
+.dev-messages {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.dev-message-item {
+  background: #101010;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.dev-message-item header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.dev-message-item header span {
+  color: var(--gray-dark-secondary);
+  font-size: 0.8rem;
+}
+
+.dev-message-item p {
+  margin: 0;
+  color: var(--gray-dark-secondary);
+}
+
+.dev-error,
+.dev-ok {
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+
+.admin-error {
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  background: rgba(220, 53, 69, 0.18);
+  color: #ff9ca6;
+}
+
+.dev-error {
+  background: rgba(220, 53, 69, 0.18);
+  color: #ff9ca6;
+}
+
+.dev-ok {
+  background: rgba(58, 190, 114, 0.18);
+  color: #81e0aa;
+}
+
+@media (max-width: 980px) {
+  .dev-layout {
+    grid-template-columns: 1fr;
+  }
 }

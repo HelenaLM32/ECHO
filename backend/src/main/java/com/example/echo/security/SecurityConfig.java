@@ -2,10 +2,12 @@ package com.example.echo.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -23,9 +25,16 @@ public class SecurityConfig {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                .accessDeniedHandler((request, response, accessDeniedException) ->
+                    response.sendError(HttpStatus.FORBIDDEN.value(), "Forbidden"))
+            )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                
+
+                .requestMatchers(HttpMethod.POST, "/users/login", "/users/login/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/users/register", "/users/register/**").permitAll()
                 .requestMatchers("/users/login", "/users/register").permitAll()
                 
                 .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
@@ -38,7 +47,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/products/**").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/profiles/**").authenticated()
                 .requestMatchers("/users/**").authenticated()
-                
+
+                .requestMatchers("/orders/**").authenticated()
+
                 .anyRequest().permitAll()
             )
             .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
