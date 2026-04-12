@@ -6,31 +6,30 @@
 }
 
 .section-card {
-    padding: 1px 40px;
+    padding: 1px 30px;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 15px;
     height: 45px;
-    background-color: var(--gray-dark-secondary);
-    border: 1px solid var(--gray-stroke);
-    border-radius: 8px;
+    background-color: var(--gray-dark);
+    border: 1px solid var(--gray-dark);
+    border-radius: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    opacity: 0.7;
 
    
 }
 
 .section-card:hover {
     transition: 150ms;
-    background-color: var(--orange-secondary);
-    color: var(--white);
-    border: 1px solid var(--orange-secondary);
+    background-color: var(--gray-dark-secondary);
     transition: 150ms;
 
     span {
         transition: 150ms;
-        color: var(--white);
+        color: var(--black);
     }
 }
 

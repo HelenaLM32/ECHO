@@ -143,4 +143,5 @@ INSERT INTO categories (name, slug, description, icon_url, is_active) VALUES
     ('Ilustración',      'illustration',  'Ilustración digital y tradicional',             NULL, TRUE),
     ('Arte 3D',          '3d-art',        'Modelado, escultura y render 3D',               NULL, TRUE),
     ('Arquitectura',     'architecture',  'Proyectos arquitectónicos y visualización',     NULL, TRUE),
-    ('Moda',             'fashion',       'Diseño de moda, textil e indumentaria',         NULL, TRUE);
+    ('Moda',             'fashion',       'Diseño de moda, textil e indumentaria',         NULL, TRUE),
+    ('Comic',             'comic',       'Historietas, novelas gráficas y cómics',         NULL, TRUE);

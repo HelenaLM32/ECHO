@@ -4,7 +4,14 @@ import "./Footer.css";
 export default function Footer() {
 	return (
 		<footer className="app-footer" role="contentinfo">
-			<div className="footer-inner">
+				{/* svg de la ola */}
+				<div className="footer-wave" aria-hidden="true">
+					<svg viewBox="0 0 1440 220" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M0,160 C200,80 400,40 720,70 C1040,100 1200,140 1440,90 L1440,220 L0,220 Z" fill="var(--black)" />
+					</svg>
+				</div>
+				
+				<div className="footer-inner">
 				<div className="footer-left">
 					<p className="footer-tagline">Donde el arte encuentra su público y los creadores encuentran su oportunidad.</p>
 

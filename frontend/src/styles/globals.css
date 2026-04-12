@@ -9,6 +9,10 @@ body {
     color: var(--black);
 }
 
+.logo {
+    height: 40px;
+}
+
 ::selection {
     background: color-mix(in srgb, var(--orange-secondary) 35%, transparent) ; /* color de fondo al seleccionar */
 
