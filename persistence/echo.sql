@@ -145,3 +145,9 @@ INSERT INTO categories (name, slug, description, icon_url, is_active) VALUES
     ('Arquitectura',     'architecture',  'Proyectos arquitectónicos y visualización',     NULL, TRUE),
     ('Moda',             'fashion',       'Diseño de moda, textil e indumentaria',         NULL, TRUE),
     ('Comic',             'comic',       'Historietas, novelas gráficas y cómics',         NULL, TRUE);
+
+INSERT INTO roles (name) VALUES
+    ('ADMIN'),
+    ('USER'),
+    ('CREATOR'),
+    ('VENUE_MANAGER');
