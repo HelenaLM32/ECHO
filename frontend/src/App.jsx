@@ -36,7 +36,11 @@ export default function App() {
           </ProtectedRoute>
         }/>
 
-        <Route path="/orders/:orderId" element={<OrderDetail />} />
+        <Route path="/orders/:orderId" element={
+          <ProtectedRoute>
+            <OrderDetail />
+          </ProtectedRoute>
+          } />
 
         <Route path="/profile/:userId" element={<Profile />} />
 
