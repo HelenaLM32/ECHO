@@ -2,13 +2,7 @@ package com.example.echo.core.entity.profile.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "profiles")
@@ -20,7 +14,7 @@ public class ProfileDTO {
     @JacksonXmlProperty(localName = "id")
     private Integer id;
 
-    @Column(name = "user_id", unique = true, nullable = false)
+    @Column(name = "user_id", nullable = false, unique = true)
     @JsonProperty("userId")
     @JacksonXmlProperty(localName = "user_id")
     private Integer userId;
@@ -30,44 +24,63 @@ public class ProfileDTO {
     @JacksonXmlProperty(localName = "public_name")
     private String publicName;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "bio", columnDefinition = "TEXT")
     @JsonProperty("bio")
     @JacksonXmlProperty(localName = "bio")
     private String bio;
 
+    @Column(name = "location")
     @JsonProperty("location")
     @JacksonXmlProperty(localName = "location")
     private String location;
 
-    @Column(name = "avatar_url")
+    @Column(name = "avatar_url", columnDefinition = "LONGTEXT")
     @JsonProperty("avatarUrl")
     @JacksonXmlProperty(localName = "avatar_url")
     private String avatarUrl;
 
-    @Column(name = "banner_url")
+    @Column(name = "banner_url", columnDefinition = "LONGTEXT")
     @JsonProperty("bannerUrl")
     @JacksonXmlProperty(localName = "banner_url")
     private String bannerUrl;
 
+    @Column(name = "linkedin")
     @JsonProperty("linkedin")
     @JacksonXmlProperty(localName = "linkedin")
     private String linkedin;
 
+    @Column(name = "instagram")
     @JsonProperty("instagram")
     @JacksonXmlProperty(localName = "instagram")
     private String instagram;
 
+    @Column(name = "twitter")
     @JsonProperty("twitter")
     @JacksonXmlProperty(localName = "twitter")
     private String twitter;
 
+    @Column(name = "experience")
+    @JsonProperty("experience")
+    @JacksonXmlProperty(localName = "experience")
+    private String experience;
+
     public ProfileDTO() {
     }
 
-    public static ProfileDTO getInstance(Integer userId) {
-        ProfileDTO dto = new ProfileDTO();
-        dto.setUserId(userId);
-        return dto;
+    public ProfileDTO(Integer id, Integer userId, String publicName, String bio, String location,
+            String avatarUrl, String bannerUrl, String linkedin, String instagram,
+            String twitter, String experience) {
+        this.id = id;
+        this.userId = userId;
+        this.publicName = publicName;
+        this.bio = bio;
+        this.location = location;
+        this.avatarUrl = avatarUrl;
+        this.bannerUrl = bannerUrl;
+        this.linkedin = linkedin;
+        this.instagram = instagram;
+        this.twitter = twitter;
+        this.experience = experience;
     }
 
     public Integer getId() {
@@ -148,5 +161,18 @@ public class ProfileDTO {
 
     public void setTwitter(String twitter) {
         this.twitter = twitter;
+    }
+
+    public String getExperience() {
+        return experience;
+    }
+
+    public void setExperience(String experience) {
+        this.experience = experience;
+    }
+
+    @Override
+    public String toString() {
+        return "ProfileDTO{id=" + id + ", userId=" + userId + ", publicName='" + publicName + "'}";
     }
 }

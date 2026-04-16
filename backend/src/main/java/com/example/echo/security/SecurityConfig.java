@@ -31,43 +31,26 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .exceptionHandling(ex -> ex
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                .accessDeniedHandler((request, response, accessDeniedException) ->
-                    response.sendError(HttpStatus.FORBIDDEN.value(), "Forbidden"))
-            )
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                .requestMatchers(HttpMethod.POST, "/users/login", "/users/login/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/users/register", "/users/register/**").permitAll()
-                .requestMatchers("/users/login", "/users/register").permitAll()
-                
-                .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/profiles/**").permitAll()
+                        .requestMatchers("/users/login", "/users/register").permitAll()
 
-                .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/profiles/**").permitAll()
 
-                .requestMatchers(HttpMethod.POST, "/products/**").authenticated()
-                .requestMatchers(HttpMethod.PUT, "/products/**").authenticated()
-                .requestMatchers(HttpMethod.DELETE, "/products/**").authenticated()
-                .requestMatchers(HttpMethod.PUT, "/profiles/**").authenticated()
-                .requestMatchers("/users/**").authenticated()
+                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
 
-                .requestMatchers("/orders/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/products/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/products/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/products/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/profiles/**").authenticated()
+                        .requestMatchers("/users/**").authenticated()
 
-                .anyRequest().permitAll()
-            )
-            .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)
-            .headers(headers -> headers
-                .httpStrictTransportSecurity(hsts -> hsts
-                    .maxAgeInSeconds(31536000)
-                    .includeSubDomains(true))
-                .frameOptions(frameOptions -> frameOptions.deny())
-            );
+                        .anyRequest().permitAll())
+                .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -80,8 +63,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); 
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
 

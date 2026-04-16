@@ -1,0 +1,188 @@
+.edit-page {
+  min-height: 100vh;
+  background: var(--white);
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+
+.edit-topbar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.btn-back {
+  background: var(--black);
+  color: var(--white);
+  border: none;
+  border-radius: 20px;
+  padding: 8px 24px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-back:hover {
+  background: var(--black-secondary);
+}
+
+
+.edit-card {
+  background: var(--true-white);
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 16px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  gap: 28px;
+  border: 1px solid var(--gray-stroke);
+}
+
+.edit-card.column {
+  flex-direction: column;
+  gap: 12px;
+}
+
+.edit-section-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--black);
+  margin: 0 0 12px 0;
+}
+
+.edit-section-desc {
+  font-size: 0.85rem;
+  color: var(--black-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.edit-card-right {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.edit-row {
+  display: flex;
+  gap: 12px;
+}
+
+.edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.edit-field.full {
+  width: 100%;
+}
+
+.edit-field label {
+  font-size: 0.78rem;
+  color: var(--black-secondary);
+}
+
+.edit-field input {
+  border: 1px solid var(--gray-stroke);
+  border-radius: 8px;
+  padding: 9px 10px;
+  font-size: 0.88rem;
+  outline: none;
+  color: var(--black);
+  background: var(--true-white);
+  transition: border 0.2s;
+}
+
+.edit-field input:focus {
+  border-color: var(--orange);
+}
+
+
+.social-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--gray-stroke);
+  border-radius: 10px;
+  padding: 8px 12px;
+  background: var(--true-white);
+  transition: border 0.2s;
+}
+
+.social-row:focus-within {
+  border-color: var(--orange);
+}
+
+.social-label {
+  font-size: 0.85rem;
+  color: var(--black);
+  width: 70px;
+  flex-shrink: 0;
+}
+
+.social-input {
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  font-size: 0.85rem;
+  color: var(--black-secondary);
+  background: transparent;
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.btn-save {
+  background: var(--orange);
+  color: var(--white);
+  border: none;
+  border-radius: 25px;
+  padding: 9px 24px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-save:hover {
+  background: var(--black-secondary);
+}
+
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.credentials-divider {
+  border: none;
+  border-top: 1px solid var(--gray-stroke);
+  margin: 4px 0;
+}
+
+.credentials-msg {
+  font-size: 0.82rem;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 0;
+}
+
+.credentials-msg--error {
+  background: #fff0f0;
+  color: #c0392b;
+  border: 1px solid #f5c6c6;
+}
+
+.credentials-msg--success {
+  background: #f0fff4;
+  color: #27ae60;
+  border: 1px solid #b7ebc8;
+}

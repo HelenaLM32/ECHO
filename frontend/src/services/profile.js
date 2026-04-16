@@ -11,6 +11,50 @@ export const updateProfile = async (userId, profileData) => {
     method: "PUT",
     body: JSON.stringify(profileData),
   });
-  if (!res.ok) throw new Error("Error al actualizar el perfil");
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Error al actualizar el perfil");
+  }
+  return await res.json();
+};
+
+export const updateCredentials = async (userId, data) => {
+  const res = await fetchWithToken(`/users/${userId}/credentials`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Error al actualizar credenciales");
+  }
+  return await res.json();
+};
+
+const fileToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
+
+export const updateAvatar = async (userId, file) => {
+  const base64 = await fileToBase64(file);
+  const res = await fetchWithToken(`/profiles/${userId}/avatar`, {
+    method: "PUT",
+    body: JSON.stringify({ avatarUrl: base64 }),
+  });
+  if (!res.ok) throw new Error("Error al actualizar el avatar");
+  return await res.json();
+};
+
+export const updateBanner = async (userId, file) => {
+  const base64 = await fileToBase64(file);
+  const res = await fetchWithToken(`/profiles/${userId}/banner`, {
+    method: "PUT",
+    body: JSON.stringify({ bannerUrl: base64 }),
+  });
+  if (!res.ok) throw new Error("Error al actualizar el banner");
   return await res.json();
 };

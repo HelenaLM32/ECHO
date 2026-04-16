@@ -185,7 +185,33 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO findByEmail(String email) throws ServiceException {
         return userRepository.findByEmail(email)
-            .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
+                .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
+    }
+
+    @Override
+    public String updateCredentials(Integer userId, String newUsername, String currentPassword, String newPassword)
+            throws ServiceException {
+        UserDTO user = this.getById(userId);
+
+        if (newPassword != null && !newPassword.isBlank()) {
+            if (currentPassword == null || !user.getPassword().equals(currentPassword)) {
+                throw new ServiceException("La contraseña actual es incorrecta");
+            }
+            if (newPassword.length() < 6) {
+                throw new ServiceException("La nueva contraseña debe tener al menos 6 caracteres");
+            }
+            user.setPassword(newPassword);
+        }
+
+        if (newUsername != null && !newUsername.isBlank()) {
+            if (newUsername.length() < 3) {
+                throw new ServiceException("El nombre de usuario debe tener al menos 3 caracteres");
+            }
+            user.setUsername(newUsername);
+        }
+
+        userRepository.save(user);
+        return jsonSerializer().serialize(user);
     }
 
     @Override

@@ -37,31 +37,61 @@ public class RestProfileController {
             @PathVariable Integer userId,
             @RequestBody String profileJson,
             @RequestHeader("Authorization") String authHeader) {
-
         try {
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No token");
-            }
-            String token = authHeader.replace("Bearer ", "");
-            if (!JwtUtil.validateToken(token)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido");
-            }
-
-            String email = JwtUtil.extractEmail(token);
-            UserDTO user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
-
-            // Verificamos que el ID del token coincida con el de la URL
-            if (!user.getId().equals(userId)) {
+            if (!isAuthorized(authHeader, userId)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");
             }
-
             return ResponseEntity.ok(profileService.updateFromJson(userId, profileJson));
-
         } catch (ServiceException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno");
         }
+    }
+
+    @PutMapping(value = "/{userId}/avatar", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateAvatar(
+            @PathVariable Integer userId,
+            @RequestBody String body,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            if (!isAuthorized(authHeader, userId)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");
+            }
+            return ResponseEntity.ok(profileService.updateFromJson(userId, body));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno");
+        }
+    }
+
+    @PutMapping(value = "/{userId}/banner", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateBanner(
+            @PathVariable Integer userId,
+            @RequestBody String body,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            if (!isAuthorized(authHeader, userId)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");
+            }
+            return ResponseEntity.ok(profileService.updateFromJson(userId, body));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno");
+        }
+    }
+
+    private boolean isAuthorized(String authHeader, Integer userId) throws ServiceException {
+        if (authHeader == null || !authHeader.startsWith("Bearer "))
+            return false;
+        String token = authHeader.replace("Bearer ", "");
+        if (!JwtUtil.validateToken(token))
+            return false;
+        String email = JwtUtil.extractEmail(token);
+        UserDTO user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
+        return user.getId().equals(userId);
     }
 }
