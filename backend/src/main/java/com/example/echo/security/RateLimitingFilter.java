@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class RateLimitingFilter extends OncePerRequestFilter {
 
-    private static final int MAX_REQUESTS_PER_MINUTE = 100;
+    private static final int MAX_REQUESTS_PER_MINUTE = 10000;
     private final ConcurrentHashMap<String, AtomicInteger> requestCounts = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Long> windowStartTimes = new ConcurrentHashMap<>();
 
