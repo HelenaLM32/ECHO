@@ -1,24 +1,24 @@
 package com.example.echo.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+
 public class JwtUtil {
 
-    private static final String DEFAULT_SECRET = "echo-dev-jwt-secret-key-change-in-production-2026";
     private static final String ENV_SECRET_KEY = "ECHO_JWT_SECRET";
     private static final Key key = buildSigningKey();
-    private static final long EXPIRATION_TIME = 86400000; // 24 hours
+    private static final long EXPIRATION_TIME = 86400000; // 24 horas
 
     private static Key buildSigningKey() {
-        String secret = System.getenv(ENV_SECRET_KEY);
+        String secret = System.getProperty(ENV_SECRET_KEY);
         if (secret == null || secret.isBlank()) {
-            secret = DEFAULT_SECRET;
+            throw new IllegalStateException("ECHO_JWT_SECRET environment variable is required. Please set it in your .env file or system environment.");
         }
         if (secret.length() < 32) {
             throw new IllegalArgumentException("JWT secret must be at least 32 characters long");

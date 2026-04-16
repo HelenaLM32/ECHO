@@ -1,7 +1,8 @@
 package com.example.echo.infrastructure.config;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.context.annotation.Configuration;
+
+import io.github.cdimascio.dotenv.Dotenv;
 
 @Configuration
 public class EnvConfig {
@@ -10,8 +11,8 @@ public class EnvConfig {
         Dotenv dotenv = Dotenv.configure()
                 .ignoreIfMissing()
                 .load();
-        
-        // Load .env values into System properties if not already set
+
+        // carga los valores del .env en las variables del entorno del sistema!!
         dotenv.entries().forEach(entry -> {
             if (System.getProperty(entry.getKey()) == null) {
                 System.setProperty(entry.getKey(), entry.getValue());

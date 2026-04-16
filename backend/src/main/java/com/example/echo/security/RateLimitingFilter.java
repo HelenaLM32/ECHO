@@ -1,15 +1,16 @@
 package com.example.echo.security;
 
+import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class RateLimitingFilter extends OncePerRequestFilter {
@@ -22,10 +23,8 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         // Excluye el login y registro, temporal porque habra que limitarlos pero me daba problemas con el filtro de jwt
         String path = request.getServletPath();
-        return path.equals("/users/login") || 
-               path.equals("/users/register") ||
-               path.equals("/users/login/") ||
-               path.equals("/users/register/");
+        return path.equals("/users/login")
+                || path.equals("/users/register");
     }
 
     @Override
