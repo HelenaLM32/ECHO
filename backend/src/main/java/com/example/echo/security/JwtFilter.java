@@ -34,7 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = authHeader.substring(7);
 
         if (!JwtUtil.validateToken(token)) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
             return;
         }
 

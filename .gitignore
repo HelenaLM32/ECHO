@@ -3,9 +3,10 @@ package-lock.json
 package.json
 build/
 dist/
-# al final descomentamos esto del gitignore para evitar subir archivos de configuracion del entorno ya que esta la api dentro
-# .env
-# .env.local
+# Environment variables files - NEVER commit these
+.env
+.env.local
+.env.*.local
 coverage/
 target/
 *.jar
@@ -21,6 +22,5 @@ target/
 .project
 .DS_Store
 Thumbs.db
-application.properties
-*.properties
+# Security: Don't commit application properties if they have secrets
 backend/src/main/resources/application.properties

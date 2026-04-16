@@ -8,14 +8,17 @@ import com.example.echo.core.entity.role.persistence.RoleRepository;
 import com.example.echo.core.entity.user.dto.UserDTO;
 import com.example.echo.core.entity.role.dto.RoleDTO;
 import com.example.echo.core.entity.user.dto.UserLoginDTO;
+import com.example.echo.core.entity.user.dto.LoginResponseDTO;
 import com.example.echo.core.entity.user.mappers.UserMapper;
-import com.example.echo.core.entity.user.model.User;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.Serializer;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.Serializers;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.SerializersCatalog;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.JacksonSerializer;
 import com.example.echo.core.entity.sharedkernel.exceptions.BuildException;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
+import com.example.echo.security.JwtUtil;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,6 +31,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private Serializer<UserDTO> serializer;
 
@@ -65,6 +71,9 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("Email already registered: " + dto.getEmail());
         }
 
+        // Hash the password before saving
+        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+
         Set<RoleDTO> resolvedRoles = new HashSet<>();
         if (dto.getRoles() != null && !dto.getRoles().isEmpty()) {
             for (RoleDTO roleDTO : dto.getRoles()) {
@@ -80,7 +89,15 @@ public class UserServiceImpl implements UserService {
 
     protected UserDTO updateUser(String userJson) throws ServiceException {
         UserDTO dto = this.checkInputData(userJson);
-        this.getById(dto.getId());
+        UserDTO existing = this.getById(dto.getId());
+
+        // If password is being updated, hash it
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+        } else {
+            // Keep existing password
+            dto.setPassword(existing.getPassword());
+        }
 
         Set<RoleDTO> resolvedRoles = new HashSet<>();
         if (dto.getRoles() != null) {
@@ -139,11 +156,25 @@ public class UserServiceImpl implements UserService {
             UserDTO user = userRepository.findByEmail(loginDTO.getEmail())
                     .orElseThrow(() -> new ServiceException("Email not found"));
 
-            if (!user.getPassword().equals(loginDTO.getPassword())) {
+            if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
                 throw new ServiceException("Incorrect password");
             }
 
-            return jsonSerializer().serialize(user);
+            // Generate JWT token with user roles
+            java.util.List<String> roles = user.getRoles() != null 
+                ? user.getRoles().stream().map(RoleDTO::getName).collect(java.util.stream.Collectors.toList())
+                : new java.util.ArrayList<>();
+            
+            System.out.println("LoginFromJson - User: " + user.getEmail() + ", Roles: " + roles);
+            
+            String token = JwtUtil.generateToken(user.getEmail(), roles);
+            
+            // Create response with token
+            LoginResponseDTO response = new LoginResponseDTO(token, user);
+            
+            System.out.println("LoginFromJson - Response roles in LoginResponseDTO: " + response.getRoles());
+            
+            return new JacksonSerializer<LoginResponseDTO>().serialize(response);
         } catch (ServiceException e) {
             throw e;
         } catch (Exception e) {

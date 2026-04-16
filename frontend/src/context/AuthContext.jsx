@@ -5,35 +5,46 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [loadingContext, setLoadingContext] = useState(true);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const storedData = sessionStorage.getItem("user");
+    const storedToken = sessionStorage.getItem("token");
+    if (storedData) {
+      setUser(JSON.parse(storedData));
+    }
+    if (storedToken) {
+      setToken(storedToken);
     }
     setLoadingContext(false);
   }, []);
 
   const login = async (email, password) => {
     const data = await loginService(email, password);
-    localStorage.setItem("user", JSON.stringify(data));
+    sessionStorage.setItem("token", data.token);
+    sessionStorage.setItem("user", JSON.stringify(data));
+    setToken(data.token);
     setUser(data);
   };
 
   const register = async (email, username, password) => {
     const data = await registerService(email, username, password);
-    localStorage.setItem("user", JSON.stringify(data));
+    sessionStorage.setItem("token", data.token);
+    sessionStorage.setItem("user", JSON.stringify(data));
+    setToken(data.token);
     setUser(data);
   };
 
   const logout = () => {
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+    setToken(null);
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loadingContext }}>
+    <AuthContext.Provider value={{ user, token, login, register, logout, loadingContext }}>
       {children}
     </AuthContext.Provider>
   );
