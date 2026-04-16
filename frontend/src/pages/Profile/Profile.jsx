@@ -19,7 +19,7 @@ export default function Profile() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("Trabajos");
+  const [activeTab, setActiveTab] = useState("Proyectos");
 
   useEffect(() => {
     if (loadingContext) return;
@@ -43,7 +43,7 @@ export default function Profile() {
       const updated = await updateBanner(user.id, file);
       setProfile(updated);
     } catch {
-      alert("Error al guardar el banner");
+      alert("Error al guardar la portada");
     }
   };
 
@@ -58,16 +58,16 @@ export default function Profile() {
     }
   };
 
-  if (loadingContext || loading) return <div className="profile-page">Cargando...</div>;
+  if (loadingContext || loading) return <div className="profile-page">Cargando perfil...</div>;
   if (error || !profile) return <div className="profile-page">{error || "Perfil no encontrado"}</div>;
 
-  const tabs = ["Trabajos", "Valoraciones", "Productos", "Servicios", "Estadisticas"];
+  const tabs = ["Proyectos", "Reseñas", "Productos", "Servicios", "Estadísticas"];
 
   return (
     <div className="profile-page">
       <header className="profile-banner-wrapper">
         {profile.bannerUrl ? (
-          <img src={profile.bannerUrl} alt="Banner" className="banner-image" />
+          <img src={profile.bannerUrl} alt="Portada" className="banner-image" />
         ) : (
           <div
             className="banner-placeholder"
@@ -75,15 +75,17 @@ export default function Profile() {
             style={{ cursor: isOwnProfile ? "pointer" : "default" }}
           >
             <div className="banner-download-icon">↓</div>
-            <p>Añadir imagen de banner</p>
-            <small>Dimensiones óptimas 3200 x 410px</small>
+            <p>Agregar imagen de portada</p>
+            <small>Recomendado: 3200 x 410 px</small>
           </div>
         )}
+
         {isOwnProfile && profile.bannerUrl && (
           <button className="banner-change-btn" onClick={() => bannerInputRef.current?.click()}>
-            Cambiar banner
+            Cambiar portada
           </button>
         )}
+
         <input
           ref={bannerInputRef}
           type="file"
@@ -102,11 +104,12 @@ export default function Profile() {
             <img src={profile.avatarUrl} alt={profile.username} className="avatar-img" />
           ) : (
             <div className="avatar-initials">
-              {profile.username?.charAt(0).toUpperCase()}
+              {profile.username?.charAt(0).toUpperCase() || "U"}
             </div>
           )}
           {isOwnProfile && <div className="avatar-overlay"><span>Cambiar</span></div>}
         </div>
+
         <input
           ref={avatarInputRef}
           type="file"
@@ -119,31 +122,55 @@ export default function Profile() {
       <div className="profile-layout-container">
         <aside className="profile-sidebar">
           <div className="sidebar-info">
-            <h1 className="display-name">{profile.publicName || profile.username}</h1>
-            <p className="display-location">{profile.location}</p>
+            <h1 className="display-name">
+              {profile.publicName || profile.username}
+            </h1>
+
+            <p className="username">@{profile.username}</p>
+
+            <p className="display-location">
+              {profile.location || "Ubicación no especificada"}
+            </p>
+
             {isOwnProfile && (
               <div className="sidebar-actions">
                 <Link to="/edit-profile" className="btn-edit-info">
-                  Editar información de perfil
+                  Editar perfil
                 </Link>
               </div>
             )}
-            <p className="display-bio">{profile.bio}</p>
+
+            <p className="display">Sobre mí</p>
+            <p className="display-bio">
+              {profile.bio || "Este usuario aún no ha añadido una descripción."}
+            </p>
+
             <p className="display">Experiencia</p>
-            <p className="display-experience">{profile.experience}</p>
+            <p className="display-experience">
+              {profile.experience || "Sin experiencia añadida."}
+            </p>
           </div>
         </aside>
 
         <main className="profile-main">
           <div className="social-header">
             {profile.linkedin && (
-  <a href={profile.linkedin} className="social-link" target="_blank" rel="noreferrer">
-    <img src={linkedinIcon} alt="LinkedIn" />
-  </a>
-)}
-            {profile.instagram && <a href={profile.instagram} className="social-link" target="_blank" rel="noreferrer"><img src={instagramIcon} alt="instagram" ></img></a>}
-            {profile.twitter && <a href={profile.twitter} className="social-link" target="_blank" rel="noreferrer"><img src={twitterIcon} alt="twitter" ></img></a>}
+              <a href={profile.linkedin} className="social-link" target="_blank" rel="noreferrer">
+                <img src={linkedinIcon} alt="LinkedIn" />
+              </a>
+            )}
+            {profile.instagram && (
+              <a href={profile.instagram} className="social-link" target="_blank" rel="noreferrer">
+                <img src={instagramIcon} alt="Instagram" />
+              </a>
+            )}
+            {profile.twitter && (
+              <a href={profile.twitter} className="social-link" target="_blank" rel="noreferrer">
+                <img src={twitterIcon} alt="Twitter" />
+              </a>
+            )}
           </div>
+
           <nav className="content-tabs">
             {tabs.map((tab) => (
               <button
@@ -155,12 +182,7 @@ export default function Profile() {
               </button>
             ))}
           </nav>
-          <section className="content-section">
-            <p className="section-label">{activeTab}</p>
-            <div className="projects-grid">
-              {/* Contenido próximamente */}
-            </div>
-          </section>
+
         </main>
       </div>
     </div>

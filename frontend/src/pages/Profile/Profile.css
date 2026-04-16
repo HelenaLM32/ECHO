@@ -4,6 +4,8 @@
   margin: 0;
 }
 
+
+
 .profile-banner-wrapper {
   width: 100%;
   height: 200px;
@@ -60,6 +62,7 @@
   font-size: 0.8rem;
   cursor: pointer;
 }
+
 
 .avatar-float-wrapper {
   max-width: 1100px;
@@ -120,6 +123,7 @@
 }
 
 
+
 .profile-layout-container {
   max-width: 1100px;
   margin: 0 auto;
@@ -128,44 +132,51 @@
   padding: 0 20px 60px;
 }
 
+
+
 .profile-sidebar {
   width: 200px;
   flex-shrink: 0;
-  padding-right: 90px;
+  padding-right: 60px;
 }
 
 .display-name {
   font-size: 1.3rem;
   margin: 12px 0 2px 0;
   color: var(--black);
+  font-weight: 700;
 }
 
-.display{
-  margin: 12px 0 2px 0;
-  font-size: 0.95rem;
+.username {
+  font-size: 0.8rem;
+  color: var(--gray-dark-secondary);
+  margin-bottom: 8px;
+}
+
+.display {
+  margin: 18px 0 6px 0;
+  font-size: 0.9rem;
   color: var(--black-secondary);
-  margin-bottom: 15px;
+  font-weight: 600;
 }
 
 .display-location {
   color: var(--gray-dark-secondary);
   font-size: 0.85rem;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .display-bio {
- color: var(--black-secondary);
-  font-size: 0.80rem;
-  margin-bottom: 30px;
-  margin-top: 16px;
+   font-size: 0.8rem;
+  color: var(--gray-dark-secondary);
+  margin-bottom: 8px;
 }
 
-.display-experience{
-  margin-bottom: 16px;
-  color: var(--black-secondary);
-  font-size: 0.88rem;
+.display-experience {
+   font-size: 0.8rem;
+  color: var(--gray-dark-secondary);
+  margin-bottom: 8px;
 }
-
 
 .sidebar-actions {
   display: flex;
@@ -186,20 +197,18 @@
   text-align: center;
   text-decoration: none;
   display: block;
-  margin-top: 16px;
-  margin-bottom: 20px;
-
+  margin-top: 12px;
+  margin-bottom: 18px;
 }
 
-.btn-edit-info:hover {
-  background-color: var(--orange);
-}
 
 
 .profile-main {
   flex-grow: 1;
   min-width: 0;
 }
+
+
 
 .social-header {
   display: flex;
@@ -211,6 +220,7 @@
 .social-link {
   padding: 4px 10px;
 }
+
 
 .content-tabs {
   display: flex;
@@ -225,8 +235,8 @@
   color: var(--black-secondary);
   border: none;
   cursor: pointer;
-  font-size: 0.88rem;
-  padding: 4px 10px;
+  font-size: 0.85rem;
+  padding: 5px 12px;
   border-radius: 20px;
   transition: all 0.15s;
 }
@@ -238,8 +248,10 @@
 .tab-item.active {
   color: var(--true-white);
   background-color: var(--orange);
-  font-weight: bold;
+  font-weight: 600;
 }
+
+
 
 .section-label {
   font-size: 0.85rem;
@@ -247,4 +259,9 @@
   margin-bottom: 12px;
 }
 
-
+.empty-state {
+  font-size: 0.8rem;
+  color: var(--gray-dark-secondary);
+  text-align: center;
+  margin-top: 20px;
+}
