@@ -162,3 +162,27 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+.credentials-divider {
+  border: none;
+  border-top: 1px solid var(--gray-stroke);
+  margin: 4px 0;
+}
+
+.credentials-msg {
+  font-size: 0.82rem;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 0;
+}
+
+.credentials-msg--error {
+  background: #fff0f0;
+  color: #c0392b;
+  border: 1px solid #f5c6c6;
+}
+
+.credentials-msg--success {
+  background: #f0fff4;
+  color: #27ae60;
+  border: 1px solid #b7ebc8;
+}

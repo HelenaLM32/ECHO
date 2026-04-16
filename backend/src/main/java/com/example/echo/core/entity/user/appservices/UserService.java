@@ -19,5 +19,7 @@ public interface UserService {
 
     UserDTO findByEmail(String email) throws ServiceException;
 
-    String addRoleToUserFromJson(String json) throws ServiceException;
+    String updateCredentials(Integer userId, String newUsername, String currentPassword, String newPassword)
+            throws ServiceException;
+
 }

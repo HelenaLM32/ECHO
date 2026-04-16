@@ -43,9 +43,7 @@ public class RestUserController {
         }
     }
 
-    @PostMapping(value = "/register",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> register(@RequestBody String userJson) {
         try {
             String responseJson = userService.registerFromJson(userJson);
@@ -58,20 +56,18 @@ public class RestUserController {
         }
     }
 
-@PostMapping(value = "/login",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> login(@RequestBody String loginJson) {
         try {
             String responseJson = userService.loginFromJson(loginJson);
             ObjectNode userNode = (ObjectNode) mapper.readTree(responseJson);
             String email = userNode.get("email").asText();
-            
+
             UserDTO user = userService.findByEmail(email);
-            
+
             ArrayNode rolesArray = userNode.putArray("roles");
             List<String> roleNames = new java.util.ArrayList<>();
-            
+
             for (RoleDTO r : user.getRoles()) {
                 rolesArray.add(r.getName());
                 roleNames.add(r.getName());
@@ -86,9 +82,7 @@ public class RestUserController {
         }
     }
 
-    @PutMapping(value = "/{id}",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateUser(@PathVariable Integer id, @RequestBody String userJson) {
         try {
             return ResponseEntity.ok(userService.updateFromJson(userJson));
@@ -104,6 +98,35 @@ public class RestUserController {
             return ResponseEntity.ok().build();
         } catch (ServiceException e) {
             return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @PatchMapping(value = "/{id}/credentials", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateCredentials(
+            @PathVariable Integer id,
+            @RequestBody String body,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            if (authHeader == null || !authHeader.startsWith("Bearer "))
+                return ResponseEntity.status(403).body("No autorizado");
+            String token = authHeader.replace("Bearer ", "");
+            if (!JwtUtil.validateToken(token))
+                return ResponseEntity.status(403).body("Token inválido");
+            String email = JwtUtil.extractEmail(token);
+            com.example.echo.core.entity.user.dto.UserDTO user = userService.findByEmail(email);
+            if (!user.getId().equals(id))
+                return ResponseEntity.status(403).body("No autorizado");
+
+            com.fasterxml.jackson.databind.JsonNode node = mapper.readTree(body);
+            String newUsername = node.has("username") ? node.get("username").asText() : null;
+            String currentPassword = node.has("currentPassword") ? node.get("currentPassword").asText() : null;
+            String newPassword = node.has("newPassword") ? node.get("newPassword").asText() : null;
+
+            return ResponseEntity.ok(userService.updateCredentials(id, newUsername, currentPassword, newPassword));
+        } catch (com.example.echo.core.entity.sharedkernel.exceptions.ServiceException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error interno: " + e.getMessage());
         }
     }
 }
