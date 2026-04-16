@@ -288,8 +288,8 @@ export default function EditProfile() {
           </button>
         </div>
       </div>
-
-      <Footer />
+        <Footer />
     </div>
+    
   );
 }
