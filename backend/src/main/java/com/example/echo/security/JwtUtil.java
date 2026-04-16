@@ -16,7 +16,7 @@ public class JwtUtil {
     private static final long EXPIRATION_TIME = 86400000; // 24 horas
 
     private static Key buildSigningKey() {
-        String secret = System.getProperty(ENV_SECRET_KEY);
+        String secret = System.getProperty(ENV_SECRET_KEY); // Lee la clave secreta del entorno del sistema, no del .env directamente!!
         if (secret == null || secret.isBlank()) {
             throw new IllegalStateException("ECHO_JWT_SECRET environment variable is required. Please set it in your .env file or system environment.");
         }

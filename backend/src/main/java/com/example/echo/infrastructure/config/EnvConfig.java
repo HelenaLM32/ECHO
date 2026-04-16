@@ -12,7 +12,7 @@ public class EnvConfig {
                 .ignoreIfMissing()
                 .load();
 
-        // carga los valores del .env en las variables del entorno del sistema!!
+        // carga los valores del .env en las variables del entorno del sistema para poder usarlos con getProperty!!
         dotenv.entries().forEach(entry -> {
             if (System.getProperty(entry.getKey()) == null) {
                 System.setProperty(entry.getKey(), entry.getValue());
