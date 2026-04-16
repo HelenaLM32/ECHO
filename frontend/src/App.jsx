@@ -12,6 +12,8 @@ import EditProfile from './pages/Profile/EditProfile';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import Admin from './pages/Admin/Admin';
 import AdminRoute from './components/AdminRoute/AdminRoute';
+import Orders from './pages/Orders/Orders';
+import OrderDetail from './pages/OrderDetail/OrderDetail';
 
 export default function App() {
   return (
@@ -27,6 +29,14 @@ export default function App() {
             <Profile />
           </ProtectedRoute>
         }/>
+
+        <Route path="/orders" element={
+          <ProtectedRoute>
+            <Orders />
+          </ProtectedRoute>
+        }/>
+
+        <Route path="/orders/:orderId" element={<OrderDetail />} />
 
         <Route path="/profile/:userId" element={<Profile />} />
 
