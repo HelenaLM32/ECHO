@@ -3,10 +3,8 @@ package com.example.echo.core.entity.items.model;
 import com.example.echo.core.entity.domainservices.validations.Check;
 import com.example.echo.core.entity.sharedkernel.exceptions.BuildException;
 
-
 public class Item {
 
-  
     private Integer id;
 
     private Integer creatorId;
@@ -17,23 +15,22 @@ public class Item {
 
     private Double basePrice;
 
-    /** Item type (e.g. "PRODUCT", "SERVICE"). */
+    /**
+     * Item type (e.g. "PRODUCT", "SERVICE").
+     */
     private String itemType;
 
-    /** Optional category id (nullable). */
     private Integer categoryId;
 
-    // Protected so only the package (and subclasses) can instantiate directly.
     protected Item() {
     }
 
-  
     public static Item getInstance(Integer creatorId,
-                                   String title,
-                                   String description,
-                                   Double basePrice,
-                                   String itemType,
-                                   Integer categoryId) throws BuildException {
+            String title,
+            String description,
+            Double basePrice,
+            String itemType,
+            Integer categoryId) throws BuildException {
         Item item = new Item();
         String message = item.itemDataValidation(creatorId, title, description, basePrice, itemType, categoryId);
         if (message.isEmpty()) {
@@ -43,18 +40,15 @@ public class Item {
         throw new BuildException(message);
     }
 
-    /**
-     * Validates all input fields and returns a concatenated message of failures (empty if OK).
-     */
     protected String itemDataValidation(Integer creatorId,
-                                        String title,
-                                        String description,
-                                        Double basePrice,
-                                        String itemType,
-                                        Integer categoryId) {
+            String title,
+            String description,
+            Double basePrice,
+            String itemType,
+            Integer categoryId) {
         String message = "";
 
-        if (setCreatorId(creatorId) != 0) { 
+        if (setCreatorId(creatorId) != 0) {
             message += "Creator ID inválido; ";
         }
         if (setTitle(title) != 0) {
@@ -70,7 +64,6 @@ public class Item {
             message += "Item type inválido; ";
         }
 
-        // categoryId is optional: when provided it must be positive
         if (setCategoryId(categoryId) != 0) {
             message += "Category id inválido; ";
         }
@@ -81,7 +74,6 @@ public class Item {
     // --------------------------------------------------
     // Protected setters
     // --------------------------------------------------
-
     protected int setCreatorId(Integer creatorId) {
         if (creatorId != null && Check.isPositive(creatorId)) {
             this.creatorId = creatorId;
@@ -141,7 +133,6 @@ public class Item {
     // --------------------------------------------------
     // Public getters
     // --------------------------------------------------
-
     public Integer getId() {
         return id;
     }
@@ -172,7 +163,7 @@ public class Item {
 
     @Override
     public String toString() {
-        return "Item{id=" + id + ", creatorId=" + creatorId + ", title='" + title + "', basePrice=" + basePrice +
-                ", itemType='" + itemType + "', categoryId=" + categoryId + "}";
+        return "Item{id=" + id + ", creatorId=" + creatorId + ", title='" + title + "', basePrice=" + basePrice
+                + ", itemType='" + itemType + "', categoryId=" + categoryId + "}";
     }
 }

@@ -3,11 +3,13 @@ package com.example.echo.core.entity.items.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-/**
- * JPA representation of the "items" table.
- */
 @Entity
 @Table(name = "items")
 public class ItemDTO {
@@ -18,7 +20,6 @@ public class ItemDTO {
     @JacksonXmlProperty(localName = "id")
     private Integer id;
 
-    // FK to users(id)
     @Column(name = "creator_id", nullable = false)
     @JsonProperty("creatorId")
     @JacksonXmlProperty(localName = "creator_id")
@@ -44,7 +45,6 @@ public class ItemDTO {
     @JacksonXmlProperty(localName = "item_type")
     private String itemType;
 
-    // FK to categories(id) - nullable
     @Column(name = "category_id")
     @JsonProperty("categoryId")
     @JacksonXmlProperty(localName = "category_id")
@@ -127,7 +127,7 @@ public class ItemDTO {
 
     @Override
     public String toString() {
-        return "ItemDTO{id=" + id + ", creatorId=" + creatorId + ", title='" + title + "', basePrice=" + basePrice +
-            ", itemType='" + itemType + "', categoryId=" + categoryId + "}";
+        return "ItemDTO{id=" + id + ", creatorId=" + creatorId + ", title='" + title + "', basePrice=" + basePrice
+                + ", itemType='" + itemType + "', categoryId=" + categoryId + "}";
     }
 }
