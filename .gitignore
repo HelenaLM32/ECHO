@@ -3,9 +3,9 @@ package-lock.json
 package.json
 build/
 dist/
-# al final descomentamos esto del gitignore para evitar subir archivos de configuracion del entorno ya que esta la api dentro
-# .env
-# .env.local
+.env
+.env.local
+.env.*.local
 coverage/
 target/
 *.jar
@@ -21,6 +21,5 @@ target/
 .project
 .DS_Store
 Thumbs.db
-application.properties
-*.properties
 backend/src/main/resources/application.properties
+frontend/.env

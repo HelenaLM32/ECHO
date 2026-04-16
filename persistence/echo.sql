@@ -73,7 +73,7 @@ CREATE TABLE orders (
     item_id INT NOT NULL,
     final_price DECIMAL(10, 2) NOT NULL,
     status VARCHAR(50) DEFAULT 'PENDING',
-    FOREIGN KEY (buyer_id) REFERENCES users(id),
+    FOREIGN KEY (buyer_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (item_id) REFERENCES items(id)
 );
 

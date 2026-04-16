@@ -2,7 +2,6 @@ package com.example.echo.infrastructure.persistence.jpa;
 
 import com.example.echo.core.entity.orders.dto.OrderDTO;
 import com.example.echo.core.entity.orders.persistence.OrderRepository;
-import com.example.echo.core.entity.items.dto.ItemDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
