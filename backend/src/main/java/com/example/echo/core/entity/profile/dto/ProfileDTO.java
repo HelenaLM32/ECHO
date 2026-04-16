@@ -3,34 +3,20 @@ package com.example.echo.core.entity.profile.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name = "profiles")
 public class ProfileDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("id")
     @JacksonXmlProperty(localName = "id")
     private Integer id;
 
-    @Column(name = "user_id", unique = true, nullable = false)
     @JsonProperty("userId")
     @JacksonXmlProperty(localName = "user_id")
     private Integer userId;
 
-    @Column(name = "public_name")
     @JsonProperty("publicName")
     @JacksonXmlProperty(localName = "public_name")
     private String publicName;
 
-    @Column(columnDefinition = "TEXT")
     @JsonProperty("bio")
     @JacksonXmlProperty(localName = "bio")
     private String bio;
@@ -39,12 +25,10 @@ public class ProfileDTO {
     @JacksonXmlProperty(localName = "location")
     private String location;
 
-    @Column(name = "avatar_url")
     @JsonProperty("avatarUrl")
     @JacksonXmlProperty(localName = "avatar_url")
     private String avatarUrl;
 
-    @Column(name = "banner_url")
     @JsonProperty("bannerUrl")
     @JacksonXmlProperty(localName = "banner_url")
     private String bannerUrl;
@@ -61,13 +45,11 @@ public class ProfileDTO {
     @JacksonXmlProperty(localName = "twitter")
     private String twitter;
 
-    public ProfileDTO() {
-    }
+    @JsonProperty("experience")
+    @JacksonXmlProperty(localName = "experience")
+    private String experience;
 
-    public static ProfileDTO getInstance(Integer userId) {
-        ProfileDTO dto = new ProfileDTO();
-        dto.setUserId(userId);
-        return dto;
+    public ProfileDTO() {
     }
 
     public Integer getId() {
@@ -148,5 +130,13 @@ public class ProfileDTO {
 
     public void setTwitter(String twitter) {
         this.twitter = twitter;
+    }
+
+    public String getExperience() {
+        return experience;
+    }
+
+    public void setExperience(String experience) {
+        this.experience = experience;
     }
 }

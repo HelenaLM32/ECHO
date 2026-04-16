@@ -1,91 +1,167 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { getProfileByUserId, updateProfile } from "../../services/profile";
+import { getProfileByUserId, updateAvatar, updateBanner } from "../../services/profile";
+import linkedinIcon from '../../assets/icons8-linkedin-24.png';
+import twitterIcon from '../../assets/icons8-x-24.png';
+import instagramIcon from '../../assets/icons8-instagram-24.png';
 import "./Profile.css";
 
 export default function Profile() {
-  const { user } = useAuth();
-  const { userId } = useParams(); // Si hay userId en la URL = perfil ajeno
+  const { user, loadingContext } = useAuth();
+  const { userId } = useParams();
+  const bannerInputRef = useRef(null);
+  const avatarInputRef = useRef(null);
 
-  // Si hay userId en la URL, ver ese perfil; si no, ver el propio
   const targetId = userId ? parseInt(userId) : user?.id;
   const isOwnProfile = !userId || parseInt(userId) === user?.id;
 
   const [profile, setProfile] = useState(null);
-  const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-
-  const [form, setForm] = useState({
-    publicName: "",
-    bio: "",
-    location: "",
-    avatarUrl: "",
-    bannerUrl: "",
-    linkedin: "",
-    instagram: "",
-    twitter: "",
-  });
+  const [activeTab, setActiveTab] = useState("Trabajos");
 
   useEffect(() => {
-    if (!targetId) return;
+    if (loadingContext) return;
+    if (!targetId) {
+      setError("No se pudo determinar el usuario");
+      setLoading(false);
+      return;
+    }
     setLoading(true);
+    setError("");
     getProfileByUserId(targetId)
-      .then((data) => {
-        setProfile(data);
-        setForm({
-          publicName: data.publicName || "",
-          bio: data.bio || "",
-          location: data.location || "",
-          avatarUrl: data.avatarUrl || "",
-          bannerUrl: data.bannerUrl || "",
-          linkedin: data.linkedin || "",
-          instagram: data.instagram || "",
-          twitter: data.twitter || "",
-        });
-      })
+      .then((data) => setProfile(data))
       .catch(() => setError("No se pudo cargar el perfil"))
       .finally(() => setLoading(false));
-  }, [targetId]);
+  }, [targetId, loadingContext]);
 
-  const handleSave = async () => {
-    setSaving(true);
-    setError("");
+  const handleBannerChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
     try {
-      const updated = await updateProfile(targetId, form);
+      const updated = await updateBanner(user.id, file);
       setProfile(updated);
-      setEditing(false);
     } catch {
-      setError("Error al guardar los cambios");
-    } finally {
-      setSaving(false);
+      alert("Error al guardar el banner");
     }
   };
 
-  if (loading)
-    return (
-      <div className="profile-container">
-        <p>Cargando...</p>
-      </div>
-    );
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const updated = await updateAvatar(user.id, file);
+      setProfile(updated);
+    } catch {
+      alert("Error al guardar el avatar");
+    }
+  };
 
-  if (error && !profile)
-    return (
-      <div className="profile-container">
-        <p className="profile-error">{error}</p>
-      </div>
-    );
+  if (loadingContext || loading) return <div className="profile-page">Cargando...</div>;
+  if (error || !profile) return <div className="profile-page">{error || "Perfil no encontrado"}</div>;
 
-  if (!profile) return null;
+  const tabs = ["Trabajos", "Valoraciones", "Productos", "Servicios", "Estadisticas"];
 
   return (
-    <div className="profile-container">
-      <h1>Perfil</h1>
-      <div className="profile-card">
-        <p><strong>Usuario:</strong> {user.username}</p>
-        <p><strong>Correo:</strong> {user.email}</p>
+    <div className="profile-page">
+      <header className="profile-banner-wrapper">
+        {profile.bannerUrl ? (
+          <img src={profile.bannerUrl} alt="Banner" className="banner-image" />
+        ) : (
+          <div
+            className="banner-placeholder"
+            onClick={() => isOwnProfile && bannerInputRef.current?.click()}
+            style={{ cursor: isOwnProfile ? "pointer" : "default" }}
+          >
+            <div className="banner-download-icon">↓</div>
+            <p>Añadir imagen de banner</p>
+            <small>Dimensiones óptimas 3200 x 410px</small>
+          </div>
+        )}
+        {isOwnProfile && profile.bannerUrl && (
+          <button className="banner-change-btn" onClick={() => bannerInputRef.current?.click()}>
+            Cambiar banner
+          </button>
+        )}
+        <input
+          ref={bannerInputRef}
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          onChange={handleBannerChange}
+        />
+      </header>
+
+      <div className="avatar-float-wrapper">
+        <div
+          className={`avatar-container ${isOwnProfile ? "editable" : ""}`}
+          onClick={() => isOwnProfile && avatarInputRef.current?.click()}
+        >
+          {profile.avatarUrl ? (
+            <img src={profile.avatarUrl} alt={profile.username} className="avatar-img" />
+          ) : (
+            <div className="avatar-initials">
+              {profile.username?.charAt(0).toUpperCase()}
+            </div>
+          )}
+          {isOwnProfile && <div className="avatar-overlay"><span>Cambiar</span></div>}
+        </div>
+        <input
+          ref={avatarInputRef}
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          onChange={handleAvatarChange}
+        />
+      </div>
+
+      <div className="profile-layout-container">
+        <aside className="profile-sidebar">
+          <div className="sidebar-info">
+            <h1 className="display-name">{profile.publicName || profile.username}</h1>
+            <p className="display-location">{profile.location}</p>
+            {isOwnProfile && (
+              <div className="sidebar-actions">
+                <Link to="/edit-profile" className="btn-edit-info">
+                  Editar información de perfil
+                </Link>
+              </div>
+            )}
+            <p className="display-bio">{profile.bio}</p>
+            <p className="display">Experiencia</p>
+            <p className="display-experience">{profile.experience}</p>
+          </div>
+        </aside>
+
+        <main className="profile-main">
+          <div className="social-header">
+            {profile.linkedin && (
+  <a href={profile.linkedin} className="social-link" target="_blank" rel="noreferrer">
+    <img src={linkedinIcon} alt="LinkedIn" />
+  </a>
+)}
+            {profile.instagram && <a href={profile.instagram} className="social-link" target="_blank" rel="noreferrer"><img src={instagramIcon} alt="instagram" ></img></a>}
+            {profile.twitter && <a href={profile.twitter} className="social-link" target="_blank" rel="noreferrer"><img src={twitterIcon} alt="twitter" ></img></a>}
+          </div>
+          <nav className="content-tabs">
+            {tabs.map((tab) => (
+              <button
+                key={tab}
+                className={`tab-item ${activeTab === tab ? "active" : ""}`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab}
+              </button>
+            ))}
+          </nav>
+          <section className="content-section">
+            <p className="section-label">{activeTab}</p>
+            <div className="projects-grid">
+              {/* Contenido próximamente */}
+            </div>
+          </section>
+        </main>
       </div>
     </div>
   );

@@ -17,6 +17,7 @@ public class ProfileMapper {
         profile.setLinkedin(dto.getLinkedin());
         profile.setInstagram(dto.getInstagram());
         profile.setTwitter(dto.getTwitter());
+        profile.setExperience(dto.getExperience());
         return profile;
     }
 
@@ -32,6 +33,7 @@ public class ProfileMapper {
         dto.setLinkedin(profile.getLinkedin());
         dto.setInstagram(profile.getInstagram());
         dto.setTwitter(profile.getTwitter());
+        dto.setExperience(profile.getExperience());
         return dto;
     }
 }

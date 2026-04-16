@@ -8,8 +8,7 @@ import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import Navbar from './components/Navbar/Navbar';
 import Profile from './pages/Profile/Profile';
-import Orders from './pages/Orders/Orders';
-import OrderDetail from './pages/OrderDetail/OrderDetail';
+import EditProfile from './pages/Profile/EditProfile'; 
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import Admin from './pages/Admin/Admin';
 import AdminRoute from './components/AdminRoute/AdminRoute';
@@ -22,31 +21,30 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        
         <Route path="/profile" element={
           <ProtectedRoute>
             <Profile />
           </ProtectedRoute>
         }/>
-        <Route path="/orders" element={
+
+        <Route path="/profile/:userId" element={<Profile />} />
+
+        <Route path="/edit-profile" element={
           <ProtectedRoute>
-            <Orders />
+            <EditProfile />
           </ProtectedRoute>
-        }/>
-        <Route path="/orders/:orderId" element={
-          <ProtectedRoute>
-            <OrderDetail />
-          </ProtectedRoute>
-        }/>
+        } />
+
         <Route 
-        path="/admin" 
-        element={
-          <AdminRoute>
-            <Admin />
-          </AdminRoute>
-        } 
-      />
-    <Route path="/profile/:userId" element={<Profile />} />
-        </Routes>
-      </AuthProvider>
+          path="/admin" 
+          element={
+            <AdminRoute>
+              <Admin />
+            </AdminRoute>
+          } 
+        />
+      </Routes>
+    </AuthProvider>
   )
 }
