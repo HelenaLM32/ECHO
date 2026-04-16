@@ -5,6 +5,7 @@ import { getProfileByUserId, updateAvatar, updateBanner } from "../../services/p
 import linkedinIcon from '../../assets/icons8-linkedin-24.png';
 import twitterIcon from '../../assets/icons8-x-24.png';
 import instagramIcon from '../../assets/icons8-instagram-24.png';
+import Footer from "../../components/Footer/Footer";
 import "./Profile.css";
 
 export default function Profile() {
@@ -185,6 +186,8 @@ export default function Profile() {
 
         </main>
       </div>
+      <Footer />
     </div>
+    
   );
 }

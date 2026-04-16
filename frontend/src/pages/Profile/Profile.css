@@ -2,9 +2,8 @@
   min-height: 100vh;
   font-family: Arial, sans-serif;
   margin: 0;
+  background: var(--white);
 }
-
-
 
 .profile-banner-wrapper {
   width: 100%;
@@ -63,7 +62,6 @@
   cursor: pointer;
 }
 
-
 .avatar-float-wrapper {
   max-width: 1100px;
   margin: -55px auto 0;
@@ -80,7 +78,6 @@
   overflow: hidden;
   border: 3px solid #fff;
   position: relative;
-  cursor: default;
 }
 
 .avatar-container.editable {
@@ -94,12 +91,10 @@
 }
 
 .avatar-initials {
-  width: 100%;
-  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.5rem;
+  font-size: 2.4rem;
   color: var(--white);
 }
 
@@ -111,7 +106,7 @@
   align-items: center;
   justify-content: center;
   color: var(--white);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 600;
   opacity: 0;
   transition: opacity 0.2s;
@@ -123,7 +118,6 @@
 }
 
 
-
 .profile-layout-container {
   max-width: 1100px;
   margin: 0 auto;
@@ -133,30 +127,30 @@
 }
 
 
-
 .profile-sidebar {
-  width: 200px;
+  width: 220px;
   flex-shrink: 0;
   padding-right: 60px;
+  border-right: 1px solid var(--gray-stroke);
 }
 
 .display-name {
-  font-size: 1.3rem;
-  margin: 12px 0 2px 0;
+  font-size: 1.5rem;
+  margin: 14px 0 4px;
   color: var(--black);
   font-weight: 700;
 }
 
 .username {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--gray-dark-secondary);
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 }
 
 .display {
-  margin: 18px 0 6px 0;
+  margin: 18px 0 6px;
   font-size: 0.9rem;
-  color: var(--black-secondary);
+  color: var(--black);
   font-weight: 600;
 }
 
@@ -167,15 +161,17 @@
 }
 
 .display-bio {
-   font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--gray-dark-secondary);
-  margin-bottom: 8px;
+  margin-bottom: 18px;
+  line-height: 1.5;
 }
 
 .display-experience {
-   font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--gray-dark-secondary);
-  margin-bottom: 8px;
+  margin-bottom: 14px;
+  line-height: 1.5;
 }
 
 .sidebar-actions {
@@ -186,7 +182,7 @@
 
 .btn-edit-info {
   background-color: var(--orange);
-  color: var(--true-white);
+  color: var(--white);
   border: none;
   width: 100%;
   padding: 9px 12px;
@@ -201,13 +197,16 @@
   margin-bottom: 18px;
 }
 
+.btn-edit-info:hover {
+    background-color: var(--black-secondary);
+    color: var(--white);
+}
 
 
 .profile-main {
   flex-grow: 1;
   min-width: 0;
 }
-
 
 
 .social-header {
@@ -246,11 +245,10 @@
 }
 
 .tab-item.active {
-  color: var(--true-white);
+  color: var(--white);
   background-color: var(--orange);
   font-weight: 600;
 }
-
 
 
 .section-label {

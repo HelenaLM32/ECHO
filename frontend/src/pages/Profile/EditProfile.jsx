@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { getProfileByUserId, updateProfile } from "../../services/profile";
 import "./EditProfile.css";
+import Footer from "../../components/Footer/Footer";
 
 export default function EditProfile() {
   const { user, loadingContext } = useAuth();
@@ -167,6 +168,7 @@ export default function EditProfile() {
           />
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
