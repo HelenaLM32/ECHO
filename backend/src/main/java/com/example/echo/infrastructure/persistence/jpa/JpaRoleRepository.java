@@ -13,7 +13,6 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface JpaRoleRepository extends JpaRepository<RoleDTO, Integer>, RoleRepository {
 
-    //añadir findById
     @Override
     Optional<RoleDTO> findById(Integer id);
 

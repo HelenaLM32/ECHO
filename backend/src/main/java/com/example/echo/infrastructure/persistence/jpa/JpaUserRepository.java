@@ -13,7 +13,6 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface JpaUserRepository extends JpaRepository<UserDTO, Integer>, UserRepository {
 
-    //añadir findById y deleteByEmail
     @Override
     Optional<UserDTO> findById(Integer id);
 
