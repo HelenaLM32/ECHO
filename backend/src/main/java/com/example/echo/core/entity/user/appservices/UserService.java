@@ -22,4 +22,6 @@ public interface UserService {
     String updateCredentials(Integer userId, String newUsername, String currentPassword, String newPassword)
             throws ServiceException;
 
+    String addRoleToUserFromJson(String json) throws ServiceException;
+
 }

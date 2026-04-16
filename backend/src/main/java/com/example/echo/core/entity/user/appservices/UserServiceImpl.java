@@ -1,27 +1,26 @@
 package com.example.echo.core.entity.user.appservices;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 
-import com.example.echo.core.entity.user.persistence.UserRepository;
-import com.example.echo.core.entity.role.persistence.RoleRepository;
-import com.example.echo.core.entity.user.dto.UserDTO;
 import com.example.echo.core.entity.role.dto.RoleDTO;
-import com.example.echo.core.entity.user.dto.UserLoginDTO;
-import com.example.echo.core.entity.user.dto.LoginResponseDTO;
-import com.example.echo.core.entity.user.mappers.UserMapper;
+import com.example.echo.core.entity.role.persistence.RoleRepository;
+import com.example.echo.core.entity.sharedkernel.appservices.serializers.JacksonSerializer;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.Serializer;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.Serializers;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.SerializersCatalog;
-import com.example.echo.core.entity.sharedkernel.appservices.serializers.JacksonSerializer;
 import com.example.echo.core.entity.sharedkernel.exceptions.BuildException;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
+import com.example.echo.core.entity.user.dto.LoginResponseDTO;
+import com.example.echo.core.entity.user.dto.UserDTO;
+import com.example.echo.core.entity.user.dto.UserLoginDTO;
+import com.example.echo.core.entity.user.mappers.UserMapper;
+import com.example.echo.core.entity.user.persistence.UserRepository;
 import com.example.echo.security.JwtUtil;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Controller
 public class UserServiceImpl implements UserService {
@@ -161,19 +160,19 @@ public class UserServiceImpl implements UserService {
             }
 
             // Generate JWT token with user roles
-            java.util.List<String> roles = user.getRoles() != null 
-                ? user.getRoles().stream().map(RoleDTO::getName).collect(java.util.stream.Collectors.toList())
-                : new java.util.ArrayList<>();
-            
+            java.util.List<String> roles = user.getRoles() != null
+                    ? user.getRoles().stream().map(RoleDTO::getName).collect(java.util.stream.Collectors.toList())
+                    : new java.util.ArrayList<>();
+
             System.out.println("LoginFromJson - User: " + user.getEmail() + ", Roles: " + roles);
-            
+
             String token = JwtUtil.generateToken(user.getEmail(), roles);
-            
+
             // Create response with token
             LoginResponseDTO response = new LoginResponseDTO(token, user);
-            
+
             System.out.println("LoginFromJson - Response roles in LoginResponseDTO: " + response.getRoles());
-            
+
             return new JacksonSerializer<LoginResponseDTO>().serialize(response);
         } catch (ServiceException e) {
             throw e;
@@ -217,23 +216,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public String addRoleToUserFromJson(String json) throws ServiceException {
         try {
-            com.fasterxml.jackson.databind.JsonNode node = 
-                new com.fasterxml.jackson.databind.ObjectMapper().readTree(json);
-            
+            com.fasterxml.jackson.databind.JsonNode node
+                    = new com.fasterxml.jackson.databind.ObjectMapper().readTree(json);
+
             Integer userId = node.get("userId").asInt();
             String roleName = node.get("roleName").asText();
-            
+
             UserDTO user = this.getById(userId);
             RoleDTO role = roleRepository.findByName(roleName)
-                .orElseThrow(() -> new ServiceException("Role not found: " + roleName));
-            
+                    .orElseThrow(() -> new ServiceException("Role not found: " + roleName));
+
             if (user.getRoles() == null) {
                 user.setRoles(new HashSet<>());
             }
-            
+
             user.getRoles().add(role);
             UserDTO updated = userRepository.save(user);
-            
+
             return jsonSerializer().serialize(updated);
         } catch (ServiceException e) {
             throw e;
