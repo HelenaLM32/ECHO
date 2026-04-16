@@ -1,12 +1,14 @@
 package com.example.echo.core.entity.profile.persistence;
 
+import com.example.echo.core.entity.profile.dto.ProfileDTO;
+
 import java.util.Optional;
-import com.example.echo.core.entity.profile.model.Profile;
 
 public interface ProfileRepository {
-    Profile save(Profile profile);
 
-    Optional<Profile> findByUserId(Integer userId);
+    Optional<ProfileDTO> findByUserId(Integer userId);
 
-    Optional<Profile> findById(Integer id);
+    Optional<ProfileDTO> findById(Integer id);
+
+    ProfileDTO save(ProfileDTO profile);
 }

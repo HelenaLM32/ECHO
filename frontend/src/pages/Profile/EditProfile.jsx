@@ -24,11 +24,11 @@ export default function EditProfile() {
 
   useEffect(() => {
     if (loadingContext || !user?.id) return;
-    
+
     getProfileByUserId(user.id)
       .then((data) => {
-        const parts = (data.public_name || "").split(" ");
-        
+        const parts = (data.publicName || "").split(" ");
+
         setForm({
           nombre: parts[0] || "",
           apellidos: parts.slice(1).join(" ") || "",
@@ -54,13 +54,13 @@ export default function EditProfile() {
     setSaving(true);
     try {
       const profileData = {
-        public_name: `${form.nombre} ${form.apellidos}`.trim(),
+        publicName: `${form.nombre} ${form.apellidos}`.trim(),
         bio: form.bio,
         location: form.location,
         twitter: form.twitter,
         instagram: form.instagram,
         linkedin: form.linkedin,
-        experience: form.experience
+        experience: form.experience,
       };
 
       await updateProfile(user.id, profileData);
@@ -82,11 +82,10 @@ export default function EditProfile() {
         </button>
       </div>
 
-      {/* Tarjeta de Información Básica sin sección de foto */}
       <div className="edit-card">
-        <div className="edit-card-right" style={{ flex: 1 }}> 
+        <div className="edit-card-right" style={{ flex: 1 }}>
           <p className="edit-section-title">Información básica</p>
-          
+
           <div className="edit-row">
             <div className="edit-field">
               <label>Nombre</label>
@@ -97,7 +96,7 @@ export default function EditProfile() {
               <input name="apellidos" value={form.apellidos} onChange={handleChange} />
             </div>
           </div>
-          
+
           <div className="edit-field full">
             <label>Ubicación (Ciudad, País)</label>
             <input name="location" value={form.location} onChange={handleChange} />
@@ -105,12 +104,12 @@ export default function EditProfile() {
 
           <div className="edit-field full">
             <label>Bio / Descripción corta</label>
-            <textarea 
-              name="bio" 
-              value={form.bio} 
-              onChange={handleChange} 
+            <textarea
+              name="bio"
+              value={form.bio}
+              onChange={handleChange}
               rows="3"
-              style={{ width: '100%', borderRadius: '8px', padding: '10px', border: '1px solid #ddd' }}
+              style={{ width: "100%", borderRadius: "8px", padding: "10px", border: "1px solid #ddd" }}
             />
           </div>
 
@@ -126,11 +125,11 @@ export default function EditProfile() {
         <p className="edit-section-title">EXPERIENCIA</p>
         <div className="edit-field full">
           <label>Resumen de experiencia laboral</label>
-          <input 
-            name="experience" 
-            value={form.experience} 
-            onChange={handleChange} 
-            placeholder="Ej: 5 años en desarrollo web..." 
+          <input
+            name="experience"
+            value={form.experience}
+            onChange={handleChange}
+            placeholder="Ej: 5 años en desarrollo web..."
           />
         </div>
       </div>
