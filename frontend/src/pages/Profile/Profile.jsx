@@ -64,6 +64,8 @@ export default function Profile() {
 
   const tabs = ["Proyectos", "Reseñas", "Productos", "Servicios", "Estadísticas"];
 
+  const tabs2 = ["Calendario", "Compras"];
+
   return (
     <div className="profile-page">
       <header className="profile-banner-wrapper">
@@ -172,18 +174,31 @@ export default function Profile() {
             )}
           </div>
 
-          <nav className="content-tabs">
-            {tabs.map((tab) => (
-              <button
-                key={tab}
-                className={`tab-item ${activeTab === tab ? "active" : ""}`}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab}
-              </button>
-            ))}
-          </nav>
+          
+<nav className="content-tabs">
+  {tabs.map((tab) => (
+    <button
+      key={tab}
+      className={`tab-item ${activeTab === tab ? "active" : ""}`}
+      onClick={() => setActiveTab(tab)}
+    >
+      {tab}
+    </button>
+  ))}
+</nav>
 
+
+<nav className="content-tabs secondary-tabs">
+  {tabs2.map((tab) => (
+    <button
+      key={tab}
+      className={`tab-item ${activeTab === tab ? "active" : ""}`}
+      onClick={() => setActiveTab(tab)}
+    >
+      {tab}
+    </button>
+  ))}
+</nav>
         </main>
       </div>
       <Footer />
