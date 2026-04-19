@@ -341,49 +341,26 @@ export default function Profile() {
             ))}
           </nav>
 
-          <div className="tab-content">
-            {activeTab === "Productos" && renderItemGrid(products, itemsLoading.products)}
-            {activeTab === "Servicios" && renderItemGrid(services, itemsLoading.services)}
-            {activeTab === "Calendario" && (
-              <div className="calendar-tab">
-                {profile.calendarUrl ? (
-                  <>
-                    <p style={{ marginBottom: "12px", color: "#555", fontSize: "0.9rem" }}>
-                      Disponibilidad de {profile.publicName || profile.username}
-                    </p>
-                    <iframe
-                      src={profile.calendarUrl}
-                      style={{
-                        border: "none",
-                        width: "100%",
-                        height: "500px",
-                        borderRadius: "12px",
-                        boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
-                      }}
-                      title="Google Calendar"
-                    />
-                  </>
-                ) : (
-                  <div className="empty-state">
-                    {isOwnProfile ? (
-                      <>
-                        <p>Aún no has vinculado tu calendario.</p>
-                        <Link
-                          to="/edit-profile"
-                          className="btn-edit-info"
-                          style={{ marginTop: "12px" }}
-                        >
-                          Añadir calendario
-                        </Link>
-                      </>
-                    ) : (
-                      <p>Este usuario no ha vinculado su calendario.</p>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+{isOwnProfile && activeTab === "Proyectos" && (
+  <div className="project-editor-action">
+    <Link to="/itemproyect" className="project-card-button">
+      <span className="project-card-icon">+</span>
+      <span className="project-card-label">Crear nuevo proyecto</span>
+    </Link>
+  </div>
+)}
+
+<nav className="content-tabs secondary-tabs">
+  {tabs2.map((tab) => (
+    <button
+      key={tab}
+      className={`tab-item ${activeTab === tab ? "active" : ""}`}
+      onClick={() => setActiveTab(tab)}
+    >
+      {tab}
+    </button>
+  ))}
+</nav>
         </main>
       </div>
       <Footer />

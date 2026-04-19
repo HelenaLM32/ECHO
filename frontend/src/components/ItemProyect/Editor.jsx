@@ -1,0 +1,171 @@
+import { useState } from 'react'
+
+import useProjectStore, { BLOCK_TYPES, BLOCK_META, reorder } from '../../pages/ItemProyect/store/useProjectStore'
+import { TextBlock, ImageBlock, GalleryBlock, VideoBlock, AudioBlock, EmbedBlock } from './Blocks'
+import './ItemProyect.css'
+
+/* ── Block renderer (edit / preview) ─────────── */
+
+function BlockRenderer({ block, onChange, preview }) {
+  switch (block.type) {
+    case BLOCK_TYPES.TEXT:
+      return preview
+        ? <div className="previewTextContent" dangerouslySetInnerHTML={{ __html: block.content }} />
+        : <TextBlock block={block} onChange={onChange} />
+    case BLOCK_TYPES.IMAGE:
+      return preview
+        ? block.src && <img src={block.src} alt="" className="previewImageContent" />
+        : <ImageBlock block={block} onChange={onChange} />
+    case BLOCK_TYPES.GALLERY:
+      return preview
+        ? <div className="previewGalleryGrid">{block.images.map((s, i) => <img key={i} src={s} alt="" />)}</div>
+        : <GalleryBlock block={block} onChange={onChange} />
+    case BLOCK_TYPES.VIDEO:
+      return <VideoBlock block={block} onChange={onChange} />
+    case BLOCK_TYPES.AUDIO:
+      return preview
+        ? block.audioSrc && <audio src={block.audioSrc} controls className="audioPlayerFullWidth" />
+        : <AudioBlock block={block} onChange={onChange} />
+    case BLOCK_TYPES.EMBED:
+      return <EmbedBlock block={block} onChange={onChange} />
+    default:
+      return null
+  }
+}
+
+/* ── Block wrapper ───────────────────────────── */
+
+function EditorBlockCard({ block }) {
+  const updateBlock = useProjectStore((s) => s.updateBlock)
+  const removeBlock = useProjectStore((s) => s.removeBlock)
+  const duplicateBlock = useProjectStore((s) => s.duplicateBlock)
+
+  return (
+    <div className="blockCard">
+      <div className="blockCardHeader">
+        <span className="blockTypeBadge">{BLOCK_META[block.type]?.label}</span>
+        <div className="blockActionGroup">
+          <button onClick={() => duplicateBlock(block.id)} title="Duplicar" className="blockActionButton">⧉</button>
+          <button onClick={() => removeBlock(block.id)} title="Eliminar" className="blockActionButton">✕</button>
+        </div>
+      </div>
+      <BlockRenderer block={block} onChange={(patch) => updateBlock(block.id, patch)} />
+    </div>
+  )
+}
+
+/* ── Reorder Overlay ─────────────────────────── */
+
+function BlockReorderDialog({ onClose }) {
+  const blocks = useProjectStore((s) => s.blocks)
+  const reorderBlocks = useProjectStore((s) => s.reorderBlocks)
+
+  function moveUp(index) {
+    if (index <= 0) return
+    reorderBlocks(reorder(blocks, index, index - 1))
+  }
+
+  function moveDown(index) {
+    if (index >= blocks.length - 1) return
+    reorderBlocks(reorder(blocks, index, index + 1))
+  }
+
+  return (
+    <div className="reorderOverlay" onClick={onClose}>
+      <div className="reorderPanel" onClick={(e) => e.stopPropagation()}>
+        <div className="reorderHeader">
+          <h3>Ordenar bloques</h3>
+          <button className="reorderClose" onClick={onClose}>✕</button>
+        </div>
+        <ul className="reorderList">
+          {blocks.map((block, i) => (
+            <li key={block.id} className="reorderItem">
+              <span className="reorderIndex">{i + 1}</span>
+              {block.type === 'IMAGE' && block.src && (
+                <img src={block.src} alt="" className="reorderThumbnail" />
+              )}
+              <span className="reorderLabel">{BLOCK_META[block.type]?.label}</span>
+              <div className="reorderBtns">
+                <button
+                  className="reorderBtn"
+                  onClick={() => moveUp(i)}
+                  disabled={i === 0}
+                  title="Subir"
+                >▲</button>
+                <button
+                  className="reorderBtn"
+                  onClick={() => moveDown(i)}
+                  disabled={i === blocks.length - 1}
+                  title="Bajar"
+                >▼</button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
+
+/* ── Main editor canvas ──────────────────────── */
+
+export default function Editor() {
+  const blocks = useProjectStore((s) => s.blocks)
+  const addBlock = useProjectStore((s) => s.addBlock)
+  const background = useProjectStore((s) => s.background)
+  const blockGap = useProjectStore((s) => s.blockGap)
+  const blockBorderRadius = useProjectStore((s) => s.blockBorderRadius)
+  const [showReorder, setShowReorder] = useState(false)
+
+  const bgStyle =
+    background.mode === 'image'
+      ? { backgroundImage: `url(${background.value})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+      : { background: background.value }
+
+  const emptyActions = [
+    { type: BLOCK_TYPES.IMAGE, icon: 'I' },
+    { type: BLOCK_TYPES.TEXT, icon: 'T' },
+    { type: BLOCK_TYPES.GALLERY, icon: '▦' },
+    { type: BLOCK_TYPES.VIDEO, icon: '▶' },
+    { type: BLOCK_TYPES.EMBED, icon: '</>' },
+  ]
+
+  return (
+    <>
+      <div className="editorBlockList" style={{ ...bgStyle, gap: `${blockGap}px` }}>
+        {blocks.length === 0 && (
+          <div className="emptyBlockState">
+            <div className="emptyProjectCard">
+              <div className="emptyProjectTitle">
+                <span>CONSTRUYE</span>
+                <strong>TU PROYECTO</strong>
+              </div>
+              <p className="emptyProjectHint">Selecciona una opción para comenzar y agrega contenido al proyecto.</p>
+              <div className="emptyProjectActions">
+                {emptyActions.map((action) => (
+                  <button
+                    key={action.type}
+                    type="button"
+                    className="emptyActionButton"
+                    onClick={() => addBlock(action.type)}
+                  >
+                    <span className="emptyActionIcon">{action.icon}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+        {blocks.length > 1 && (
+          <button className="reorderToggle" onClick={() => setShowReorder(true)} title="Ordenar bloques">
+            ☰
+          </button>
+        )}
+        {blocks.map((block) => (
+          <EditorBlockCard key={block.id} block={block} />
+        ))}
+      </div>
+      {showReorder && <BlockReorderDialog onClose={() => setShowReorder(false)} />}
+    </>
+  )
+}
