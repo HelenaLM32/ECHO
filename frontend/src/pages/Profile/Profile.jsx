@@ -187,6 +187,14 @@ export default function Profile() {
   ))}
 </nav>
 
+{isOwnProfile && activeTab === "Proyectos" && (
+  <div className="project-editor-action">
+    <Link to="/itemproyect" className="project-card-button">
+      <span className="project-card-icon">+</span>
+      <span className="project-card-label">Crear nuevo proyecto</span>
+    </Link>
+  </div>
+)}
 
 <nav className="content-tabs secondary-tabs">
   {tabs2.map((tab) => (

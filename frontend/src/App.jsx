@@ -14,6 +14,7 @@ import Admin from './pages/Admin/Admin';
 import AdminRoute from './components/AdminRoute/AdminRoute';
 import Orders from './pages/Orders/Orders';
 import OrderDetail from './pages/OrderDetail/OrderDetail';
+import ProjectEditor from './pages/ItemProyect/ProjectEditor.jsx';
 
 export default function App() {
   return (
@@ -58,6 +59,7 @@ export default function App() {
             </AdminRoute>
           } 
         />
+        <Route path="/itemproyect" element={<ProjectEditor />} />
       </Routes>
     </AuthProvider>
   )
