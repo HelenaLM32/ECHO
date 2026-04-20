@@ -1,19 +1,25 @@
 package com.example.echo.presentation.api.rest;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.example.echo.core.entity.role.dto.RoleDTO;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.core.entity.user.appservices.UserService;
 import com.example.echo.core.entity.user.dto.UserDTO;
 import com.example.echo.security.JwtUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/users")
@@ -46,12 +52,8 @@ public class RestUserController {
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> register(@RequestBody String userJson) {
         try {
-            String responseJson = userService.registerFromJson(userJson);
-            ObjectNode userNode = (ObjectNode) mapper.readTree(responseJson);
-            String token = JwtUtil.generateToken(userNode.get("email").asText(), List.of("USER"));
-            userNode.put("token", token);
-            return ResponseEntity.ok(userNode.toString());
-        } catch (Exception e) {
+            return ResponseEntity.ok(userService.registerFromJson(userJson));
+        } catch (ServiceException e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
@@ -59,25 +61,8 @@ public class RestUserController {
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> login(@RequestBody String loginJson) {
         try {
-            String responseJson = userService.loginFromJson(loginJson);
-            ObjectNode userNode = (ObjectNode) mapper.readTree(responseJson);
-            String email = userNode.get("email").asText();
-
-            UserDTO user = userService.findByEmail(email);
-
-            ArrayNode rolesArray = userNode.putArray("roles");
-            List<String> roleNames = new java.util.ArrayList<>();
-
-            for (RoleDTO r : user.getRoles()) {
-                rolesArray.add(r.getName());
-                roleNames.add(r.getName());
-            }
-
-            String token = JwtUtil.generateToken(email, roleNames);
-            userNode.put("token", token);
-
-            return ResponseEntity.ok(userNode.toString());
-        } catch (Exception e) {
+            return ResponseEntity.ok(userService.loginFromJson(loginJson));
+        } catch (ServiceException e) {
             return ResponseEntity.status(401).body(e.getMessage());
         }
     }
@@ -107,15 +92,18 @@ public class RestUserController {
             @RequestBody String body,
             @RequestHeader("Authorization") String authHeader) {
         try {
-            if (authHeader == null || !authHeader.startsWith("Bearer "))
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 return ResponseEntity.status(403).body("No autorizado");
+            }
             String token = authHeader.replace("Bearer ", "");
-            if (!JwtUtil.validateToken(token))
+            if (!JwtUtil.validateToken(token)) {
                 return ResponseEntity.status(403).body("Token inválido");
+            }
             String email = JwtUtil.extractEmail(token);
-            com.example.echo.core.entity.user.dto.UserDTO user = userService.findByEmail(email);
-            if (!user.getId().equals(id))
+            UserDTO user = userService.findByEmail(email);
+            if (!user.getId().equals(id)) {
                 return ResponseEntity.status(403).body("No autorizado");
+            }
 
             com.fasterxml.jackson.databind.JsonNode node = mapper.readTree(body);
             String newUsername = node.has("username") ? node.get("username").asText() : null;
@@ -125,7 +113,9 @@ public class RestUserController {
             return ResponseEntity.ok(userService.updateCredentials(id, newUsername, currentPassword, newPassword));
         } catch (com.example.echo.core.entity.sharedkernel.exceptions.ServiceException e) {
             return ResponseEntity.status(400).body(e.getMessage());
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.status(400).body("JSON inválido");
+        } catch (RuntimeException e) {
             return ResponseEntity.status(500).body("Error interno: " + e.getMessage());
         }
     }

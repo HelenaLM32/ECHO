@@ -2,11 +2,15 @@ package com.example.echo.core.entity.sharedkernel.appservices.serializers;
 
 import java.util.HashMap;
 import java.util.Map;
-import com.example.echo.core.entity.user.dto.UserDTO;
-import com.example.echo.core.entity.role.dto.RoleDTO;
+
 import com.example.echo.core.entity.items.dto.ItemDTO;
-import com.example.echo.core.entity.orders.dto.OrderDTO;
 import com.example.echo.core.entity.ordermessages.dto.OrderMessageDTO;
+import com.example.echo.core.entity.orders.dto.OrderDTO;
+import com.example.echo.core.entity.role.dto.RoleDTO;
+import com.example.echo.core.entity.user.dto.LoginResponseDTO;
+import com.example.echo.core.entity.user.dto.UserDTO;
+import com.example.echo.core.entity.user.dto.UserLoginDTO;
+import com.example.echo.core.entity.user.dto.UserRoleAssignmentDTO;
 
 public class SerializersCatalog {
 
@@ -18,6 +22,9 @@ public class SerializersCatalog {
             return;
         }
         catalog.put(Serializers.JSON_USER, new JacksonSerializer<UserDTO>());
+        catalog.put(Serializers.JSON_USER_LOGIN, new JacksonSerializer<UserLoginDTO>());
+        catalog.put(Serializers.JSON_LOGIN_RESPONSE, new JacksonSerializer<LoginResponseDTO>());
+        catalog.put(Serializers.JSON_USER_ROLE_ASSIGNMENT, new JacksonSerializer<UserRoleAssignmentDTO>());
         catalog.put(Serializers.JSON_ROLE, new JacksonSerializer<RoleDTO>());
         catalog.put(Serializers.JSON_ITEM, new JacksonSerializer<ItemDTO>());
         catalog.put(Serializers.JSON_ORDER, new JacksonSerializer<OrderDTO>());

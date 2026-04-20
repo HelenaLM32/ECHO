@@ -2,6 +2,9 @@ package com.example.echo.core.entity.sharedkernel.appservices.serializers;
 
 public enum Serializers {
     JSON_USER,
+    JSON_USER_LOGIN,
+    JSON_LOGIN_RESPONSE,
+    JSON_USER_ROLE_ASSIGNMENT,
     XML_USER,
     JSON_ROLE,
     XML_ROLE,

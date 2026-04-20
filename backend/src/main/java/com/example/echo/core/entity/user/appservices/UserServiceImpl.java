@@ -1,7 +1,9 @@
 package com.example.echo.core.entity.user.appservices;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,7 +11,6 @@ import org.springframework.stereotype.Controller;
 
 import com.example.echo.core.entity.role.dto.RoleDTO;
 import com.example.echo.core.entity.role.persistence.RoleRepository;
-import com.example.echo.core.entity.sharedkernel.appservices.serializers.JacksonSerializer;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.Serializer;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.Serializers;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.SerializersCatalog;
@@ -18,6 +19,7 @@ import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.core.entity.user.dto.LoginResponseDTO;
 import com.example.echo.core.entity.user.dto.UserDTO;
 import com.example.echo.core.entity.user.dto.UserLoginDTO;
+import com.example.echo.core.entity.user.dto.UserRoleAssignmentDTO;
 import com.example.echo.core.entity.user.mappers.UserMapper;
 import com.example.echo.core.entity.user.persistence.UserRepository;
 import com.example.echo.security.JwtUtil;
@@ -39,6 +41,21 @@ public class UserServiceImpl implements UserService {
     @SuppressWarnings("unchecked")
     private Serializer<UserDTO> jsonSerializer() {
         return (Serializer<UserDTO>) SerializersCatalog.getInstance(Serializers.JSON_USER);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Serializer<UserLoginDTO> loginSerializer() {
+        return (Serializer<UserLoginDTO>) SerializersCatalog.getInstance(Serializers.JSON_USER_LOGIN);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Serializer<LoginResponseDTO> loginResponseSerializer() {
+        return (Serializer<LoginResponseDTO>) SerializersCatalog.getInstance(Serializers.JSON_LOGIN_RESPONSE);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Serializer<UserRoleAssignmentDTO> roleAssignmentSerializer() {
+        return (Serializer<UserRoleAssignmentDTO>) SerializersCatalog.getInstance(Serializers.JSON_USER_ROLE_ASSIGNMENT);
     }
 
     protected UserDTO getDTO(Integer id) {
@@ -70,7 +87,6 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("Email already registered: " + dto.getEmail());
         }
 
-        // Hash the password before saving
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         Set<RoleDTO> resolvedRoles = new HashSet<>();
@@ -90,11 +106,9 @@ public class UserServiceImpl implements UserService {
         UserDTO dto = this.checkInputData(userJson);
         UserDTO existing = this.getById(dto.getId());
 
-        // If password is being updated, hash it
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         } else {
-            // Keep existing password
             dto.setPassword(existing.getPassword());
         }
 
@@ -116,7 +130,7 @@ public class UserServiceImpl implements UserService {
         try {
             Serializer<UserDTO> ser = (Serializer<UserDTO>) SerializersCatalog.getInstance(Serializers.JSON_USER);
             return ser.serializeList(userRepository.findAll());
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new ServiceException("Error getting all users: " + e.getMessage());
         }
     }
@@ -130,7 +144,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public String registerFromJson(String userJson) throws ServiceException {
         this.serializer = (Serializer<UserDTO>) SerializersCatalog.getInstance(Serializers.JSON_USER);
-        return jsonSerializer().serialize(this.newUser(userJson));
+        UserDTO user = this.newUser(userJson);
+        List<String> roles = extractRoleNames(user);
+        String token = JwtUtil.generateToken(user.getEmail(), roles);
+        LoginResponseDTO response = new LoginResponseDTO(token, user);
+        return loginResponseSerializer().serialize(response);
     }
 
     @SuppressWarnings("unchecked")
@@ -149,8 +167,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public String loginFromJson(String loginJson) throws ServiceException {
         try {
-            Serializer<UserLoginDTO> loginSer = new JacksonSerializer<>();
-            UserLoginDTO loginDTO = loginSer.deserialize(loginJson, UserLoginDTO.class);
+            UserLoginDTO loginDTO = loginSerializer().deserialize(loginJson, UserLoginDTO.class);
+            if (loginDTO == null || loginDTO.getEmail() == null || loginDTO.getPassword() == null) {
+                throw new ServiceException("Invalid login payload");
+            }
 
             UserDTO user = userRepository.findByEmail(loginDTO.getEmail())
                     .orElseThrow(() -> new ServiceException("Email not found"));
@@ -159,21 +179,13 @@ public class UserServiceImpl implements UserService {
                 throw new ServiceException("Incorrect password");
             }
 
-            // Generate JWT token with user roles
-            java.util.List<String> roles = user.getRoles() != null
-                    ? user.getRoles().stream().map(RoleDTO::getName).collect(java.util.stream.Collectors.toList())
-                    : new java.util.ArrayList<>();
-
-            System.out.println("LoginFromJson - User: " + user.getEmail() + ", Roles: " + roles);
+            List<String> roles = extractRoleNames(user);
 
             String token = JwtUtil.generateToken(user.getEmail(), roles);
 
-            // Create response with token
             LoginResponseDTO response = new LoginResponseDTO(token, user);
 
-            System.out.println("LoginFromJson - Response roles in LoginResponseDTO: " + response.getRoles());
-
-            return new JacksonSerializer<LoginResponseDTO>().serialize(response);
+            return loginResponseSerializer().serialize(response);
         } catch (ServiceException e) {
             throw e;
         } catch (Exception e) {
@@ -216,11 +228,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public String addRoleToUserFromJson(String json) throws ServiceException {
         try {
-            com.fasterxml.jackson.databind.JsonNode node
-                    = new com.fasterxml.jackson.databind.ObjectMapper().readTree(json);
-
-            Integer userId = node.get("userId").asInt();
-            String roleName = node.get("roleName").asText();
+            UserRoleAssignmentDTO request = roleAssignmentSerializer().deserialize(json, UserRoleAssignmentDTO.class);
+            if (request == null || request.getUserId() == null
+                    || request.getRoleName() == null || request.getRoleName().isBlank()) {
+                throw new ServiceException("Invalid role assignment payload");
+            }
+            Integer userId = request.getUserId();
+            String roleName = request.getRoleName();
 
             UserDTO user = this.getById(userId);
             RoleDTO role = roleRepository.findByName(roleName)
@@ -236,8 +250,17 @@ public class UserServiceImpl implements UserService {
             return jsonSerializer().serialize(updated);
         } catch (ServiceException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new ServiceException("Error adding role to user: " + e.getMessage());
         }
+    }
+
+    private List<String> extractRoleNames(UserDTO user) {
+        if (user.getRoles() == null) {
+            return List.of();
+        }
+        return user.getRoles().stream()
+                .map(RoleDTO::getName)
+                .collect(Collectors.toList());
     }
 }
