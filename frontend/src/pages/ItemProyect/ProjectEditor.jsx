@@ -5,7 +5,6 @@ import useProjectStore, {
   BLOCK_TYPES,
   BLOCK_META,
   fileToBase64,
-  toEmbedUrl,
 } from './store/useProjectStore'
 
 /* ── Sidebar (inline) ────────────────────────── */
@@ -259,13 +258,6 @@ function PreviewDialog({ onClose }) {
         return null
       case BLOCK_TYPES.AUDIO:
         return block.audioSrc ? <audio src={block.audioSrc} controls className="previewAudioPlayer" /> : null
-      case BLOCK_TYPES.EMBED:
-        return block.html ? (
-          <div className="previewEmbedContainer">
-            <iframe title="embed" sandbox="allow-scripts allow-same-origin"
-              srcDoc={block.html} className="previewEmbedFrame" />
-          </div>
-        ) : null
       default:
         return null
     }

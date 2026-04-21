@@ -2,12 +2,15 @@
 .editorBlockList {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  background: transparent;
-  border: none;
-  border-radius: 0;
+  gap: 12px;
+  background: var(--true-white, #ffffff);
+  border: 1px solid rgba(233, 94, 35, 0.12);
+  border-radius: 20px;
   padding: 24px;
   align-items: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .emptyBlockState {
@@ -69,8 +72,9 @@
 .emptyProjectActions {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(5, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 18px;
+  justify-items: center;
 }
 
 .emptyActionButton {
@@ -123,7 +127,7 @@
 }
 
 .blockCard {
-  padding: 16px;
+  padding: 12px;
   margin: 0;
   background: transparent;
   border: none;
@@ -132,14 +136,14 @@
 }
 
 .blockCard + .blockCard {
-  margin-top: 20px;
+  margin-top: 12px;
 }
 
 .blockCardHeader {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 .blockTypeBadge {
@@ -184,8 +188,7 @@
 
 .galleryGridItem img,
 .image,
-.videoEmbedContainer iframe,
-.embedPreviewFrame {
+.videoEmbedContainer iframe {
   width: 100%;
   border-radius: 18px;
 }
@@ -204,9 +207,11 @@
 .blockContentArea {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  width: 800px;
+  gap: 10px;
+  width: 100%;
+  max-width: 800px;
   margin: 0 auto;
+  overflow-x: auto; /* Permitir scroll horizontal para imágenes grandes */
 }
 
 .textInputArea,
@@ -251,7 +256,6 @@
 .galleryControlBar,
 .galleryAddButton,
 .reorderPanel,
-.embedPreviewContainer,
 .previewVideo,
 .videoLocal,
 .uploadDropZone {
@@ -333,8 +337,7 @@
 }
 
 .imageContainer,
-.videoLocal,
-.embedPreviewContainer {
+.videoLocal {
   background: transparent;
 }
 
@@ -344,6 +347,14 @@
   max-width: 100%;
   object-fit: contain;
   border: none;
+}
+
+/* Imágenes en el editor: mostrar tamaño real sin reescalado */
+.editorBlockList .image {
+  max-width: none;
+  width: auto;
+  height: auto;
+  object-fit: none;
 }
 
 .audioPlayerControl,
@@ -509,19 +520,24 @@
   cursor: not-allowed;
 }
 
-.previewVideoWrapper,
-.previewEmbedContainer {
+.previewVideoWrapper {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.previewEmbedFrame {
-  width: 100%;
-  min-height: 240px;
-  border: 1px solid var(--gray-stroke, #e0e0e0);
-}
-
 .videoLocal {
   width: 100%;
+}
+
+.previewEmptyMessage {
+  border-radius: 100px;
+  width: 60%;
+  color: var(--black-secondary);
+  display: flex;
+  font-size: 30px;
+  font-weight: bolder;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
 }

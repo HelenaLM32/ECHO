@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import useProjectStore, { BLOCK_TYPES, BLOCK_META, reorder } from '../../pages/ItemProyect/store/useProjectStore'
-import { TextBlock, ImageBlock, GalleryBlock, VideoBlock, AudioBlock, EmbedBlock } from './Blocks'
+import { TextBlock, ImageBlock, GalleryBlock, VideoBlock, AudioBlock } from './Blocks'
 import './ItemProyect.css'
 
 /* ── Block renderer (edit / preview) ─────────── */
@@ -26,8 +26,6 @@ function BlockRenderer({ block, onChange, preview }) {
       return preview
         ? block.audioSrc && <audio src={block.audioSrc} controls className="audioPlayerFullWidth" />
         : <AudioBlock block={block} onChange={onChange} />
-    case BLOCK_TYPES.EMBED:
-      return <EmbedBlock block={block} onChange={onChange} />
     default:
       return null
   }
@@ -127,7 +125,6 @@ export default function Editor() {
     { type: BLOCK_TYPES.TEXT, icon: 'T' },
     { type: BLOCK_TYPES.GALLERY, icon: '▦' },
     { type: BLOCK_TYPES.VIDEO, icon: '▶' },
-    { type: BLOCK_TYPES.EMBED, icon: '</>' },
   ]
 
   return (

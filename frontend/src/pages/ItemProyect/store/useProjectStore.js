@@ -7,29 +7,26 @@ export const BLOCK_TYPES = {
   GALLERY: 'GALLERY',
   VIDEO: 'VIDEO',
   AUDIO: 'AUDIO',
-  EMBED: 'EMBED',
 }
 
 export function createBlock(type) {
   const base = { id: crypto.randomUUID(), type }
   switch (type) {
-    case BLOCK_TYPES.TEXT:    return { ...base, content: '' }
-    case BLOCK_TYPES.IMAGE:   return { ...base, src: '', caption: '', audio: '' }
+    case BLOCK_TYPES.TEXT: return { ...base, content: '' }
+    case BLOCK_TYPES.IMAGE: return { ...base, src: '', caption: '', audio: '' }
     case BLOCK_TYPES.GALLERY: return { ...base, images: [], columns: 3, gap: 8, aspect: 'square' }
-    case BLOCK_TYPES.VIDEO:   return { ...base, url: '' }
-    case BLOCK_TYPES.AUDIO:   return { ...base, audioSrc: '' }
-    case BLOCK_TYPES.EMBED:   return { ...base, html: '' }
+    case BLOCK_TYPES.VIDEO: return { ...base, url: '' }
+    case BLOCK_TYPES.AUDIO: return { ...base, audioSrc: '' }
     default: return base
   }
 }
 
 export const BLOCK_META = {
-  [BLOCK_TYPES.TEXT]:    { label: 'Texto',   icon: 'Aa' },
-  [BLOCK_TYPES.IMAGE]:   { label: 'Imagen',  icon: '▣' },
+  [BLOCK_TYPES.TEXT]: { label: 'Texto', icon: 'Aa' },
+  [BLOCK_TYPES.IMAGE]: { label: 'Imagen', icon: '▣' },
   [BLOCK_TYPES.GALLERY]: { label: 'Galería', icon: '▦' },
-  [BLOCK_TYPES.VIDEO]:   { label: 'Vídeo',   icon: '▶' },
-  [BLOCK_TYPES.AUDIO]:   { label: 'Audio',   icon: '♪' },
-  [BLOCK_TYPES.EMBED]:   { label: 'Embed',   icon: '</>' },
+  [BLOCK_TYPES.VIDEO]: { label: 'Vídeo', icon: '▶' },
+  [BLOCK_TYPES.AUDIO]: { label: 'Audio', icon: '♪' },
 }
 
 /* ── Utilities ──────────────────────────────── */
@@ -65,7 +62,7 @@ export function toEmbedUrl(raw) {
 }
 
 /* ── Store ──────────────────────────────────── */
-const STORAGE_KEY = 'behance-project-draft'
+const STORAGE_KEY = 'echo-project-draft'
 
 function loadDraft() {
   try {

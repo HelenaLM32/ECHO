@@ -279,32 +279,6 @@ export function VideoBlock({ block, onChange }) {
   )
 }
 
-/* ── Embed Block ─────────────────────────────── */
-
-export function EmbedBlock({ block, onChange }) {
-  return (
-    <div className="blockContentArea">
-      <textarea
-        className="textInputArea"
-        placeholder="Pega aquí tu código embed (iframe, HTML…)"
-        value={block.html}
-        onChange={(e) => onChange({ html: e.target.value })}
-        rows={3}
-      />
-      {block.html && (
-        <div className="embedPreviewContainer">
-          <iframe
-            title="embed-preview"
-            sandbox="allow-scripts allow-same-origin"
-            srcDoc={block.html}
-            className="embedPreviewFrame"
-          />
-        </div>
-      )}
-    </div>
-  )
-}
-
 /* ── Audio Block ─────────────────────────────── */
 
 export function AudioBlock({ block, onChange }) {
