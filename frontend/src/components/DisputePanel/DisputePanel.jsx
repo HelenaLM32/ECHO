@@ -4,8 +4,8 @@ import {
   getDisputeById,
   addMessageToDispute,
   closeDispute,
-} from "../services/disputes";
-import "../styles/globals.css";
+} from "../../services/disputes";
+import "../../styles/globals.css";
 
 const DisputePanel = ({ disputeId, currentUserId, isAdmin }) => {
   const [dispute, setDispute] = useState(null);

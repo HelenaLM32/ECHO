@@ -1,9 +1,14 @@
 package com.example.echo.core.entity.dispute.dto;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "dispute_messages")
 public class DisputeMessageDTO {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer disputeId;
     private Integer userId;

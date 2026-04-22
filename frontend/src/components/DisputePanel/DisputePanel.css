@@ -1,9 +1,9 @@
 .dispute-panel {
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--black);
   border-radius: 8px;
   padding: 20px;
   margin: 20px 0;
-  background-color: var(--bg-secondary, #f9f9f9);
+  background-color: var(--white, #f9f9f9);
 }
 
 .dispute-header {
@@ -14,7 +14,7 @@
 
 .dispute-header h2 {
   margin: 0 0 10px 0;
-  color: var(--text-primary);
+  color: var(--black);
 }
 
 .status-badge {
@@ -46,7 +46,7 @@
 .dispute-reason h3,
 .dispute-resolution h3 {
   margin-top: 0;
-  color: var(--text-primary);
+  color: var(--black);
 }
 
 .dispute-resolution {
@@ -90,7 +90,7 @@
 }
 
 .message-content {
-  color: var(--text-primary);
+  color: var(--black);
   line-height: 1.5;
 }
 
@@ -106,7 +106,7 @@
 .close-form textarea {
   width: 100%;
   padding: 10px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--black);
   border-radius: 4px;
   font-family: inherit;
   resize: vertical;
@@ -116,7 +116,7 @@
 .close-form button {
   margin-top: 10px;
   padding: 10px 20px;
-  background-color: var(--primary-color);
+  background-color: var(--orange);
   color: white;
   border: none;
   border-radius: 4px;
@@ -208,7 +208,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--black);
   padding-bottom: 15px;
 }
 
@@ -221,7 +221,8 @@
   border: none;
   font-size: 28px;
   cursor: pointer;
-  color: #666;
+  background-color: var(--orange);
+  color: var(--black);
   padding: 0;
   width: 30px;
   height: 30px;
@@ -258,7 +259,7 @@
 .form-group small {
   display: block;
   margin-top: 5px;
-  color: #666;
+  color: var(--black);
   font-size: 0.85em;
 }
 
@@ -314,7 +315,7 @@
 .loading {
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: var(--black);
 }
 
 .error {

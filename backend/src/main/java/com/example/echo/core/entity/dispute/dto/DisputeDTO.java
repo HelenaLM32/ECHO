@@ -1,10 +1,14 @@
 package com.example.echo.core.entity.dispute.dto;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Entity
+@Table(name = "disputes")
 public class DisputeDTO {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer orderId;
     private Integer createdByUserId;
@@ -14,6 +18,7 @@ public class DisputeDTO {
     private String resolution;
     private LocalDateTime createdAt;
     private LocalDateTime closedAt;
+    @OneToMany(mappedBy = "disputeId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DisputeMessageDTO> messages;
 
     public DisputeDTO() {

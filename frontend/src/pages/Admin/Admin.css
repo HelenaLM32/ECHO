@@ -237,7 +237,7 @@
 
 .disputes-controls h2 {
   margin: 0;
-  color: var(--white);
+  color: var(--black);
 }
 
 .status-badge {
@@ -275,7 +275,7 @@
 }
 
 .btn-secondary {
-  background: #6c757d;
+  background: var(--orange);
   color: white;
   border: none;
   padding: 8px 12px;
@@ -286,5 +286,5 @@
 }
 
 .btn-secondary:hover {
-  opacity: 0.9;
+  background-color: var(--orange-secondary);
 }
