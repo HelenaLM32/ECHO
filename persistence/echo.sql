@@ -151,3 +151,26 @@ INSERT INTO roles (name) VALUES
     ('USER'),
     ('CREATOR'),
     ('VENUE_MANAGER');
+
+CREATE TABLE disputes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    created_by_user_id INT NOT NULL,
+    reason VARCHAR(500) NOT NULL,
+    status VARCHAR(50) DEFAULT 'OPEN',
+    resolution TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    closed_at TIMESTAMP NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (created_by_user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE dispute_messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    dispute_id INT NOT NULL,
+    user_id INT NOT NULL,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (dispute_id) REFERENCES disputes(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
