@@ -3,6 +3,10 @@ package com.example.echo.core.entity.sharedkernel.appservices.serializers;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.example.echo.core.entity.dispute.dto.CloseDisputeDTO;
+import com.example.echo.core.entity.dispute.dto.CreateDisputeDTO;
+import com.example.echo.core.entity.dispute.dto.DisputeDTO;
+import com.example.echo.core.entity.dispute.dto.DisputeMessageDTO;
 import com.example.echo.core.entity.items.dto.ItemDTO;
 import com.example.echo.core.entity.ordermessages.dto.OrderMessageDTO;
 import com.example.echo.core.entity.orders.dto.OrderDTO;
@@ -29,6 +33,10 @@ public class SerializersCatalog {
         catalog.put(Serializers.JSON_ITEM, new JacksonSerializer<ItemDTO>());
         catalog.put(Serializers.JSON_ORDER, new JacksonSerializer<OrderDTO>());
         catalog.put(Serializers.JSON_ORDER_MESSAGE, new JacksonSerializer<OrderMessageDTO>());
+        catalog.put(Serializers.JSON_DISPUTE, new JacksonSerializer<DisputeDTO>());
+        catalog.put(Serializers.JSON_DISPUTE_MESSAGE, new JacksonSerializer<DisputeMessageDTO>());
+        catalog.put(Serializers.JSON_CREATE_DISPUTE, new JacksonSerializer<CreateDisputeDTO>());
+        catalog.put(Serializers.JSON_CLOSE_DISPUTE, new JacksonSerializer<CloseDisputeDTO>());
         initialized = true;
     }
 

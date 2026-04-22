@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/products/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/profiles/**").authenticated()
                         .requestMatchers("/users/**").authenticated()
+                        .requestMatchers("/disputes/**").authenticated()
 
                         .anyRequest().permitAll())
                 .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);

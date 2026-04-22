@@ -8,11 +8,15 @@ import {
   getDevOrderMessages,
   createDevOrderMessage,
 } from "../../services/adminDev";
+import { getAllDisputes, closeDispute } from "../../services/disputes";
+import DisputePanel from "../../components/DisputePanel";
 import "./Admin.css";
 
 export default function Admin() {
   const [view, setView] = useState("users");
   const [data, setData] = useState([]);
+  const [disputes, setDisputes] = useState([]);
+  const [selectedDispute, setSelectedDispute] = useState(null);
   const [loading, setLoading] = useState(false);
   const [adminError, setAdminError] = useState("");
   const [usersCatalog, setUsersCatalog] = useState([]);
@@ -60,6 +64,10 @@ export default function Admin() {
       loadDevelopData();
       return;
     }
+    if (view === "disputes") {
+      loadDisputes();
+      return;
+    }
     loadData(view);
   }, [view]);
 
@@ -87,6 +95,20 @@ export default function Admin() {
     } catch (e) {
       setAdminError(e.message || "No se pudieron cargar los datos");
       setData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadDisputes = async () => {
+    setLoading(true);
+    setAdminError("");
+    try {
+      const list = await getAllDisputes();
+      setDisputes(list);
+    } catch (e) {
+      setAdminError(e.message || "No se pudieron cargar las disputas");
+      setDisputes([]);
     } finally {
       setLoading(false);
     }
@@ -319,6 +341,77 @@ export default function Admin() {
       </tbody>
     </table>
   );
+
+  const renderDisputes = () => {
+    if (selectedDispute) {
+      return (
+        <div>
+          <button 
+            className="btn-secondary"
+            onClick={() => setSelectedDispute(null)}
+          >
+            ← Volver a disputas
+          </button>
+          <DisputePanel 
+            disputeId={selectedDispute}
+            currentUserId={null}
+            isAdmin={true}
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <div className="disputes-controls">
+          <h2>Disputas abiertas</h2>
+          <button className="btn-secondary" onClick={loadDisputes}>
+            Refrescar
+          </button>
+        </div>
+        
+        {disputes.length === 0 ? (
+          <p>No hay disputas.</p>
+        ) : (
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Orden</th>
+                <th>Creada por</th>
+                <th>Motivo</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {disputes.map((dispute) => (
+                <tr key={dispute.id}>
+                  <td>#{dispute.id}</td>
+                  <td>#{dispute.orderId}</td>
+                  <td>{dispute.createdByUsername}</td>
+                  <td>{dispute.reason.substring(0, 50)}...</td>
+                  <td>
+                    <span className={`status-badge ${dispute.status.toLowerCase()}`}>
+                      {dispute.status}
+                    </span>
+                  </td>
+                  <td>
+                    <button 
+                      className="btn-primary"
+                      onClick={() => setSelectedDispute(dispute.id)}
+                    >
+                      Ver
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    );
+  };
 
   const renderDevelopPanel = () => (
     <div className="dev-layout">
@@ -639,6 +732,12 @@ export default function Admin() {
           Contenido
         </button>
         <button 
+          className={view === "disputes" ? "active" : ""} 
+          onClick={() => setView("disputes")}
+        >
+          Disputas
+        </button>
+        <button 
           className={view === "develop" ? "active" : ""} 
           onClick={() => setView("develop")}
         >
@@ -654,6 +753,8 @@ export default function Admin() {
         <p>Cargando datos...</p>
       ) : view === "develop" ? (
         renderDevelopPanel()
+      ) : view === "disputes" ? (
+        renderDisputes()
       ) : (
         renderBasicTable()
       )}

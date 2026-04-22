@@ -52,6 +52,7 @@
   border-radius: 10px;
   padding: 1rem 1.25rem;
   transition: border-color 0.2s;
+  flex-wrap: wrap;
 }
 
 .order-card:hover {
@@ -120,4 +121,27 @@
 
 .order-card__link:hover {
   background: var(--orange-secondary);
+}
+
+.order-card__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.order-card__dispute-btn {
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
+  background: #dc3545;
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  font-size: 0.825rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.order-card__dispute-btn:hover {
+  background: #c82333;
 }
