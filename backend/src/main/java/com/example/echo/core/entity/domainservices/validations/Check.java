@@ -183,4 +183,22 @@ public class Check {
         return isValidDateTime(dateTime, formatter) ? LocalDateTime.parse(dateTime, formatter) : null;
     }
 
+    public static boolean isValidPasswordLength(String password) {
+        return minLength(password, 8);
+    }
+
+    public static boolean isValidPasswordComplexity(String password) {
+        if (isEmpty(password)) {
+            return false;
+        }
+        boolean hasUpperCase = password.matches(".*[A-Z].*");
+        boolean hasLowerCase = password.matches(".*[a-z].*");
+        boolean hasDigit = password.matches(".*\\d.*");
+        return hasUpperCase && hasLowerCase && hasDigit;
+    }
+
+    public static boolean isValidPassword(String password) {
+        return isValidPasswordLength(password) && isValidPasswordComplexity(password);
+    }
+
 }

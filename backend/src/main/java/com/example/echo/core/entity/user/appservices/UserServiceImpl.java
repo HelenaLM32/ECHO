@@ -22,6 +22,7 @@ import com.example.echo.core.entity.user.dto.UserLoginDTO;
 import com.example.echo.core.entity.user.dto.UserRoleAssignmentDTO;
 import com.example.echo.core.entity.user.mappers.UserMapper;
 import com.example.echo.core.entity.user.persistence.UserRepository;
+import com.example.echo.infrastructure.security.PasswordValidator;
 import com.example.echo.security.JwtUtil;
 
 @Controller
@@ -35,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private PasswordValidator passwordValidator;
 
     private Serializer<UserDTO> serializer;
 
@@ -87,7 +91,7 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("Email already registered: " + dto.getEmail());
         }
 
-        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+        dto.setPassword(passwordValidator.validateAndHashPassword(dto.getPassword()));
 
         Set<RoleDTO> resolvedRoles = new HashSet<>();
         if (dto.getRoles() != null && !dto.getRoles().isEmpty()) {
@@ -107,7 +111,7 @@ public class UserServiceImpl implements UserService {
         UserDTO existing = this.getById(dto.getId());
 
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
-            dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+            dto.setPassword(passwordValidator.validateAndHashPassword(dto.getPassword()));
         } else {
             dto.setPassword(existing.getPassword());
         }
@@ -175,7 +179,7 @@ public class UserServiceImpl implements UserService {
             UserDTO user = userRepository.findByEmail(loginDTO.getEmail())
                     .orElseThrow(() -> new ServiceException("Email not found"));
 
-            if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
+            if (!passwordValidator.matchesPassword(loginDTO.getPassword(), user.getPassword())) {
                 throw new ServiceException("Incorrect password");
             }
 
@@ -205,13 +209,10 @@ public class UserServiceImpl implements UserService {
         UserDTO user = this.getById(userId);
 
         if (newPassword != null && !newPassword.isBlank()) {
-            if (currentPassword == null || !user.getPassword().equals(currentPassword)) {
+            if (currentPassword == null || !passwordValidator.matchesPassword(currentPassword, user.getPassword())) {
                 throw new ServiceException("La contraseña actual es incorrecta");
             }
-            if (newPassword.length() < 6) {
-                throw new ServiceException("La nueva contraseña debe tener al menos 6 caracteres");
-            }
-            user.setPassword(newPassword);
+            user.setPassword(passwordValidator.validateAndHashPassword(newPassword));
         }
 
         if (newUsername != null && !newUsername.isBlank()) {
