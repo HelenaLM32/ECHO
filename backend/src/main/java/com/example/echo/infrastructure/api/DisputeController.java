@@ -5,16 +5,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.echo.core.entity.dispute.appservices.DisputeService;
-import com.example.echo.core.entity.user.persistence.UserRepository;
+import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.core.entity.user.dto.UserDTO;
-import com.example.echo.security.JwtUtil;
+import com.example.echo.core.entity.user.persistence.UserRepository;
 
 @RestController
 @RequestMapping("/disputes")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class DisputeController {
 
     @Autowired

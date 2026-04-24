@@ -16,14 +16,17 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         String[] origins = Arrays.stream(allowedOrigin.split(","))
-            .map(String::trim)
-            .filter(value -> !value.isEmpty())
-            .toArray(String[]::new);
+                .map(String::trim)
+                .map(value -> value.endsWith("/") ? value.substring(0, value.length() - 1) : value)
+                .filter(value -> !value.isEmpty())
+                .toArray(String[]::new);
+
+        boolean wildcard = Arrays.stream(origins).anyMatch("*"::equals);
 
         registry.addMapping("/**")
-            .allowedOrigins(origins)
+                .allowedOriginPatterns(origins)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                 .allowedHeaders("*")
-                .allowCredentials(true);
+                .allowCredentials(!wildcard);
     }
 }
