@@ -17,6 +17,8 @@ services:
       timeout: 5s
       retries: 10
       start_period: 25s
+    networks:
+      - internal
     restart: unless-stopped
 
   backend:
@@ -37,6 +39,8 @@ services:
         condition: service_healthy
     ports:
       - "${BACKEND_PORT:-8084}:8082"
+    networks:
+      - internal
     restart: unless-stopped
 
   frontend:
@@ -50,6 +54,13 @@ services:
       - backend
     ports:
       - "${FRONTEND_PORT:-8083}:80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.echo.rule=Host(`${TRAEFIK_HOST:-echo.fpnuria.net}`)"
+      - "traefik.http.services.echo.loadbalancer.server.port=80"
+    networks:
+      - internal
+      - proxy
     restart: unless-stopped
 
   admin-init:
@@ -79,6 +90,14 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - internal
 
 volumes:
   db_data:
+
+networks:
+  internal:
+  proxy:
+    external: true
+    name: proxy
