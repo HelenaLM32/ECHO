@@ -41,7 +41,7 @@ Run from repository root:
 docker compose up -d --build
 ```
 
-Frontend will be available on `http://localhost:${FRONTEND_PORT}` (8082).
+Frontend will be available on `http://localhost:${FRONTEND_PORT}` (8083).
 
 ### 3) Create or promote an admin securely (no backend endpoint)
 
