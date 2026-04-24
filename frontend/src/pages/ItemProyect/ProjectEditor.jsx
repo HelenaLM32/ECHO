@@ -1,4 +1,5 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './ProjectEditor.css'
 import Editor from '../../components/ItemProyect/Editor'
 import useProjectStore, {
@@ -6,6 +7,8 @@ import useProjectStore, {
   BLOCK_META,
   fileToBase64,
 } from './store/useProjectStore'
+import { useAuth } from '../../context/AuthContext'
+import { createItem, createProject, getCategories } from '../../services/projects'
 
 /* ── Sidebar (inline) ────────────────────────── */
 
@@ -205,9 +208,153 @@ function ProjectSidebar({ onPreview }) {
       </div>
 
       <button className="previewButton" onClick={onPreview}>Vista previa</button>
+      <SaveProjectButton />
     </div>
   )
 }
+
+function SaveProjectButton() {
+  const exportJSON = useProjectStore((s) => s.exportJSON)
+  const user = useAuth()?.user
+  const [showModal, setShowModal] = useState(false)
+
+  return (
+    <>
+      <button className="saveProjectButton" onClick={() => setShowModal(true)} style={{ marginTop: 12 }}>
+        Guardar proyecto
+      </button>
+      {showModal && (
+        <SaveProjectModal
+          onClose={() => setShowModal(false)}
+          exportJSON={exportJSON}
+          user={user}
+        />
+      )}
+    </>
+  )
+}
+
+function SaveProjectModal({ onClose, exportJSON, user }) {
+  const navigate = useNavigate()
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [basePrice, setBasePrice] = useState('')
+  const [itemType, setItemType] = useState('PROJECT')
+  const [categoryId, setCategoryId] = useState('')
+  const [categories, setCategories] = useState([])
+
+  useEffect(() => {
+    let mounted = true
+    getCategories()
+      .then((list) => { if (mounted) setCategories(list || []) })
+      .catch(() => { if (mounted) setCategories([]) })
+    return () => { mounted = false }
+  }, [])
+  const [saving, setSaving] = useState(false)
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    if (!title || title.trim().length < 3) return alert('El título debe tener al menos 3 caracteres')
+    const price = Number(basePrice)
+    if (Number.isNaN(price) || price <= 0) return alert('Base price debe ser un número mayor que 0')
+    if (!itemType || itemType.trim().length < 3) return alert('Item type inválido')
+
+    setSaving(true)
+    try {
+    const data = exportJSON()
+
+    console.debug('Item payload about to be sent')
+
+      const itemPayload = {
+        creatorId: user?.id,
+        title: title.trim(),
+        description: description ? description.trim() : null,
+        basePrice: price,
+        itemType: itemType.trim(),
+        categoryId: categoryId ? Number(categoryId) : null,
+      }
+
+      console.debug('Item payload', itemPayload)
+      const createdItem = await createItem(itemPayload)
+      console.debug('Created item response', createdItem)
+
+      const projectPayload = {
+        blocks: JSON.stringify(data.blocks || []),
+        background: JSON.stringify(data.background || {}),
+        blockGap: data.blockGap || 0,
+        blockBorderRadius: data.blockBorderRadius || 18,
+        published: false,
+        slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+      }
+
+      // ensure we pass the shared PK and item stub
+      const itemId = createdItem?.id || (typeof createdItem === 'number' ? createdItem : null)
+      if (!itemId) throw new Error('Created item has no id')
+      projectPayload.id = itemId
+      projectPayload.item = { id: itemId }
+
+      console.debug('Created item:', createdItem)
+      console.debug('Project payload being sent:', projectPayload)
+
+      const createdProject = await createProject(projectPayload)
+      alert('Proyecto guardado correctamente (id: ' + (createdProject.id || createdProject.item?.id) + ')')
+      onClose()
+      try {
+        // Redirect to the user's profile so they can see their projects immediately
+        if (user?.id) navigate(`/profile/${user.id}`)
+      } catch (e) {
+        console.debug('Navigation to profile failed', e)
+      }
+    } catch (err) {
+      console.error(err)
+      alert('Error al guardar: ' + (err.message || err))
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="modalOverlay" style={overlayStyle} onClick={onClose}>
+      <div className="modal" style={modalStyle} onClick={(e) => e.stopPropagation()}>
+        <h3>Guardar proyecto</h3>
+        <form onSubmit={handleSubmit}>
+          <label style={labelStyle}>Título</label>
+          <input style={inputStyle} value={title} onChange={(e) => setTitle(e.target.value)} required />
+
+          <label style={labelStyle}>Descripción</label>
+          <textarea style={textareaStyle} value={description} onChange={(e) => setDescription(e.target.value)} />
+
+          <label style={labelStyle}>Base price</label>
+          <input style={inputStyle} type="number" step="0.01" value={basePrice} onChange={(e) => setBasePrice(e.target.value)} required />
+
+          <label style={labelStyle}>Item type</label>
+          <input style={inputStyle} value={itemType} onChange={(e) => setItemType(e.target.value)} required />
+
+          <label style={labelStyle}>Categoría (opcional)</label>
+          <select style={inputStyle} value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
+            <option value="">-- Ninguna --</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+
+          <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+            <button type="button" onClick={onClose} disabled={saving}>Cancelar</button>
+            <button type="submit" disabled={saving}>{saving ? 'Guardando...' : 'Guardar'}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
+const overlayStyle = {
+  position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999
+}
+const modalStyle = { background: '#fff', padding: 20, borderRadius: 12, width: 420, maxWidth: '95%' }
+const labelStyle = { display: 'block', marginTop: 8, marginBottom: 4, fontSize: 13 }
+const inputStyle = { width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid #ccc' }
+const textareaStyle = { width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid #ccc', minHeight: 80 }
 
 /* ── Preview Overlay (inline) ────────────────── */
 

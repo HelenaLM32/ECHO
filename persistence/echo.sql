@@ -128,6 +128,27 @@ CREATE TABLE categories (
     is_active BOOLEAN DEFAULT TRUE
 );
 
+--nueva tabla de item_projects
+
+CREATE TABLE IF NOT EXISTS item_projects (
+  id INT NOT NULL,
+  blocks LONGTEXT,
+  background LONGTEXT,
+  block_gap INT,
+  block_border_radius INT,
+  published BOOLEAN DEFAULT FALSE,
+  slug VARCHAR(255) UNIQUE,
+  created_at DATETIME NULL,
+  updated_at DATETIME NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_item_projects_item FOREIGN KEY (id) REFERENCES items(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Indexes (plain CREATE INDEX is compatible with MySQL versions)
+CREATE INDEX idx_item_projects_slug ON item_projects(slug);
+CREATE INDEX idx_item_projects_published ON item_projects(published);
+
+--- fin de la tabla
 
 ALTER TABLE items
     ADD COLUMN category_id INT,

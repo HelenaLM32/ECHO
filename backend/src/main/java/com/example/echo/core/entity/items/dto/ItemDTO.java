@@ -1,6 +1,7 @@
 package com.example.echo.core.entity.items.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import jakarta.persistence.Column;
@@ -11,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "items")
 public class ItemDTO {
 
@@ -50,7 +52,7 @@ public class ItemDTO {
     @JacksonXmlProperty(localName = "category_id")
     private Integer categoryId;
 
-    protected ItemDTO() {
+    public ItemDTO() {
     }
 
     public ItemDTO(Integer id,

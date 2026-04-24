@@ -8,40 +8,41 @@ import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import Navbar from './components/Navbar/Navbar';
 import Profile from './pages/Profile/Profile';
-import EditProfile from './pages/Profile/EditProfile'; 
+import EditProfile from './pages/Profile/EditProfile';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import Admin from './pages/Admin/Admin';
 import AdminRoute from './components/AdminRoute/AdminRoute';
 import Orders from './pages/Orders/Orders';
 import OrderDetail from './pages/OrderDetail/OrderDetail';
 import ProjectEditor from './pages/ItemProyect/ProjectEditor.jsx';
+import ProjectView from './pages/ItemProyect/ProjectView.jsx';
 
 export default function App() {
   return (
     <AuthProvider>
-      <Navbar/>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        
+
         <Route path="/profile" element={
           <ProtectedRoute>
             <Profile />
           </ProtectedRoute>
-        }/>
+        } />
 
         <Route path="/orders" element={
           <ProtectedRoute>
             <Orders />
           </ProtectedRoute>
-        }/>
+        } />
 
         <Route path="/orders/:orderId" element={
           <ProtectedRoute>
             <OrderDetail />
           </ProtectedRoute>
-          } />
+        } />
 
         <Route path="/profile/:userId" element={<Profile />} />
 
@@ -51,15 +52,16 @@ export default function App() {
           </ProtectedRoute>
         } />
 
-        <Route 
-          path="/admin" 
+        <Route
+          path="/admin"
           element={
             <AdminRoute>
               <Admin />
             </AdminRoute>
-          } 
+          }
         />
         <Route path="/itemproyect" element={<ProjectEditor />} />
+        <Route path="/project/:id" element={<ProjectView />} />
       </Routes>
     </AuthProvider>
   )

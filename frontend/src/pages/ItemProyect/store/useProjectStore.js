@@ -61,6 +61,14 @@ export function toEmbedUrl(raw) {
   return raw
 }
 
+export function parseJsonSafe(value) {
+  try {
+    return typeof value === 'string' ? JSON.parse(value) : value
+  } catch {
+    return null
+  }
+}
+
 /* ── Store ──────────────────────────────────── */
 const STORAGE_KEY = 'echo-project-draft'
 

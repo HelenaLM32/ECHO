@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { getProfileByUserId, updateAvatar, updateBanner, getProfileProducts, getProfileServices } from "../../services/profile";
-import { getReviewsByUser, getAverageByUser } from "../../services/reviews";
-import ReviewsModal from "../../components/ReviewsModal/ReviewsModal";
+import { getProfileByUserId, updateAvatar, updateBanner } from "../../services/profile";
+import { getProjectsByUserId } from "../../services/projects";
+import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import linkedinIcon from '../../assets/icons8-linkedin-24.png';
 import twitterIcon from '../../assets/icons8-x-24.png';
 import instagramIcon from '../../assets/icons8-instagram-24.png';
@@ -34,11 +34,9 @@ export default function Profile() {
     services: false
   });
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("Productos");
-
-  const [followStats, setFollowStats] = useState({ followers: 0, following: 0 });
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [followLoading, setFollowLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("Proyectos");
+  const [projects, setProjects] = useState([]);
+  const [loadingProjects, setLoadingProjects] = useState(false);
 
   const [reviewStats, setReviewStats]   = useState({ average: null, count: 0 });
   const [reviews, setReviews]           = useState([]);
@@ -60,37 +58,19 @@ export default function Profile() {
   }, [targetId, loadingContext]);
 
   useEffect(() => {
-    if (!targetId || !profile) return;
-
-    if (activeTab === "Productos") {
-      setItemsLoading(prev => ({ ...prev, products: true }));
-      getProfileProducts(targetId)
-        .then((data) => setProducts(data))
-        .catch(() => setProducts([]))
-        .finally(() => setItemsLoading(prev => ({ ...prev, products: false })));
-    }
-    else if (activeTab === "Servicios") {
-      setItemsLoading(prev => ({ ...prev, services: true }));
-      getProfileServices(targetId)
-        .then((data) => setServices(data))
-        .catch(() => setServices([]))
-        .finally(() => setItemsLoading(prev => ({ ...prev, services: false })));
-    }
-  }, [activeTab, targetId, profile]);
-
-  useEffect(() => {
-    if (!targetId) return;
-
-    getFollowStats(targetId)
-      .then(setFollowStats)
-      .catch(() => {});
-
-    if (user && !isOwnProfile) {
-      checkIsFollowing(targetId)
-        .then((data) => setIsFollowing(data.following))
-        .catch(() => {});
-    }
-  }, [targetId, user, isOwnProfile]);
+    if (!profile) return;
+    if (activeTab !== "Proyectos") return;
+    setLoadingProjects(true);
+    // ProfileDTO.userId is the actual user id that matches ItemDTO.creatorId
+    const userIdForFilter = profile.userId ?? profile.id;
+    getProjectsByUserId(userIdForFilter)
+      .then((list) => {
+        console.debug('Fetched projects for profile', userIdForFilter, list);
+        setProjects(list || []);
+      })
+      .catch((err) => { console.debug('Failed to fetch projects', err); setProjects([]) })
+      .finally(() => setLoadingProjects(false));
+  }, [profile, activeTab]);
 
   useEffect(() => {
     if (!targetId) return;
@@ -347,6 +327,22 @@ export default function Profile() {
       <span className="project-card-icon">+</span>
       <span className="project-card-label">Crear nuevo proyecto</span>
     </Link>
+  </div>
+)}
+
+{activeTab === "Proyectos" && (
+  <div className="projects-section">
+    {loadingProjects ? (
+      <div className="empty-state">Cargando proyectos...</div>
+    ) : projects.length === 0 ? (
+      <div className="empty-state">No hay proyectos publicados por este usuario.</div>
+    ) : (
+      <div className="projects-grid">
+        {projects.map((p) => (
+          <ProjectCard key={p.id} project={p} />
+        ))}
+      </div>
+    )}
   </div>
 )}
 
