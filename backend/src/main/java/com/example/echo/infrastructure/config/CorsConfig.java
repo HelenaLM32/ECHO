@@ -1,5 +1,7 @@
 package com.example.echo.infrastructure.config;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -13,8 +15,13 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        String[] origins = Arrays.stream(allowedOrigin.split(","))
+            .map(String::trim)
+            .filter(value -> !value.isEmpty())
+            .toArray(String[]::new);
+
         registry.addMapping("/**")
-                .allowedOrigins(allowedOrigin)
+            .allowedOrigins(origins)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                 .allowedHeaders("*")
                 .allowCredentials(true);
