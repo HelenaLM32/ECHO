@@ -80,3 +80,15 @@ export const updateBanner = async (userId, file) => {
   if (!response.ok) throw new Error("Error al actualizar la portada");
   return response.json();
 };
+
+export const deleteAccount = async (userId) => {
+  const token = localStorage.getItem("token");
+  const response = await fetch(`${API_URL}/users/${userId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) throw new Error("Error al eliminar la cuenta");
+  return response.json();
+};

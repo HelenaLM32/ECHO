@@ -64,6 +64,11 @@ public class ProfileDTO {
     @JacksonXmlProperty(localName = "experience")
     private String experience;
 
+    @Column(name = "calendar_url")
+    @JsonProperty("calendarUrl")
+    @JacksonXmlProperty(localName = "calendar_url")
+    private String calendarUrl;
+
     public ProfileDTO() {
     }
 
@@ -169,6 +174,14 @@ public class ProfileDTO {
 
     public void setExperience(String experience) {
         this.experience = experience;
+    }
+
+    public String getCalendarUrl() {
+        return calendarUrl;
+    }
+
+    public void setCalendarUrl(String calendarUrl) {
+        this.calendarUrl = calendarUrl;
     }
 
     @Override

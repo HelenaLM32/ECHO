@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/profiles")
@@ -86,16 +87,15 @@ public class RestProfileController {
         }
     }
 
-    @PutMapping(value = "/{userId}/avatar", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{userId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateAvatar(
             @PathVariable Integer userId,
-            @RequestBody String body,
+            @RequestParam("avatarUrl") MultipartFile file,
             @RequestHeader("Authorization") String authHeader) {
         try {
-            if (!isAuthorized(authHeader, userId)) {
+            if (!isAuthorized(authHeader, userId))
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");
-            }
-            return ResponseEntity.ok(profileService.updateFromJson(userId, body));
+            return ResponseEntity.ok(profileService.updateAvatar(userId, file));
         } catch (ServiceException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
@@ -103,16 +103,15 @@ public class RestProfileController {
         }
     }
 
-    @PutMapping(value = "/{userId}/banner", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{userId}/banner", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateBanner(
             @PathVariable Integer userId,
-            @RequestBody String body,
+            @RequestParam("bannerUrl") MultipartFile file,
             @RequestHeader("Authorization") String authHeader) {
         try {
-            if (!isAuthorized(authHeader, userId)) {
+            if (!isAuthorized(authHeader, userId))
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");
-            }
-            return ResponseEntity.ok(profileService.updateFromJson(userId, body));
+            return ResponseEntity.ok(profileService.updateBanner(userId, file));
         } catch (ServiceException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {

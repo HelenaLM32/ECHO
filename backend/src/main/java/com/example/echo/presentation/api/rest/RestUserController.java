@@ -92,10 +92,24 @@ public class RestUserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Integer id) {
+    public ResponseEntity<String> deleteUser(
+            @PathVariable Integer id,
+            @RequestHeader("Authorization") String authHeader) {
         try {
+            if (authHeader == null || !authHeader.startsWith("Bearer "))
+                return ResponseEntity.status(403).body("No autorizado");
+            String token = authHeader.replace("Bearer ", "");
+            if (!JwtUtil.validateToken(token))
+                return ResponseEntity.status(403).body("Token inválido");
+            String email = JwtUtil.extractEmail(token);
+            UserDTO user = userService.findByEmail(email);
+            boolean isAdmin = user.getRoles().stream()
+                    .anyMatch(r -> r.getName().equals("ADMIN"));
+            if (!user.getId().equals(id) && !isAdmin)
+                return ResponseEntity.status(403).body("No autorizado");
+
             userService.deleteById(id);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("{\"message\":\"Cuenta eliminada correctamente\"}");
         } catch (ServiceException e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }

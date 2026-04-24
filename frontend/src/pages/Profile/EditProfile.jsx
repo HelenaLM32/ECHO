@@ -4,6 +4,8 @@ import { useAuth } from "../../context/AuthContext";
 import { getProfileByUserId, updateProfile, updateCredentials } from "../../services/profile";
 import "./EditProfile.css";
 import Footer from "../../components/Footer/Footer";
+import { deleteAccount } from "../../services/profile";
+import { useAuth } from "../../context/AuthContext";
 
 export default function EditProfile() {
   const { user, loadingContext } = useAuth();
@@ -22,6 +24,8 @@ export default function EditProfile() {
     instagram: "",
     linkedin: "",
     experience: "",
+  calendarUrl: "",
+
   });
 
   const [credentials, setCredentials] = useState({
@@ -33,6 +37,8 @@ export default function EditProfile() {
 
   const [credentialError, setCredentialError] = useState("");
   const [credentialSuccess, setCredentialSuccess] = useState("");
+
+  const { logout } = useAuth();
 
   useEffect(() => {
     if (loadingContext || !user?.id) return;
@@ -49,6 +55,7 @@ export default function EditProfile() {
           instagram: data.instagram || "",
           linkedin: data.linkedin || "",
           experience: data.experience || "",
+          calendarUrl: data.calendarUrl || "",
         });
         setCredentials((prev) => ({ ...prev, username: data.username || "" }));
       })
@@ -77,6 +84,7 @@ export default function EditProfile() {
         instagram: form.instagram,
         linkedin: form.linkedin,
         experience: form.experience,
+        calendarUrl: form.calendarUrl,
       };
       await updateProfile(user.id, profileData);
       navigate("/profile");
@@ -139,6 +147,26 @@ export default function EditProfile() {
     }
   };
 
+  const handleDeleteAccount = async () => {
+  const confirmed = window.confirm(
+    "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción es irreversible.",
+  );
+  if (!confirmed) return;
+
+  const reconfirmed = window.confirm(
+    "Última advertencia: se borrarán todos tus datos, pedidos y perfil.",
+  );
+  if (!reconfirmed) return;
+
+  try {
+    await deleteAccount(user.id);
+    logout(); 
+    navigate("/"); 
+  } catch (error) {
+    alert("Error al eliminar la cuenta: " + error.message);
+  }
+};
+
   if (loading) return <div className="edit-page">Cargando...</div>;
 
   return (
@@ -194,6 +222,39 @@ export default function EditProfile() {
           />
         </div>
       </div>
+
+      <div className="edit-card column">
+  <p className="edit-section-title">CALENDARIO</p>
+  <p className="edit-section-desc">
+    Vincula tu Google Calendar para que tus clientes puedan ver tu
+    disponibilidad. Para obtener la URL: abre Google Calendar → Configuración
+    del calendario → "Integrar calendario" → copia la URL del iframe (el src
+    entre comillas).
+  </p>
+  <div className="edit-field full">
+    <label>URL pública de Google Calendar (src del embed)</label>
+    <input
+      name="calendarUrl"
+      value={form.calendarUrl}
+      onChange={handleChange}
+      placeholder="https://calendar.google.com/calendar/embed?src=..."
+    />
+  </div>
+  {form.calendarUrl && (
+    <div style={{ marginTop: "12px", borderRadius: "8px", overflow: "hidden" }}>
+      <iframe
+        src={form.calendarUrl}
+        style={{
+          border: "none",
+          width: "100%",
+          height: "300px",
+          borderRadius: "8px",
+        }}
+        title="Vista previa del calendario"
+      />
+    </div>
+  )}
+</div>
 
       <div className="edit-card column">
         <p className="edit-section-title">REDES SOCIALES</p>
@@ -287,6 +348,28 @@ export default function EditProfile() {
             {savingCredentials ? "Guardando..." : "Actualizar cuenta"}
           </button>
         </div>
+
+        <div
+  className="edit-card column"
+  style={{ borderTop: "2px solid #ff4444", marginTop: "16px" }}
+>
+  <p className="edit-section-title" style={{ color: "#ff4444" }}>
+    ZONA DE PELIGRO
+  </p>
+  <p className="edit-section-desc">
+    Una vez elimines tu cuenta, no podrás recuperarla. Se borrarán todos tus
+    datos permanentemente.
+  </p>
+  <div className="edit-actions">
+    <button
+      className="btn-save"
+      onClick={handleDeleteAccount}
+      style={{ background: "#ff4444", borderColor: "#ff4444" }}
+    >
+      Eliminar mi cuenta
+    </button>
+  </div>
+</div>
       </div>
         <Footer />
     </div>

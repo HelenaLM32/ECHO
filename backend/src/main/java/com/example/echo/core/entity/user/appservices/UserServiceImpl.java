@@ -187,31 +187,33 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
     }
 
-    @Override
-    public String updateCredentials(Integer userId, String newUsername, String currentPassword, String newPassword)
-            throws ServiceException {
-        UserDTO user = this.getById(userId);
+   @Override
+public String updateCredentials(Integer userId, String newUsername, String currentPassword, String newPassword)
+        throws ServiceException {
+    UserDTO user = this.getById(userId);
 
-        if (newPassword != null && !newPassword.isBlank()) {
-            if (currentPassword == null || !user.getPassword().equals(currentPassword)) {
-                throw new ServiceException("La contraseña actual es incorrecta");
-            }
-            if (newPassword.length() < 6) {
-                throw new ServiceException("La nueva contraseña debe tener al menos 6 caracteres");
-            }
-            user.setPassword(newPassword);
+    if (newPassword != null && !newPassword.isBlank()) {
+        // ✅ Usar passwordEncoder.matches() para comparar con el hash
+        if (currentPassword == null || !passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new ServiceException("La contraseña actual es incorrecta");
         }
-
-        if (newUsername != null && !newUsername.isBlank()) {
-            if (newUsername.length() < 3) {
-                throw new ServiceException("El nombre de usuario debe tener al menos 3 caracteres");
-            }
-            user.setUsername(newUsername);
+        if (newPassword.length() < 6) {
+            throw new ServiceException("La nueva contraseña debe tener al menos 6 caracteres");
         }
-
-        userRepository.save(user);
-        return jsonSerializer().serialize(user);
+        // ✅ Hashear la nueva contraseña antes de guardarla
+        user.setPassword(passwordEncoder.encode(newPassword));
     }
+
+    if (newUsername != null && !newUsername.isBlank()) {
+        if (newUsername.length() < 3) {
+            throw new ServiceException("El nombre de usuario debe tener al menos 3 caracteres");
+        }
+        user.setUsername(newUsername);
+    }
+
+    userRepository.save(user);
+    return jsonSerializer().serialize(user);
+}
 
     @Override
     public String addRoleToUserFromJson(String json) throws ServiceException {
