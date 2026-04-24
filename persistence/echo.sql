@@ -29,11 +29,12 @@ CREATE TABLE profiles (
     public_name VARCHAR(100) NOT NULL,
     bio TEXT,
     location VARCHAR(100),
-    avatar_url VARCHAR(255),
-    banner_url VARCHAR(255),
+    avatar_url LONGTEXT,
+    banner_url LONGTEXT,
     linkedin VARCHAR(255),
     instagram VARCHAR(255),
     twitter VARCHAR(255),
+    experience VARCHAR(255),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 

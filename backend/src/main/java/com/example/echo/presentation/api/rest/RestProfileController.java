@@ -4,6 +4,7 @@ import com.example.echo.core.entity.profile.appservices.ProfileService;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.core.entity.user.dto.UserDTO;
 import com.example.echo.core.entity.user.persistence.UserRepository;
+import com.example.echo.core.entity.items.appservices.ItemService;
 import com.example.echo.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,10 +22,46 @@ public class RestProfileController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    ItemService itemService;
+
     @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getProfile(@PathVariable Integer userId) {
         try {
             return ResponseEntity.ok(profileService.getByUserIdToJson(userId));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/{userId}/products", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getProfileProducts(@PathVariable Integer userId) {
+        try {
+            return ResponseEntity.ok(itemService.getByCreatorIdAndTypeToJson(userId, "PRODUCT"));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/{userId}/services", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getProfileServices(@PathVariable Integer userId) {
+        try {
+            return ResponseEntity.ok(itemService.getByCreatorIdAndTypeToJson(userId, "SERVICE"));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/{userId}/all-items", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getProfileAllItems(@PathVariable Integer userId) {
+        try {
+            return ResponseEntity.ok(itemService.getByCreatorIdToJson(userId));
         } catch (ServiceException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {

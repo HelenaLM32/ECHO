@@ -8,6 +8,10 @@ public interface ItemService {
 
     String getByIdToJson(Integer id) throws ServiceException;
 
+    String getByCreatorIdToJson(Integer creatorId) throws ServiceException;
+
+    String getByCreatorIdAndTypeToJson(Integer creatorId, String itemType) throws ServiceException;
+
     String registerFromJson(String userJson) throws ServiceException;
 
     String updateFromJson(String userJson) throws ServiceException;
@@ -15,4 +19,5 @@ public interface ItemService {
     void deleteById(Integer id) throws ServiceException;
 
     String loginFromJson(String loginJson) throws ServiceException;
+
 }

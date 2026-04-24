@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { getProfileByUserId, updateAvatar, updateBanner } from "../../services/profile";
+import { getProfileByUserId, updateAvatar, updateBanner, getProfileProducts, getProfileServices } from "../../services/profile";
 import linkedinIcon from '../../assets/icons8-linkedin-24.png';
 import twitterIcon from '../../assets/icons8-x-24.png';
 import instagramIcon from '../../assets/icons8-instagram-24.png';
@@ -18,10 +18,17 @@ export default function Profile() {
   const isOwnProfile = !userId || parseInt(userId) === user?.id;
 
   const [profile, setProfile] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [itemsLoading, setItemsLoading] = useState({
+    products: false,
+    services: false
+  });
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("Proyectos");
+  const [activeTab, setActiveTab] = useState("Productos");
 
+  // Cargar perfil base
   useEffect(() => {
     if (loadingContext) return;
     if (!targetId) {
@@ -36,6 +43,26 @@ export default function Profile() {
       .catch(() => setError("No se pudo cargar el perfil"))
       .finally(() => setLoading(false));
   }, [targetId, loadingContext]);
+
+  // Cargar items cuando cambia el tab
+  useEffect(() => {
+    if (!targetId || !profile) return;
+
+    if (activeTab === "Productos") {
+      setItemsLoading(prev => ({ ...prev, products: true }));
+      getProfileProducts(targetId)
+        .then((data) => setProducts(data))
+        .catch(() => setProducts([]))
+        .finally(() => setItemsLoading(prev => ({ ...prev, products: false })));
+    } 
+    else if (activeTab === "Servicios") {
+      setItemsLoading(prev => ({ ...prev, services: true }));
+      getProfileServices(targetId)
+        .then((data) => setServices(data))
+        .catch(() => setServices([]))
+        .finally(() => setItemsLoading(prev => ({ ...prev, services: false })));
+    }
+  }, [activeTab, targetId, profile]);
 
   const handleBannerChange = async (e) => {
     const file = e.target.files[0];
@@ -59,12 +86,37 @@ export default function Profile() {
     }
   };
 
+  const renderItemGrid = (items, isLoading) => {
+    if (isLoading) {
+      return <div className="empty-state">Cargando...</div>;
+    }
+    
+    if (!items || items.length === 0) {
+      return <div className="empty-state">No hay elementos disponibles</div>;
+    }
+
+    return (
+      <div className="items-grid">
+        {items.map((item) => (
+          <div key={item.id} className="item-card">
+            <div className="item-image-placeholder">
+              📦
+            </div>
+            <div className="item-info">
+              <h3 className="item-title">{item.title}</h3>
+              <p className="item-price">${item.basePrice}</p>
+              <p className="item-type">{item.itemType}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   if (loadingContext || loading) return <div className="profile-page">Cargando perfil...</div>;
   if (error || !profile) return <div className="profile-page">{error || "Perfil no encontrado"}</div>;
 
-  const tabs = ["Proyectos", "Reseñas", "Productos", "Servicios", "Estadísticas"];
-
-  const tabs2 = ["Calendario", "Compras"];
+  const tabs = ["Productos", "Servicios"];
 
   return (
     <div className="profile-page">
@@ -174,35 +226,25 @@ export default function Profile() {
             )}
           </div>
 
-          
-<nav className="content-tabs">
-  {tabs.map((tab) => (
-    <button
-      key={tab}
-      className={`tab-item ${activeTab === tab ? "active" : ""}`}
-      onClick={() => setActiveTab(tab)}
-    >
-      {tab}
-    </button>
-  ))}
-</nav>
+          <nav className="content-tabs">
+            {tabs.map((tab) => (
+              <button
+                key={tab}
+                className={`tab-item ${activeTab === tab ? "active" : ""}`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab}
+              </button>
+            ))}
+          </nav>
 
-
-<nav className="content-tabs secondary-tabs">
-  {tabs2.map((tab) => (
-    <button
-      key={tab}
-      className={`tab-item ${activeTab === tab ? "active" : ""}`}
-      onClick={() => setActiveTab(tab)}
-    >
-      {tab}
-    </button>
-  ))}
-</nav>
+          <div className="tab-content">
+            {activeTab === "Productos" && renderItemGrid(products, itemsLoading.products)}
+            {activeTab === "Servicios" && renderItemGrid(services, itemsLoading.services)}
+          </div>
         </main>
       </div>
       <Footer />
     </div>
-    
   );
 }

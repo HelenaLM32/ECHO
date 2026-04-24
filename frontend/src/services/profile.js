@@ -1,60 +1,82 @@
 import { API_URL, fetchWithToken } from "./config";
-
 export const getProfileByUserId = async (userId) => {
-  const res = await fetch(`${API_URL}/profiles/${userId}`);
-  if (!res.ok) throw new Error("Perfil no encontrado");
-  return await res.json();
+  const response = await fetch(`${API_URL}/profiles/${userId}`);
+  if (!response.ok) throw new Error("Error al obtener el perfil");
+  return response.json();
+};
+
+export const getProfileProducts = async (userId) => {
+  const response = await fetch(`${API_URL}/profiles/${userId}/products`);
+  if (!response.ok) throw new Error("Error al obtener los productos");
+  return response.json();
+};
+
+export const getProfileServices = async (userId) => {
+  const response = await fetch(`${API_URL}/profiles/${userId}/services`);
+  if (!response.ok) throw new Error("Error al obtener los servicios");
+  return response.json();
 };
 
 export const updateProfile = async (userId, profileData) => {
-  const res = await fetchWithToken(`/profiles/${userId}`, {
+  const token = localStorage.getItem("token");
+  const response = await fetch(`${API_URL}/profiles/${userId}`, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
     body: JSON.stringify(profileData),
   });
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(errorText || "Error al actualizar el perfil");
-  }
-  return await res.json();
+
+  if (!response.ok) throw new Error("Error al actualizar el perfil");
+  return response.json();
 };
 
-export const updateCredentials = async (userId, data) => {
-  const res = await fetchWithToken(`/users/${userId}/credentials`, {
-    method: "PATCH",
-    body: JSON.stringify(data),
+export const updateCredentials = async (userId, credentialsData) => {
+  const token = localStorage.getItem("token");
+  const response = await fetch(`${API_URL}/users/${userId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(credentialsData),
   });
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(errorText || "Error al actualizar credenciales");
-  }
-  return await res.json();
-};
 
-const fileToBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
+  if (!response.ok) throw new Error("Error al actualizar las credenciales");
+  return response.json();
 };
 
 export const updateAvatar = async (userId, file) => {
-  const base64 = await fileToBase64(file);
-  const res = await fetchWithToken(`/profiles/${userId}/avatar`, {
+  const formData = new FormData();
+  formData.append("avatarUrl", file);
+
+  const token = localStorage.getItem("token");
+  const response = await fetch(`${API_URL}/profiles/${userId}/avatar`, {
     method: "PUT",
-    body: JSON.stringify({ avatarUrl: base64 }),
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
   });
-  if (!res.ok) throw new Error("Error al actualizar el avatar");
-  return await res.json();
+
+  if (!response.ok) throw new Error("Error al actualizar el avatar");
+  return response.json();
 };
 
 export const updateBanner = async (userId, file) => {
-  const base64 = await fileToBase64(file);
-  const res = await fetchWithToken(`/profiles/${userId}/banner`, {
+  const formData = new FormData();
+  formData.append("bannerUrl", file);
+
+  const token = localStorage.getItem("token");
+  const response = await fetch(`${API_URL}/profiles/${userId}/banner`, {
     method: "PUT",
-    body: JSON.stringify({ bannerUrl: base64 }),
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
   });
-  if (!res.ok) throw new Error("Error al actualizar el banner");
-  return await res.json();
+
+  if (!response.ok) throw new Error("Error al actualizar la portada");
+  return response.json();
 };

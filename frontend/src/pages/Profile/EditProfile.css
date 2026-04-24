@@ -1,8 +1,8 @@
 .edit-page {
   min-height: 100vh;
   background: var(--white);
-  padding: 20px;
   font-family: Arial, sans-serif;
+  padding-top: 20px;
 }
 
 

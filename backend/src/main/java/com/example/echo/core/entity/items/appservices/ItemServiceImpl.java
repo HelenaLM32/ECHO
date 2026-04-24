@@ -1,5 +1,8 @@
 package com.example.echo.core.entity.items.appservices;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -72,6 +75,45 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public String getByIdToJson(Integer id) throws ServiceException {
         return jsonSerializer().serialize(this.getById(id));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public String getByCreatorIdToJson(Integer creatorId) throws ServiceException {
+        try {
+            List<ItemDTO> items = itemRepository.findByCreatorId(creatorId);
+            if (items.isEmpty()) {
+                throw new ServiceException("No hay items encontrados por el creador " + creatorId);
+            }
+            Serializer<ItemDTO> ser = (Serializer<ItemDTO>) SerializersCatalog.getInstance(Serializers.JSON_ITEM);
+            return ser.serializeList(items);
+        } catch (ServiceException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ServiceException("Error al obtener items del creador: " + e.getMessage());
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public String getByCreatorIdAndTypeToJson(Integer creatorId, String itemType) throws ServiceException {
+        try {
+            List<ItemDTO> allItems = itemRepository.findByCreatorId(creatorId);
+            List<ItemDTO> filteredItems = allItems.stream()
+                    .filter(item -> item.getItemType().equals(itemType))
+                    .collect(Collectors.toList());
+
+            if (filteredItems.isEmpty()) {
+                throw new ServiceException("No hay " + itemType + " items" + creatorId);
+            }
+
+            Serializer<ItemDTO> ser = (Serializer<ItemDTO>) SerializersCatalog.getInstance(Serializers.JSON_ITEM);
+            return ser.serializeList(filteredItems);
+        } catch (ServiceException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ServiceException("Error al filtrar items: " + e.getMessage());
+        }
     }
 
     @Override
