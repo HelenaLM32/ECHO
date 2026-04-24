@@ -1,9 +1,6 @@
 package com.example.echo.core.entity.dispute.appservices;
 
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
-import com.example.echo.core.entity.dispute.dto.DisputeDTO;
-import com.example.echo.core.entity.dispute.dto.DisputeMessageDTO;
-import java.util.List;
 
 public interface DisputeService {
 

@@ -1,4 +1,3 @@
-CREATE DATABASE echo;
 USE echo;
 
 CREATE TABLE users (
@@ -29,8 +28,8 @@ CREATE TABLE profiles (
     public_name VARCHAR(100) NOT NULL,
     bio TEXT,
     location VARCHAR(100),
-    avatar_url VARCHAR(255),
-    banner_url VARCHAR(255),
+    avatar_url LONGTEXT,
+    banner_url LONGTEXT,
     linkedin VARCHAR(255),
     instagram VARCHAR(255),
     twitter VARCHAR(255),
@@ -54,7 +53,7 @@ CREATE TABLE items (
     creator_id INT NOT NULL,
     title VARCHAR(150) NOT NULL,
     description TEXT,
-    base_price DECIMAL(10, 2) NOT NULL,
+    base_price DOUBLE NOT NULL,
     item_type VARCHAR(50) NOT NULL,
     FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -73,7 +72,7 @@ CREATE TABLE orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     buyer_id INT NOT NULL,
     item_id INT NOT NULL,
-    final_price DECIMAL(10, 2) NOT NULL,
+    final_price DOUBLE NOT NULL,
     status VARCHAR(50) DEFAULT 'PENDING',
     FOREIGN KEY (buyer_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (item_id) REFERENCES items(id)
@@ -83,8 +82,8 @@ CREATE TABLE payments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT UNIQUE NOT NULL,
     stripe_tx_id VARCHAR(255),
-    total_amount DECIMAL(10, 2) NOT NULL,
-    platform_fee DECIMAL(10, 2) NOT NULL,
+    total_amount DOUBLE NOT NULL,
+    platform_fee DOUBLE NOT NULL,
     payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
@@ -158,6 +157,7 @@ CREATE TABLE disputes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
     created_by_user_id INT NOT NULL,
+    created_by_username VARCHAR(50),
     reason VARCHAR(500) NOT NULL,
     status VARCHAR(50) DEFAULT 'OPEN',
     resolution TEXT,
@@ -171,6 +171,7 @@ CREATE TABLE dispute_messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
     dispute_id INT NOT NULL,
     user_id INT NOT NULL,
+    username VARCHAR(50),
     message TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (dispute_id) REFERENCES disputes(id) ON DELETE CASCADE,
