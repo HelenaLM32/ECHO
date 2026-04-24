@@ -146,7 +146,6 @@ export default function Profile() {
             <div className="item-info">
               <h3 className="item-title">{item.title}</h3>
               <p className="item-price">${item.basePrice}</p>
-              <p className="item-type">{item.itemType}</p>
             </div>
           </div>
         ))}
