@@ -64,7 +64,7 @@ public class User {
     }
 
     protected int setPassword(String password) {
-        if (Check.minStringChars(password, 6)) {
+        if (Check.isValidPassword(password)) {
             this.password = password.trim();
             return 0;
         }

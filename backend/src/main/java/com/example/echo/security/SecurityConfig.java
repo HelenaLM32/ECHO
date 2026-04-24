@@ -55,6 +55,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/follows/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/follows/**").authenticated()
 
+                        .requestMatchers("/disputes/**").authenticated()
+
                         .anyRequest().permitAll())
                 .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
