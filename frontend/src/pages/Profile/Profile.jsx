@@ -157,7 +157,7 @@ export default function Profile() {
   if (loadingContext || loading) return <div className="profile-page">Cargando perfil...</div>;
   if (error || !profile) return <div className="profile-page">{error || "Perfil no encontrado"}</div>;
 
-  const tabs = ["Productos", "Servicios", "Eventos", "Valoraciones", "Calendario"];
+ const tabs = ["Productos", "Servicios", "Eventos", "Valoraciones", ...(isOwnProfile ? ["Calendario"] : [])];
 
   return (
     <div className="profile-page">
