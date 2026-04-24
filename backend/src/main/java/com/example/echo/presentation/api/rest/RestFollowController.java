@@ -1,6 +1,6 @@
 package com.example.echo.presentation.api.rest;
 
-import com.example.echo.core.entity.follows.persistence.Follow;
+import com.example.echo.core.entity.follows.model.Follow;
 import com.example.echo.core.entity.follows.persistence.FollowRepository;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.core.entity.user.dto.UserDTO;

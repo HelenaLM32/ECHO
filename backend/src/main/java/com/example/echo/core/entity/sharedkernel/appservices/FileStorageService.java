@@ -19,11 +19,7 @@ public class FileStorageService {
     @Value("${app.base-url}")
     private String baseUrl;
 
-    @param file
-    @param subDir
-
     public String store(MultipartFile file, String subDir) throws IOException {
-        // Determinar extensión
         String originalName = file.getOriginalFilename();
         String ext = (originalName != null && originalName.contains("."))
                 ? originalName.substring(originalName.lastIndexOf("."))

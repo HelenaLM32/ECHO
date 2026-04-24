@@ -7,7 +7,7 @@ export const getFollowStats = async (userId) => {
 };
 
 export const checkIsFollowing = async (targetId) => {
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const response = await fetch(`${API_URL}/follows/check/${targetId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -16,7 +16,7 @@ export const checkIsFollowing = async (targetId) => {
 };
 
 export const followUser = async (targetId) => {
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const response = await fetch(`${API_URL}/follows/${targetId}`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
@@ -26,7 +26,7 @@ export const followUser = async (targetId) => {
 };
 
 export const unfollowUser = async (targetId) => {
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const response = await fetch(`${API_URL}/follows/${targetId}`, {
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },

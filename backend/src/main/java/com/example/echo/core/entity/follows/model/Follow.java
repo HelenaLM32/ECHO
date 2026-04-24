@@ -1,7 +1,6 @@
 package com.example.echo.core.entity.follows.model;
 
 import jakarta.persistence.*;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "follows")

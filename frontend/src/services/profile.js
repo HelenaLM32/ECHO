@@ -1,4 +1,5 @@
 import { API_URL, fetchWithToken } from "./config";
+
 export const getProfileByUserId = async (userId) => {
   const response = await fetch(`${API_URL}/profiles/${userId}`);
   if (!response.ok) throw new Error("Error al obtener el perfil");
@@ -18,7 +19,7 @@ export const getProfileServices = async (userId) => {
 };
 
 export const updateProfile = async (userId, profileData) => {
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const response = await fetch(`${API_URL}/profiles/${userId}`, {
     method: "PUT",
     headers: {
@@ -33,9 +34,9 @@ export const updateProfile = async (userId, profileData) => {
 };
 
 export const updateCredentials = async (userId, credentialsData) => {
-  const token = localStorage.getItem("token");
-  const response = await fetch(`${API_URL}/users/${userId}`, {
-    method: "PUT",
+  const token = sessionStorage.getItem("token");
+  const response = await fetch(`${API_URL}/users/${userId}/credentials`, {
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -51,7 +52,7 @@ export const updateAvatar = async (userId, file) => {
   const formData = new FormData();
   formData.append("avatarUrl", file);
 
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const response = await fetch(`${API_URL}/profiles/${userId}/avatar`, {
     method: "PUT",
     headers: {
@@ -68,7 +69,7 @@ export const updateBanner = async (userId, file) => {
   const formData = new FormData();
   formData.append("bannerUrl", file);
 
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token"); 
   const response = await fetch(`${API_URL}/profiles/${userId}/banner`, {
     method: "PUT",
     headers: {
@@ -82,7 +83,7 @@ export const updateBanner = async (userId, file) => {
 };
 
 export const deleteAccount = async (userId) => {
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const response = await fetch(`${API_URL}/users/${userId}`, {
     method: "DELETE",
     headers: {
