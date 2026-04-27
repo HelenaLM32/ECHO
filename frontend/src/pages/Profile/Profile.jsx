@@ -170,11 +170,6 @@ export default function Profile() {
               <div className="item-info">
                 <h3 className="item-title">{item.title}</h3>
                 <p className="item-price">€{item.basePrice}</p>
-                {item.description && (
-                  <p className="item-extra line-clamp">
-                    {item.description.substring(0, 40)}...
-                  </p>
-                )}
               </div>
             </div>
           ))}
@@ -202,15 +197,11 @@ export default function Profile() {
             {venues.map((v) => (
               <div key={v.id} className="item-card">
                 <div className="item-image-container">
-                  {v.images && v.images.length > 0 ? (
-                    <img 
-                      src={v.images[0]} 
-                      alt={v.name} 
-                      className="item-card-img" 
-                    />
-                  ) : (
-                    <div className="item-image-placeholder">🏠</div>
-                  )}
+                  {v.img1 ? (
+  <img src={v.img1} alt={v.name} className="item-card-img" />
+) : (
+  <div className="item-image-placeholder">🏠</div>
+)}
                 </div>
 
                 <div className="item-info">
@@ -227,35 +218,52 @@ export default function Profile() {
   };
 
   const renderEvents = () => {
-    if (itemsLoading.events) return <div className="empty-state">Cargando...</div>;
-    return (
-      <div>
-        {isOwnProfile && (
-          <button className="create-tab-btn" onClick={() => navigate("/events/event-create")}>
-            <span className="create-icon"></span> Crear un evento
-          </button>
-        )}
-        {events.length === 0 ? (
-          <div className="empty-state">Sin eventos registrados</div>
-        ) : (
-          <div className="items-grid">
-            {events.map((ev) => (
-              <div key={ev.id} className="item-card">
-                <div className="item-image-placeholder">🎭</div>
-                <div className="item-info">
-                  <h3 className="item-title">{ev.title || "Evento sin título"}</h3>
-                  <p className="item-price">
-                    {ev.startDate ? new Date(ev.startDate).toLocaleDateString("es-ES") : "Fecha no definida"}
-                  </p>
-                  <p className="item-extra">Estado: {ev.status}</p>
-                </div>
+  if (itemsLoading.events) return <div className="empty-state">Cargando...</div>;
+  return (
+    <div>
+      {isOwnProfile && (
+        <button className="create-tab-btn" onClick={() => navigate("/events/event-create")}>
+          <span className="create-icon"></span> Crear un evento
+        </button>
+      )}
+      {events.length === 0 ? (
+        <div className="empty-state">Sin eventos registrados</div>
+      ) : (
+        <div className="items-grid">
+          {events.map((ev) => (
+            <div key={ev.id} className="item-card">
+              <div className="item-image-container">
+                {ev.img ? (
+                  <img
+                    src={ev.img}
+                    alt={ev.title || "Evento"}
+                    className="item-card-img"
+                  />
+                ) : (
+                  <div className="item-image-placeholder">🎭</div>
+                )}
               </div>
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  };
+              <div className="item-info">
+                <h3 className="item-title">{ev.title || "Evento sin título"}</h3>
+                <p className="item-price">
+                  {ev.startDate
+                    ? new Date(ev.startDate).toLocaleDateString("es-ES")
+                    : "Fecha no definida"}
+                </p>
+                <p className="item-extra">Estado: {ev.status}</p>
+                {ev.description && (
+                  <p className="item-extra line-clamp">
+                    {ev.description.substring(0, 60)}...
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
   if (loadingContext || loading) return <div className="profile-page-loading">Cargando perfil...</div>;
   if (error || !profile) return <div className="profile-page-error">{error || "Perfil no encontrado"}</div>;

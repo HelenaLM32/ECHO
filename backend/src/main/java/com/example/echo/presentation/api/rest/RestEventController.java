@@ -1,87 +1,82 @@
 package com.example.echo.presentation.api.rest;
 
-import com.example.echo.core.entity.events.dto.EventDTO;
-import com.example.echo.core.entity.events.persistence.EventRepository;
+import com.example.echo.core.entity.events.appservices.EventService;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.core.entity.user.dto.UserDTO;
 import com.example.echo.core.entity.user.persistence.UserRepository;
-import com.example.echo.core.entity.venues.persistence.VenueRepository;
 import com.example.echo.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/events")
 public class RestEventController {
 
     @Autowired
-    EventRepository eventRepository;
-
+    private EventService eventService;
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
-    @Autowired
-    VenueRepository venueRepository;
-
-    // GET publico: listar eventos de un usuario
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<EventDTO>> getByUser(@PathVariable Integer userId) {
-        return ResponseEntity.ok(eventRepository.findByCreatorId(userId));
+    @GetMapping(value = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getByUser(@PathVariable Integer userId) {
+        try {
+            return ResponseEntity.ok(eventService.getByCreatorIdToJson(userId));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
     }
 
-    // GET publico: listar eventos de un local
-    @GetMapping("/venue/{venueId}")
-    public ResponseEntity<List<EventDTO>> getByVenue(@PathVariable Integer venueId) {
-        return ResponseEntity.ok(eventRepository.findByVenueId(venueId));
+    @GetMapping(value = "/venue/{venueId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getByVenue(@PathVariable Integer venueId) {
+        try {
+            return ResponseEntity.ok(eventService.getByVenueIdToJson(venueId));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
     }
 
-    // GET publico: obtener evento por id
-    @GetMapping("/{id}")
-    public ResponseEntity<EventDTO> getById(@PathVariable Integer id) {
-        return eventRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getById(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(eventService.getByIdToJson(id));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
     }
 
-    // POST autenticado: crear evento
-    @PostMapping
-    public ResponseEntity<?> create(
-            @RequestBody EventDTO event,
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> create(
+            @RequestParam("venueId") Integer venueId,
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "img", required = false) MultipartFile img,
             @RequestHeader("Authorization") String authHeader) {
         try {
             Integer userId = getUserIdFromToken(authHeader);
-
-            // Validar que el venue existe
-            if (!venueRepository.existsById(event.getVenueId())) {
-                return ResponseEntity.badRequest().body("El local indicado no existe");
-            }
-
-            event.setCreatorId(userId);
-            event.setStatus("REQUESTED");
-            return ResponseEntity.ok(eventRepository.save(event));
+            return ResponseEntity.ok(eventService.createEvent(
+                    userId, venueId,
+                    LocalDateTime.parse(startDate),
+                    LocalDateTime.parse(endDate),
+                    title, description, img));
         } catch (ServiceException e) {
             return ResponseEntity.status(403).body(e.getMessage());
         }
     }
 
-    // DELETE autenticado: eliminar evento (solo el creador)
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(
+    public ResponseEntity<String> delete(
             @PathVariable Integer id,
             @RequestHeader("Authorization") String authHeader) {
         try {
             Integer userId = getUserIdFromToken(authHeader);
-            EventDTO event = eventRepository.findById(id)
-                    .orElseThrow(() -> new ServiceException("Evento no encontrado"));
-
-            if (!event.getCreatorId().equals(userId)) {
-                return ResponseEntity.status(403).body("No autorizado");
-            }
-
-            eventRepository.deleteById(id);
-
+            eventService.deleteById(id, userId);
             return ResponseEntity.ok("{\"message\":\"Evento eliminado\"}");
         } catch (ServiceException e) {
             return ResponseEntity.status(403).body(e.getMessage());
@@ -89,19 +84,14 @@ public class RestEventController {
     }
 
     private Integer getUserIdFromToken(String authHeader) throws ServiceException {
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer "))
             throw new ServiceException("No autorizado");
-        }
-
         String token = authHeader.replace("Bearer ", "");
-        if (!JwtUtil.validateToken(token)) {
-            throw new ServiceException("Token invalido");
-        }
-
+        if (!JwtUtil.validateToken(token))
+            throw new ServiceException("Token inválido");
         String email = JwtUtil.extractEmail(token);
         UserDTO user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
-
         return user.getId();
     }
 }

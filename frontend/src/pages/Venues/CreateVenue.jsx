@@ -59,9 +59,7 @@ export default function CreateVenue() {
     dataToSend.append("capacity", formData.capacity);
 
     images.forEach((img) => {
-      if (img) {
-        dataToSend.append("images", img);
-      }
+      if (img) dataToSend.append("images", img);
     });
 
     try {
@@ -75,77 +73,95 @@ export default function CreateVenue() {
   };
 
   return (
-    <div className="create-venue-page">
-      <div className="create-venue-container">
-        <h1 className="create-venue-title">Anuncia tu local</h1>
-        <p className="create-venue-subtitle">Cuéntanos sobre el espacio que ofreces</p>
+    <div className="venue-page">
+      <div className="venue-wrapper">
+        <header className="venue-header">
+          <h1 className="venue-heading">Anuncia tu local</h1>
+          <p className="venue-description">
+            Registra tu espacio para que otros puedan organizar eventos en él.
+          </p>
+        </header>
 
-        {error && <div className="create-venue-error">{error}</div>}
+        {error && <div className="alert alert-error">{error}</div>}
 
-        <form onSubmit={handleSubmit} className="create-venue-form">
-          <div className="form-group">
-            <label>Nombre del local</label>
-            <input
-              type="text"
-              name="name"
-              placeholder="Ej: Sala Moonlight"
-              required
-              value={formData.name}
-              onChange={handleChange}
-            />
+        <form onSubmit={handleSubmit} className="form">
+          <div className="card">
+            <h2 className="card-title">Detalles del espacio</h2>
+
+            <div className="form-group">
+              <label className="form-label">Nombre del local *</label>
+              <input
+                type="text"
+                name="name"
+                required
+                value={formData.name}
+                onChange={handleChange}
+                className="input"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Dirección *</label>
+              <input
+                type="text"
+                name="address"
+                required
+                value={formData.address}
+                onChange={handleChange}
+                className="input"
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Aforo</label>
+              <input
+                type="number"
+                name="capacity"
+                value={formData.capacity}
+                onChange={handleChange}
+                className="input"
+              />
+            </div>
           </div>
 
-          <div className="form-group">
-            <label>Dirección</label>
-            <input
-              type="text"
-              name="address"
-              placeholder="Calle, Ciudad, CP"
-              required
-              value={formData.address}
-              onChange={handleChange}
-            />
-          </div>
+          <div className="card">
+            <h2 className="card-title">Galería</h2>
+            <p className="helper-text">
+              Añade hasta 3 fotos. La primera será la principal.
+            </p>
 
-          <div className="form-group">
-            <label>Aforo máximo</label>
-            <input
-              type="number"
-              name="capacity"
-              placeholder="Ej: 150"
-              value={formData.capacity}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Imágenes del local (Máx. 3)</label>
-            <div className="wallapop-grid">
+            <div className="upload-grid">
               {previews.map((preview, index) => (
-                <div key={index} className="image-box">
-                  {preview ? (
-                    <>
-                      <img src={preview} alt="Preview" />
-                      <button
-                        type="button"
-                        className="remove-btn"
-                        onClick={() => removeImage(index)}
-                      >
-                        ✕
-                      </button>
-                      {index === 0 && <span className="main-tag">Principal</span>}
-                    </>
-                  ) : (
-                    <label className="upload-label">
-                      <span className="plus">+</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleImageChange(e, index)}
-                        hidden
-                      />
-                    </label>
-                  )}
+                <div key={index} className="upload-item">
+                  <div className="upload-box">
+                    {preview ? (
+                      <div className="preview">
+                        <img src={preview} alt="venue preview" />
+                        <button
+                          type="button"
+                          className="preview-remove"
+                          onClick={() => removeImage(index)}
+                        >
+                          ✕
+                        </button>
+                        {index === 0 && (
+                          <span className="preview-badge">
+                            principal
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <label className="upload-placeholder">
+                        <span className="upload-icon">+</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          hidden
+                          onChange={(e) => handleImageChange(e, index)}
+                        />
+                      </label>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -159,8 +175,13 @@ export default function CreateVenue() {
             >
               Cancelar
             </button>
-            <button type="submit" className="btn-submit" disabled={loading}>
-              {loading ? "Creando..." : "Publicar local"}
+
+            <button
+              type="submit"
+              className="btn-submit"
+              disabled={loading}
+            >
+              {loading ? "Registrando..." : "Publicar"}
             </button>
           </div>
         </form>

@@ -2,7 +2,7 @@
 .edit-page {
   min-height: 100vh;
   background: var(--white);
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: Arial, sans-serif;
 }
 
 .edit-loading {

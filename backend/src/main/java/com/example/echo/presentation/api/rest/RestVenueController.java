@@ -3,12 +3,14 @@ package com.example.echo.presentation.api.rest;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.core.entity.user.dto.UserDTO;
 import com.example.echo.core.entity.user.persistence.UserRepository;
-import com.example.echo.core.entity.venues.dto.VenueDTO;
-import com.example.echo.core.entity.venues.persistence.VenueRepository;
+import com.example.echo.core.entity.venues.appservices.VenueService;
 import com.example.echo.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @RestController
@@ -16,55 +18,60 @@ import java.util.List;
 public class RestVenueController {
 
     @Autowired
-    VenueRepository venueRepository;
+    private VenueService venueService;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
-    // GET publico: listar locales de un usuario
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<VenueDTO>> getByUser(@PathVariable Integer userId) {
-        return ResponseEntity.ok(venueRepository.findByManagerId(userId));
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getAll() {
+        try {
+            return ResponseEntity.ok(venueService.getAllToJson());
+        } catch (ServiceException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
     }
 
-    // GET publico: obtener un local por id
-    @GetMapping("/{id}")
-    public ResponseEntity<VenueDTO> getById(@PathVariable Integer id) {
-        return venueRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping(value = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getByUser(@PathVariable Integer userId) {
+        try {
+            return ResponseEntity.ok(venueService.getByManagerIdToJson(userId));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
     }
 
-    // POST autenticado: crear local
-    @PostMapping
-    public ResponseEntity<?> create(
-            @RequestBody VenueDTO venue,
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getById(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(venueService.getByIdToJson(id));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> create(
+            @RequestParam("name") String name,
+            @RequestParam("address") String address,
+            @RequestParam(value = "capacity", required = false) Integer capacity,
+            @RequestParam(value = "images", required = false) List<MultipartFile> images,
             @RequestHeader("Authorization") String authHeader) {
         try {
             Integer userId = getUserIdFromToken(authHeader);
-            venue.setManagerId(userId);
-            venue.setStatus("ACTIVE");
-            return ResponseEntity.ok(venueRepository.save(venue));
+            return ResponseEntity.ok(venueService.createVenue(userId, name, address, capacity, images));
         } catch (ServiceException e) {
             return ResponseEntity.status(403).body(e.getMessage());
         }
     }
 
-    // DELETE autenticado: eliminar local propio
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(
+    public ResponseEntity<String> delete(
             @PathVariable Integer id,
             @RequestHeader("Authorization") String authHeader) {
         try {
             Integer userId = getUserIdFromToken(authHeader);
-            VenueDTO venue = venueRepository.findById(id)
-                    .orElseThrow(() -> new ServiceException("Local no encontrado"));
-
-            if (!venue.getManagerId().equals(userId)) {
-                return ResponseEntity.status(403).body("No autorizado");
-            }
-
-            venueRepository.deleteById(id);
+            venueService.deleteById(id, userId);
             return ResponseEntity.ok("{\"message\":\"Local eliminado\"}");
         } catch (ServiceException e) {
             return ResponseEntity.status(403).body(e.getMessage());
@@ -72,19 +79,14 @@ public class RestVenueController {
     }
 
     private Integer getUserIdFromToken(String authHeader) throws ServiceException {
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer "))
             throw new ServiceException("No autorizado");
-        }
-
         String token = authHeader.replace("Bearer ", "");
-        if (!JwtUtil.validateToken(token)) {
-            throw new ServiceException("Token invalido");
-        }
-
+        if (!JwtUtil.validateToken(token))
+            throw new ServiceException("Token inválido");
         String email = JwtUtil.extractEmail(token);
         UserDTO user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
-
         return user.getId();
     }
 }

@@ -8,18 +8,17 @@ export const getVenuesByUser = async (userId) => {
 
 export const createVenue = async (data) => {
   const token = sessionStorage.getItem("token");
-  
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
+
+  const headers = new Headers();
+  headers.append("Authorization", `Bearer ${token}`);
 
   if (!(data instanceof FormData)) {
-    headers["Content-Type"] = "application/json";
+    headers.append("Content-Type", "application/json");
   }
 
   const res = await fetch(`${API_URL}/venues`, {
     method: "POST",
-    headers: headers,
+    headers: headers, // Usamos el objeto Headers nativo
     body: data instanceof FormData ? data : JSON.stringify(data),
   });
 
