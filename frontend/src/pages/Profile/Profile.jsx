@@ -67,50 +67,37 @@ export default function Profile() {
 
   useEffect(() => {
     if (!targetId || !profile) return;
-    if (activeTab === "Productos") {
-      setItemsLoading((prev) => ({ ...prev, products: true }));
-      getProfileProducts(targetId)
-        .then((data) => setProducts(data))
-        .catch(() => setProducts([]))
-        .finally(() =>
-          setItemsLoading((prev) => ({ ...prev, products: false }))
-        );
-    } else if (activeTab === "Servicios") {
-      setItemsLoading((prev) => ({ ...prev, services: true }));
-      getProfileServices(targetId)
-        .then((data) => setServices(data))
-        .catch(() => setServices([]))
-        .finally(() =>
-          setItemsLoading((prev) => ({ ...prev, services: false }))
-        );
-    } else if (activeTab === "Locales") {
-      setItemsLoading((prev) => ({ ...prev, venues: true }));
-      getVenuesByUser(targetId)
-        .then((data) => setVenues(data))
-        .catch(() => setVenues([]))
-        .finally(() =>
-          setItemsLoading((prev) => ({ ...prev, venues: false }))
-        );
-    } else if (activeTab === "Eventos") {
-      setItemsLoading((prev) => ({ ...prev, events: true }));
-      getEventsByUser(targetId)
-        .then((data) => setEvents(data))
-        .catch(() => setEvents([]))
-        .finally(() =>
-          setItemsLoading((prev) => ({ ...prev, events: false }))
-        );
-    }
+    const loadTabContent = async () => {
+      if (activeTab === "Productos") {
+        setItemsLoading((prev) => ({ ...prev, products: true }));
+        try { const data = await getProfileProducts(targetId); setProducts(data); } 
+        catch { setProducts([]); }
+        finally { setItemsLoading((prev) => ({ ...prev, products: false })); }
+      } else if (activeTab === "Servicios") {
+        setItemsLoading((prev) => ({ ...prev, services: true }));
+        try { const data = await getProfileServices(targetId); setServices(data); } 
+        catch { setServices([]); }
+        finally { setItemsLoading((prev) => ({ ...prev, services: false })); }
+      } else if (activeTab === "Locales") {
+        setItemsLoading((prev) => ({ ...prev, venues: true }));
+        try { const data = await getVenuesByUser(targetId); setVenues(data); } 
+        catch { setVenues([]); }
+        finally { setItemsLoading((prev) => ({ ...prev, venues: false })); }
+      } else if (activeTab === "Eventos") {
+        setItemsLoading((prev) => ({ ...prev, events: true }));
+        try { const data = await getEventsByUser(targetId); setEvents(data); } 
+        catch { setEvents([]); }
+        finally { setItemsLoading((prev) => ({ ...prev, events: false })); }
+      }
+    };
+    loadTabContent();
   }, [activeTab, targetId, profile]);
 
   useEffect(() => {
     if (!targetId) return;
-    getFollowStats(targetId)
-      .then(setFollowStats)
-      .catch(() => { });
+    getFollowStats(targetId).then(setFollowStats).catch(() => {});
     if (user && !isOwnProfile) {
-      checkIsFollowing(targetId)
-        .then((data) => setIsFollowing(data.following))
-        .catch(() => { });
+      checkIsFollowing(targetId).then((data) => setIsFollowing(data.following)).catch(() => {});
     }
   }, [targetId, user, isOwnProfile]);
 
@@ -120,9 +107,7 @@ export default function Profile() {
     try {
       const updated = await updateBanner(user.id, file);
       setProfile(updated);
-    } catch {
-      alert("Error al guardar la portada");
-    }
+    } catch { alert("Error al guardar la portada"); }
   };
 
   const handleAvatarChange = async (e) => {
@@ -131,9 +116,7 @@ export default function Profile() {
     try {
       const updated = await updateAvatar(user.id, file);
       setProfile(updated);
-    } catch {
-      alert("Error al guardar el avatar");
-    }
+    } catch { alert("Error al guardar el avatar"); }
   };
 
   const handleFollow = async () => {
@@ -148,17 +131,12 @@ export default function Profile() {
       }
       const stats = await getFollowStats(targetId);
       setFollowStats(stats);
-    } catch (error) {
-      alert(error.message);
-    } finally {
-      setFollowLoading(false);
-    }
+    } catch (error) { alert(error.message); } 
+    finally { setFollowLoading(false); }
   };
 
-  // ACTUALIZADO: renderItemGrid ahora incluye botón de creación
   const renderItemGrid = (items, isLoading, type) => {
     if (isLoading) return <div className="empty-state">Cargando...</div>;
-
     const path = type === "Productos" ? "/products/create" : "/services/create";
     const label = type === "Productos" ? "un producto" : "un servicio";
     const icon = type === "Productos" ? "📦" : "🛠️";
@@ -166,15 +144,10 @@ export default function Profile() {
     return (
       <div>
         {isOwnProfile && (
-          <button
-            className="create-tab-btn"
-            onClick={() => navigate(path)}
-          >
-            <span className="create-icon">+</span>
-            Crear {label}
+          <button className="create-tab-btn" onClick={() => navigate(path)}>
+            <span className="create-icon"></span> Crear {label}
           </button>
         )}
-
         {!items || items.length === 0 ? (
           <div className="empty-state">No hay {type.toLowerCase()} disponibles</div>
         ) : (
@@ -184,7 +157,7 @@ export default function Profile() {
                 <div className="item-image-placeholder">{icon}</div>
                 <div className="item-info">
                   <h3 className="item-title">{item.title}</h3>
-                  <p className="item-price">${item.basePrice}</p>
+                  <p className="item-price">€{item.basePrice}</p>
                 </div>
               </div>
             ))}
@@ -195,17 +168,12 @@ export default function Profile() {
   };
 
   const renderVenues = () => {
-    if (itemsLoading.venues)
-      return <div className="empty-state">Cargando...</div>;
+    if (itemsLoading.venues) return <div className="empty-state">Cargando...</div>;
     return (
       <div>
         {isOwnProfile && (
-          <button
-            className="create-tab-btn"
-            onClick={() => navigate("/venues/create")}
-          >
-            <span className="create-icon">+</span>
-            Crear un local
+          <button className="create-tab-btn" onClick={() => navigate("/venues/create")}>
+            <span className="create-icon"></span> Crear un local
           </button>
         )}
         {venues.length === 0 ? (
@@ -217,12 +185,8 @@ export default function Profile() {
                 <div className="item-image-placeholder">🏠</div>
                 <div className="item-info">
                   <h3 className="item-title">{v.name}</h3>
-                  <p className="item-price">{v.address}</p>
-                  {v.capacity && (
-                    <p style={{ fontSize: "12px", color: "#888" }}>
-                      Aforo: {v.capacity}
-                    </p>
-                  )}
+                  <p className="item-address">{v.address}</p>
+                  {v.capacity && <p className="item-extra">Aforo: {v.capacity}</p>}
                 </div>
               </div>
             ))}
@@ -233,17 +197,12 @@ export default function Profile() {
   };
 
   const renderEvents = () => {
-    if (itemsLoading.events)
-      return <div className="empty-state">Cargando...</div>;
+    if (itemsLoading.events) return <div className="empty-state">Cargando...</div>;
     return (
       <div>
         {isOwnProfile && (
-          <button
-            className="create-tab-btn"
-            onClick={() => navigate("/events/create")}
-          >
-            <span className="create-icon">+</span>
-            Crear un evento
+          <button className="create-tab-btn" onClick={() => navigate("/events/create")}>
+            <span className="create-icon"></span> Crear un evento
           </button>
         )}
         {events.length === 0 ? (
@@ -254,17 +213,11 @@ export default function Profile() {
               <div key={ev.id} className="item-card">
                 <div className="item-image-placeholder">🎭</div>
                 <div className="item-info">
-                  <h3 className="item-title">
-                    {ev.title || "Evento sin titulo"}
-                  </h3>
+                  <h3 className="item-title">{ev.title || "Evento sin título"}</h3>
                   <p className="item-price">
-                    {ev.startDate
-                      ? new Date(ev.startDate).toLocaleDateString("es-ES")
-                      : "Fecha no definida"}
+                    {ev.startDate ? new Date(ev.startDate).toLocaleDateString("es-ES") : "Fecha no definida"}
                   </p>
-                  <p style={{ fontSize: "12px", color: "#888" }}>
-                    Estado: {ev.status}
-                  </p>
+                  <p className="item-extra">Estado: {ev.status}</p>
                 </div>
               </div>
             ))}
@@ -274,182 +227,91 @@ export default function Profile() {
     );
   };
 
-  if (loadingContext || loading)
-    return <div className="profile-page">Cargando perfil...</div>;
+  if (loadingContext || loading) return <div className="profile-page-loading">Cargando perfil...</div>;
+  if (error || !profile) return <div className="profile-page-error">{error || "Perfil no encontrado"}</div>;
 
-  if (error || !profile)
-    return <div className="profile-page">{error || "Perfil no encontrado"}</div>;
-
-  const tabs = [
-    "Productos",
-    "Servicios",
-    "Locales",
-    "Eventos",
-    "Valoraciones",
-    ...(isOwnProfile ? ["Calendario"] : []),
-  ];
+  const tabs = ["Productos", "Servicios", "Locales", "Eventos", "Valoraciones", ...(isOwnProfile ? ["Calendario"] : [])];
 
   return (
     <div className="profile-page">
       <header className="profile-banner-wrapper">
         {profile.bannerUrl ? (
-          <img
-            src={profile.bannerUrl}
-            alt="Portada"
-            className="banner-image"
-          />
+          <img src={profile.bannerUrl} alt="Portada" className="banner-image" />
         ) : (
-          <div
-            className="banner-placeholder"
-            onClick={() => isOwnProfile && bannerInputRef.current?.click()}
-            style={{ cursor: isOwnProfile ? "pointer" : "default" }}
-          >
+          <div className="banner-placeholder" onClick={() => isOwnProfile && bannerInputRef.current?.click()} style={{ cursor: isOwnProfile ? "pointer" : "default" }}>
             <div className="banner-download-icon">↓</div>
             <p>Agregar imagen de portada</p>
             <small>Recomendado: 3200 x 410 px</small>
           </div>
         )}
         {isOwnProfile && profile.bannerUrl && (
-          <button
-            className="banner-change-btn"
-            onClick={() => bannerInputRef.current?.click()}
-          >
-            Cambiar portada
-          </button>
+          <button className="banner-change-btn" onClick={() => bannerInputRef.current?.click()}>Cambiar portada</button>
         )}
-        <input
-          ref={bannerInputRef}
-          type="file"
-          accept="image/*"
-          style={{ display: "none" }}
-          onChange={handleBannerChange}
-        />
+        <input ref={bannerInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleBannerChange} />
       </header>
 
       <div className="avatar-float-wrapper">
-        <div
-          className={`avatar-container ${isOwnProfile ? "editable" : ""}`}
-          onClick={() => isOwnProfile && avatarInputRef.current?.click()}
-        >
+        <div className={`avatar-container ${isOwnProfile ? "editable" : ""}`} onClick={() => isOwnProfile && avatarInputRef.current?.click()}>
           {profile.avatarUrl ? (
-            <img
-              src={profile.avatarUrl}
-              alt={profile.username}
-              className="avatar-img"
-            />
+            <img src={profile.avatarUrl} alt={profile.username} className="avatar-img" />
           ) : (
-            <div className="avatar-initials">
-              {profile.username?.charAt(0).toUpperCase() || "U"}
-            </div>
+            <div className="avatar-initials">{profile.username?.charAt(0).toUpperCase() || "U"}</div>
           )}
-          {isOwnProfile && (
-            <div className="avatar-overlay"><span>Cambiar</span></div>
-          )}
+          {isOwnProfile && <div className="avatar-overlay"><span>Cambiar</span></div>}
         </div>
-        <input
-          ref={avatarInputRef}
-          type="file"
-          accept="image/*"
-          style={{ display: "none" }}
-          onChange={handleAvatarChange}
-        />
+        <input ref={avatarInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleAvatarChange} />
       </div>
 
       <div className="profile-layout-container">
         <aside className="profile-sidebar">
           <div className="sidebar-info">
-            <h1 className="display-name">
-              {profile.publicName || profile.username}
-            </h1>
+            <h1 className="display-name">{profile.publicName || profile.username}</h1>
             <p className="username">@{profile.username}</p>
-            <p className="display-location">
-              {profile.location || "Ubicacion no especificada"}
-            </p>
+            <p className="display-location">{profile.location || "Ubicación no especificada"}</p>
+            
             {isOwnProfile && (
               <div className="sidebar-actions">
-                <Link to="/edit-profile" className="btn-edit-info">
-                  Editar perfil
-                </Link>
+                <Link to="/edit-profile" className="btn-edit-info">Editar perfil</Link>
               </div>
             )}
-            <p className="display">Sobre mi</p>
-            <p className="display-bio">
-              {profile.bio ||
-                "Este usuario aun no ha anadido una descripcion."}
-            </p>
-            <p className="display">Experiencia</p>
-            <p className="display-experience">
-              {profile.experience || "Sin experiencia anadida."}
-            </p>
-          </div>
 
-          <div style={{ display: "flex", gap: "24px", margin: "8px 0" }}>
-            <span style={{ fontWeight: "bold" }}>
-              {followStats.followers}{" "}
-              <span style={{ fontWeight: "normal" }}>seguidores</span>
-            </span>
-            <span style={{ fontWeight: "bold" }}>
-              {followStats.following}{" "}
-              <span style={{ fontWeight: "normal" }}>siguiendo</span>
-            </span>
-          </div>
+            <div className="follow-stats">
+              <span className="stat-item"><strong>{followStats.followers}</strong> seguidores</span>
+              <span className="stat-item"><strong>{followStats.following}</strong> siguiendo</span>
+            </div>
 
-          {!isOwnProfile && user && (
-            <button
-              onClick={handleFollow}
-              disabled={followLoading}
-              className={isFollowing ? "btn-unfollow" : "btn-follow"}
-              style={{
-                padding: "8px 24px",
-                borderRadius: "20px",
-                border: "none",
-                cursor: "pointer",
-                fontWeight: "bold",
-                background: isFollowing
-                  ? "#e0e0e0"
-                  : "var(--color-primary, #7c3aed)",
-                color: isFollowing ? "#333" : "#fff",
-                marginBottom: "12px",
-              }}
-            >
-              {followLoading
-                ? "..."
-                : isFollowing
-                  ? "Dejar de seguir"
-                  : "Seguir"}
-            </button>
-          )}
+            {!isOwnProfile && user && (
+              <button 
+                onClick={handleFollow} 
+                disabled={followLoading} 
+                className={`btn-follow-action ${isFollowing ? "active" : ""}`}
+              >
+                {followLoading ? "..." : isFollowing ? "Dejar de seguir" : "Seguir"}
+              </button>
+            )}
+
+            <p className="display-label">Sobre mí</p>
+            <p className="display-text">{profile.bio || "Este usuario aún no ha añadido una descripción."}</p>
+            
+            <p className="display-label">Experiencia</p>
+            <p className="display-text">{profile.experience || "Sin experiencia añadida."}</p>
+          </div>
         </aside>
 
         <main className="profile-main">
           <div className="social-header">
             {profile.linkedin && (
-              <a
-                href={profile.linkedin}
-                className="social-link"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a href={profile.linkedin} className="social-link" target="_blank" rel="noreferrer">
                 <img src={linkedinIcon} alt="LinkedIn" />
               </a>
             )}
             {profile.instagram && (
-              <a
-                href={profile.instagram}
-                className="social-link"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a href={profile.instagram} className="social-link" target="_blank" rel="noreferrer">
                 <img src={instagramIcon} alt="Instagram" />
               </a>
             )}
             {profile.twitter && (
-              <a
-                href={profile.twitter}
-                className="social-link"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a href={profile.twitter} className="social-link" target="_blank" rel="noreferrer">
                 <img src={twitterIcon} alt="Twitter" />
               </a>
             )}
@@ -457,70 +319,33 @@ export default function Profile() {
 
           <nav className="content-tabs">
             {tabs.map((tab) => (
-              <button
-                key={tab}
-                className={`tab-item ${activeTab === tab ? "active" : ""}`}
-                onClick={() => setActiveTab(tab)}
-              >
+              <button key={tab} className={`tab-item ${activeTab === tab ? "active" : ""}`} onClick={() => setActiveTab(tab)}>
                 {tab}
               </button>
             ))}
           </nav>
 
           <div className="tab-content">
-            {activeTab === "Productos" &&
-              renderItemGrid(products, itemsLoading.products, "Productos")}
-            {activeTab === "Servicios" &&
-              renderItemGrid(services, itemsLoading.services, "Servicios")}
+            {activeTab === "Productos" && renderItemGrid(products, itemsLoading.products, "Productos")}
+            {activeTab === "Servicios" && renderItemGrid(services, itemsLoading.services, "Servicios")}
             {activeTab === "Locales" && renderVenues()}
             {activeTab === "Eventos" && renderEvents()}
-            {activeTab === "Valoraciones" && (
-              <div className="empty-state">Sin valoraciones aun</div>
-            )}
+            {activeTab === "Valoraciones" && <div className="empty-state">Sin valoraciones aún</div>}
             {activeTab === "Calendario" && (
               <div className="calendar-tab">
                 {profile.calendarUrl ? (
                   <>
-                    <p
-                      style={{
-                        marginBottom: "12px",
-                        color: "#555",
-                        fontSize: "0.9rem",
-                      }}
-                    >
-                      Disponibilidad de{" "}
-                      {profile.publicName || profile.username}
-                    </p>
-                    <iframe
-                      src={profile.calendarUrl}
-                      style={{
-                        border: "none",
-                        width: "100%",
-                        height: "500px",
-                        borderRadius: "12px",
-                        boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
-                      }}
-                      title="Google Calendar"
-                    />
+                    <p className="calendar-title">Disponibilidad de {profile.publicName || profile.username}</p>
+                    <iframe src={profile.calendarUrl} className="calendar-iframe" title="Google Calendar" />
                   </>
                 ) : (
                   <div className="empty-state">
                     {isOwnProfile ? (
                       <>
-                        <p>Aun no has vinculado tu calendario.</p>
-                        <Link
-                          to="/edit-profile"
-                          className="btn-edit-info"
-                          style={{ marginTop: "12px" }}
-                        >
-                          Anadir calendario
-                        </Link>
+                        <p>Aún no has vinculado tu calendario.</p>
+                        <Link to="/edit-profile" className="btn-edit-info" style={{ marginTop: "12px", width: "auto" }}>Añadir calendario</Link>
                       </>
-                    ) : (
-                      <p>
-                        Este usuario no ha vinculado su calendario.
-                      </p>
-                    )}
+                    ) : <p>Este usuario no ha vinculado su calendario.</p>}
                   </div>
                 )}
               </div>

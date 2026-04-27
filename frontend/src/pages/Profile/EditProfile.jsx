@@ -112,7 +112,7 @@ export default function EditProfile() {
         return;
       }
       if (credentials.newPassword.length < 6) {
-        setCredentialError("La nueva contraseña debe tener al menos 6 caracteres.");
+        setCredentialError("Mínimo 6 caracteres.");
         return;
       }
     }
@@ -127,7 +127,6 @@ export default function EditProfile() {
       }
 
       await updateCredentials(user.id, payload);
-
       setCredentialSuccess("Cambios guardados correctamente.");
       setCredentials((prev) => ({
         ...prev,
@@ -143,40 +142,32 @@ export default function EditProfile() {
   };
 
   const handleDeleteAccount = async () => {
-    const confirmed = window.confirm(
-      "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción es irreversible.",
-    );
-    if (!confirmed) return;
-
-    const reconfirmed = window.confirm(
-      "Última advertencia: se borrarán todos tus datos, pedidos y perfil.",
-    );
-    if (!reconfirmed) return;
+    if (!window.confirm("¿Estás seguro de eliminar tu cuenta?")) return;
+    if (!window.confirm("Acción irreversible. ¿Borrar todo?")) return;
 
     try {
       await deleteAccount(user.id);
       logout();
       navigate("/");
     } catch (error) {
-      alert("Error al eliminar la cuenta: " + error.message);
+      alert("Error: " + error.message);
     }
   };
 
-  if (loading) return <div className="edit-page">Cargando...</div>;
+  if (loading) return <div className="edit-loading">Cargando configuración...</div>;
 
   return (
     <div className="edit-page">
       <div className="edit-topbar">
         <button className="btn-back" onClick={() => navigate("/profile")}>
-          Volver al perfil
+          ← Volver al perfil
         </button>
       </div>
 
-      <div className="edit-card">
-        <div className="edit-card-right" style={{ flex: 1 }}>
-          <p className="edit-section-title">Información básica</p>
-
-          <div className="edit-row">
+      <div className="edit-container">
+        <section className="edit-card">
+          <h2 className="edit-section-title">Información básica</h2>
+          <div className="edit-grid">
             <div className="edit-field">
               <label>Nombre</label>
               <input name="nombre" value={form.nombre} onChange={handleChange} />
@@ -199,92 +190,72 @@ export default function EditProfile() {
               value={form.bio}
               onChange={handleChange}
               rows="3"
-              style={{ width: "100%", borderRadius: "8px", padding: "10px", border: "1px solid #ddd" }}
+              className="edit-textarea"
             />
           </div>
-        </div>
-      </div>
+        </section>
 
-      <div className="edit-card column">
-        <p className="edit-section-title">EXPERIENCIA</p>
-        <div className="edit-field full">
-          <label>Resumen de experiencia laboral</label>
-          <input
-            name="experience"
-            value={form.experience}
-            onChange={handleChange}
-            placeholder="Ej: 5 años en desarrollo web..."
-          />
-        </div>
-      </div>
-
-      <div className="edit-card column">
-        <p className="edit-section-title">CALENDARIO</p>
-        <p className="edit-section-desc">
-          Vincula tu Google Calendar para que tus clientes puedan ver tu
-          disponibilidad. Para obtener la URL: abre Google Calendar → Configuración
-          del calendario → "Integrar calendario" → copia la URL del iframe (el src
-          entre comillas).
-        </p>
-        <div className="edit-field full">
-          <label>URL pública de Google Calendar (src del embed)</label>
-          <input
-            name="calendarUrl"
-            value={form.calendarUrl}
-            onChange={handleChange}
-            placeholder="https://calendar.google.com/calendar/embed?src=..."
-          />
-        </div>
-        {form.calendarUrl && (
-          <div style={{ marginTop: "12px", borderRadius: "8px", overflow: "hidden" }}>
-            <iframe
-              src={form.calendarUrl}
-              style={{
-                border: "none",
-                width: "100%",
-                height: "300px",
-                borderRadius: "8px",
-              }}
-              title="Vista previa del calendario"
+        <section className="edit-card">
+          <h2 className="edit-section-title">Experiencia</h2>
+          <div className="edit-field full">
+            <label>Resumen de experiencia laboral</label>
+            <input
+              name="experience"
+              value={form.experience}
+              onChange={handleChange}
+              placeholder="Ej: 5 años en desarrollo web..."
             />
           </div>
-        )}
-      </div>
+        </section>
 
-      <div className="edit-card column">
-        <p className="edit-section-title">REDES SOCIALES</p>
-        <div className="social-row">
-          <span className="social-label">LinkedIn</span>
-          <input className="social-input" name="linkedin" value={form.linkedin} onChange={handleChange} placeholder="URL de tu LinkedIn" />
-        </div>
-        <div className="social-row">
-          <span className="social-label">Twitter</span>
-          <input className="social-input" name="twitter" value={form.twitter} onChange={handleChange} placeholder="URL de tu Twitter" />
-        </div>
-        <div className="social-row">
-          <span className="social-label">Instagram</span>
-          <input className="social-input" name="instagram" value={form.instagram} onChange={handleChange} placeholder="URL de tu Instagram" />
-        </div>
+        {/* SECCIÓN 3: CALENDARIO */}
+        <section className="edit-card">
+          <h2 className="edit-section-title">Calendario</h2>
+          <p className="edit-section-desc">
+            Vincula tu Google Calendar copiando la URL del <strong>src</strong> del iframe desde la configuración de tu calendario.
+          </p>
+          <div className="edit-field full">
+            <label>URL de Google Calendar</label>
+            <input
+              name="calendarUrl"
+              value={form.calendarUrl}
+              onChange={handleChange}
+              placeholder="https://calendar.google.com/calendar/embed?src=..."
+            />
+          </div>
+          {form.calendarUrl && (
+            <div className="calendar-preview">
+              <iframe src={form.calendarUrl} title="Vista previa" className="edit-iframe-preview" />
+            </div>
+          )}
+        </section>
 
-        <div className="edit-actions">
-          <button className="btn-save" onClick={handleSave} disabled={saving}>
-            {saving ? "Guardando..." : "Guardar Cambios"}
-          </button>
-        </div>
-      </div>
+        <section className="edit-card">
+          <h2 className="edit-section-title">Redes Sociales</h2>
+          <div className="social-rows">
+            <div className="social-row">
+              <span className="social-label">LinkedIn</span>
+              <input name="linkedin" value={form.linkedin} onChange={handleChange} placeholder="URL de tu LinkedIn" />
+            </div>
+            <div className="social-row">
+              <span className="social-label">Twitter</span>
+              <input name="twitter" value={form.twitter} onChange={handleChange} placeholder="URL de tu Twitter" />
+            </div>
+            <div className="social-row">
+              <span className="social-label">Instagram</span>
+              <input name="instagram" value={form.instagram} onChange={handleChange} placeholder="URL de tu Instagram" />
+            </div>
+          </div>
+          <div className="edit-actions">
+            <button className="btn-save" onClick={handleSave} disabled={saving}>
+              {saving ? "Guardando..." : "Guardar Información"}
+            </button>
+          </div>
+        </section>
 
-      <div className="edit-card column">
-        <p className="edit-section-title">CUENTA</p>
-        <p className="edit-section-desc">
-          Cambia tu contraseña.
-        </p>
-
-       
-
-        <div className="credentials-divider" />
-
-        <div className="edit-row">
-          <div className="edit-field">
+        <section className="edit-card">
+          <h2 className="edit-section-title">Seguridad de la Cuenta</h2>
+          <div className="edit-field full">
             <label>Contraseña actual</label>
             <input
               type="password"
@@ -292,71 +263,53 @@ export default function EditProfile() {
               value={credentials.currentPassword}
               onChange={handleCredentialChange}
               placeholder="••••••••"
-              autoComplete="current-password"
             />
           </div>
-        </div>
-
-        <div className="edit-row">
-          <div className="edit-field">
-            <label>Nueva contraseña</label>
-            <input
-              type="password"
-              name="newPassword"
-              value={credentials.newPassword}
-              onChange={handleCredentialChange}
-              placeholder="Mín. 6 caracteres"
-              autoComplete="new-password"
-            />
+          <div className="edit-grid">
+            <div className="edit-field">
+              <label>Nueva contraseña</label>
+              <input
+                type="password"
+                name="newPassword"
+                value={credentials.newPassword}
+                onChange={handleCredentialChange}
+                placeholder="Mín. 6 caracteres"
+              />
+            </div>
+            <div className="edit-field">
+              <label>Confirmar contraseña</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={credentials.confirmPassword}
+                onChange={handleCredentialChange}
+                placeholder="Repite la contraseña"
+              />
+            </div>
           </div>
-          <div className="edit-field">
-            <label>Confirmar nueva contraseña</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={credentials.confirmPassword}
-              onChange={handleCredentialChange}
-              placeholder="Repite la contraseña"
-              autoComplete="new-password"
-            />
-          </div>
-        </div>
 
-        {credentialError && (
-          <p className="credentials-msg credentials-msg--error">{credentialError}</p>
-        )}
-        {credentialSuccess && (
-          <p className="credentials-msg credentials-msg--success">{credentialSuccess}</p>
-        )}
+          {credentialError && <div className="msg error">{credentialError}</div>}
+          {credentialSuccess && <div className="msg success">{credentialSuccess}</div>}
 
-        <div className="edit-actions">
-          <button className="btn-save" onClick={handleSaveCredentials} disabled={savingCredentials}>
-            {savingCredentials ? "Guardando..." : "Actualizar cuenta"}
-          </button>
-        </div>
-
-        <div
-          className="edit-card column"
-          
-        >
-          <p className="edit-section-title">
-            ZONA DE PELIGRO
-          </p>
-          <p className="edit-section-desc">
-            Una vez elimines tu cuenta, no podrás recuperarla. Se borrarán todos tus
-            datos permanentemente.
-          </p>
           <div className="edit-actions">
-            <button
-              className="btn-save"
-              onClick={handleDeleteAccount}
-            >
-              Eliminar mi cuenta
+            <button className="btn-save" onClick={handleSaveCredentials} disabled={savingCredentials}>
+              {savingCredentials ? "Actualizando..." : "Actualizar Contraseña"}
             </button>
           </div>
-        </div>
-      </div>
+        </section>
 
+        <section className="edit-card danger-zone">
+          <h2 className="edit-section-title">Zona de Peligro</h2>
+          <p className="edit-section-desc">
+            Al eliminar tu cuenta, todos tus datos se perderán de forma permanente.
+          </p>
+          <div className="edit-actions">
+            <button className="btn-save" onClick={handleDeleteAccount}>
+              Eliminar mi cuenta permanentemente
+            </button>
+          </div>
+        </section>
+      </div>
       <Footer />
     </div>
   );
