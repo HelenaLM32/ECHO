@@ -66,6 +66,9 @@ CREATE TABLE venues (
     address VARCHAR(255) NOT NULL,
     capacity INT,
     status VARCHAR(50) DEFAULT 'ACTIVE',
+    img1 VARCHAR(500),
+    img2 VARCHAR(500),
+    img3 VARCHAR(500),
     FOREIGN KEY (manager_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -96,6 +99,7 @@ CREATE TABLE events (
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
     status VARCHAR(50) DEFAULT 'REQUESTED',
+    img VARCHAR(500),
     FOREIGN KEY (venue_id) REFERENCES venues(id) ON DELETE CASCADE,
     FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE
 );

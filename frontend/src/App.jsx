@@ -14,6 +14,8 @@ import Admin from './pages/Admin/Admin';
 import AdminRoute from './components/AdminRoute/AdminRoute';
 import Orders from './pages/Orders/Orders';
 import OrderDetail from './pages/OrderDetail/OrderDetail';
+import CreateEvent from './pages/Events/CreateEvent';
+import CreateVenue from './pages/Venues/CreateVenue';
 
 export default function App() {
   return (
@@ -58,7 +60,23 @@ export default function App() {
             </AdminRoute>
           } 
         />
+
+
+
+        <Route path="/events/event-create" element={
+          <ProtectedRoute>
+            <CreateEvent />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/venues/venue-create" element={
+          <ProtectedRoute>
+            <CreateVenue />
+          </ProtectedRoute>
+        } />
       </Routes>
+
+      
     </AuthProvider>
   )
 }

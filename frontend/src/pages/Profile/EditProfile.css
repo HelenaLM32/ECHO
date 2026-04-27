@@ -2,7 +2,6 @@
 .edit-page {
   min-height: 100vh;
   background: var(--white);
-  padding: 40px 20px;
   font-family: 'Inter', Arial, sans-serif;
 }
 
@@ -27,6 +26,7 @@
   cursor: pointer;
   font-weight: 600;
   transition: var(--transition);
+  margin-top: 20px;
 }
 
 .btn-back:hover {

@@ -1,4 +1,3 @@
-
 .profile-page {
     min-height: 100vh;
     font-family: 'Inter', Arial, sans-serif;
@@ -12,7 +11,7 @@
     font-weight: 600;
 }
 
-
+/* --- Banner --- */
 .profile-banner-wrapper {
     width: 100%;
     height: 250px;
@@ -38,12 +37,8 @@
     color: var(--white);
 }
 
-.banner-placeholder p{
-  color: var(--white);
-}
-
-.banner-placeholder small{
-  color: var(--white);
+.banner-placeholder p, .banner-placeholder small {
+    color: var(--white);
 }
 
 .banner-download-icon {
@@ -57,8 +52,6 @@
     justify-content: center;
     margin: 0 auto 10px;
 }
-
-
 
 .banner-change-btn {
     position: absolute;
@@ -81,70 +74,62 @@
 
 /* --- Avatar --- */
 .avatar-float-wrapper {
-  max-width: 1100px;
-  margin: -65px auto 0;
-  padding: 0 30px;
-  position: relative;
-  z-index: 5;
+    max-width: 1100px;
+    margin: -65px auto 0;
+    padding: 0 30px;
+    position: relative;
+    z-index: 5;
 }
 
 .avatar-container {
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  background: var(--orange);
-  overflow: hidden;
-  border: 5px solid var(--white);
-  position: relative;
-  box-shadow: var(--shadow-md);
-  transition: var(--transition);
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: var(--orange);
+    overflow: hidden;
+    border: 5px solid var(--white);
+    position: relative;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
 }
 
-.avatar-container.editable {
-  cursor: pointer;
-}
-
-.avatar-container.editable:hover {
-  transform: scale(1.02);
-}
+.avatar-container.editable { cursor: pointer; }
+.avatar-container.editable:hover { transform: scale(1.02); }
 
 .avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .avatar-initials {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  color: var(--white);
-  font-weight: bold;
-  height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--white);
+    font-weight: bold;
+    height: 100%;
 }
 
 .avatar-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(2px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--white);
-  font-size: 0.8rem;
-  font-weight: 600;
-  opacity: 0;
-  transition: opacity 0.2s;
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 0.8rem;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.2s;
 }
 
-.avatar-container.editable:hover .avatar-overlay {
-  opacity: 1;
-}
+.avatar-container.editable:hover .avatar-overlay { opacity: 1; }
 
-/* --- Sidebar --- */
-
+/* --- Layout --- */
 .profile-layout-container {
     max-width: 1100px;
     margin: 20px auto 0;
@@ -218,9 +203,7 @@
     margin-top: 15px;
 }
 
-.btn-edit-info:hover {
-    background-color: var(--orange);
-}
+.btn-edit-info:hover { background-color: var(--orange); }
 
 /* --- Tabs --- */
 .content-tabs {
@@ -242,11 +225,9 @@
     color: var(--black-secondary);
 }
 
-.tab-item.active {
-    color: var(--orange);
-}
+.tab-item.active { color: var(--orange); }
 
-/* --- Cards --- */
+/* --- Grid & Cards (Estilo Wallapop) --- */
 .items-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -259,6 +240,8 @@
     border-radius: 16px;
     overflow: hidden;
     transition: var(--transition);
+    display: flex;
+    flex-direction: column;
 }
 
 .item-card:hover {
@@ -266,24 +249,42 @@
     box-shadow: var(--shadow-md);
 }
 
-/* ESTO SE TENDRA QUE SUBSTITUIR */
-
-.item-image-placeholder {
-    height: 160px;
-    background: var(--gray-dark);
+/* Contenedor de Imagen */
+.item-image-container {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* Cuadrado perfecto */
+    overflow: hidden;
+    background-color: var(--gray-dark);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3rem;
 }
 
+.item-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.item-card:hover .item-card-img {
+    transform: scale(1.05);
+}
+
+.item-image-placeholder {
+    font-size: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Info del Card */
 .item-info { padding: 16px; }
-
-.item-title { font-size: 1rem; margin-bottom: 8px; }
-
+.item-title { font-size: 1rem; margin-bottom: 8px; font-weight: 600; }
 .item-price { color: var(--orange); font-weight: 800; font-size: 1.1rem; }
-
 .item-extra { font-size: 0.8rem; color: var(--gray-dark-secondary); margin-top: 5px; }
+.item-address { font-size: 0.85rem; color: var(--black-secondary); margin-bottom: 4px; }
 
 /* --- Botón Crear --- */
 .create-tab-btn {
@@ -315,7 +316,6 @@
 
 /* --- Social --- */
 .social-header { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 20px; }
-
 .social-link {
     width: 36px;
     height: 36px;
@@ -324,7 +324,6 @@
     align-items: center;
     justify-content: center;
 }
-
 
 /* --- Calendario --- */
 .calendar-iframe {

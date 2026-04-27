@@ -136,72 +136,102 @@ export default function Profile() {
   };
 
   const renderItemGrid = (items, isLoading, type) => {
-    if (isLoading) return <div className="empty-state">Cargando...</div>;
-    const path = type === "Productos" ? "/products/create" : "/services/create";
-    const label = type === "Productos" ? "un producto" : "un servicio";
-    const icon = type === "Productos" ? "📦" : "🛠️";
+  if (isLoading) return <div className="empty-state">Cargando...</div>;
+  
+  const path = type === "Productos" ? "/products/create" : "/services/create";
+  const label = type === "Productos" ? "un producto" : "un servicio";
+  const icon = type === "Productos" ? "📦" : "🛠️";
 
-    return (
-      <div>
-        {isOwnProfile && (
-          <button className="create-tab-btn" onClick={() => navigate(path)}>
-            <span className="create-icon"></span> Crear {label}
-          </button>
-        )}
-        {!items || items.length === 0 ? (
-          <div className="empty-state">No hay {type.toLowerCase()} disponibles</div>
-        ) : (
-          <div className="items-grid">
-            {items.map((item) => (
-              <div key={item.id} className="item-card">
-                <div className="item-image-placeholder">{icon}</div>
-                <div className="item-info">
-                  <h3 className="item-title">{item.title}</h3>
-                  <p className="item-price">€{item.basePrice}</p>
-                </div>
+  return (
+    <div>
+      {isOwnProfile && (
+        <button className="create-tab-btn" onClick={() => navigate(path)}>
+          <span className="create-icon"></span> Crear {label}
+        </button>
+      )}
+      {!items || items.length === 0 ? (
+        <div className="empty-state">No hay {type.toLowerCase()} disponibles</div>
+      ) : (
+        <div className="items-grid">
+          {items.map((item) => (
+            <div key={item.id} className="item-card">
+              <div className="item-image-container">
+                {item.images && item.images.length > 0 ? (
+                  <img 
+                    src={item.images[0]} 
+                    alt={item.title} 
+                    className="item-card-img" 
+                  />
+                ) : (
+                  <div className="item-image-placeholder">{icon}</div>
+                )}
               </div>
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  };
+
+              <div className="item-info">
+                <h3 className="item-title">{item.title}</h3>
+                <p className="item-price">€{item.basePrice}</p>
+                {item.description && (
+                  <p className="item-extra line-clamp">
+                    {item.description.substring(0, 40)}...
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+  
 
   const renderVenues = () => {
-    if (itemsLoading.venues) return <div className="empty-state">Cargando...</div>;
-    return (
-      <div>
-        {isOwnProfile && (
-          <button className="create-tab-btn" onClick={() => navigate("/venues/create")}>
-            <span className="create-icon"></span> Crear un local
-          </button>
-        )}
-        {venues.length === 0 ? (
-          <div className="empty-state">Sin locales registrados</div>
-        ) : (
-          <div className="items-grid">
-            {venues.map((v) => (
-              <div key={v.id} className="item-card">
-                <div className="item-image-placeholder">🏠</div>
-                <div className="item-info">
-                  <h3 className="item-title">{v.name}</h3>
-                  <p className="item-address">{v.address}</p>
-                  {v.capacity && <p className="item-extra">Aforo: {v.capacity}</p>}
+    if (itemsLoading.venues) return <div className="empty-state">Cargando...</div>;
+    return (
+      <div>
+        {isOwnProfile && (
+          <button className="create-tab-btn" onClick={() => navigate("/venues/venue-create")}>
+            <span className="create-icon"></span> Crear un local
+          </button>
+        )}
+        {venues.length === 0 ? (
+          <div className="empty-state">Sin locales registrados</div>
+        ) : (
+          <div className="items-grid">
+            {venues.map((v) => (
+              <div key={v.id} className="item-card">
+                <div className="item-image-container">
+                  {v.images && v.images.length > 0 ? (
+                    <img 
+                      src={v.images[0]} 
+                      alt={v.name} 
+                      className="item-card-img" 
+                    />
+                  ) : (
+                    <div className="item-image-placeholder">🏠</div>
+                  )}
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  };
+
+                <div className="item-info">
+                  <h3 className="item-title">{v.name}</h3>
+                  <p className="item-address">{v.address}</p>
+                  {v.capacity && <p className="item-extra">Aforo: {v.capacity}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const renderEvents = () => {
     if (itemsLoading.events) return <div className="empty-state">Cargando...</div>;
     return (
       <div>
         {isOwnProfile && (
-          <button className="create-tab-btn" onClick={() => navigate("/events/create")}>
+          <button className="create-tab-btn" onClick={() => navigate("/events/event-create")}>
             <span className="create-icon"></span> Crear un evento
           </button>
         )}
