@@ -51,11 +51,20 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/profiles/**").authenticated()
                         .requestMatchers("/users/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/follows/**").authenticated()
+
+                        .requestMatchers(HttpMethod.GET, "/follows/stats/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/follows/check/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/follows/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/follows/**").authenticated()
-
                         .requestMatchers("/disputes/**").authenticated()
+
+                        .requestMatchers(HttpMethod.GET, "/venues/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/venues/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/venues/**").authenticated()
+
+                        .requestMatchers(HttpMethod.GET, "/events/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/events/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/events/**").authenticated()
 
                         .anyRequest().permitAll())
                 .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);

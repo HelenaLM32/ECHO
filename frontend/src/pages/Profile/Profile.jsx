@@ -1,10 +1,18 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { getProfileByUserId, updateAvatar, updateBanner, getProfileProducts, getProfileServices } from "../../services/profile";
-import linkedinIcon from '../../assets/icons8-linkedin-24.png';
-import twitterIcon from '../../assets/icons8-x-24.png';
-import instagramIcon from '../../assets/icons8-instagram-24.png';
+import {
+  getProfileByUserId,
+  updateAvatar,
+  updateBanner,
+  getProfileProducts,
+  getProfileServices,
+} from "../../services/profile";
+import { getVenuesByUser } from "../../services/venues";
+import { getEventsByUser } from "../../services/events";
+import linkedinIcon from "../../assets/icons8-linkedin-24.png";
+import twitterIcon from "../../assets/icons8-x-24.png";
+import instagramIcon from "../../assets/icons8-instagram-24.png";
 import Footer from "../../components/Footer/Footer";
 import "./Profile.css";
 import {
@@ -12,11 +20,12 @@ import {
   checkIsFollowing,
   followUser,
   unfollowUser,
-} from "../../services/follows"; 
+} from "../../services/follows";
 
 export default function Profile() {
   const { user, loadingContext } = useAuth();
   const { userId } = useParams();
+  const navigate = useNavigate();
   const bannerInputRef = useRef(null);
   const avatarInputRef = useRef(null);
 
@@ -26,14 +35,17 @@ export default function Profile() {
   const [profile, setProfile] = useState(null);
   const [products, setProducts] = useState([]);
   const [services, setServices] = useState([]);
+  const [venues, setVenues] = useState([]);
+  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [itemsLoading, setItemsLoading] = useState({
     products: false,
-    services: false
+    services: false,
+    venues: false,
+    events: false,
   });
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("Productos");
-
   const [followStats, setFollowStats] = useState({ followers: 0, following: 0 });
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
@@ -55,34 +67,50 @@ export default function Profile() {
 
   useEffect(() => {
     if (!targetId || !profile) return;
-
     if (activeTab === "Productos") {
-      setItemsLoading(prev => ({ ...prev, products: true }));
+      setItemsLoading((prev) => ({ ...prev, products: true }));
       getProfileProducts(targetId)
         .then((data) => setProducts(data))
         .catch(() => setProducts([]))
-        .finally(() => setItemsLoading(prev => ({ ...prev, products: false })));
-    }
-    else if (activeTab === "Servicios") {
-      setItemsLoading(prev => ({ ...prev, services: true }));
+        .finally(() =>
+          setItemsLoading((prev) => ({ ...prev, products: false }))
+        );
+    } else if (activeTab === "Servicios") {
+      setItemsLoading((prev) => ({ ...prev, services: true }));
       getProfileServices(targetId)
         .then((data) => setServices(data))
         .catch(() => setServices([]))
-        .finally(() => setItemsLoading(prev => ({ ...prev, services: false })));
+        .finally(() =>
+          setItemsLoading((prev) => ({ ...prev, services: false }))
+        );
+    } else if (activeTab === "Locales") {
+      setItemsLoading((prev) => ({ ...prev, venues: true }));
+      getVenuesByUser(targetId)
+        .then((data) => setVenues(data))
+        .catch(() => setVenues([]))
+        .finally(() =>
+          setItemsLoading((prev) => ({ ...prev, venues: false }))
+        );
+    } else if (activeTab === "Eventos") {
+      setItemsLoading((prev) => ({ ...prev, events: true }));
+      getEventsByUser(targetId)
+        .then((data) => setEvents(data))
+        .catch(() => setEvents([]))
+        .finally(() =>
+          setItemsLoading((prev) => ({ ...prev, events: false }))
+        );
     }
   }, [activeTab, targetId, profile]);
 
   useEffect(() => {
     if (!targetId) return;
-
     getFollowStats(targetId)
       .then(setFollowStats)
-      .catch(() => {});
-
+      .catch(() => { });
     if (user && !isOwnProfile) {
       checkIsFollowing(targetId)
         .then((data) => setIsFollowing(data.following))
-        .catch(() => {});
+        .catch(() => { });
     }
   }, [targetId, user, isOwnProfile]);
 
@@ -114,12 +142,12 @@ export default function Profile() {
       if (isFollowing) {
         await unfollowUser(targetId);
         setIsFollowing(false);
-        setFollowStats((prev) => ({ ...prev, followers: prev.followers - 1 }));
       } else {
         await followUser(targetId);
         setIsFollowing(true);
-        setFollowStats((prev) => ({ ...prev, followers: prev.followers + 1 }));
       }
+      const stats = await getFollowStats(targetId);
+      setFollowStats(stats);
     } catch (error) {
       alert(error.message);
     } finally {
@@ -127,42 +155,149 @@ export default function Profile() {
     }
   };
 
-  const renderItemGrid = (items, isLoading) => {
-    if (isLoading) {
-      return <div className="empty-state">Cargando...</div>;
-    }
+  // ACTUALIZADO: renderItemGrid ahora incluye botón de creación
+  const renderItemGrid = (items, isLoading, type) => {
+    if (isLoading) return <div className="empty-state">Cargando...</div>;
 
-    if (!items || items.length === 0) {
-      return <div className="empty-state">No hay elementos disponibles</div>;
-    }
+    const path = type === "Productos" ? "/products/create" : "/services/create";
+    const label = type === "Productos" ? "un producto" : "un servicio";
+    const icon = type === "Productos" ? "📦" : "🛠️";
 
     return (
-      <div className="items-grid">
-        {items.map((item) => (
-          <div key={item.id} className="item-card">
-            <div className="item-image-placeholder">
-              📦
-            </div>
-            <div className="item-info">
-              <h3 className="item-title">{item.title}</h3>
-              <p className="item-price">${item.basePrice}</p>
-            </div>
+      <div>
+        {isOwnProfile && (
+          <button
+            className="create-tab-btn"
+            onClick={() => navigate(path)}
+          >
+            <span className="create-icon">+</span>
+            Crear {label}
+          </button>
+        )}
+
+        {!items || items.length === 0 ? (
+          <div className="empty-state">No hay {type.toLowerCase()} disponibles</div>
+        ) : (
+          <div className="items-grid">
+            {items.map((item) => (
+              <div key={item.id} className="item-card">
+                <div className="item-image-placeholder">{icon}</div>
+                <div className="item-info">
+                  <h3 className="item-title">{item.title}</h3>
+                  <p className="item-price">${item.basePrice}</p>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
       </div>
     );
   };
 
-  if (loadingContext || loading) return <div className="profile-page">Cargando perfil...</div>;
-  if (error || !profile) return <div className="profile-page">{error || "Perfil no encontrado"}</div>;
+  const renderVenues = () => {
+    if (itemsLoading.venues)
+      return <div className="empty-state">Cargando...</div>;
+    return (
+      <div>
+        {isOwnProfile && (
+          <button
+            className="create-tab-btn"
+            onClick={() => navigate("/venues/create")}
+          >
+            <span className="create-icon">+</span>
+            Crear un local
+          </button>
+        )}
+        {venues.length === 0 ? (
+          <div className="empty-state">Sin locales registrados</div>
+        ) : (
+          <div className="items-grid">
+            {venues.map((v) => (
+              <div key={v.id} className="item-card">
+                <div className="item-image-placeholder">🏠</div>
+                <div className="item-info">
+                  <h3 className="item-title">{v.name}</h3>
+                  <p className="item-price">{v.address}</p>
+                  {v.capacity && (
+                    <p style={{ fontSize: "12px", color: "#888" }}>
+                      Aforo: {v.capacity}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
- const tabs = ["Productos", "Servicios", "Eventos", "Valoraciones", ...(isOwnProfile ? ["Calendario"] : [])];
+  const renderEvents = () => {
+    if (itemsLoading.events)
+      return <div className="empty-state">Cargando...</div>;
+    return (
+      <div>
+        {isOwnProfile && (
+          <button
+            className="create-tab-btn"
+            onClick={() => navigate("/events/create")}
+          >
+            <span className="create-icon">+</span>
+            Crear un evento
+          </button>
+        )}
+        {events.length === 0 ? (
+          <div className="empty-state">Sin eventos registrados</div>
+        ) : (
+          <div className="items-grid">
+            {events.map((ev) => (
+              <div key={ev.id} className="item-card">
+                <div className="item-image-placeholder">🎭</div>
+                <div className="item-info">
+                  <h3 className="item-title">
+                    {ev.title || "Evento sin titulo"}
+                  </h3>
+                  <p className="item-price">
+                    {ev.startDate
+                      ? new Date(ev.startDate).toLocaleDateString("es-ES")
+                      : "Fecha no definida"}
+                  </p>
+                  <p style={{ fontSize: "12px", color: "#888" }}>
+                    Estado: {ev.status}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  if (loadingContext || loading)
+    return <div className="profile-page">Cargando perfil...</div>;
+
+  if (error || !profile)
+    return <div className="profile-page">{error || "Perfil no encontrado"}</div>;
+
+  const tabs = [
+    "Productos",
+    "Servicios",
+    "Locales",
+    "Eventos",
+    "Valoraciones",
+    ...(isOwnProfile ? ["Calendario"] : []),
+  ];
 
   return (
     <div className="profile-page">
       <header className="profile-banner-wrapper">
         {profile.bannerUrl ? (
-          <img src={profile.bannerUrl} alt="Portada" className="banner-image" />
+          <img
+            src={profile.bannerUrl}
+            alt="Portada"
+            className="banner-image"
+          />
         ) : (
           <div
             className="banner-placeholder"
@@ -174,13 +309,14 @@ export default function Profile() {
             <small>Recomendado: 3200 x 410 px</small>
           </div>
         )}
-
         {isOwnProfile && profile.bannerUrl && (
-          <button className="banner-change-btn" onClick={() => bannerInputRef.current?.click()}>
+          <button
+            className="banner-change-btn"
+            onClick={() => bannerInputRef.current?.click()}
+          >
             Cambiar portada
           </button>
         )}
-
         <input
           ref={bannerInputRef}
           type="file"
@@ -196,15 +332,20 @@ export default function Profile() {
           onClick={() => isOwnProfile && avatarInputRef.current?.click()}
         >
           {profile.avatarUrl ? (
-            <img src={profile.avatarUrl} alt={profile.username} className="avatar-img" />
+            <img
+              src={profile.avatarUrl}
+              alt={profile.username}
+              className="avatar-img"
+            />
           ) : (
             <div className="avatar-initials">
               {profile.username?.charAt(0).toUpperCase() || "U"}
             </div>
           )}
-          {isOwnProfile && <div className="avatar-overlay"><span>Cambiar</span></div>}
+          {isOwnProfile && (
+            <div className="avatar-overlay"><span>Cambiar</span></div>
+          )}
         </div>
-
         <input
           ref={avatarInputRef}
           type="file"
@@ -220,13 +361,10 @@ export default function Profile() {
             <h1 className="display-name">
               {profile.publicName || profile.username}
             </h1>
-
             <p className="username">@{profile.username}</p>
-
             <p className="display-location">
-              {profile.location || "Ubicación no especificada"}
+              {profile.location || "Ubicacion no especificada"}
             </p>
-
             {isOwnProfile && (
               <div className="sidebar-actions">
                 <Link to="/edit-profile" className="btn-edit-info">
@@ -234,15 +372,14 @@ export default function Profile() {
                 </Link>
               </div>
             )}
-
-            <p className="display">Sobre mí</p>
+            <p className="display">Sobre mi</p>
             <p className="display-bio">
-              {profile.bio || "Este usuario aún no ha añadido una descripción."}
+              {profile.bio ||
+                "Este usuario aun no ha anadido una descripcion."}
             </p>
-
             <p className="display">Experiencia</p>
             <p className="display-experience">
-              {profile.experience || "Sin experiencia añadida."}
+              {profile.experience || "Sin experiencia anadida."}
             </p>
           </div>
 
@@ -268,12 +405,18 @@ export default function Profile() {
                 border: "none",
                 cursor: "pointer",
                 fontWeight: "bold",
-                background: isFollowing ? "#e0e0e0" : "var(--color-primary, #7c3aed)",
+                background: isFollowing
+                  ? "#e0e0e0"
+                  : "var(--color-primary, #7c3aed)",
                 color: isFollowing ? "#333" : "#fff",
                 marginBottom: "12px",
               }}
             >
-              {followLoading ? "..." : isFollowing ? "Dejar de seguir" : "Seguir"}
+              {followLoading
+                ? "..."
+                : isFollowing
+                  ? "Dejar de seguir"
+                  : "Seguir"}
             </button>
           )}
         </aside>
@@ -281,17 +424,32 @@ export default function Profile() {
         <main className="profile-main">
           <div className="social-header">
             {profile.linkedin && (
-              <a href={profile.linkedin} className="social-link" target="_blank" rel="noreferrer">
+              <a
+                href={profile.linkedin}
+                className="social-link"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <img src={linkedinIcon} alt="LinkedIn" />
               </a>
             )}
             {profile.instagram && (
-              <a href={profile.instagram} className="social-link" target="_blank" rel="noreferrer">
+              <a
+                href={profile.instagram}
+                className="social-link"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <img src={instagramIcon} alt="Instagram" />
               </a>
             )}
             {profile.twitter && (
-              <a href={profile.twitter} className="social-link" target="_blank" rel="noreferrer">
+              <a
+                href={profile.twitter}
+                className="social-link"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <img src={twitterIcon} alt="Twitter" />
               </a>
             )}
@@ -310,14 +468,28 @@ export default function Profile() {
           </nav>
 
           <div className="tab-content">
-            {activeTab === "Productos" && renderItemGrid(products, itemsLoading.products)}
-            {activeTab === "Servicios" && renderItemGrid(services, itemsLoading.services)}
+            {activeTab === "Productos" &&
+              renderItemGrid(products, itemsLoading.products, "Productos")}
+            {activeTab === "Servicios" &&
+              renderItemGrid(services, itemsLoading.services, "Servicios")}
+            {activeTab === "Locales" && renderVenues()}
+            {activeTab === "Eventos" && renderEvents()}
+            {activeTab === "Valoraciones" && (
+              <div className="empty-state">Sin valoraciones aun</div>
+            )}
             {activeTab === "Calendario" && (
               <div className="calendar-tab">
                 {profile.calendarUrl ? (
                   <>
-                    <p style={{ marginBottom: "12px", color: "#555", fontSize: "0.9rem" }}>
-                      Disponibilidad de {profile.publicName || profile.username}
+                    <p
+                      style={{
+                        marginBottom: "12px",
+                        color: "#555",
+                        fontSize: "0.9rem",
+                      }}
+                    >
+                      Disponibilidad de{" "}
+                      {profile.publicName || profile.username}
                     </p>
                     <iframe
                       src={profile.calendarUrl}
@@ -335,17 +507,19 @@ export default function Profile() {
                   <div className="empty-state">
                     {isOwnProfile ? (
                       <>
-                        <p>Aún no has vinculado tu calendario.</p>
+                        <p>Aun no has vinculado tu calendario.</p>
                         <Link
                           to="/edit-profile"
                           className="btn-edit-info"
                           style={{ marginTop: "12px" }}
                         >
-                          Añadir calendario
+                          Anadir calendario
                         </Link>
                       </>
                     ) : (
-                      <p>Este usuario no ha vinculado su calendario.</p>
+                      <p>
+                        Este usuario no ha vinculado su calendario.
+                      </p>
                     )}
                   </div>
                 )}
