@@ -1,7 +1,9 @@
 package com.example.echo.security;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -72,15 +74,28 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        List<String> origins = Arrays.stream(allowedOrigins.split(","))
+        Set<String> originsSet = Arrays.stream(allowedOrigins.split(","))
                 .map(String::trim)
                 .map(value -> value.endsWith("/") ? value.substring(0, value.length() - 1) : value)
                 .filter(value -> !value.isEmpty())
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        Set<String> aliases = new LinkedHashSet<>();
+        for (String origin : originsSet) {
+            if (origin.contains("://localhost:")) {
+                aliases.add(origin.replace("://localhost:", "://127.0.0.1:"));
+            }
+            if (origin.contains("://127.0.0.1:")) {
+                aliases.add(origin.replace("://127.0.0.1:", "://localhost:"));
+            }
+        }
+        originsSet.addAll(aliases);
+        List<String> origins = List.copyOf(originsSet);
 
         boolean wildcard = origins.stream().anyMatch("*"::equals);
         configuration.setAllowedOriginPatterns(origins);
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Location"));
         configuration.setAllowCredentials(!wildcard);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

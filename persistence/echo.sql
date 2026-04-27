@@ -34,7 +34,7 @@ CREATE TABLE profiles (
     instagram VARCHAR(255),
     twitter VARCHAR(255),
     experience VARCHAR(255),
-    calendar_url VARCHAR(500)
+    calendar_url VARCHAR(500),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
