@@ -94,4 +94,21 @@ public class RestEventController {
                 .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
         return user.getId();
     }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> update(
+            @PathVariable Integer id,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate,
+            @RequestParam(value = "img", required = false) MultipartFile img,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            Integer userId = getUserIdFromToken(authHeader);
+            return ResponseEntity.ok(eventService.updateEvent(id, userId, title, description, startDate, endDate, img));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(403).body(e.getMessage());
+        }
+    }
 }

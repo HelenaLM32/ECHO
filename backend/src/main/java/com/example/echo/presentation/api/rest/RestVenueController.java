@@ -89,4 +89,20 @@ public class RestVenueController {
                 .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
         return user.getId();
     }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> update(
+            @PathVariable Integer id,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "address", required = false) String address,
+            @RequestParam(value = "capacity", required = false) Integer capacity,
+            @RequestParam(value = "images", required = false) List<MultipartFile> images,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            Integer userId = getUserIdFromToken(authHeader);
+            return ResponseEntity.ok(venueService.updateVenue(id, userId, name, address, capacity, images));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(403).body(e.getMessage());
+        }
+    }
 }

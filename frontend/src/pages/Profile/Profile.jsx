@@ -10,6 +10,8 @@ import {
 } from "../../services/profile";
 import { getVenuesByUser } from "../../services/venues";
 import { getEventsByUser } from "../../services/events";
+import { deleteVenue } from "../../services/venues";
+import { deleteEvent } from "../../services/events";
 import linkedinIcon from "../../assets/icons8-linkedin-24.png";
 import twitterIcon from "../../assets/icons8-x-24.png";
 import instagramIcon from "../../assets/icons8-instagram-24.png";
@@ -135,6 +137,23 @@ export default function Profile() {
     finally { setFollowLoading(false); }
   };
 
+
+const handleDeleteVenue = async (id) => {
+  if (!confirm("¿Eliminar este local?")) return;
+  try {
+    await deleteVenue(id);
+    setVenues((prev) => prev.filter((v) => v.id !== id));
+  } catch (err) { alert(err.message); }
+};
+
+const handleDeleteEvent = async (id) => {
+  if (!confirm("¿Eliminar este evento?")) return;
+  try {
+    await deleteEvent(id);
+    setEvents((prev) => prev.filter((ev) => ev.id !== id));
+  } catch (err) { alert(err.message); }
+};
+
   const renderItemGrid = (items, isLoading, type) => {
   if (isLoading) return <div className="empty-state">Cargando...</div>;
   
@@ -209,6 +228,17 @@ export default function Profile() {
                   <p className="item-address">{v.address}</p>
                   {v.capacity && <p className="item-extra">Aforo: {v.capacity}</p>}
                 </div>
+
+{isOwnProfile && (
+  <div className="item-actions">
+    <button className="btn-item-edit" onClick={() => navigate(`/venues/${v.id}/edit`)}>
+      Editar
+    </button>
+    <button className="btn-item-delete" onClick={() => handleDeleteVenue(v.id)}>
+      Eliminar
+    </button>
+  </div>
+)}
               </div>
             ))}
           </div>
@@ -257,6 +287,16 @@ export default function Profile() {
                   </p>
                 )}
               </div>
+              {isOwnProfile && (
+  <div className="item-actions">
+    <button className="btn-item-edit" onClick={() => navigate(`/events/${ev.id}/edit`)}>
+      Editar
+    </button>
+    <button className="btn-item-delete" onClick={() => handleDeleteEvent(ev.id)}>
+      Eliminar
+    </button>
+  </div>
+)}
             </div>
           ))}
         </div>

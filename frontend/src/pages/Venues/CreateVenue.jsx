@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createVenue } from "../../services/venues";
+import { useAuth } from "../../context/AuthContext";
 import "./CreateVenue.css";
 
 export default function CreateVenue() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 

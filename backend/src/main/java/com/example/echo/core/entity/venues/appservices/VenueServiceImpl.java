@@ -62,6 +62,18 @@ public class VenueServiceImpl implements VenueService {
 
             VenueDTO dto = VenueMapper.dtoFromVenue(venue);
 
+            if (images != null) {
+                List<MultipartFile> nonEmpty = images.stream()
+                        .filter(img -> img != null && !img.isEmpty())
+                        .toList();
+                if (nonEmpty.size() > 0)
+                    dto.setImg1(fileStorageService.store(nonEmpty.get(0), "venues"));
+                if (nonEmpty.size() > 1)
+                    dto.setImg2(fileStorageService.store(nonEmpty.get(1), "venues"));
+                if (nonEmpty.size() > 2)
+                    dto.setImg3(fileStorageService.store(nonEmpty.get(2), "venues"));
+            }
+
             VenueDTO saved = venueRepository.save(dto);
             return mapper.writeValueAsString(saved);
         } catch (com.example.echo.core.entity.sharedkernel.exceptions.BuildException e) {
@@ -78,5 +90,39 @@ public class VenueServiceImpl implements VenueService {
         if (!dto.getManagerId().equals(requesterId))
             throw new ServiceException("No autorizado");
         venueRepository.deleteById(id);
+    }
+
+    @Override
+    public String updateVenue(Integer id, Integer requesterId, String name,
+            String address, Integer capacity, List<MultipartFile> images) throws ServiceException {
+        VenueDTO dto = venueRepository.findById(id)
+                .orElseThrow(() -> new ServiceException("Local no encontrado"));
+        if (!dto.getManagerId().equals(requesterId))
+            throw new ServiceException("No autorizado");
+
+        if (name != null && !name.isBlank())
+            dto.setName(name);
+        if (address != null && !address.isBlank())
+            dto.setAddress(address);
+        if (capacity != null)
+            dto.setCapacity(capacity);
+
+        if (images != null) {
+            List<MultipartFile> nonEmpty = images.stream()
+                    .filter(img -> img != null && !img.isEmpty()).toList();
+            if (nonEmpty.size() > 0)
+                dto.setImg1(fileStorageService.store(nonEmpty.get(0), "venues"));
+            if (nonEmpty.size() > 1)
+                dto.setImg2(fileStorageService.store(nonEmpty.get(1), "venues"));
+            if (nonEmpty.size() > 2)
+                dto.setImg3(fileStorageService.store(nonEmpty.get(2), "venues"));
+        }
+
+        VenueDTO saved = venueRepository.save(dto);
+        try {
+            return mapper.writeValueAsString(saved);
+        } catch (Exception e) {
+            throw new ServiceException(e.getMessage());
+        }
     }
 }

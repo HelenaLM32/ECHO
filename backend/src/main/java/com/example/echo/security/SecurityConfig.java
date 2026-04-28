@@ -61,10 +61,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/venues/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/venues/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/venues/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/venues/**").authenticated()
 
                         .requestMatchers(HttpMethod.GET, "/events/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/events/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/events/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/events/**").authenticated()
 
                         .anyRequest().permitAll())
                 .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);

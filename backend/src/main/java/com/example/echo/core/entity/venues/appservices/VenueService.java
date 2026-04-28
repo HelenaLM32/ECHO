@@ -15,4 +15,8 @@ public interface VenueService {
             Integer capacity, List<MultipartFile> images) throws ServiceException;
 
     void deleteById(Integer id, Integer requesterId) throws ServiceException;
+
+    String updateVenue(Integer id, Integer requesterId, String name,
+            String address, Integer capacity,
+            List<MultipartFile> images) throws ServiceException;
 }

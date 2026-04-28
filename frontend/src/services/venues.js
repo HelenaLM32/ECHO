@@ -1,62 +1,75 @@
-import { API_URL } from "./config";
+import { API_URL, fetchWithToken } from "./config";
 
-export const getVenuesByUser = async (userId) => {
-  const res = await fetch(`${API_URL}/venues/user/${userId}`);
-  if (!res.ok) throw new Error("Error al cargar locales");
-  return res.json();
-};
-
-export const createVenue = async (data) => {
-  const token = sessionStorage.getItem("token");
-
-  const headers = new Headers();
-  headers.append("Authorization", `Bearer ${token}`);
-
-  if (!(data instanceof FormData)) {
-    headers.append("Content-Type", "application/json");
-  }
-
-  const res = await fetch(`${API_URL}/venues`, {
+export const createVenue = async (formData) => {
+  const res = await fetchWithToken(`${API_URL}/venues`, {
     method: "POST",
-    headers: headers, // Usamos el objeto Headers nativo
-    body: data instanceof FormData ? data : JSON.stringify(data),
+    body: formData,
   });
 
   if (!res.ok) {
-    const text = await res.text();
-    let errorMessage;
-    try {
-      const errorObj = JSON.parse(text);
-      errorMessage = errorObj.message || errorObj.error;
-    } catch {
-      errorMessage = text;
-    }
-    throw new Error(errorMessage || "Error al crear local");
+    const errorText = await res.text();
+    throw new Error(errorText || "Error al crear el local");
   }
 
-  return res.json();
+  return await res.json();
+};
+
+export const getVenuesByUser = async (userId) => {
+  const res = await fetchWithToken(`${API_URL}/venues/user/${userId}`);
+
+  if (!res.ok) {
+    throw new Error("Error al obtener los locales");
+  }
+
+  return await res.json();
+};
+
+export const getVenueById = async (venueId) => {
+  const res = await fetchWithToken(`${API_URL}/venues/${venueId}`);
+
+  if (!res.ok) {
+    throw new Error("Error al obtener el local");
+  }
+
+  return await res.json();
+};
+
+export const updateVenue = async (venueId, formData) => {
+  const res = await fetchWithToken(`${API_URL}/venues/${venueId}`, {
+    method: "PUT",
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Error al actualizar el local");
+  }
+
+  return await res.json();
 };
 
 export const deleteVenue = async (venueId) => {
-  const token = sessionStorage.getItem("token");
-  const res = await fetch(`${API_URL}/venues/${venueId}`, {
+  const res = await fetchWithToken(`${API_URL}/venues/${venueId}`, {
     method: "DELETE",
-    headers: { 
-      Authorization: `Bearer ${token}` 
-    },
   });
 
   if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || "Error al eliminar local");
+    throw new Error("Error al eliminar el local");
   }
-  
-  return res.json();
+
+  return res.ok;
 };
 
-
-export const getVenueById = async (venueId) => {
-  const res = await fetch(`${API_URL}/venues/${venueId}`);
-  if (!res.ok) throw new Error("Error al cargar el detalle del local");
+export const updateVenue = async (venueId, data) => {
+  const token = sessionStorage.getItem("token");
+  const res = await fetch(`${API_URL}/venues/${venueId}`, {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${token}` },
+    body: data, 
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || "Error al actualizar local");
+  }
   return res.json();
 };

@@ -332,3 +332,40 @@
     border: 1px solid var(--gray-stroke);
     border-radius: 12px;
 }
+
+.item-actions {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px 12px;
+}
+
+.btn-item-edit,
+.btn-item-delete {
+  flex: 1;
+  padding: 6px 0;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-item-edit {
+  background: var(--gray-light);
+  color: var(--black);
+}
+
+.btn-item-edit:hover {
+  background: var(--gray-stroke);
+}
+
+.btn-item-delete {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.btn-item-delete:hover {
+  background: #c62828;
+  color: white;
+}

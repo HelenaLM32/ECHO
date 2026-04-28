@@ -18,4 +18,8 @@ public interface EventService {
             MultipartFile img) throws ServiceException;
 
     void deleteById(Integer id, Integer requesterId) throws ServiceException;
+
+    String updateEvent(Integer id, Integer requesterId, String title,
+            String description, String startDate, String endDate,
+            MultipartFile img) throws ServiceException;
 }
