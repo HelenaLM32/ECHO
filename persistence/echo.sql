@@ -97,7 +97,6 @@ CREATE TABLE events (
     creator_id INT NOT NULL,
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
-    status VARCHAR(50) DEFAULT 'REQUESTED',
     title VARCHAR(150),
     description TEXT,
     img VARCHAR(500),
