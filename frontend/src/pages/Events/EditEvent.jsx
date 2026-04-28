@@ -98,16 +98,16 @@ export default function EditEvent() {
     setSuccess("");
     try {
       await updateEvent(
-        eventId,
-        {
-          title: form.title,
-          description: form.description,
-          venueId: parseInt(form.venueId),
-          startDate: form.startDate,
-          endDate: form.endDate,
-        },
-        imgFile
-      );
+  eventId,
+  {
+    title: form.title,
+    ...(form.description ? { description: form.description } : {}),
+    venueId: parseInt(form.venueId),
+    startDate: form.startDate,
+    endDate: form.endDate,
+  },
+  imgFile
+);
       setSuccess("Evento actualizado correctamente");
       setTimeout(() => navigate("/profile"), 1200);
     } catch (err) {

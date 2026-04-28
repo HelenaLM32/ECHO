@@ -93,7 +93,7 @@ public class EventServiceImpl implements EventService {
                 throw new ServiceException("El local indicado no existe");
 
             Event event = Event.getInstance(venueId, creatorId, startDate, endDate, title);
-            event.setStatus("REQUESTED");
+            event.setStatus("ACTIVO");
 
             if (description != null && event.setDescription(description) != 0)
                 throw new ServiceException("Descripción demasiado larga (máx. 5000 caracteres)");

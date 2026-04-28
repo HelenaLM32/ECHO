@@ -1,8 +1,12 @@
-import { API_URL, fetchWithToken } from "./config";
+import { API_URL } from "./config";
 
 export const createVenue = async (formData) => {
-  const res = await fetchWithToken(`${API_URL}/venues`, {
+  const token = sessionStorage.getItem("token");
+  const res = await fetch(`${API_URL}/venues`, {
     method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     body: formData,
   });
 
@@ -15,7 +19,12 @@ export const createVenue = async (formData) => {
 };
 
 export const getVenuesByUser = async (userId) => {
-  const res = await fetchWithToken(`${API_URL}/venues/user/${userId}`);
+  const token = sessionStorage.getItem("token");
+  const res = await fetch(`${API_URL}/venues/user/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   if (!res.ok) {
     throw new Error("Error al obtener los locales");
@@ -25,7 +34,12 @@ export const getVenuesByUser = async (userId) => {
 };
 
 export const getVenueById = async (venueId) => {
-  const res = await fetchWithToken(`${API_URL}/venues/${venueId}`);
+  const token = sessionStorage.getItem("token");
+  const res = await fetch(`${API_URL}/venues/${venueId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   if (!res.ok) {
     throw new Error("Error al obtener el local");
@@ -35,8 +49,12 @@ export const getVenueById = async (venueId) => {
 };
 
 export const updateVenue = async (venueId, formData) => {
-  const res = await fetchWithToken(`${API_URL}/venues/${venueId}`, {
+  const token = sessionStorage.getItem("token");
+  const res = await fetch(`${API_URL}/venues/${venueId}`, {
     method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     body: formData,
   });
 
@@ -49,8 +67,12 @@ export const updateVenue = async (venueId, formData) => {
 };
 
 export const deleteVenue = async (venueId) => {
-  const res = await fetchWithToken(`${API_URL}/venues/${venueId}`, {
+  const token = sessionStorage.getItem("token");
+  const res = await fetch(`${API_URL}/venues/${venueId}`, {
     method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 
   if (!res.ok) {

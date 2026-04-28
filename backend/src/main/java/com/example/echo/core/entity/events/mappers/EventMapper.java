@@ -11,7 +11,7 @@ public class EventMapper {
             return null;
         Event e = Event.getInstance(dto.getVenueId(), dto.getCreatorId(),
                 dto.getStartDate(), dto.getEndDate(), dto.getTitle());
-        e.setStatus(dto.getStatus() != null ? dto.getStatus() : "REQUESTED");
+        e.setStatus(dto.getStatus() != null ? dto.getStatus() : "ACTIVO");
         e.setDescription(dto.getDescription());
         e.setImg(dto.getImg());
         return e;
