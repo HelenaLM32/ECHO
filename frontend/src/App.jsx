@@ -16,6 +16,8 @@ import Orders from './pages/Orders/Orders';
 import OrderDetail from './pages/OrderDetail/OrderDetail';
 import CreateEvent from './pages/Events/CreateEvent';
 import CreateVenue from './pages/Venues/CreateVenue';
+import EditVenue from './pages/Venues/EditVenue';
+import EditEvent from './pages/Events/EditEvent';
 
 export default function App() {
   return (
@@ -74,6 +76,18 @@ export default function App() {
             <CreateVenue />
           </ProtectedRoute>
         } />
+
+        <Route path="/venues/:venueId/edit" element={
+  <ProtectedRoute>
+    <EditVenue />
+  </ProtectedRoute>
+} />
+
+<Route path="/events/:eventId/edit" element={
+  <ProtectedRoute>
+    <EditEvent />
+  </ProtectedRoute>
+} />
       </Routes>
 
       

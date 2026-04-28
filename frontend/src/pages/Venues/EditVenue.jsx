@@ -1,13 +1,17 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { createVenue } from "../../services/venues";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getVenueById, updateVenue } from "../../services/venues";
 import Footer from "../../components/Footer/Footer";
-import "../Events/CreateEvent.css"; 
+import "../Events/CreateEvent.css";
 
-export default function CreateVenue() {
+export default function EditVenue() {
   const navigate = useNavigate();
+  const { venueId } = useParams();
+
   const [loading, setLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(true);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -15,8 +19,26 @@ export default function CreateVenue() {
     capacity: "",
   });
 
-  const [images, setImages] = useState([null, null, null]);
+  const [existingImages, setExistingImages] = useState([null, null, null]);
+  const [newImages, setNewImages] = useState([null, null, null]);
   const [previews, setPreviews] = useState([null, null, null]);
+
+  useEffect(() => {
+    setFetchLoading(true);
+    getVenueById(venueId)
+      .then((venue) => {
+        setFormData({
+          name: venue.name || "",
+          address: venue.address || "",
+          capacity: venue.capacity || "",
+        });
+        const imgs = [venue.img1 || null, venue.img2 || null, venue.img3 || null];
+        setExistingImages(imgs);
+        setPreviews(imgs);
+      })
+      .catch(() => setError("No se pudo cargar el local"))
+      .finally(() => setFetchLoading(false));
+  }, [venueId]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,25 +47,28 @@ export default function CreateVenue() {
   const handleImageChange = (e, index) => {
     const file = e.target.files[0];
     if (!file) return;
-    const newImages = [...images];
-    newImages[index] = file;
-    setImages(newImages);
+    const updated = [...newImages];
+    updated[index] = file;
+    setNewImages(updated);
     const reader = new FileReader();
     reader.onloadend = () => {
-      const newPreviews = [...previews];
-      newPreviews[index] = reader.result;
-      setPreviews(newPreviews);
+      const updatedPreviews = [...previews];
+      updatedPreviews[index] = reader.result;
+      setPreviews(updatedPreviews);
     };
     reader.readAsDataURL(file);
   };
 
   const removeImage = (index) => {
-    const newImages = [...images];
-    newImages[index] = null;
-    setImages(newImages);
-    const newPreviews = [...previews];
-    newPreviews[index] = null;
-    setPreviews(newPreviews);
+    const updatedNew = [...newImages];
+    updatedNew[index] = null;
+    setNewImages(updatedNew);
+    const updatedExisting = [...existingImages];
+    updatedExisting[index] = null;
+    setExistingImages(updatedExisting);
+    const updatedPreviews = [...previews];
+    updatedPreviews[index] = null;
+    setPreviews(updatedPreviews);
   };
 
   const handleSubmit = async (e) => {
@@ -54,14 +79,20 @@ export default function CreateVenue() {
     }
     setLoading(true);
     setError("");
+    setSuccess("");
+
     const data = new FormData();
     data.append("name", formData.name);
     data.append("address", formData.address);
     if (formData.capacity) data.append("capacity", formData.capacity);
-    images.forEach((img) => { if (img) data.append("images", img); });
+
+    // Solo enviar imágenes nuevas si las hay; si no, el backend mantiene las existentes
+    newImages.forEach((img) => { if (img) data.append("images", img); });
+
     try {
-      await createVenue(data);
-      navigate("/profile");
+      await updateVenue(venueId, data);
+      setSuccess("Local actualizado correctamente");
+      setTimeout(() => navigate("/profile"), 1200);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -69,19 +100,23 @@ export default function CreateVenue() {
     }
   };
 
+  if (fetchLoading) return <div className="profile-page-loading">Cargando local...</div>;
+
   return (
     <div className="event-page">
       <div className="event-container">
         <header className="event-header">
-          <h1 className="event-title">Anuncia tu local</h1>
+          <h1 className="event-title">Editar local</h1>
           <p className="event-desc">
-            Registra tu espacio para que otros puedan organizar eventos en él.
+            Modifica los datos de tu espacio.
           </p>
         </header>
 
         {error && <div className="msg error">{error}</div>}
+        {success && <div className="msg success">{success}</div>}
 
         <form onSubmit={handleSubmit} className="event-form">
+          {/* Card 1: Detalles */}
           <div className="event-card">
             <h2 className="event-section-title">Detalles del espacio</h2>
 
@@ -93,7 +128,6 @@ export default function CreateVenue() {
                 required
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Ej: Sala Apolo"
                 className="input-field"
               />
             </div>
@@ -106,7 +140,6 @@ export default function CreateVenue() {
                 required
                 value={formData.address}
                 onChange={handleChange}
-                placeholder="Ej: Carrer de la Nou de la Rambla, 113"
                 className="input-field"
               />
             </div>
@@ -118,7 +151,6 @@ export default function CreateVenue() {
                 name="capacity"
                 value={formData.capacity}
                 onChange={handleChange}
-                placeholder="Ej: 500"
                 className="input-field"
               />
             </div>
@@ -127,7 +159,7 @@ export default function CreateVenue() {
           <div className="event-card">
             <h2 className="event-section-title">Galería</h2>
             <p className="field-hint">
-              Añade hasta 3 fotos. La primera será la principal.
+              Haz clic en una imagen para reemplazarla. La primera es la principal.
             </p>
 
             <div className="image-upload-zone">
@@ -135,7 +167,7 @@ export default function CreateVenue() {
                 <div key={index} className="image-preview-box">
                   {preview ? (
                     <>
-                      <img src={preview} alt="preview" className="img-content" />
+                      <img src={preview} alt={`foto ${index + 1}`} className="img-content" />
                       <button
                         type="button"
                         className="btn-remove"
@@ -172,7 +204,7 @@ export default function CreateVenue() {
               Cancelar
             </button>
             <button type="submit" className="btn-save" disabled={loading}>
-              {loading ? "Registrando..." : "Publicar Local"}
+              {loading ? "Guardando..." : "Guardar cambios"}
             </button>
           </div>
         </form>

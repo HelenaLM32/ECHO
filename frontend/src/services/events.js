@@ -60,3 +60,12 @@ export const updateEvent = async (eventId, data, imgFile) => {
   }
   return res.json();
 };
+
+export const getEventById = async (eventId) => {
+  const token = sessionStorage.getItem("token");
+  const res = await fetch(`${API_URL}/events/${eventId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error("Error al cargar el evento");
+  return res.json();
+};
