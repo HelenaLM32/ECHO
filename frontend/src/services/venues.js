@@ -59,17 +59,3 @@ export const deleteVenue = async (venueId) => {
 
   return res.ok;
 };
-
-export const updateVenue = async (venueId, data) => {
-  const token = sessionStorage.getItem("token");
-  const res = await fetch(`${API_URL}/venues/${venueId}`, {
-    method: "PUT",
-    headers: { Authorization: `Bearer ${token}` },
-    body: data, 
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || "Error al actualizar local");
-  }
-  return res.json();
-};

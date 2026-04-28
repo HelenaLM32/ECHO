@@ -1,52 +1,43 @@
+// src/main/java/com/example/echo/core/entity/profile/model/Profile.java
 package com.example.echo.core.entity.profile.model;
 
-import jakarta.persistence.*;
+import com.example.echo.core.entity.domainservices.validations.Check;
+import com.example.echo.core.entity.sharedkernel.exceptions.BuildException;
 
-@Entity
-@Table(name = "profiles")
 public class Profile {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(name = "user_id", nullable = false, unique = true)
     private Integer userId;
-
-    @Column(name = "public_name")
     private String publicName;
-
-    @Column(name = "bio", columnDefinition = "TEXT")
     private String bio;
-
-    @Column(name = "location")
     private String location;
-
-    @Column(name = "avatar_url", columnDefinition = "LONGTEXT")
     private String avatarUrl;
-
-    @Column(name = "banner_url", columnDefinition = "LONGTEXT")
     private String bannerUrl;
-
-    @Column(name = "linkedin")
     private String linkedin;
-
-    @Column(name = "instagram")
     private String instagram;
-
-    @Column(name = "twitter")
     private String twitter;
-
-    @Column(name = "experience")
     private String experience;
+    private String calendarUrl;
 
-    public Profile() {
+    protected Profile() {
     }
 
-    public static Profile getInstance(Integer userId, String username) {
+    public static Profile getInstance(Integer userId, String publicName) throws BuildException {
         Profile p = new Profile();
-        p.setUserId(userId);
-        p.setPublicName(username);
+        StringBuilder msg = new StringBuilder();
+
+        if (userId == null || !Check.isPositive(userId))
+            msg.append("userId inválido; ");
+        else
+            p.userId = userId;
+
+        if (publicName != null && !Check.maxLength(publicName, 100))
+            msg.append("publicName demasiado largo (máx. 100); ");
+        else
+            p.publicName = publicName;
+
+        if (!msg.isEmpty())
+            throw new BuildException(msg.toString().trim());
         return p;
     }
 
@@ -54,87 +45,119 @@ public class Profile {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public Integer getUserId() {
         return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
     }
 
     public String getPublicName() {
         return publicName;
     }
 
-    public void setPublicName(String publicName) {
-        this.publicName = publicName;
-    }
-
     public String getBio() {
         return bio;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
     }
 
     public String getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public String getAvatarUrl() {
         return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
     }
 
     public String getBannerUrl() {
         return bannerUrl;
     }
 
-    public void setExperience(String experience) {
-        this.experience = experience;
-    }
-
-    public String getExperience() {
-        return experience;
-    }
-
-    public void setBannerUrl(String bannerUrl) {
-        this.bannerUrl = bannerUrl;
-    }
-
     public String getLinkedin() {
         return linkedin;
-    }
-
-    public void setLinkedin(String linkedin) {
-        this.linkedin = linkedin;
     }
 
     public String getInstagram() {
         return instagram;
     }
 
-    public void setInstagram(String instagram) {
-        this.instagram = instagram;
-    }
-
     public String getTwitter() {
         return twitter;
     }
 
-    public void setTwitter(String twitter) {
-        this.twitter = twitter;
+    public String getExperience() {
+        return experience;
+    }
+
+    public String getCalendarUrl() {
+        return calendarUrl;
+    }
+
+    public int setPublicName(String publicName) {
+        if (publicName == null || Check.maxLength(publicName, 100)) {
+            this.publicName = publicName;
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setBio(String bio) {
+        if (bio == null || Check.maxLength(bio, 1000)) {
+            this.bio = bio;
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setLocation(String location) {
+        if (location == null || Check.maxLength(location, 150)) {
+            this.location = location;
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setLinkedin(String url) {
+        if (url == null || Check.maxLength(url, 255)) {
+            this.linkedin = url;
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setInstagram(String url) {
+        if (url == null || Check.maxLength(url, 255)) {
+            this.instagram = url;
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setTwitter(String url) {
+        if (url == null || Check.maxLength(url, 255)) {
+            this.twitter = url;
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setExperience(String experience) {
+        if (experience == null || Check.maxLength(experience, 2000)) {
+            this.experience = experience;
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setCalendarUrl(String url) {
+        if (url == null || Check.maxLength(url, 500)) {
+            this.calendarUrl = url;
+            return 0;
+        }
+        return -1;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public void setBannerUrl(String bannerUrl) {
+        this.bannerUrl = bannerUrl;
     }
 }

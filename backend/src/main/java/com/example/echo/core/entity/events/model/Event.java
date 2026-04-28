@@ -45,17 +45,16 @@ public class Event {
         else
             e.endDate = endDate;
 
-        if (title != null && !Check.maxStringChars(title, 150))
-            msg.append("title demasiado largo; ");
+        if (!Check.lengthBetween(title, 2, 150))
+            msg.append("title inválido (2-150 caracteres); ");
         else
-            e.title = title;
+            e.title = title.trim();
 
         if (!msg.isEmpty())
             throw new BuildException(msg.toString().trim());
         return e;
     }
 
-    // Getters
     public Integer getId() {
         return id;
     }
@@ -92,16 +91,55 @@ public class Event {
         return img;
     }
 
-    // Setters
+    public int setTitle(String title) {
+        if (Check.lengthBetween(title, 2, 150)) {
+            this.title = title.trim();
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setDescription(String desc) {
+        if (desc == null) {
+            this.description = null;
+            return 0;
+        }
+        if (Check.maxLength(desc, 5000)) {
+            this.description = desc.trim();
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setImg(String img) {
+        if (img == null) {
+            this.img = null;
+            return 0;
+        }
+        if (Check.maxLength(img, 500)) {
+            this.img = img.trim();
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setStartDate(LocalDateTime startDate) {
+        if (startDate == null)
+            return -1;
+        this.startDate = startDate;
+        return 0;
+    }
+
+    public int setEndDate(LocalDateTime endDate) {
+        if (endDate == null)
+            return -1;
+        if (this.startDate != null && !endDate.isAfter(this.startDate))
+            return -1;
+        this.endDate = endDate;
+        return 0;
+    }
+
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public void setDescription(String desc) {
-        this.description = desc;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
     }
 }

@@ -1,7 +1,6 @@
 package com.example.echo.presentation.api.rest;
 
-import com.example.echo.core.entity.follows.model.Follow;
-import com.example.echo.core.entity.follows.persistence.FollowRepository;
+import com.example.echo.core.entity.follows.appservices.FollowService;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.core.entity.user.dto.UserDTO;
 import com.example.echo.core.entity.user.persistence.UserRepository;
@@ -15,9 +14,10 @@ import org.springframework.web.bind.annotation.*;
 public class RestFollowController {
 
     @Autowired
-    FollowRepository followRepository;
+    private FollowService followService;
+
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @PostMapping("/{targetId}")
     public ResponseEntity<String> follow(
@@ -25,15 +25,10 @@ public class RestFollowController {
             @RequestHeader("Authorization") String authHeader) {
         try {
             Integer followerId = getUserIdFromToken(authHeader);
-            if (followerId.equals(targetId))
-                return ResponseEntity.badRequest().body("No puedes seguirte a ti mismo");
-            if (followRepository.existsByFollowerIdAndFollowingId(followerId, targetId))
-                return ResponseEntity.badRequest().body("Ya sigues a este usuario");
-
-            followRepository.save(new Follow(followerId, targetId));
+            followService.follow(followerId, targetId);
             return ResponseEntity.ok("{\"message\":\"Siguiendo\"}");
         } catch (ServiceException e) {
-            return ResponseEntity.status(403).body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -43,7 +38,7 @@ public class RestFollowController {
             @RequestHeader("Authorization") String authHeader) {
         try {
             Integer followerId = getUserIdFromToken(authHeader);
-            followRepository.deleteByFollowerIdAndFollowingId(followerId, targetId);
+            followService.unfollow(followerId, targetId);
             return ResponseEntity.ok("{\"message\":\"Has dejado de seguir\"}");
         } catch (ServiceException e) {
             return ResponseEntity.status(403).body(e.getMessage());
@@ -56,7 +51,7 @@ public class RestFollowController {
             @RequestHeader("Authorization") String authHeader) {
         try {
             Integer followerId = getUserIdFromToken(authHeader);
-            boolean following = followRepository.existsByFollowerIdAndFollowingId(followerId, targetId);
+            boolean following = followService.isFollowing(followerId, targetId);
             return ResponseEntity.ok("{\"following\":" + following + "}");
         } catch (ServiceException e) {
             return ResponseEntity.status(403).body(e.getMessage());
@@ -65,8 +60,8 @@ public class RestFollowController {
 
     @GetMapping("/stats/{userId}")
     public ResponseEntity<String> getStats(@PathVariable Integer userId) {
-        long followers = followRepository.countFollowers(userId);
-        long following = followRepository.countFollowing(userId);
+        long followers = followService.countFollowers(userId);
+        long following = followService.countFollowing(userId);
         return ResponseEntity.ok(
                 "{\"followers\":" + followers + ",\"following\":" + following + "}");
     }

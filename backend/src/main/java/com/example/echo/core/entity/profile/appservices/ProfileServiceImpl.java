@@ -16,6 +16,7 @@ import com.example.echo.core.entity.user.dto.UserDTO;
 import com.example.echo.core.entity.user.persistence.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.echo.core.entity.profile.model.Profile;
 
 @Service
 @Transactional
@@ -55,22 +56,74 @@ public class ProfileServiceImpl implements ProfileService {
             ProfileDTO profile = profileRepository.findByUserId(userId)
                     .orElseGet(() -> ProfileMapper.newProfileForUser(user));
 
-            if (node.has("publicName"))
-                profile.setPublicName(node.get("publicName").asText());
-            if (node.has("bio"))
-                profile.setBio(node.get("bio").asText());
-            if (node.has("location"))
-                profile.setLocation(node.get("location").asText());
-            if (node.has("linkedin"))
-                profile.setLinkedin(node.get("linkedin").asText());
-            if (node.has("instagram"))
-                profile.setInstagram(node.get("instagram").asText());
-            if (node.has("twitter"))
-                profile.setTwitter(node.get("twitter").asText());
-            if (node.has("experience"))
-                profile.setExperience(node.get("experience").asText());
-            if (node.has("calendarUrl"))
-                profile.setCalendarUrl(node.get("calendarUrl").asText());
+            Profile model;
+            try {
+                model = Profile.getInstance(userId, profile.getPublicName());
+            } catch (com.example.echo.core.entity.sharedkernel.exceptions.BuildException e) {
+                throw new ServiceException("Error de perfil: " + e.getMessage());
+            }
+
+            StringBuilder errors = new StringBuilder();
+
+            if (node.has("publicName") && !node.get("publicName").isNull()) {
+                String v = node.get("publicName").asText();
+                if (model.setPublicName(v) != 0)
+                    errors.append("publicName demasiado largo; ");
+                else
+                    profile.setPublicName(model.getPublicName());
+            }
+            if (node.has("bio")) {
+                String v = node.get("bio").isNull() ? null : node.get("bio").asText();
+                if (model.setBio(v) != 0)
+                    errors.append("bio demasiado larga; ");
+                else
+                    profile.setBio(model.getBio());
+            }
+            if (node.has("location")) {
+                String v = node.get("location").isNull() ? null : node.get("location").asText();
+                if (model.setLocation(v) != 0)
+                    errors.append("location demasiado larga; ");
+                else
+                    profile.setLocation(model.getLocation());
+            }
+            if (node.has("linkedin")) {
+                String v = node.get("linkedin").isNull() ? null : node.get("linkedin").asText();
+                if (model.setLinkedin(v) != 0)
+                    errors.append("linkedin demasiado largo; ");
+                else
+                    profile.setLinkedin(model.getLinkedin());
+            }
+            if (node.has("instagram")) {
+                String v = node.get("instagram").isNull() ? null : node.get("instagram").asText();
+                if (model.setInstagram(v) != 0)
+                    errors.append("instagram demasiado largo; ");
+                else
+                    profile.setInstagram(model.getInstagram());
+            }
+            if (node.has("twitter")) {
+                String v = node.get("twitter").isNull() ? null : node.get("twitter").asText();
+                if (model.setTwitter(v) != 0)
+                    errors.append("twitter demasiado largo; ");
+                else
+                    profile.setTwitter(model.getTwitter());
+            }
+            if (node.has("experience")) {
+                String v = node.get("experience").isNull() ? null : node.get("experience").asText();
+                if (model.setExperience(v) != 0)
+                    errors.append("experience demasiado larga; ");
+                else
+                    profile.setExperience(model.getExperience());
+            }
+            if (node.has("calendarUrl")) {
+                String v = node.get("calendarUrl").isNull() ? null : node.get("calendarUrl").asText();
+                if (model.setCalendarUrl(v) != 0)
+                    errors.append("calendarUrl demasiado larga; ");
+                else
+                    profile.setCalendarUrl(model.getCalendarUrl());
+            }
+
+            if (!errors.isEmpty())
+                throw new ServiceException("Datos inválidos: " + errors.toString().trim());
 
             profileRepository.save(profile);
             return getByUserIdToJson(userId);

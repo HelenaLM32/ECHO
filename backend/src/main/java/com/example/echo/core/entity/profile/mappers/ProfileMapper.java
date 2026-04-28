@@ -29,6 +29,7 @@ public class ProfileMapper {
         node.put("instagram", safe(profile.getInstagram()));
         node.put("twitter", safe(profile.getTwitter()));
         node.put("experience", safe(profile.getExperience()));
+        node.put("calendarUrl", safe(profile.getCalendarUrl()));
         return node;
     }
 

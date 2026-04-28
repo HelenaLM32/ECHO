@@ -1,3 +1,4 @@
+// src/main/java/com/example/echo/core/entity/venues/model/Venue.java
 package com.example.echo.core.entity.venues.model;
 
 import com.example.echo.core.entity.domainservices.validations.Check;
@@ -27,17 +28,19 @@ public class Venue {
         else
             v.managerId = managerId;
 
-        if (!Check.minStringChars(name, 2) || !Check.maxStringChars(name, 150))
-            msg.append("name inválido; ");
+        if (!Check.lengthBetween(name, 2, 150))
+            msg.append("name inválido (2-150 chars); ");
         else
             v.name = name.trim();
 
-        if (!Check.minStringChars(address, 5) || !Check.maxStringChars(address, 255))
-            msg.append("address inválido; ");
+        if (!Check.lengthBetween(address, 5, 255))
+            msg.append("address inválido (5-255 chars); ");
         else
             v.address = address.trim();
 
-        if (capacity != null && capacity > 0)
+        if (capacity != null && !Check.isPositive(capacity))
+            msg.append("capacity debe ser positivo; ");
+        else
             v.capacity = capacity;
 
         if (!msg.isEmpty())
@@ -77,15 +80,51 @@ public class Venue {
         return img3;
     }
 
-    public void setImg1(String img1) {
-        this.img1 = img1;
+    public int setName(String name) {
+        if (Check.lengthBetween(name, 2, 150)) {
+            this.name = name.trim();
+            return 0;
+        }
+        return -1;
     }
 
-    public void setImg2(String img2) {
-        this.img2 = img2;
+    public int setAddress(String address) {
+        if (Check.lengthBetween(address, 5, 255)) {
+            this.address = address.trim();
+            return 0;
+        }
+        return -1;
     }
 
-    public void setImg3(String img3) {
-        this.img3 = img3;
+    public int setCapacity(Integer capacity) {
+        if (capacity == null || Check.isPositive(capacity)) {
+            this.capacity = capacity;
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setImg1(String img1) {
+        if (img1 == null || Check.maxLength(img1, 500)) {
+            this.img1 = img1;
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setImg2(String img2) {
+        if (img2 == null || Check.maxLength(img2, 500)) {
+            this.img2 = img2;
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setImg3(String img3) {
+        if (img3 == null || Check.maxLength(img3, 500)) {
+            this.img3 = img3;
+            return 0;
+        }
+        return -1;
     }
 }
