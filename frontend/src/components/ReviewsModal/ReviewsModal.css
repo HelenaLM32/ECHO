@@ -1,0 +1,135 @@
+.rmodal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.rmodal {
+  background: var(--black-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 14px;
+  padding: 1.75rem;
+  width: 100%;
+  max-width: 480px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.rmodal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--gray-dark-secondary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: color 0.15s;
+}
+
+.rmodal-close:hover { color: var(--white); }
+
+.rmodal-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--white);
+  margin: 0;
+  padding-right: 2rem;
+}
+
+.rmodal-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 0.875rem 1rem;
+}
+
+.rmodal-avg {
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: var(--orange);
+  line-height: 1;
+}
+
+.rmodal-stars {
+  display: flex;
+  gap: 0.15rem;
+}
+
+.rmodal-star {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.rmodal-star--filled { color: var(--orange); }
+
+.rmodal-count {
+  font-size: 0.82rem;
+  color: var(--gray-dark-secondary);
+  margin-left: auto;
+}
+
+.rmodal-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rmodal-empty {
+  color: var(--gray-dark-secondary);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.rmodal-item {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  padding: 0.875rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.rmodal-item__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.rmodal-item__author {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.rmodal-item__score {
+  display: flex;
+  gap: 0.1rem;
+}
+
+.rmodal-item__score .rmodal-star { font-size: 1rem; }
+
+.rmodal-item__comment {
+    color: var(--white);
+    font-size: 0.875rem;
+    font-style: italic;
+    margin: 0;
+    line-height: 1.5;
+}

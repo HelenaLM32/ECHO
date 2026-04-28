@@ -105,3 +105,124 @@
   color: #ff6b6b;
   margin: 0;
 }
+
+/* ── Review section ──────────────────────────────────── */
+.od-review-section {
+  background: var(--black-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.od-review-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--white);
+  margin: 0;
+}
+
+.od-review-loading {
+  color: var(--gray-dark-secondary);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.od-stars {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.od-star {
+  font-size: 1.75rem;
+  color: var(--black);
+  transition: color 0.15s;
+  line-height: 1;
+}
+
+.od-star--filled { color: var(--orange); }
+
+.od-stars--interactive .od-star {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.od-stars--interactive:hover .od-star {
+  color: var(--black);
+}
+
+.od-stars--interactive .od-star:hover,
+.od-stars--interactive .od-star:has(~ .od-star:hover) {
+  color: var(--orange);
+}
+
+.od-review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.od-review-comment {
+  background: var(--black);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--white);
+  font-size: 0.9rem;
+  padding: 0.75rem 1rem;
+  resize: vertical;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.od-review-comment:focus {
+  outline: none;
+  border-color: var(--orange);
+}
+
+.od-review-error {
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.od-review-submit {
+  align-self: flex-start;
+  background: var(--orange);
+  border: none;
+  border-radius: 8px;
+  color: var(--white);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.5rem 1.25rem;
+  transition: opacity 0.2s;
+}
+
+.od-review-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.od-review-submit:hover:not(:disabled) { opacity: 0.85; }
+
+.od-review-existing {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.od-review-existing__label {
+  font-size: 0.82rem;
+  color: var(--gray-dark-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.od-review-existing__comment {
+  font-size: 0.9rem;
+  color: var(--gray-light);
+  font-style: italic;
+  margin: 0;
+}

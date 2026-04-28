@@ -9,6 +9,7 @@ import {
   createDevOrderMessage,
 } from "../../services/adminDev";
 import { getAllDisputes, closeDispute } from "../../services/disputes";
+import { getAllReviews, deleteReview } from "../../services/reviews";
 import DisputePanel from "../../components/DisputePanel";
 import "./Admin.css";
 
@@ -17,6 +18,7 @@ export default function Admin() {
   const [data, setData] = useState([]);
   const [disputes, setDisputes] = useState([]);
   const [selectedDispute, setSelectedDispute] = useState(null);
+  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(false);
   const [adminError, setAdminError] = useState("");
   const [usersCatalog, setUsersCatalog] = useState([]);
@@ -68,6 +70,10 @@ export default function Admin() {
       loadDisputes();
       return;
     }
+    if (view === "reviews") {
+      loadReviews();
+      return;
+    }
     loadData(view);
   }, [view]);
 
@@ -113,6 +119,71 @@ export default function Admin() {
       setLoading(false);
     }
   };
+
+  const loadReviews = async () => {
+    setLoading(true);
+    setAdminError("");
+    try {
+      const list = await getAllReviews();
+      setReviews(Array.isArray(list) ? list : []);
+    } catch (e) {
+      setAdminError(e.message || "No se pudieron cargar las reviews");
+      setReviews([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteReview = async (id) => {
+    if (!window.confirm("¿Eliminar esta review?")) return;
+    try {
+      await deleteReview(id);
+      setReviews((prev) => prev.filter((r) => r.id !== id));
+    } catch {
+      alert("Error al eliminar la review.");
+    }
+  };
+
+  const renderReviews = () => (
+    <div className="admin-reviews">
+      <h2>Reviews ({reviews.length})</h2>
+      {reviews.length === 0 ? (
+        <p className="admin-empty">No hay reviews registradas.</p>
+      ) : (
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Encargo</th>
+              <th>Autor</th>
+              <th>Puntuación</th>
+              <th>Comentario</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {reviews.map((r) => (
+              <tr key={r.id}>
+                <td>#{r.id}</td>
+                <td>#{r.orderId}</td>
+                <td>@{r.authorUsername ?? r.authorId}</td>
+                <td>{"★".repeat(r.score)}{"☆".repeat(5 - r.score)}</td>
+                <td className="admin-review-comment">{r.comment || "—"}</td>
+                <td>
+                  <button
+                    className="admin-btn-danger"
+                    onClick={() => handleDeleteReview(r.id)}
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
 
   const loadDevelopData = async () => {
     setLoading(true);
@@ -737,6 +808,12 @@ export default function Admin() {
         >
           Disputas
         </button>
+        <button
+          className={view === "reviews" ? "active" : ""}
+          onClick={() => setView("reviews")}
+        >
+          Reviews
+        </button>
         <button 
           className={view === "develop" ? "active" : ""} 
           onClick={() => setView("develop")}
@@ -755,6 +832,8 @@ export default function Admin() {
         renderDevelopPanel()
       ) : view === "disputes" ? (
         renderDisputes()
+      ) : view === "reviews" ? (
+        renderReviews()
       ) : (
         renderBasicTable()
       )}

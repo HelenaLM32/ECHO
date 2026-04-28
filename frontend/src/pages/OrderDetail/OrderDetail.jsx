@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { getOrderById, updateOrderStatus } from "../../services/orders";
+import { createReview, getReviewByOrder } from "../../services/reviews";
 import OrderBoard from "../../components/OrderBoard/OrderBoard";
 import "./OrderDetail.css";
 
@@ -29,6 +30,12 @@ export default function OrderDetail() {
   const [error, setError]       = useState("");
   const [updating, setUpdating] = useState(false);
 
+  const [review, setReview]               = useState(undefined); // undefined = not loaded yet
+  const [reviewScore, setReviewScore]     = useState(0);
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  const [reviewError, setReviewError]     = useState("");
+
   useEffect(() => {
     setLoading(true);
     getOrderById(Number(orderId))
@@ -36,6 +43,28 @@ export default function OrderDetail() {
       .catch((e) => setError(e.message || "No se pudo cargar el encargo"))
       .finally(() => setLoading(false));
   }, [orderId]);
+
+  useEffect(() => {
+    if (!order || order.status !== "COMPLETED") return;
+    getReviewByOrder(Number(orderId))
+      .then(setReview)
+      .catch(() => setReview(null));
+  }, [order, orderId]);
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    if (reviewScore === 0) { setReviewError("Selecciona una puntuación"); return; }
+    setReviewSubmitting(true);
+    setReviewError("");
+    try {
+      const saved = await createReview(Number(orderId), reviewScore, reviewComment);
+      setReview(saved);
+    } catch (err) {
+      setReviewError(err.message || "Error al enviar la review");
+    } finally {
+      setReviewSubmitting(false);
+    }
+  };
 
   const handleStatusChange = async (newStatus) => {
     setUpdating(true);
@@ -60,6 +89,7 @@ export default function OrderDetail() {
 
   const isCreator = user?.id === order?.creatorId;
   const isBuyer   = user?.id === order?.buyerId;
+  const canReview = isBuyer && order?.status === "COMPLETED";
 
   return (
     <div className="od-page">
@@ -111,6 +141,63 @@ export default function OrderDetail() {
         buyerId={order.buyerId}
         creatorId={order.creatorId}
       />
+
+      {canReview && (
+        <div className="od-review-section">
+          <h2 className="od-review-title">Valorar encargo</h2>
+
+          {review === undefined && (
+            <p className="od-review-loading">Cargando…</p>
+          )}
+
+          {review !== null && review !== undefined && (
+            <div className="od-review-existing">
+              <p className="od-review-existing__label">Tu valoración</p>
+              <div className="od-stars od-stars--static">
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <span key={s} className={s <= review.score ? "od-star od-star--filled" : "od-star"}>★</span>
+                ))}
+              </div>
+              {review.comment && <p className="od-review-existing__comment">"{review.comment}"</p>}
+            </div>
+          )}
+
+          {review === null && (
+            <form className="od-review-form" onSubmit={handleReviewSubmit}>
+              <div className="od-stars od-stars--interactive">
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    className={s <= reviewScore ? "od-star od-star--filled" : "od-star"}
+                    onClick={() => setReviewScore(s)}
+                    aria-label={`${s} estrella${s > 1 ? "s" : ""}`}
+                  >★</button>
+                ))}
+              </div>
+
+              <textarea
+                className="od-review-comment"
+                placeholder="Deja un comentario (opcional)"
+                value={reviewComment}
+                onChange={(e) => setReviewComment(e.target.value)}
+                rows={3}
+                maxLength={500}
+              />
+
+              {reviewError && <p className="od-review-error">{reviewError}</p>}
+
+              <button
+                type="submit"
+                className="od-review-submit"
+                disabled={reviewSubmitting}
+              >
+                {reviewSubmitting ? "Enviando…" : "Enviar valoración"}
+              </button>
+            </form>
+          )}
+        </div>
+      )}
     </div>
   );
 }

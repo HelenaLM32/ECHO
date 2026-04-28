@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { getProfileByUserId, updateAvatar, updateBanner, getProfileProducts, getProfileServices } from "../../services/profile";
+import { getReviewsByUser, getAverageByUser } from "../../services/reviews";
+import ReviewsModal from "../../components/ReviewsModal/ReviewsModal";
 import linkedinIcon from '../../assets/icons8-linkedin-24.png';
 import twitterIcon from '../../assets/icons8-x-24.png';
 import instagramIcon from '../../assets/icons8-instagram-24.png';
@@ -37,6 +39,10 @@ export default function Profile() {
   const [followStats, setFollowStats] = useState({ followers: 0, following: 0 });
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
+
+  const [reviewStats, setReviewStats]   = useState({ average: null, count: 0 });
+  const [reviews, setReviews]           = useState([]);
+  const [showReviews, setShowReviews]   = useState(false);
 
   useEffect(() => {
     if (loadingContext) return;
@@ -85,6 +91,19 @@ export default function Profile() {
         .catch(() => {});
     }
   }, [targetId, user, isOwnProfile]);
+
+  useEffect(() => {
+    if (!targetId) return;
+    getAverageByUser(targetId)
+      .then((data) => setReviewStats({ average: data.average, count: data.count ?? 0 }))
+      .catch(() => {});
+  }, [targetId]);
+
+  const handleOpenReviews = () => {
+    getReviewsByUser(targetId)
+      .then((data) => { setReviews(data); setShowReviews(true); })
+      .catch(() => setShowReviews(true));
+  };
 
   const handleBannerChange = async (e) => {
     const file = e.target.files[0];
@@ -159,6 +178,7 @@ export default function Profile() {
  const tabs = ["Productos", "Servicios", "Eventos", "Valoraciones", ...(isOwnProfile ? ["Calendario"] : [])];
 
   return (
+    <>
     <div className="profile-page">
       <header className="profile-banner-wrapper">
         {profile.bannerUrl ? (
@@ -226,6 +246,18 @@ export default function Profile() {
             <p className="display-location">
               {profile.location || "Ubicación no especificada"}
             </p>
+
+            <button
+              className="profile-rating-badge"
+              onClick={handleOpenReviews}
+              title="Ver valoraciones"
+            >
+              <span className="profile-rating-star">★</span>
+              <span className="profile-rating-avg">
+                {reviewStats.average != null ? reviewStats.average.toFixed(1) : "—"}
+              </span>
+              <span className="profile-rating-count">({reviewStats.count})</span>
+            </button>
 
             {isOwnProfile && (
               <div className="sidebar-actions">
@@ -356,5 +388,17 @@ export default function Profile() {
       </div>
       <Footer />
     </div>
+
+    {showReviews && (
+      <ReviewsModal
+        reviews={reviews}
+        average={reviewStats.average}
+        count={reviewStats.count}
+        onClose={() => setShowReviews(false)}
+      />
+    )}
+    </>
   );
 }
+
+
