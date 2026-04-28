@@ -28,10 +28,6 @@ public class VenueDTO {
     @JsonProperty("capacity")
     private Integer capacity;
 
-    @Column(length = 50)
-    @JsonProperty("status")
-    private String status;
-
     @Column(name = "img1", length = 500)
     @JsonProperty("img1")
     private String img1;
@@ -48,13 +44,12 @@ public class VenueDTO {
     }
 
     public VenueDTO(Integer id, Integer managerId, String name, String address,
-            Integer capacity, String status, String img1, String img2, String img3) {
+            Integer capacity, String img1, String img2, String img3) {
         this.id = id;
         this.managerId = managerId;
         this.name = name;
         this.address = address;
         this.capacity = capacity;
-        this.status = status;
         this.img1 = img1;
         this.img2 = img2;
         this.img3 = img3;
@@ -78,10 +73,6 @@ public class VenueDTO {
 
     public Integer getCapacity() {
         return capacity;
-    }
-
-    public String getStatus() {
-        return status;
     }
 
     public String getImg1() {
@@ -114,10 +105,6 @@ public class VenueDTO {
 
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public void setImg1(String img1) {

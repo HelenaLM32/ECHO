@@ -35,7 +35,7 @@ CREATE TABLE profiles (
     instagram VARCHAR(255),
     twitter VARCHAR(255),
     experience VARCHAR(255),
-    calendar_url VARCHAR(500)
+    calendar_url VARCHAR(500),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -65,7 +65,6 @@ CREATE TABLE venues (
     name VARCHAR(150) NOT NULL,
     address VARCHAR(255) NOT NULL,
     capacity INT,
-    status VARCHAR(50) DEFAULT 'ACTIVE',
     img1 VARCHAR(500),
     img2 VARCHAR(500),
     img3 VARCHAR(500),
@@ -99,10 +98,13 @@ CREATE TABLE events (
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
     status VARCHAR(50) DEFAULT 'REQUESTED',
+    title VARCHAR(150),
+    description TEXT,
     img VARCHAR(500),
     FOREIGN KEY (venue_id) REFERENCES venues(id) ON DELETE CASCADE,
     FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
 
 CREATE TABLE order_messages (
     id INT AUTO_INCREMENT PRIMARY KEY,

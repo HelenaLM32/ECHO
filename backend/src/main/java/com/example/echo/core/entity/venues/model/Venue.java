@@ -10,7 +10,6 @@ public class Venue {
     private String name;
     private String address;
     private Integer capacity;
-    private String status;
     private String img1;
     private String img2;
     private String img3;
@@ -66,10 +65,6 @@ public class Venue {
         return capacity;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
     public String getImg1() {
         return img1;
     }
@@ -80,10 +75,6 @@ public class Venue {
 
     public String getImg3() {
         return img3;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public void setImg1(String img1) {

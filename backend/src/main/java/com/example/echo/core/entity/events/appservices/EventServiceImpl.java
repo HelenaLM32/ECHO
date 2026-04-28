@@ -20,8 +20,10 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     private EventRepository eventRepository;
+
     @Autowired
     private VenueRepository venueRepository;
+
     @Autowired
     private FileStorageService fileStorageService;
 
@@ -90,6 +92,7 @@ public class EventServiceImpl implements EventService {
 
             EventDTO saved = eventRepository.save(dto);
             return mapper.writeValueAsString(saved);
+
         } catch (com.example.echo.core.entity.sharedkernel.exceptions.BuildException e) {
             throw new ServiceException("Datos inválidos: " + e.getMessage());
         } catch (ServiceException e) {
@@ -106,33 +109,5 @@ public class EventServiceImpl implements EventService {
         if (!dto.getCreatorId().equals(requesterId))
             throw new ServiceException("No autorizado");
         eventRepository.deleteById(id);
-    }
-
-    @Override
-    public String updateEvent(Integer id, Integer requesterId, String title,
-            String description, String startDate, String endDate,
-            MultipartFile img) throws ServiceException {
-        EventDTO dto = eventRepository.findById(id)
-                .orElseThrow(() -> new ServiceException("Evento no encontrado"));
-        if (!dto.getCreatorId().equals(requesterId))
-            throw new ServiceException("No autorizado");
-
-        if (title != null && !title.isBlank())
-            dto.setTitle(title);
-        if (description != null)
-            dto.setDescription(description);
-        if (startDate != null)
-            dto.setStartDate(LocalDateTime.parse(startDate));
-        if (endDate != null)
-            dto.setEndDate(LocalDateTime.parse(endDate));
-        if (img != null && !img.isEmpty())
-            dto.setImg(fileStorageService.store(img, "events"));
-
-        EventDTO saved = eventRepository.save(dto);
-        try {
-            return mapper.writeValueAsString(saved);
-        } catch (Exception e) {
-            throw new ServiceException(e.getMessage());
-        }
     }
 }

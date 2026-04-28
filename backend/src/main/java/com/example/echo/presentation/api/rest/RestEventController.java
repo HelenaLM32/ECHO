@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 
 @RestController
 @RequestMapping("/events")
@@ -19,8 +22,27 @@ public class RestEventController {
 
     @Autowired
     private EventService eventService;
+
     @Autowired
     private UserRepository userRepository;
+
+    private static final DateTimeFormatter FLEXIBLE_DT = new DateTimeFormatterBuilder()
+            .appendPattern("yyyy-MM-dd'T'HH:mm")
+            .optionalStart()
+            .appendPattern(":ss")
+            .optionalEnd()
+            .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+            .toFormatter();
+
+    private LocalDateTime parseDate(String raw, String fieldName) throws ServiceException {
+        if (raw == null || raw.isBlank())
+            throw new ServiceException(fieldName + " es obligatorio");
+        try {
+            return LocalDateTime.parse(raw.trim(), FLEXIBLE_DT);
+        } catch (Exception e) {
+            throw new ServiceException("Formato de " + fieldName + " inválido: " + raw);
+        }
+    }
 
     @GetMapping(value = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getByUser(@PathVariable Integer userId) {
@@ -60,11 +82,10 @@ public class RestEventController {
             @RequestHeader("Authorization") String authHeader) {
         try {
             Integer userId = getUserIdFromToken(authHeader);
+            LocalDateTime start = parseDate(startDate, "startDate");
+            LocalDateTime end = parseDate(endDate, "endDate");
             return ResponseEntity.ok(eventService.createEvent(
-                    userId, venueId,
-                    LocalDateTime.parse(startDate),
-                    LocalDateTime.parse(endDate),
-                    title, description, img));
+                    userId, venueId, start, end, title, description, img));
         } catch (ServiceException e) {
             return ResponseEntity.status(403).body(e.getMessage());
         }
@@ -93,22 +114,5 @@ public class RestEventController {
         UserDTO user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
         return user.getId();
-    }
-
-    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> update(
-            @PathVariable Integer id,
-            @RequestParam(value = "title", required = false) String title,
-            @RequestParam(value = "description", required = false) String description,
-            @RequestParam(value = "startDate", required = false) String startDate,
-            @RequestParam(value = "endDate", required = false) String endDate,
-            @RequestParam(value = "img", required = false) MultipartFile img,
-            @RequestHeader("Authorization") String authHeader) {
-        try {
-            Integer userId = getUserIdFromToken(authHeader);
-            return ResponseEntity.ok(eventService.updateEvent(id, userId, title, description, startDate, endDate, img));
-        } catch (ServiceException e) {
-            return ResponseEntity.status(403).body(e.getMessage());
-        }
     }
 }

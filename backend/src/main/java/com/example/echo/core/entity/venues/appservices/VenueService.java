@@ -5,18 +5,17 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface VenueService {
-    String getAllToJson() throws ServiceException;
+        String getAllToJson() throws ServiceException;
 
-    String getByIdToJson(Integer id) throws ServiceException;
+        String getByIdToJson(Integer id) throws ServiceException;
 
-    String getByManagerIdToJson(Integer managerId) throws ServiceException;
+        String getByManagerIdToJson(Integer managerId) throws ServiceException;
 
-    String createVenue(Integer managerId, String name, String address,
-            Integer capacity, List<MultipartFile> images) throws ServiceException;
+        String createVenue(Integer managerId, String name, String address,
+                        Integer capacity, List<MultipartFile> images) throws ServiceException;
 
-    void deleteById(Integer id, Integer requesterId) throws ServiceException;
+        void deleteById(Integer id, Integer requesterId) throws ServiceException;
 
-    String updateVenue(Integer id, Integer requesterId, String name,
-            String address, Integer capacity,
-            List<MultipartFile> images) throws ServiceException;
+        String updateVenue(Integer id, Integer managerId, String name, String address,
+                        Integer capacity, List<MultipartFile> images) throws ServiceException;
 }

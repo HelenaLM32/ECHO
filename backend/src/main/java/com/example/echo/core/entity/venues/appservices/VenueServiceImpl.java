@@ -58,28 +58,62 @@ public class VenueServiceImpl implements VenueService {
             Integer capacity, List<MultipartFile> images) throws ServiceException {
         try {
             Venue venue = Venue.getInstance(managerId, name, address, capacity);
-            venue.setStatus("ACTIVE");
 
-            VenueDTO dto = VenueMapper.dtoFromVenue(venue);
-
-            if (images != null) {
-                List<MultipartFile> nonEmpty = images.stream()
-                        .filter(img -> img != null && !img.isEmpty())
-                        .toList();
-                if (nonEmpty.size() > 0)
-                    dto.setImg1(fileStorageService.store(nonEmpty.get(0), "venues"));
-                if (nonEmpty.size() > 1)
-                    dto.setImg2(fileStorageService.store(nonEmpty.get(1), "venues"));
-                if (nonEmpty.size() > 2)
-                    dto.setImg3(fileStorageService.store(nonEmpty.get(2), "venues"));
+            if (images != null && !images.isEmpty()) {
             }
 
+            VenueDTO dto = VenueMapper.dtoFromVenue(venue);
             VenueDTO saved = venueRepository.save(dto);
             return mapper.writeValueAsString(saved);
+
         } catch (com.example.echo.core.entity.sharedkernel.exceptions.BuildException e) {
             throw new ServiceException("Datos inválidos: " + e.getMessage());
         } catch (Exception e) {
             throw new ServiceException("Error al crear local: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public String updateVenue(Integer id, Integer managerId, String name, String address,
+            Integer capacity, List<MultipartFile> images) throws ServiceException {
+        try {
+            // 1. Buscar el local existente
+            VenueDTO dto = venueRepository.findById(id)
+                    .orElseThrow(() -> new ServiceException("Local no encontrado"));
+
+            // 2. Validar que quien edita es el dueño
+            if (!dto.getManagerId().equals(managerId)) {
+                throw new ServiceException("No autorizado para editar este local");
+            }
+
+            // 3. Actualizar solo los campos que no sean nulos
+            if (name != null)
+                dto.setName(name);
+            if (address != null)
+                dto.setAddress(address);
+            if (capacity != null)
+                dto.setCapacity(capacity);
+
+            // 4. Actualizar imágenes si se envían nuevas
+            if (images != null && !images.isEmpty()) {
+                List<MultipartFile> validImages = images.stream()
+                        .filter(f -> f != null && !f.isEmpty())
+                        .toList();
+
+                if (validImages.size() >= 1)
+                    dto.setImg1(fileStorageService.store(validImages.get(0), "venues"));
+                if (validImages.size() >= 2)
+                    dto.setImg2(fileStorageService.store(validImages.get(1), "venues"));
+                if (validImages.size() >= 3)
+                    dto.setImg3(fileStorageService.store(validImages.get(2), "venues"));
+            }
+
+            // 5. Guardar y retornar
+            VenueDTO saved = venueRepository.save(dto);
+            return mapper.writeValueAsString(saved);
+
+        } catch (Exception e) {
+            throw new ServiceException("Error al actualizar local: " + e.getMessage());
         }
     }
 
@@ -90,39 +124,5 @@ public class VenueServiceImpl implements VenueService {
         if (!dto.getManagerId().equals(requesterId))
             throw new ServiceException("No autorizado");
         venueRepository.deleteById(id);
-    }
-
-    @Override
-    public String updateVenue(Integer id, Integer requesterId, String name,
-            String address, Integer capacity, List<MultipartFile> images) throws ServiceException {
-        VenueDTO dto = venueRepository.findById(id)
-                .orElseThrow(() -> new ServiceException("Local no encontrado"));
-        if (!dto.getManagerId().equals(requesterId))
-            throw new ServiceException("No autorizado");
-
-        if (name != null && !name.isBlank())
-            dto.setName(name);
-        if (address != null && !address.isBlank())
-            dto.setAddress(address);
-        if (capacity != null)
-            dto.setCapacity(capacity);
-
-        if (images != null) {
-            List<MultipartFile> nonEmpty = images.stream()
-                    .filter(img -> img != null && !img.isEmpty()).toList();
-            if (nonEmpty.size() > 0)
-                dto.setImg1(fileStorageService.store(nonEmpty.get(0), "venues"));
-            if (nonEmpty.size() > 1)
-                dto.setImg2(fileStorageService.store(nonEmpty.get(1), "venues"));
-            if (nonEmpty.size() > 2)
-                dto.setImg3(fileStorageService.store(nonEmpty.get(2), "venues"));
-        }
-
-        VenueDTO saved = venueRepository.save(dto);
-        try {
-            return mapper.writeValueAsString(saved);
-        } catch (Exception e) {
-            throw new ServiceException(e.getMessage());
-        }
     }
 }
