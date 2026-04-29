@@ -23,3 +23,6 @@ target/
 Thumbs.db
 backend/src/main/resources/application.properties
 frontend/.env
+package-lock.json
+frontend/.env
+frontend/.env

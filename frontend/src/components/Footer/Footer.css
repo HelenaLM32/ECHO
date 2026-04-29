@@ -39,6 +39,7 @@
 	line-height: 1.4;
 	margin: 0 0 28px 0;
 	max-width: 680px;
+	color: var(--white);
 }
 
 .footer-contacts {
@@ -60,6 +61,10 @@
 	flex-direction: column;
 	gap: 24px;
 	align-items: flex-end;
+}
+
+span {
+	color: var(--white);
 }
 
 .footer-links-small {

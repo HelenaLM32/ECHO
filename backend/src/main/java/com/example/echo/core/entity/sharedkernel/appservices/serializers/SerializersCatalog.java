@@ -8,6 +8,7 @@ import com.example.echo.core.entity.dispute.dto.CreateDisputeDTO;
 import com.example.echo.core.entity.dispute.dto.DisputeDTO;
 import com.example.echo.core.entity.dispute.dto.DisputeMessageDTO;
 import com.example.echo.core.entity.items.dto.ItemDTO;
+import com.example.echo.core.entity.items.dto.ItemProjectDTO;
 import com.example.echo.core.entity.ordermessages.dto.OrderMessageDTO;
 import com.example.echo.core.entity.orders.dto.OrderDTO;
 import com.example.echo.core.entity.role.dto.RoleDTO;
@@ -31,6 +32,7 @@ public class SerializersCatalog {
         catalog.put(Serializers.JSON_USER_ROLE_ASSIGNMENT, new JacksonSerializer<UserRoleAssignmentDTO>());
         catalog.put(Serializers.JSON_ROLE, new JacksonSerializer<RoleDTO>());
         catalog.put(Serializers.JSON_ITEM, new JacksonSerializer<ItemDTO>());
+        catalog.put(Serializers.JSON_ITEM_PROJECT, new JacksonSerializer<ItemProjectDTO>());
         catalog.put(Serializers.JSON_ORDER, new JacksonSerializer<OrderDTO>());
         catalog.put(Serializers.JSON_ORDER_MESSAGE, new JacksonSerializer<OrderMessageDTO>());
         catalog.put(Serializers.JSON_DISPUTE, new JacksonSerializer<DisputeDTO>());

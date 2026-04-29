@@ -8,13 +8,18 @@ export async function fetchSections() {
             console.error("fetchSections: server responded", res.status);
             return [];
         }
+        const contentType = res.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            console.error("fetchSections: received non-JSON response", contentType);
+            return [];
+        }
         const data = await res.json();
 
         return Array.isArray(data)
             ? data.map((c) => ({ id: c.id, name: c.name }))
             : [];
     } catch (err) {
-        console.error("fetchSections error:", err);
+        console.error("fetchSections error:", err.message);
         return [];
     }
 }
