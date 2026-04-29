@@ -60,8 +60,18 @@ export default function App() {
             </AdminRoute>
           }
         />
-        <Route path="/itemproyect" element={<ProjectEditor />} />
-        <Route path="/project/:id" element={<ProjectView />} />
+        
+        <Route path="/proyect" element={
+          <ProtectedRoute>
+            <ProjectEditor />
+          </ProtectedRoute>
+        } />
+        <Route path="/project/:id" element={
+          <ProtectedRoute>
+            <ProjectView />
+          </ProtectedRoute>
+
+        } />
       </Routes>
     </AuthProvider>
   )

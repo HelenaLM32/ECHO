@@ -1,4 +1,5 @@
 import { API_URL } from "./config";
+import { uploadFile } from './uploads'
 
 const API = API_URL || import.meta.env.VITE_API_URL || 'http://localhost:8082/api'
 
@@ -22,8 +23,16 @@ async function createItem(itemPayload) {
 }
 
 async function createProject(projectPayload) {
-  const body = JSON.stringify(projectPayload)
-  console.debug('createProject - request body:', projectPayload)
+  // Ensure any embedded base64 media are uploaded first and replaced with URLs.
+  // Accept projectPayload.blocks/background as either JSON string or objects.
+  const payload = await replaceEmbeddedMedia(projectPayload)
+
+  // Backend expects blocks and background as JSON strings (stored in DB as text)
+  if (payload.blocks && typeof payload.blocks !== 'string') payload.blocks = JSON.stringify(payload.blocks)
+  if (payload.background && typeof payload.background !== 'string') payload.background = JSON.stringify(payload.background)
+
+  const body = JSON.stringify(payload)
+  console.debug('createProject - request body:', payload)
   const res = await fetch(`${API}/item-projects/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -33,6 +42,61 @@ async function createProject(projectPayload) {
   console.debug('createProject - response status:', res.status, 'body:', text)
   if (!res.ok) throw new Error(text)
   try { return JSON.parse(text) } catch { return text }
+}
+
+async function replaceEmbeddedMedia(project) {
+  const clone = JSON.parse(JSON.stringify(project))
+
+  // Normalize blocks to array for processing
+  let blocksArr = clone.blocks
+  if (typeof blocksArr === 'string') {
+    try { blocksArr = JSON.parse(blocksArr) } catch { blocksArr = [] }
+  }
+  if (!Array.isArray(blocksArr)) blocksArr = []
+
+  for (let b of blocksArr) {
+    // image block: b.src may be data URL
+    if (b.type === 'IMAGE') {
+      if (typeof b.src === 'string' && b.src.startsWith('data:')) {
+        const file = dataURLtoFile(b.src)
+        try { b.src = await uploadFile(file, 'images') } catch (e) { console.error('upload image failed', e) }
+      }
+    }
+    if (b.type === 'GALLERY') {
+      if (Array.isArray(b.images)) {
+        for (let i = 0; i < b.images.length; i++) {
+          const src = b.images[i]
+          if (typeof src === 'string' && src.startsWith('data:')) {
+            const file = dataURLtoFile(src)
+            try { b.images[i] = await uploadFile(file, 'images') } catch (e) { console.error('upload gallery image failed', e) }
+          }
+        }
+      }
+    }
+    if (b.type === 'VIDEO') {
+      if (typeof b.url === 'string' && b.url.startsWith('data:')) {
+        const file = dataURLtoFile(b.url)
+        try { b.url = await uploadFile(file, 'video') } catch (e) { console.error('upload video failed', e) }
+      }
+    }
+    if (b.type === 'AUDIO') {
+      if (typeof b.audioSrc === 'string' && b.audioSrc.startsWith('data:')) {
+        const file = dataURLtoFile(b.audioSrc)
+        try { b.audioSrc = await uploadFile(file, 'audio') } catch (e) { console.error('upload audio failed', e) }
+      }
+    }
+  }
+  clone.blocks = blocksArr
+
+  // background image
+  let bg = clone.background
+  if (bg && bg.mode === 'image' && typeof bg.value === 'string' && bg.value.startsWith('data:')) {
+    const file = dataURLtoFile(bg.value)
+    try { bg.value = await uploadFile(file, 'images') } catch (e) { console.error('upload background failed', e) }
+    clone.background = bg
+  }
+
+  return clone
 }
 
 async function getCategories() {

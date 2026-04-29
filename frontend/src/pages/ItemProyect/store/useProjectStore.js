@@ -13,7 +13,7 @@ export function createBlock(type) {
   const base = { id: crypto.randomUUID(), type }
   switch (type) {
     case BLOCK_TYPES.TEXT: return { ...base, content: '' }
-    case BLOCK_TYPES.IMAGE: return { ...base, src: '', caption: '', audio: '' }
+    case BLOCK_TYPES.IMAGE: return { ...base, src: '', caption: '' }
     case BLOCK_TYPES.GALLERY: return { ...base, images: [], columns: 3, gap: 8, aspect: 'square' }
     case BLOCK_TYPES.VIDEO: return { ...base, url: '' }
     case BLOCK_TYPES.AUDIO: return { ...base, audioSrc: '' }
@@ -22,11 +22,11 @@ export function createBlock(type) {
 }
 
 export const BLOCK_META = {
-  [BLOCK_TYPES.TEXT]: { label: 'Texto', icon: 'Aa' },
-  [BLOCK_TYPES.IMAGE]: { label: 'Imagen', icon: '▣' },
-  [BLOCK_TYPES.GALLERY]: { label: 'Galería', icon: '▦' },
-  [BLOCK_TYPES.VIDEO]: { label: 'Vídeo', icon: '▶' },
-  [BLOCK_TYPES.AUDIO]: { label: 'Audio', icon: '♪' },
+  [BLOCK_TYPES.TEXT]: { label: 'Texto', icon: 'text.svg' },
+  [BLOCK_TYPES.IMAGE]: { label: 'Imagen', icon: 'imagene.svg' },
+  [BLOCK_TYPES.GALLERY]: { label: 'Galería', icon: 'galeria.svg' },
+  [BLOCK_TYPES.VIDEO]: { label: 'Vídeo', icon: 'video.svg' },
+  [BLOCK_TYPES.AUDIO]: { label: 'Audio', icon: 'audio.svg' },
 }
 
 /* ── Utilities ──────────────────────────────── */
@@ -115,16 +115,7 @@ const useProjectStore = create((set, get) => ({
     set((s) => ({ blocks: s.blocks.filter((b) => b.id !== id) }))
   },
 
-  duplicateBlock: (id) => {
-    set((s) => {
-      const idx = s.blocks.findIndex((b) => b.id === id)
-      if (idx === -1) return s
-      const clone = { ...s.blocks[idx], id: crypto.randomUUID() }
-      const next = [...s.blocks]
-      next.splice(idx + 1, 0, clone)
-      return { blocks: next }
-    })
-  },
+  // duplicateBlock removed per request
 
   reorderBlocks: (newBlocks) => set({ blocks: newBlocks }),
 

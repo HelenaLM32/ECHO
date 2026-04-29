@@ -49,13 +49,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/follows/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/follows/**").authenticated()
                         .requestMatchers("/disputes/**").authenticated()
-                            .requestMatchers(HttpMethod.GET, "/reviews/user/**").permitAll()
-                            .requestMatchers(HttpMethod.GET, "/reviews/order/**").authenticated()
-                            .requestMatchers(HttpMethod.GET, "/reviews").hasAuthority("ADMIN")
-                            .requestMatchers(HttpMethod.POST, "/reviews").authenticated()
-                            .requestMatchers(HttpMethod.DELETE, "/reviews/**").hasAuthority("ADMIN")
-                            .anyRequest().permitAll())
-                        .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
+                        .requestMatchers(HttpMethod.GET, "/reviews/user/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/reviews/order/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/reviews").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/reviews").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/reviews/**").hasAuthority("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/proyect").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/proyect/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/proyect").authenticated()
+                        .anyRequest().permitAll())
+                .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -64,6 +68,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public WebMvcConfigurer uploadResourceHandler() {
         return new WebMvcConfigurer() {

@@ -13,7 +13,6 @@ function RenderBlock({ block }) {
       return (
         <div className="previewImageWrapper">
           {block.src && <img src={block.src} alt="" className="previewImageContent" />}
-          {block.audio && <audio src={block.audio} controls className="previewAudioPlayer" />}
         </div>
       )
     case BLOCK_TYPES.GALLERY:
@@ -25,12 +24,15 @@ function RenderBlock({ block }) {
         </div>
       )
     case BLOCK_TYPES.VIDEO:
-      if (block.isLocal && block.url) return <video src={block.url} controls className="previewVideo" />
-      if (block.url) return (
-        <div className="previewVideoWrapper">
-          <iframe src={toEmbedUrl(block.url)} title="video" allowFullScreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" />
-        </div>
-      )
+      if (block.url) {
+        const direct = /\.(mp4|webm|ogg)(\?|$)/i.test(block.url) || block.url.includes('/uploads/')
+        if (direct) return <video src={block.url} controls className="previewVideo" />
+        return (
+          <div className="previewVideoWrapper">
+            <iframe src={toEmbedUrl(block.url)} title="video" allowFullScreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" />
+          </div>
+        )
+      }
       return null
     case BLOCK_TYPES.AUDIO:
       return block.audioSrc ? <audio src={block.audioSrc} controls className="previewAudioPlayer" /> : null
@@ -74,8 +76,8 @@ export default function ProjectView() {
 
   return (
     <div className="previewOverlay" onClick={handleOverlayClick} style={{ position: 'relative', padding: 24 }}>
-      <div className="previewWindow" style={{ ...bgStyle, width: '100%', maxWidth: 980, margin: '0 auto', borderRadius: 12 }} onClick={(e) => e.stopPropagation()}>
-        <div className="previewContentList" style={{ gap: `${blockGap}px`, padding: 20 }}>
+      <div className="previewWindow" style={{ ...bgStyle, width: '100%', maxWidth: 980, margin: '0 auto', borderRadius: 6 }} onClick={(e) => e.stopPropagation()}>
+        <div className="previewContentList" style={{ gap: `${blockGap}px`}}>
           {blocks.length === 0 && <p className="previewEmptyMessage">No hay contenido para previsualizar.</p>}
           {blocks.map((b) => (
             <div key={b.id} className="previewContentItem"><RenderBlock block={b} /></div>

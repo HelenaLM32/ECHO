@@ -1,5 +1,6 @@
 import { useRef, useCallback, useEffect } from 'react'
-import { fileToBase64, toEmbedUrl } from '../../pages/ItemProyect/store/useProjectStore'
+import { toEmbedUrl } from '../../pages/ItemProyect/store/useProjectStore'
+import { uploadFile } from '../../services/uploads'
 import './ItemProyect.css'
 
 /* ── Text Block (rich editor) ────────────────── */
@@ -37,7 +38,6 @@ const FONT_FAMILIES = [
   'Trebuchet MS',
   'Palatino Linotype',
   'Garamond',
-  'Comic Sans MS',
   'Impact',
 ]
 
@@ -135,13 +135,8 @@ export function ImageBlock({ block, onChange }) {
   async function handleImageFileChange(e) {
     const file = e.target.files?.[0]
     if (!file) return
-    onChange({ src: await fileToBase64(file) })
-  }
-
-  async function handleAudioFileChange(e) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    onChange({ audio: await fileToBase64(file) })
+    const url = await uploadFile(file, 'images')
+    onChange({ src: url })
   }
 
   return (
@@ -149,10 +144,6 @@ export function ImageBlock({ block, onChange }) {
       {block.src ? (
         <div className="imageContainer">
           <img src={block.src} alt="imagen" className="image" />
-          <label className="imageAudioButton" title="Añadir audio a la imagen">
-            {block.audio ? '♪' : '♪'}
-            <input type="file" accept="audio/*" onChange={handleAudioFileChange} hidden />
-          </label>
         </div>
       ) : (
         <label className="uploadDropZone">
@@ -160,12 +151,7 @@ export function ImageBlock({ block, onChange }) {
           <input type="file" accept="image/*" onChange={handleImageFileChange} hidden />
         </label>
       )}
-      {block.audio && (
-        <div className="audioControlRow">
-          <audio src={block.audio} controls className="audioPlayerControl" />
-          <button className="audioRemoveButton" onClick={() => onChange({ audio: '' })} title="Quitar audio">✕</button>
-        </div>
-      )}
+      {/* audio on images removed */}
     </div>
   )
 }
@@ -175,8 +161,6 @@ export function ImageBlock({ block, onChange }) {
 const ASPECT_OPTIONS = [
   { label: 'Cuadrado', value: 'square' },
   { label: 'Original', value: 'original' },
-  { label: 'Horizontal', value: 'landscape' },
-  { label: 'Vertical', value: 'portrait' },
 ]
 
 export function GalleryBlock({ block, onChange }) {
@@ -187,15 +171,15 @@ export function GalleryBlock({ block, onChange }) {
   async function handleFiles(e) {
     const fileList = Array.from(e.target.files || [])
     if (fileList.length === 0) return
-    const newImages = await Promise.all(fileList.map(fileToBase64))
-    onChange({ images: [...block.images, ...newImages] })
+    const uploads = await Promise.all(fileList.map((f) => uploadFile(f, 'images')))
+    onChange({ images: [...block.images, ...uploads] })
   }
 
   function removeImage(index) {
     onChange({ images: block.images.filter((_, i) => i !== index) })
   }
 
-  const aspectRatio = aspect === 'square' ? '1' : aspect === 'landscape' ? '16/9' : aspect === 'portrait' ? '3/4' : 'auto'
+  const aspectRatio = aspect === 'square' ? '1' : aspect === 'landscape'
 
   return (
     <div className="blockContentArea">
@@ -244,36 +228,36 @@ export function GalleryBlock({ block, onChange }) {
 /* ── Video Block ─────────────────────────────── */
 
 export function VideoBlock({ block, onChange }) {
-  if (block.isLocal && block.url) {
-    return (
-      <div className="blockContentArea">
-        <div className="videoLocal">
-          <video src={block.url} controls />
-        </div>
-      </div>
-    )
+  function isDirectVideoUrl(url) {
+    if (!url || typeof url !== 'string') return false
+    return /\.(mp4|webm|ogg)(\?|$)/i.test(url) || url.includes('/uploads/')
+  }
+
+  async function handleVideoFileChange(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    try {
+      const url = await uploadFile(file, 'video')
+      onChange({ url })
+    } catch (err) {
+      console.error('video upload failed', err)
+      onChange({ url: '' })
+    }
   }
 
   const embedSrc = block.url ? toEmbedUrl(block.url) : ''
 
   return (
     <div className="blockContentArea">
-      <input
-        className="videoUrlInput"
-        type="url"
-        placeholder="Pega la URL del vídeo (YouTube, Vimeo…)"
-        value={block.url}
-        onChange={(e) => onChange({ url: e.target.value })}
-      />
-      {embedSrc && (
-        <div className="videoEmbedContainer">
-          <iframe
-            src={embedSrc}
-            title="video"
-            allowFullScreen
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          />
+      {block.url && isDirectVideoUrl(block.url) ? (
+        <div className="videoLocal">
+          <video src={block.url} controls className="previewVideo" />
         </div>
+      ) : (
+        <label className="uploadDropZone">
+          <span>Haz clic para subir un vídeo (mp4, webm...)</span>
+          <input className="fileInput" type="file" accept="video/*" onChange={handleVideoFileChange} />
+        </label>
       )}
     </div>
   )
@@ -285,7 +269,8 @@ export function AudioBlock({ block, onChange }) {
   async function handleFile(e) {
     const file = e.target.files?.[0]
     if (!file) return
-    onChange({ audioSrc: await fileToBase64(file) })
+    const url = await uploadFile(file, 'audio')
+    onChange({ audioSrc: url })
   }
 
   return (
@@ -295,7 +280,7 @@ export function AudioBlock({ block, onChange }) {
       ) : (
         <label className="uploadDropZone">
           <span>Haz clic para subir un audio</span>
-          <input type="file" accept="audio/*" onChange={handleFile} hidden />
+          <input className="fileInput" type="file" accept="audio/*" onChange={handleFile} />
         </label>
       )}
     </div>

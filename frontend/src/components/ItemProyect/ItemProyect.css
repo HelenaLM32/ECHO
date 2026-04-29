@@ -29,10 +29,7 @@
   align-items: center;
   gap: 30px;
   padding: 60px 48px;
-  background: var(--true-white, #ffffff);
-  border: 1px solid rgba(233, 94, 35, 0.12);
   border-radius: 30px;
-  box-shadow: 0 26px 80px rgba(0, 0, 0, 0.06);
 }
 
 .emptyProjectTitle {
@@ -46,7 +43,8 @@
 
 .emptyProjectTitle span {
   display: block;
-  color: var(--orange, #E95E23);
+  color: var(--orange);
+  opacity: 0.4;
   font-size: clamp(2.4rem, 4vw, 4.5rem);
   font-weight: 800;
   line-height: 0.95;
@@ -98,10 +96,24 @@
   height: 56px;
   display: grid;
   place-items: center;
-  border-radius: 50%;
-  background: var(--orange, #E95E23);
-  color: var(--true-white, #ffffff);
-  font-size: 1.4rem;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--black, #282828);
+  font-size: 1rem;
+}
+
+.iconImg {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  display: block;
+}
+
+.sidebarButtonIcon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  margin-right: 8px;
 }
 
 .emptyActionLabel {
@@ -131,8 +143,9 @@
   margin: 0;
   background: transparent;
   border: none;
-  border-radius: 0;
+  border-radius: 50px;
   box-shadow: none;
+  width: 100%;
 }
 
 .blockCard + .blockCard {
@@ -170,7 +183,7 @@
 }
 
 .blockActionButton:hover {
-  background: var(--black-new, #000000);
+  background: var(--true-white, #000000);
 }
 
 .previewTextContent {
@@ -211,7 +224,7 @@
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  overflow-x: auto; /* Permitir scroll horizontal para imágenes grandes */
+  overflow-x: visible; /* permitir que el contenido se adapte sin barras */
 }
 
 .textInputArea,
@@ -256,12 +269,18 @@
 .galleryControlBar,
 .galleryAddButton,
 .reorderPanel,
-.previewVideo,
-.videoLocal,
+.videoLocal ,
 .uploadDropZone {
   border-radius: 18px;
   background: var(--white, #ffffff);
 }
+
+.previewVideo {
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
 
 .richTextToolbar {
   display: flex;
@@ -336,25 +355,51 @@
   background: var(--white, #ffffff);
 }
 
+/* make file inputs clickable via label: invisible overlay */
+.uploadDropZone {
+  position: relative;
+  cursor: pointer;
+}
+
+.uploadDropZone .fileInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
 .imageContainer,
 .videoLocal {
   background: transparent;
 }
 
+/* Center and constrain images inside cards to avoid scrollbars */
+.imageContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
+}
+
 .image {
-  width: auto;
-  height: auto;
+  display: block;
+  width: 100%;
   max-width: 100%;
+  height: auto;
+  max-height: 60vh; /* prevent images from being taller than the viewport */
   object-fit: contain;
   border: none;
 }
 
-/* Imágenes en el editor: mostrar tamaño real sin reescalado */
+/* In the editor list, images should scale to available card width */
 .editorBlockList .image {
-  max-width: none;
-  width: auto;
+  max-width: 100%;
+  width: 100%;
   height: auto;
-  object-fit: none;
+  object-fit: contain;
 }
 
 .audioPlayerControl,

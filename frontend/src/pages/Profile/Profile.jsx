@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { getProfileByUserId, updateAvatar, updateBanner } from "../../services/profile";
 import { getProjectsByUserId } from "../../services/projects";
+import { getAverageByUser, getReviewsByUser } from "../../services/reviews";
 import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import linkedinIcon from '../../assets/icons8-linkedin-24.png';
 import twitterIcon from '../../assets/icons8-x-24.png';
@@ -258,16 +259,7 @@ export default function Profile() {
             </p>
           </div>
 
-          <div style={{ display: "flex", gap: "24px", margin: "8px 0" }}>
-            <span style={{ fontWeight: "bold" }}>
-              {followStats.followers}{" "}
-              <span style={{ fontWeight: "normal" }}>seguidores</span>
-            </span>
-            <span style={{ fontWeight: "bold" }}>
-              {followStats.following}{" "}
-              <span style={{ fontWeight: "normal" }}>siguiendo</span>
-            </span>
-          </div>
+         
 
           {!isOwnProfile && user && (
             <button
@@ -323,7 +315,7 @@ export default function Profile() {
 
 {isOwnProfile && activeTab === "Proyectos" && (
   <div className="project-editor-action">
-    <Link to="/itemproyect" className="project-card-button">
+    <Link to="/proyect" className="project-card-button">
       <span className="project-card-icon">+</span>
       <span className="project-card-label">Crear nuevo proyecto</span>
     </Link>
@@ -346,17 +338,7 @@ export default function Profile() {
   </div>
 )}
 
-<nav className="content-tabs secondary-tabs">
-  {tabs2.map((tab) => (
-    <button
-      key={tab}
-      className={`tab-item ${activeTab === tab ? "active" : ""}`}
-      onClick={() => setActiveTab(tab)}
-    >
-      {tab}
-    </button>
-  ))}
-</nav>
+
         </main>
       </div>
       <Footer />

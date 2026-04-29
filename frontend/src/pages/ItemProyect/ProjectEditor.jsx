@@ -5,8 +5,8 @@ import Editor from '../../components/ItemProyect/Editor'
 import useProjectStore, {
   BLOCK_TYPES,
   BLOCK_META,
-  fileToBase64,
 } from './store/useProjectStore'
+import { uploadFile } from '../../services/uploads'
 import { useAuth } from '../../context/AuthContext'
 import { createItem, createProject, getCategories } from '../../services/projects'
 
@@ -41,7 +41,10 @@ function ProjectSidebar({ onPreview }) {
     input.onchange = async () => {
       const files = Array.from(input.files || [])
       for (const file of files) {
-        addBlockWithData('IMAGE', { src: await fileToBase64(file) })
+        try {
+          const url = await uploadFile(file, 'images')
+          addBlockWithData('IMAGE', { src: url })
+        } catch (e) { console.error('upload failed', e); addBlockWithData('IMAGE', { src: '' }) }
       }
     }
     input.click()
@@ -51,10 +54,16 @@ function ProjectSidebar({ onPreview }) {
     const input = document.createElement('input')
     input.type = 'file'
     input.accept = 'video/*'
-    input.onchange = () => {
+    input.onchange = async () => {
       const file = input.files?.[0]
       if (!file) return
-      addBlockWithData('VIDEO', { url: URL.createObjectURL(file), isLocal: true })
+      try {
+        const url = await uploadFile(file, 'video')
+        addBlockWithData('VIDEO', { url })
+      } catch (e) {
+        console.error('video upload failed', e)
+        addBlockWithData('VIDEO', { url: '' })
+      }
     }
     input.click()
   }
@@ -67,7 +76,11 @@ function ProjectSidebar({ onPreview }) {
     input.onchange = async () => {
       const files = Array.from(input.files || [])
       if (files.length === 0) return
-      addBlockWithData('GALLERY', { images: await Promise.all(files.map(fileToBase64)) })
+      const uploads = []
+      for (const f of files) {
+        try { uploads.push(await uploadFile(f, 'images')) } catch (e) { console.error('gallery upload failed', e) }
+      }
+      addBlockWithData('GALLERY', { images: uploads })
     }
     input.click()
   }
@@ -79,7 +92,10 @@ function ProjectSidebar({ onPreview }) {
     input.onchange = async () => {
       const file = input.files?.[0]
       if (!file) return
-      addBlockWithData('AUDIO', { audioSrc: await fileToBase64(file) })
+      try {
+        const url = await uploadFile(file, 'audio')
+        addBlockWithData('AUDIO', { audioSrc: url })
+      } catch (e) { console.error('audio upload failed', e); addBlockWithData('AUDIO', { audioSrc: '' }) }
     }
     input.click()
   }
@@ -91,7 +107,10 @@ function ProjectSidebar({ onPreview }) {
     input.onchange = async () => {
       const file = input.files?.[0]
       if (!file) return
-      setBackground('image', await fileToBase64(file))
+      try {
+        const url = await uploadFile(file, 'images')
+        setBackground('image', url)
+      } catch (e) { console.error('background upload failed', e) }
     }
     input.click()
   }
@@ -104,7 +123,7 @@ function ProjectSidebar({ onPreview }) {
           const meta = BLOCK_META[type]
           return (
             <button key={type} className="sidebarButton" onClick={() => handleClick(type)}>
-              <span className="sidebarButtonIcon">{meta.icon}</span>
+              <img src={`/project/${meta.icon}`} className="sidebarButtonIcon" alt={meta.label} />
               <span className="sidebarButtonText">{meta.label}</span>
             </button>
           )
@@ -314,33 +333,33 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
   }
 
   return (
-    <div className="modalOverlay" style={overlayStyle} onClick={onClose}>
-      <div className="modal" style={modalStyle} onClick={(e) => e.stopPropagation()}>
-        <h3>Guardar proyecto</h3>
-        <form onSubmit={handleSubmit}>
-          <label style={labelStyle}>Título</label>
-          <input style={inputStyle} value={title} onChange={(e) => setTitle(e.target.value)} required />
+    <div className="modalOverlay" onClick={onClose}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <h3 className="modalTitle">Guardar proyecto</h3>
+        <form onSubmit={handleSubmit} className="modalForm">
+          <label className="modalLabel">Título</label>
+          <input className="modalInput" value={title} onChange={(e) => setTitle(e.target.value)} required />
 
-          <label style={labelStyle}>Descripción</label>
-          <textarea style={textareaStyle} value={description} onChange={(e) => setDescription(e.target.value)} />
+          <label className="modalLabel">Descripción</label>
+          <textarea className="modalTextarea" value={description} onChange={(e) => setDescription(e.target.value)} />
 
-          <label style={labelStyle}>Base price</label>
-          <input style={inputStyle} type="number" step="0.01" value={basePrice} onChange={(e) => setBasePrice(e.target.value)} required />
+          <label className="modalLabel">Base price</label>
+          <input className="modalInput" type="number" step="0.01" value={basePrice} onChange={(e) => setBasePrice(e.target.value)} required />
 
-          <label style={labelStyle}>Item type</label>
-          <input style={inputStyle} value={itemType} onChange={(e) => setItemType(e.target.value)} required />
+          <label className="modalLabel">Item type</label>
+          <input className="modalInput" value={itemType} onChange={(e) => setItemType(e.target.value)} required />
 
-          <label style={labelStyle}>Categoría (opcional)</label>
-          <select style={inputStyle} value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
+          <label className="modalLabel">Categoría (opcional)</label>
+          <select className="modalSelect" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
             <option value="">-- Ninguna --</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>{c.name}</option>
             ))}
           </select>
 
-          <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-            <button type="button" onClick={onClose} disabled={saving}>Cancelar</button>
-            <button type="submit" disabled={saving}>{saving ? 'Guardando...' : 'Guardar'}</button>
+          <div className="modalButtons">
+            <button type="button" onClick={onClose} disabled={saving} className="modalButton modalCancel">Cancelar</button>
+            <button type="submit" disabled={saving} className="modalButton modalSave">{saving ? 'Guardando...' : 'Guardar'}</button>
           </div>
         </form>
       </div>
@@ -348,13 +367,7 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
   )
 }
 
-const overlayStyle = {
-  position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999
-}
-const modalStyle = { background: '#fff', padding: 20, borderRadius: 12, width: 420, maxWidth: '95%' }
-const labelStyle = { display: 'block', marginTop: 8, marginBottom: 4, fontSize: 13 }
-const inputStyle = { width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid #ccc' }
-const textareaStyle = { width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid #ccc', minHeight: 80 }
+// modal inline styles removed; styles live in ProjectEditor.css
 
 /* ── Preview Overlay (inline) ────────────────── */
 
@@ -376,7 +389,6 @@ function PreviewDialog({ onClose }) {
         return (
           <div className="previewImageWrapper">
             {block.src && <img src={block.src} alt="" className="previewImageContent" />}
-            {block.audio && <audio src={block.audio} controls className="previewAudioPlayer" />}
           </div>
         )
       case BLOCK_TYPES.GALLERY:
@@ -387,14 +399,14 @@ function PreviewDialog({ onClose }) {
           }}>
             {block.images.map((src, i) => (
               <img key={i} src={src} alt="" className="previewGalleryImage"
-                style={{ aspectRatio: block.aspect === 'square' ? '1' : block.aspect === 'landscape' ? '16/9' : block.aspect === 'portrait' ? '3/4' : 'auto' }} />
+                style={{ aspectRatio: block.aspect === 'square' ? '1' : block.aspect === 'landscape'}} />
             ))}
           </div>
         )
       case BLOCK_TYPES.VIDEO:
-        if (block.isLocal && block.url)
-          return <video src={block.url} controls className="previewVideo" />
         if (block.url) {
+          const direct = /\.(mp4|webm)(\?|$)/i.test(block.url) || block.url.includes('/uploads/')
+          if (direct) return <video src={block.url} controls className="previewVideo" />
           return (
             <div className="previewVideoWrapper">
               <iframe src={toEmbedUrl(block.url)} title="video" allowFullScreen

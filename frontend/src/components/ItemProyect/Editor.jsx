@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { uploadFile } from '../../services/uploads'
 
 import useProjectStore, { BLOCK_TYPES, BLOCK_META, reorder } from '../../pages/ItemProyect/store/useProjectStore'
 import { TextBlock, ImageBlock, GalleryBlock, VideoBlock, AudioBlock } from './Blocks'
@@ -36,14 +37,12 @@ function BlockRenderer({ block, onChange, preview }) {
 function EditorBlockCard({ block }) {
   const updateBlock = useProjectStore((s) => s.updateBlock)
   const removeBlock = useProjectStore((s) => s.removeBlock)
-  const duplicateBlock = useProjectStore((s) => s.duplicateBlock)
 
   return (
     <div className="blockCard">
       <div className="blockCardHeader">
         <span className="blockTypeBadge">{BLOCK_META[block.type]?.label}</span>
         <div className="blockActionGroup">
-          <button onClick={() => duplicateBlock(block.id)} title="Duplicar" className="blockActionButton">⧉</button>
           <button onClick={() => removeBlock(block.id)} title="Eliminar" className="blockActionButton">✕</button>
         </div>
       </div>
@@ -110,6 +109,7 @@ function BlockReorderDialog({ onClose }) {
 export default function Editor() {
   const blocks = useProjectStore((s) => s.blocks)
   const addBlock = useProjectStore((s) => s.addBlock)
+  const addBlockWithData = useProjectStore((s) => s.addBlockWithData)
   const background = useProjectStore((s) => s.background)
   const blockGap = useProjectStore((s) => s.blockGap)
   const blockBorderRadius = useProjectStore((s) => s.blockBorderRadius)
@@ -121,10 +121,10 @@ export default function Editor() {
       : { background: background.value }
 
   const emptyActions = [
-    { type: BLOCK_TYPES.IMAGE, icon: 'I' },
-    { type: BLOCK_TYPES.TEXT, icon: 'T' },
-    { type: BLOCK_TYPES.GALLERY, icon: '▦' },
-    { type: BLOCK_TYPES.VIDEO, icon: '▶' },
+    { type: BLOCK_TYPES.IMAGE, icon: 'imagene.svg' },
+    { type: BLOCK_TYPES.TEXT, icon: 'text.svg' },
+    { type: BLOCK_TYPES.GALLERY, icon: 'galeria.svg' },
+    { type: BLOCK_TYPES.VIDEO, icon: 'video.svg' },
   ]
 
   return (
@@ -137,16 +137,39 @@ export default function Editor() {
                 <span>CONSTRUYE</span>
                 <strong>TU PROYECTO</strong>
               </div>
-              <p className="emptyProjectHint">Selecciona una opción para comenzar y agrega contenido al proyecto.</p>
               <div className="emptyProjectActions">
                 {emptyActions.map((action) => (
                   <button
                     key={action.type}
                     type="button"
                     className="emptyActionButton"
-                    onClick={() => addBlock(action.type)}
+                    onClick={async () => {
+                      if (action.type === BLOCK_TYPES.VIDEO) {
+                        // open file selector and upload
+                        const input = document.createElement('input')
+                        input.type = 'file'
+                        input.accept = 'video/*'
+                        input.onchange = async () => {
+                          const file = input.files?.[0]
+                          if (!file) return
+                          try {
+                            const url = await uploadFile(file, 'video')
+                            addBlockWithData('VIDEO', { url })
+                          } catch (e) {
+                            console.error('video upload failed', e)
+                            addBlockWithData('VIDEO', { url: '' })
+                          }
+                        }
+                        input.click()
+                      } else {
+                        addBlock(action.type)
+                      }
+                    }}
                   >
-                    <span className="emptyActionIcon">{action.icon}</span>
+                    <div className="emptyActionIcon">
+                      <img src={`/project/${action.icon}`} className="iconImg" alt="" />
+                    </div>
+                    <span className="emptyActionLabel">{BLOCK_META[action.type]?.label}</span>
                   </button>
                 ))}
               </div>

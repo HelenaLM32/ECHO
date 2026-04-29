@@ -69,7 +69,7 @@ export default function Home() {
             <h3 id="top-h3-text">Explora el trabajo de nuestros talentosos artistas, inspirate y conecta con ellos subiendo proyectos o contratando servicios</h3>
           </div>
           <div id="home-container-top-buttons">
-            <div className="button-top" onClick={() => navigate('/itemproyect')}>
+            <div className="button-top" onClick={() => navigate('/proyect')}>
               Crear un proyecto
             </div>
             <div className="button-top">Subir un servicio</div>

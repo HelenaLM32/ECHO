@@ -76,6 +76,18 @@
   background: var(--orange-secondary, #EB7C4D);
 }
 
+.saveProjectButton {
+  width: 100%;
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--complementary-blue);
+  color: var(--true-white, #ffffff);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+}
+
 .sidebarButton {
   display: flex;
   align-items: center;
@@ -301,7 +313,100 @@
   align-items: flex-start;
   justify-content: center;
   overflow-y: auto;
+}
+
+/* Modal for saving project */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 16px;
+}
+
+.modal {
+  width: 640px;
+  max-width: 100%;
+  background: var(--true-white, #ffffff);
+  border-radius: 12px;
   padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  box-sizing: border-box;
+  border: 1px solid var(--gray-stroke, #e0e0e0);
+}
+
+.modalTitle {
+  margin: 0 0 12px 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--black, #282828);
+}
+
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modalLabel {
+  font-size: 0.82rem;
+  color: var(--black-secondary, #353535);
+  margin-bottom: 6px;
+}
+
+.modalInput,
+.modalSelect,
+.modalTextarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--gray-stroke, #e0e0e0);
+  background: var(--true-white, #ffffff);
+  color: var(--black, #282828);
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  transition: border-color 0.18s ease;
+}
+
+.modalInput:focus,
+.modalSelect:focus,
+.modalTextarea:focus {
+  border-color: var(--orange, #E95E23);
+  outline: none;
+}
+
+.modalTextarea { min-height: 100px; resize: vertical }
+
+.modalButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  justify-content: flex-end;
+}
+
+.modalButton {
+  padding: 10px 18px;
+  border-radius: 20px;
+  border: 1px solid var(--gray-stroke, #e0e0e0);
+  background: var(--white, #fff);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.modalSave {
+  background: var(--orange, #E95E23);
+  color: var(--true-white, #ffffff);
+  border-color: transparent;
+}
+.modalSave:hover { background: var(--black-secondary) }
+.modalCancel { background: transparent }
+
+@media (max-width: 720px) {
+  .modal { width: 100%; padding: 14px }
+  .modalButtons { flex-direction: column-reverse }
 }
 
 .previewWindow {
@@ -361,6 +466,7 @@
 .previewGalleryGrid {
   display: grid;
   gap: 12px;
+  width: 100%;
 }
 
 .previewGalleryImage {
@@ -369,15 +475,15 @@
   object-fit: cover;
 }
 
-.previewVideoWrapper iframe,
-.previewEmbedFrame {
+.previewVideoWrapper iframe {
   width: 100%;
   min-height: 240px;
   border: 1px solid var(--gray-stroke, #e0e0e0);
 }
 
 .previewAudioPlayer {
-  width: 100%;
+  min-height: 240px;
+  aspect-ratio: 1;
 }
 
 @media (max-width: 1080px) {
