@@ -15,7 +15,7 @@ const TEXT_EDITOR_FORMATS = [
   { cmd: 'insertOrderedList', icon: '1.', title: 'Lista numerada' },
   { sep: true },
   { cmd: 'justifyLeft', icon: '⫷', title: 'Izquierda' },
-  { cmd: 'justifyCenter', icon: 'O', title: 'Centro' },
+  { cmd: 'justifyCenter', icon: 'C', title: 'Centro' },
   { cmd: 'justifyRight', icon: '⫸', title: 'Derecha' },
 ]
 
@@ -151,7 +151,6 @@ export function ImageBlock({ block, onChange }) {
           <input type="file" accept="image/*" onChange={handleImageFileChange} hidden />
         </label>
       )}
-      {/* audio on images removed */}
     </div>
   )
 }

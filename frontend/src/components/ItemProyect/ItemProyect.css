@@ -148,7 +148,7 @@
   width: 100%;
 }
 
-.blockCard + .blockCard {
+.blockCard+.blockCard {
   margin-top: 12px;
 }
 
@@ -224,7 +224,8 @@
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  overflow-x: visible; /* permitir que el contenido se adapte sin barras */
+  overflow-x: visible;
+  /* permitir que el contenido se adapte sin barras */
 }
 
 .textInputArea,
@@ -269,7 +270,7 @@
 .galleryControlBar,
 .galleryAddButton,
 .reorderPanel,
-.videoLocal ,
+.videoLocal,
 .uploadDropZone {
   border-radius: 18px;
   background: var(--white, #ffffff);
@@ -389,7 +390,8 @@
   width: 100%;
   max-width: 100%;
   height: auto;
-  max-height: 60vh; /* prevent images from being taller than the viewport */
+  max-height: 60vh;
+  /* prevent images from being taller than the viewport */
   object-fit: contain;
   border: none;
 }

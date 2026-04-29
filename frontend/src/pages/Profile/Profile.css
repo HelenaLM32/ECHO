@@ -180,11 +180,23 @@
   color: var(--black);
 }
 
-.profile-rating-badge:hover { background: rgba(255, 152, 0, 0.2); }
+.profile-rating-badge:hover {
+  background: rgba(255, 152, 0, 0.2);
+}
 
-.profile-rating-star { color: var(--orange); font-size: 1rem; }
-.profile-rating-avg  { font-weight: 700; }
-.profile-rating-count{ color: var(--gray-dark-secondary); font-size: 0.78rem; }
+.profile-rating-star {
+  color: var(--orange);
+  font-size: 1rem;
+}
+
+.profile-rating-avg {
+  font-weight: 700;
+}
+
+.profile-rating-count {
+  color: var(--gray-dark-secondary);
+  font-size: 0.78rem;
+}
 
 .display-bio {
   font-size: 0.85rem;
@@ -341,9 +353,10 @@
 
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 14px;
   margin-top: 12px;
+  width: 100%;
 }
 
 .project-card {

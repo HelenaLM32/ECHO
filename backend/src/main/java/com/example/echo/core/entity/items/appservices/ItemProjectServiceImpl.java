@@ -58,7 +58,8 @@ public class ItemProjectServiceImpl implements ItemProjectService {
 
             Integer itemId = dto.getItem().getId();
 
-            // getReferenceById devuelve proxy managed — no hace SELECT, Hibernate lo resuelve en flush
+            // getReferenceById devuelve proxy managed — no hace SELECT, Hibernate lo
+            // resuelve en flush
             ItemDTO managed = itemRepository.findById(itemId).orElse(null);
 
             ItemProjectDTO toSave = new ItemProjectDTO(
@@ -68,8 +69,7 @@ public class ItemProjectServiceImpl implements ItemProjectService {
                     dto.getBlockGap(),
                     dto.getBlockBorderRadius(),
                     dto.getPublished(),
-                    dto.getSlug()
-            );
+                    dto.getSlug());
 
             return projectRepository.save(toSave);
 
@@ -88,7 +88,8 @@ public class ItemProjectServiceImpl implements ItemProjectService {
             if (dto.getItem() != null && dto.getItem().getId() != null) {
                 Integer itemId = dto.getItem().getId();
                 ItemDTO managed = itemRepository.findById(itemId).orElse(null);
-                if (managed == null) throw new ServiceException("Referenced item not found: " + itemId);
+                if (managed == null)
+                    throw new ServiceException("Referenced item not found: " + itemId);
                 existing.setItem(managed);
             }
             // copy mutable fields

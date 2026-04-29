@@ -1,52 +1,41 @@
 import React, { useState, useEffect } from "react";
-import ItemProduct from "../ItemProduct/ItemProduct.jsx";
-import { API_URL } from "../../services/config.js";
+import ProjectCard from "../../components/ProjectCard/ProjectCard";
+import { getAllProjects } from "../../services/projects"; // ← necesitarás este método
 import "./ItemsList.css";
 
-const MOCK_ITEMS = [
-  { id: 1, creatorId: 10, title: "Diseño de logo", description: "Creación de logo profesional", basePrice: 150.0, itemType: "Diseño" },
-  { id: 2, creatorId: 11, title: "Fotografía de producto", description: "Sesión fotográfica para e-commerce", basePrice: 200.0, itemType: "Fotografía" },
-  { id: 3, creatorId: 12, title: "Ilustración digital", description: "Ilustración personalizada en estilo cartoon", basePrice: 80.0, itemType: "Ilustración" },
-  { id: 4, creatorId: 13, title: "Diseño de interfaz", description: "Diseño de interfaz para aplicación móvil", basePrice: 300.0, itemType: "Diseño" },
-  //segunda row
-    { id: 5, creatorId: 14, title: "Diseño de logo", description: "Creación de logo profesional", basePrice: 150.0, itemType: "Diseño" },
-  { id: 6, creatorId: 15, title: "Fotografía de producto", description: "Sesión fotográfica para e-commerce", basePrice: 200.0, itemType: "Fotografía" },
-  { id: 7, creatorId: 16, title: "Ilustración digital", description: "Ilustración personalizada en estilo cartoon", basePrice: 80.0, itemType: "Ilustración" },
-  { id: 8, creatorId: 17, title: "Diseño de interfaz", description: "Diseño de interfaz para aplicación móvil", basePrice: 300.0, itemType: "Diseño" }
-];
-
-// Añadidos dos items extra para probar 5 por fila con más contenido
-MOCK_ITEMS.push(
-  { id: 9, creatorId: 18, title: "Animación 2D", description: "Animación corta para redes sociales", basePrice: 220.0, itemType: "Animación" },
-  { id: 10, creatorId: 19, title: "Edición de video", description: "Edición profesional de video", basePrice: 250.0, itemType: "Video" }
-);
-
 function ItemsList() {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [projects, setProjects] = useState([]);
+  const [loadingProjects, setLoadingProjects] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        setItems(MOCK_ITEMS); // <- mock para probar
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchItems();
+    setLoadingProjects(true);
+    getAllProjects()
+      .then((list) => {
+        console.debug("Fetched all projects", list);
+        setProjects(list || []);
+      })
+      .catch((err) => {
+        console.debug("Failed to fetch projects", err);
+        setError("No se pudieron cargar los proyectos");
+        setProjects([]);
+      })
+      .finally(() => setLoadingProjects(false));
   }, []);
 
-  if (loading) return <p>Cargando items...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="items-list-container">
-      {items.map((item) => (
-        <ItemProduct key={item.id} {...item} />
-      ))}
+      {loadingProjects ? (
+        <div className="empty-state">Cargando proyectos...</div>
+      ) : projects.length === 0 ? (
+        <div className="empty-state">No hay proyectos publicados.</div>
+      ) : (
+        projects.map((p) => (
+          <ProjectCard key={p.id} project={p} />
+        ))
+      )}
     </div>
   );
 }

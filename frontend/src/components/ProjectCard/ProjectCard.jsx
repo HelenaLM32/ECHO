@@ -47,7 +47,7 @@ export default function ProjectCard({ project }) {
           {/* Try rendering first block preview (text/image/gallery/video) */}
           {renderPreviewContent(project) || (
             cover ? <img src={cover} alt={title} className="pc-cover-img" />
-            : <div className="pc-cover-fallback">{title?.charAt(0)?.toUpperCase() || 'P'}</div>
+              : <div className="pc-cover-fallback">{title?.charAt(0)?.toUpperCase() || 'P'}</div>
           )}
         </div>
       </article>
