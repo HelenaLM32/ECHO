@@ -18,6 +18,10 @@ public class RestItemProjectController {
 
     @Autowired
     ItemProjectService projectService;
+    @Autowired
+    com.example.echo.core.entity.user.persistence.UserRepository userRepository;
+    @Autowired
+    com.example.echo.infrastructure.persistence.jpa.JpaProjectLikeRepository projectLikeRepo;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getAll() {
@@ -44,6 +48,87 @@ public class RestItemProjectController {
         try {
             return ResponseEntity.ok(projectService.getByIdToJson(id));
         } catch (ServiceException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/{id}/views", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> incrementViews(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(projectService.incrementViewsAndGetByIdToJson(id));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/{id}/likes", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> toggleLike(@PathVariable Integer id,
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+        try {
+            if (authHeader == null || !authHeader.startsWith("Bearer "))
+                return ResponseEntity.status(401).body("No autorizado");
+            String token = authHeader.replace("Bearer ", "");
+            if (!com.example.echo.security.JwtUtil.validateToken(token))
+                return ResponseEntity.status(401).body("Token inválido");
+            String email = com.example.echo.security.JwtUtil.extractEmail(token);
+            com.example.echo.core.entity.user.dto.UserDTO user = userRepository.findByEmail(email).orElse(null);
+            if (user == null)
+                return ResponseEntity.status(401).body("Usuario no encontrado");
+            return ResponseEntity.ok(projectService.toggleLikeAndGetByIdToJson(id, user.getId()));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addComment(@PathVariable Integer id, @RequestBody String body,
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+        try {
+            if (authHeader == null || !authHeader.startsWith("Bearer "))
+                return ResponseEntity.status(401).body("No autorizado");
+            String token = authHeader.replace("Bearer ", "");
+            if (!com.example.echo.security.JwtUtil.validateToken(token))
+                return ResponseEntity.status(401).body("Token inválido");
+            String email = com.example.echo.security.JwtUtil.extractEmail(token);
+            com.example.echo.core.entity.user.dto.UserDTO user = userRepository.findByEmail(email).orElse(null);
+            if (user == null)
+                return ResponseEntity.status(401).body("Usuario no encontrado");
+            String commentText = new com.fasterxml.jackson.databind.ObjectMapper().readTree(body).path("comment")
+                    .asText(null);
+            return ResponseEntity.ok(projectService.addCommentAndGetByIdToJson(id, user.getId(), commentText));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/{id}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getComments(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.ok(projectService.getCommentsByProjectIdToJson(id));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/{id}/likes/status", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> likeStatus(@PathVariable Integer id,
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+        try {
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.ok("{\"liked\":false}");
+            }
+            String token = authHeader.replace("Bearer ", "");
+            if (!com.example.echo.security.JwtUtil.validateToken(token))
+                return ResponseEntity.ok("{\"liked\":false}");
+            String email = com.example.echo.security.JwtUtil.extractEmail(token);
+            com.example.echo.core.entity.user.dto.UserDTO user = userRepository.findByEmail(email).orElse(null);
+            if (user == null)
+                return ResponseEntity.ok("{\"liked\":false}");
+            boolean exists = projectLikeRepo.existsByUserIdAndProjectId(user.getId(), id);
+            return ResponseEntity.ok("{\"liked\":" + (exists ? "true" : "false") + "}");
+        } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }

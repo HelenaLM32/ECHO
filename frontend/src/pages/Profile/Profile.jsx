@@ -5,6 +5,7 @@ import { getProfileByUserId, updateAvatar, updateBanner } from "../../services/p
 import { getProjectsByUserId } from "../../services/projects";
 import { getAverageByUser, getReviewsByUser } from "../../services/reviews";
 import ProjectCard from "../../components/ProjectCard/ProjectCard";
+import ProjectView from "../../pages/ItemProyect/ProjectView";
 import linkedinIcon from '../../assets/icons8-linkedin-24.png';
 import twitterIcon from '../../assets/icons8-x-24.png';
 import instagramIcon from '../../assets/icons8-instagram-24.png';
@@ -38,6 +39,7 @@ export default function Profile() {
   const [activeTab, setActiveTab] = useState("Proyectos");
   const [projects, setProjects] = useState([]);
   const [loadingProjects, setLoadingProjects] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
 
   const [reviewStats, setReviewStats] = useState({ average: null, count: 0 });
   const [reviews, setReviews] = useState([]);
@@ -315,9 +317,8 @@ export default function Profile() {
 
             {isOwnProfile && activeTab === "Proyectos" && (
               <div className="project-editor-action">
-                <Link to="/proyect" className="project-card-button">
-                  <span className="project-card-icon">+</span>
-                  <span className="project-card-label">Crear nuevo proyecto</span>
+                <Link to="/proyect" className="create-project-button">
+                  <span className="create-project-span">Crear nuevo proyecto</span>
                 </Link>
               </div>
             )}
@@ -331,7 +332,7 @@ export default function Profile() {
                 ) : (
                   <div className="projects-grid">
                     {projects.map((p) => (
-                      <ProjectCard key={p.id} project={p} />
+                      <ProjectCard key={p.id} project={p} onOpen={setSelectedProjectId} />
                     ))}
                   </div>
                 )}
@@ -349,6 +350,9 @@ export default function Profile() {
           count={reviewStats.count}
           onClose={() => setShowReviews(false)}
         />
+      )}
+      {selectedProjectId && (
+        <ProjectView projectId={selectedProjectId} onClose={() => setSelectedProjectId(null)} />
       )}
     </>
   );

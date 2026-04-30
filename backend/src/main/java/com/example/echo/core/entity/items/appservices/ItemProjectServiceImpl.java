@@ -29,6 +29,21 @@ public class ItemProjectServiceImpl implements ItemProjectService {
     @Autowired
     private ItemRepository itemRepository;
 
+    @Autowired
+    private com.example.echo.core.entity.profile.persistence.ProfileRepository profileRepository;
+
+    @Autowired
+    private com.example.echo.core.entity.user.persistence.UserRepository userRepository;
+
+    @Autowired
+    private com.example.echo.infrastructure.persistence.jpa.JpaProjectLikeRepository projectLikeRepo;
+
+    @Autowired
+    private com.example.echo.infrastructure.persistence.jpa.JpaProjectCommentRepository projectCommentRepo;
+
+    @Autowired
+    private com.fasterxml.jackson.databind.ObjectMapper mapper;
+
     private Serializer<ItemProjectDTO> serializer;
 
     @SuppressWarnings("unchecked")
@@ -71,6 +86,9 @@ public class ItemProjectServiceImpl implements ItemProjectService {
                     dto.getPublished(),
                     dto.getSlug());
 
+            if (dto.getLikes() != null) toSave.setLikes(dto.getLikes());
+            if (dto.getViews() != null) toSave.setViews(dto.getViews());
+            if (dto.getComments() != null) toSave.setComments(dto.getComments());
             return projectRepository.save(toSave);
 
         } catch (ServiceException e) {
@@ -99,6 +117,9 @@ public class ItemProjectServiceImpl implements ItemProjectService {
             existing.setBlockBorderRadius(dto.getBlockBorderRadius());
             existing.setPublished(dto.getPublished());
             existing.setSlug(dto.getSlug());
+            if (dto.getLikes() != null) existing.setLikes(dto.getLikes());
+            if (dto.getViews() != null) existing.setViews(dto.getViews());
+            if (dto.getComments() != null) existing.setComments(dto.getComments());
             return projectRepository.save(existing);
         } catch (Exception e) {
             log.error("Error updating project", e);
@@ -127,7 +148,127 @@ public class ItemProjectServiceImpl implements ItemProjectService {
 
     @Override
     public String getByIdToJson(Integer id) throws ServiceException {
-        return jsonSerializer().serialize(this.getById(id));
+        try {
+            ItemProjectDTO dto = this.getById(id);
+            com.fasterxml.jackson.databind.node.ObjectNode node = mapper.valueToTree(dto);
+            // embed profile
+            Integer creatorId = dto.getItem() != null ? dto.getItem().getCreatorId() : null;
+            if (creatorId != null) {
+                com.example.echo.core.entity.user.dto.UserDTO user = userRepository.findById(creatorId).orElse(null);
+                if (user != null) {
+                    com.example.echo.core.entity.profile.dto.ProfileDTO profile = profileRepository.findByUserId(creatorId)
+                            .orElseGet(() -> com.example.echo.core.entity.profile.mappers.ProfileMapper.newProfileForUser(user));
+                    com.fasterxml.jackson.databind.node.ObjectNode profileNode = com.example.echo.core.entity.profile.mappers.ProfileMapper.toResponseNode(profile, user, mapper);
+                    node.set("profile", profileNode);
+                }
+            }
+            return mapper.writeValueAsString(node);
+        } catch (Exception e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public String incrementViewsAndGetByIdToJson(Integer id) throws ServiceException {
+        try {
+            ItemProjectDTO dto = this.getById(id);
+            dto.setViews((dto.getViews() == null ? 0 : dto.getViews()) + 1);
+            projectRepository.save(dto);
+            return getByIdToJson(id);
+        } catch (Exception e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public String addCommentAndGetByIdToJson(Integer projectId, Integer userId, String commentText) throws ServiceException {
+        try {
+            if (commentText == null || commentText.trim().isEmpty()) {
+                throw new ServiceException("El comentario no puede estar vacío");
+            }
+            projectCommentRepo.save(new com.example.echo.core.entity.projectcomments.model.ProjectComment(projectId, userId, commentText.trim()));
+            ItemProjectDTO dto = this.getById(projectId);
+            dto.setComments((dto.getComments() == null ? 0 : dto.getComments()) + 1);
+            projectRepository.save(dto);
+            return getByIdToJson(projectId);
+        } catch (Exception e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public String getCommentsByProjectIdToJson(Integer projectId) throws ServiceException {
+        try {
+            java.util.List<com.example.echo.core.entity.projectcomments.model.ProjectComment> comments = projectCommentRepo.findByProjectIdOrderByCreatedAtDesc(projectId);
+            com.fasterxml.jackson.databind.node.ArrayNode array = mapper.createArrayNode();
+            for (com.example.echo.core.entity.projectcomments.model.ProjectComment comment : comments) {
+                com.fasterxml.jackson.databind.node.ObjectNode commentNode = mapper.createObjectNode();
+                commentNode.put("id", comment.getId());
+                commentNode.put("comment", comment.getComment());
+                commentNode.put("createdAt", comment.getCreatedAt() != null ? comment.getCreatedAt().toString() : null);
+                commentNode.put("projectId", comment.getProjectId());
+
+                com.fasterxml.jackson.databind.node.ObjectNode authorNode = mapper.createObjectNode();
+                if (comment.getUserId() != null) {
+                    com.example.echo.core.entity.user.dto.UserDTO user = userRepository.findById(comment.getUserId()).orElse(null);
+                    if (user != null) {
+                        authorNode.put("id", user.getId());
+                        authorNode.put("username", user.getUsername());
+                        authorNode.put("email", user.getEmail());
+                        com.example.echo.core.entity.profile.dto.ProfileDTO profile = profileRepository.findByUserId(user.getId())
+                                .orElse(null);
+                        if (profile != null) {
+                            authorNode.put("publicName", profile.getPublicName());
+                            authorNode.put("avatarUrl", profile.getAvatarUrl());
+                        }
+                    }
+                }
+                commentNode.set("author", authorNode);
+                array.add(commentNode);
+            }
+            return mapper.writeValueAsString(array);
+        } catch (Exception e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public String toggleLikeAndGetByIdToJson(Integer projectId, Integer userId) throws ServiceException {
+        try {
+            boolean exists = projectLikeRepo.existsByUserIdAndProjectId(userId, projectId);
+            boolean likedNow;
+            if (exists) {
+                projectLikeRepo.deleteByUserIdAndProjectId(userId, projectId);
+                ItemProjectDTO dto = this.getById(projectId);
+                dto.setLikes(Math.max(0, (dto.getLikes() == null ? 0 : dto.getLikes()) - 1));
+                projectRepository.save(dto);
+                likedNow = false;
+            } else {
+                projectLikeRepo.save(new com.example.echo.core.entity.projectlikes.model.ProjectLike(userId, projectId));
+                ItemProjectDTO dto = this.getById(projectId);
+                dto.setLikes((dto.getLikes() == null ? 0 : dto.getLikes()) + 1);
+                projectRepository.save(dto);
+                likedNow = true;
+            }
+
+            // Build response node: project + profile + liked flag
+            ItemProjectDTO dto = this.getById(projectId);
+            com.fasterxml.jackson.databind.node.ObjectNode node = mapper.valueToTree(dto);
+            Integer creatorId = dto.getItem() != null ? dto.getItem().getCreatorId() : null;
+            if (creatorId != null) {
+                com.example.echo.core.entity.user.dto.UserDTO user = userRepository.findById(creatorId).orElse(null);
+                if (user != null) {
+                    com.example.echo.core.entity.profile.dto.ProfileDTO profile = profileRepository.findByUserId(creatorId)
+                            .orElseGet(() -> com.example.echo.core.entity.profile.mappers.ProfileMapper.newProfileForUser(user));
+                    com.fasterxml.jackson.databind.node.ObjectNode profileNode = com.example.echo.core.entity.profile.mappers.ProfileMapper.toResponseNode(profile, user, mapper);
+                    node.set("profile", profileNode);
+                }
+            }
+            node.put("liked", likedNow);
+            return mapper.writeValueAsString(node);
+        } catch (Exception e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
 
     @Override

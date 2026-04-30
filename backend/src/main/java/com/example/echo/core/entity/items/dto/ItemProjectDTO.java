@@ -41,6 +41,18 @@ public class ItemProjectDTO {
     @JsonProperty("slug")
     private String slug;
 
+    @Column(name = "likes", nullable = false)
+    @JsonProperty("likes")
+    private Integer likes = 0;
+
+    @Column(name = "views", nullable = false)
+    @JsonProperty("views")
+    private Integer views = 0;
+
+    @Column(name = "comments", nullable = false)
+    @JsonProperty("comments")
+    private Integer comments = 0;
+
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
 
@@ -64,6 +76,9 @@ public class ItemProjectDTO {
         this.blockBorderRadius = blockBorderRadius;
         this.published = published;
         this.slug = slug;
+        this.likes = 0;
+        this.views = 0;
+        this.comments = 0;
         this.createdAt = OffsetDateTime.now();
         this.updatedAt = OffsetDateTime.now();
     }
@@ -97,6 +112,18 @@ public class ItemProjectDTO {
     public String getSlug() { return slug; }
 
     public void setSlug(String slug) { this.slug = slug; }
+
+    public Integer getLikes() { return likes; }
+
+    public void setLikes(Integer likes) { this.likes = likes; }
+
+    public Integer getViews() { return views; }
+
+    public void setViews(Integer views) { this.views = views; }
+
+    public Integer getComments() { return comments; }
+
+    public void setComments(Integer comments) { this.comments = comments; }
 
     public OffsetDateTime getCreatedAt() { return createdAt; }
 

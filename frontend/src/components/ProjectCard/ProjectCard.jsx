@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import './ProjectCard.css'
 import { BLOCK_TYPES, parseJsonSafe } from '../../pages/ItemProyect/store/useProjectStore'
 
@@ -36,22 +35,47 @@ function renderPreviewContent(project) {
   }
 }
 
-export default function ProjectCard({ project }) {
+export default function ProjectCard({ project, onOpen }) {
   const cover = getCover(project)
   const title = project?.item?.title || `Proyecto #${project.id}`
+  const creatorId = project?.item?.creatorId
+  const profile = project?.profile
+  const creatorName = profile?.publicName || profile?.username || 'Creator'
+  const avatarUrl = profile?.avatarUrl
+  const initials = creatorName.charAt(0).toUpperCase()
+  const likes = project?.likes || 0
+  const views = project?.views || 0
 
   return (
-    <Link to={`/project/${project.id}`} className="project-card-wrapper" style={{ textDecoration: 'none' }}>
-      <article className="project-card-preview">
+    <button type="button" className="project-card-wrapper project-card-button" onClick={() => onOpen(project.id)}>
+      <article className="project-card">
         <div className="pc-cover">
-          {/* Try rendering first block preview (text/image/gallery/video) */}
           {renderPreviewContent(project) || (
             cover ? <img src={cover} alt={title} className="pc-cover-img" />
               : <div className="pc-cover-fallback">{title?.charAt(0)?.toUpperCase() || 'P'}</div>
           )}
         </div>
+        <div className="pc-footer">
+          <div className="pc-footer-left">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={creatorName} className="pc-creator-avatar" />
+            ) : (
+              <div className="pc-creator-avatar pc-creator-fallback">{initials}</div>
+            )}
+            <h3 className="pc-title">{title}</h3>
+          </div>
+          <div className="pc-stats">
+            <span className="pc-stat">
+              <span className="pc-stat-dot">❤️</span>
+              {likes}
+            </span>
+            <span className="pc-stat">
+              <span className="pc-stat-dot">👁️</span>
+              {views}
+            </span>
+          </div>
+        </div>
       </article>
-      <h3 className="pc-title pc-title-below">{title}</h3>
-    </Link>
+    </button>
   )
 }

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import ProjectCard from "../../components/ProjectCard/ProjectCard";
-import { getAllProjects } from "../../services/projects"; // ← necesitarás este método
+import ProjectView from "../../pages/ItemProyect/ProjectView";
+import { getAllProjects } from "../../services/projects";
 import "./ItemsList.css";
 
 function ItemsList() {
   const [projects, setProjects] = useState([]);
   const [loadingProjects, setLoadingProjects] = useState(false);
   const [error, setError] = useState("");
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
 
   useEffect(() => {
     setLoadingProjects(true);
@@ -33,8 +35,11 @@ function ItemsList() {
         <div className="empty-state">No hay proyectos publicados.</div>
       ) : (
         projects.map((p) => (
-          <ProjectCard key={p.id} project={p} />
+          <ProjectCard key={p.id} project={p} onOpen={setSelectedProjectId} />
         ))
+      )}
+      {selectedProjectId && (
+        <ProjectView projectId={selectedProjectId} onClose={() => setSelectedProjectId(null)} />
       )}
     </div>
   );
