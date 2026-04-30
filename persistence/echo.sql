@@ -135,6 +135,9 @@ CREATE TABLE IF NOT EXISTS item_projects (
   blocks LONGTEXT,
   background LONGTEXT,
   block_gap INT,
+  likes INT DEFAULT 0,
+  views INT DEFAULT 0,
+  comments INT DEFAULT 0,
   block_border_radius INT,
   published BOOLEAN DEFAULT FALSE,
   slug VARCHAR(255) UNIQUE,
@@ -142,6 +145,26 @@ CREATE TABLE IF NOT EXISTS item_projects (
   updated_at DATETIME NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_item_projects_item FOREIGN KEY (id) REFERENCES items(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla para likes por usuario en proyectos
+CREATE TABLE IF NOT EXISTS project_likes (
+    user_id INT NOT NULL,
+    project_id INT NOT NULL,
+    PRIMARY KEY (user_id, project_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (project_id) REFERENCES item_projects(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla para comentarios de proyectos
+CREATE TABLE IF NOT EXISTS project_comments (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    project_id INT NOT NULL,
+    user_id INT NOT NULL,
+    comment LONGTEXT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (project_id) REFERENCES item_projects(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Indexes (plain CREATE INDEX is compatible with MySQL versions)

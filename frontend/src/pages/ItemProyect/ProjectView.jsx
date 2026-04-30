@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { getProjectById } from '../../services/projects'
 import './ProjectEditor.css'
-import useProjectStore, { BLOCK_TYPES, toEmbedUrl, parseJsonSafe } from './store/useProjectStore'
+import { BLOCK_TYPES, toEmbedUrl, parseJsonSafe } from './store/useProjectStore'
+import ProjectFooter from '../../components/ProjectFooter/ProjectFooter'
+import { API_URL } from '../../services/config'
 
 function RenderBlock({ block }) {
   if (!block) return null
@@ -41,12 +43,15 @@ function RenderBlock({ block }) {
   }
 }
 
-export default function ProjectView() {
-  const { id } = useParams()
+export default function ProjectView({ projectId, onClose }) {
   const navigate = useNavigate()
+  const { id: routeId } = useParams()
+  const id = projectId || routeId
   const [project, setProject] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [profile, setProfile] = useState(null)
+  const [commentsList, setCommentsList] = useState([])
 
   useEffect(() => {
     let mounted = true
@@ -58,6 +63,90 @@ export default function ProjectView() {
     return () => { mounted = false }
   }, [id])
 
+  useEffect(() => {
+    if (!project || !project.item || !project.item.creatorId) return
+    const creatorId = project.item.creatorId
+    fetch(`${API_URL}/profiles/${creatorId}`)
+      .then((r) => { if (!r.ok) throw new Error('No profile'); return r.json() })
+      .then((data) => setProfile(data))
+      .catch(() => setProfile(null))
+  }, [project])
+
+  useEffect(() => {
+    if (!project?.id) return
+    fetch(`${API_URL}/item-projects/${project.id}/comments`)
+      .then((r) => r.ok ? r.json() : [])
+      .then((data) => setCommentsList(Array.isArray(data) ? data : []))
+      .catch(() => setCommentsList([]))
+  }, [project?.id])
+
+  // increment views once when project is loaded in the preview
+  useEffect(() => {
+    if (!project) return
+    fetch(`${API_URL}/item-projects/${project.id}/views`, { method: 'POST' })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data) setProject(data) })
+      .catch(() => { })
+  }, [project?.id])
+
+  const [isLiked, setIsLiked] = useState(false)
+
+  useEffect(() => {
+    const token = sessionStorage.getItem('token')
+    if (!token || !project) return
+    fetch(`${API_URL}/item-projects/${project.id}/likes/status`, { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => r.ok ? r.json() : { liked: false })
+      .then((data) => { setIsLiked(Boolean(data.liked)) })
+      .catch(() => setIsLiked(false))
+  }, [project?.id])
+
+  function handleToggleLike() {
+    const token = sessionStorage.getItem('token')
+    if (!token) {
+      alert('Debes iniciar sesión para dar like')
+      return
+    }
+    fetch(`${API_URL}/item-projects/${project.id}/likes`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => { if (!r.ok) throw new Error('Error like'); return r.json() })
+      .then((data) => {
+        // response includes updated project fields and `liked` flag
+        setProject(data)
+        setIsLiked(Boolean(data.liked))
+      })
+      .catch((e) => console.error('like error', e))
+  }
+
+  function loadComments() {
+    if (!project?.id) return
+    fetch(`${API_URL}/item-projects/${project.id}/comments`)
+      .then((r) => r.ok ? r.json() : [])
+      .then((data) => setCommentsList(Array.isArray(data) ? data : []))
+      .catch(() => setCommentsList([]))
+  }
+
+  function handleAddComment(commentText) {
+    const token = sessionStorage.getItem('token')
+    if (!token) {
+      alert('Debes iniciar sesión para comentar')
+      return
+    }
+    if (!commentText || !commentText.trim()) return
+    fetch(`${API_URL}/item-projects/${project.id}/comments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ comment: commentText.trim() }),
+    })
+      .then((r) => { if (!r.ok) throw new Error('Error al enviar comentario'); return r.json() })
+      .then((data) => {
+        setProject(data)
+        loadComments()
+      })
+      .catch((e) => console.error('comment error', e))
+  }
+
   if (loading) return <div style={{ padding: 20 }}>Cargando proyecto...</div>
   if (error || !project) return <div style={{ padding: 20 }}>{error || 'Proyecto no encontrado'}</div>
 
@@ -68,6 +157,10 @@ export default function ProjectView() {
   const bgStyle = background.mode === 'image' ? { backgroundImage: `url(${background.value})`, backgroundSize: 'cover', backgroundPosition: 'center' } : { background: background.value }
 
   function handleOverlayClick() {
+    if (onClose) {
+      onClose()
+      return
+    }
     // Prefer returning to the profile of the project creator if available, otherwise go back in history
     const creatorId = project?.item?.creatorId
     if (creatorId) navigate(`/profile/${creatorId}`)
@@ -75,13 +168,26 @@ export default function ProjectView() {
   }
 
   return (
-    <div className="previewOverlay" onClick={handleOverlayClick} style={{ position: 'relative', padding: 24 }}>
-      <div className="previewWindow" style={{ ...bgStyle, width: '100%', maxWidth: 980, margin: '0 auto', borderRadius: 6 }} onClick={(e) => e.stopPropagation()}>
-        <div className="previewContentList" style={{ gap: `${blockGap}px`}}>
+    <div className="previewOverlay" onClick={handleOverlayClick}>
+      <div className="previewWindow" style={{ ...bgStyle, width: '100%', maxWidth: 1200, margin: '0 auto', borderRadius: 16 }} onClick={(e) => e.stopPropagation()}>
+        <div className="previewContentList" style={{ gap: `${blockGap}px` }}>
           {blocks.length === 0 && <p className="previewEmptyMessage">No hay contenido para previsualizar.</p>}
           {blocks.map((b) => (
             <div key={b.id} className="previewContentItem"><RenderBlock block={b} /></div>
           ))}
+        </div>
+        <div style={{ marginTop: 12 }}>
+          <ProjectFooter
+            name={(profile && profile.publicName) || project?.item?.title || 'Anónimo'}
+            avatar={(profile && profile.avatarUrl) || null}
+            likes={project?.likes || 0}
+            views={project?.views || 0}
+            comments={project?.comments || 0}
+            commentItems={commentsList}
+            onLike={handleToggleLike}
+            onSubmitComment={handleAddComment}
+            isLiked={isLiked}
+          />
         </div>
       </div>
     </div>

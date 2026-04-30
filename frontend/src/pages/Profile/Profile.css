@@ -264,23 +264,34 @@
   color: var(--black);
 }
 
+.create-project-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 15rem;
+  height: 30px;
+  background: var(--orange);
+  border-radius: 18px;
+  text-decoration: none;
+  color: var(--black);
+  transition: 150ms;
+}
+
+.create-project-button:hover {
+  transition: 150ms;
+  background: var(--black-secondary);
+}
+
+.create-project-span {
+  font-size: 0.85rem;
+  color: var(--white);
+}
+
 .project-card-button:hover {
   border-color: var(--gray-dark);
 }
 
-.project-card-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: var(--orange);
-  color: var(--true-white);
-  font-size: 1.2rem;
-  line-height: 1;
-  margin-bottom: 10px;
-}
 
 .project-card-label {
   font-size: 0.75rem;

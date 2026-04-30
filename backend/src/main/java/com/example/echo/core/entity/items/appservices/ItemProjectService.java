@@ -10,6 +10,14 @@ public interface ItemProjectService {
 
     String getByIdToJson(Integer id) throws ServiceException;
 
+    String incrementViewsAndGetByIdToJson(Integer id) throws ServiceException;
+
+    String addCommentAndGetByIdToJson(Integer projectId, Integer userId, String commentText) throws ServiceException;
+
+    String getCommentsByProjectIdToJson(Integer projectId) throws ServiceException;
+
+    String toggleLikeAndGetByIdToJson(Integer projectId, Integer userId) throws ServiceException;
+
     String registerFromJson(String projectJson) throws ServiceException;
 
     String updateFromJson(String projectJson) throws ServiceException;
