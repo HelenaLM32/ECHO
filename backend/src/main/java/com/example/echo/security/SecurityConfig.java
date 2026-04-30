@@ -1,5 +1,8 @@
 package com.example.echo.security;
 
+import java.nio.file.Paths;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,6 +22,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfig {
 
     private final RateLimitingFilter rateLimitingFilter;
+
+    @Value("${app.upload.dir:../uploads}")
+    private String uploadDir;
 
     public SecurityConfig(RateLimitingFilter rateLimitingFilter) {
         this.rateLimitingFilter = rateLimitingFilter;
@@ -74,8 +80,9 @@ public class SecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addResourceHandlers(ResourceHandlerRegistry registry) {
+                String uploadLocation = Paths.get(uploadDir).toAbsolutePath().normalize().toUri().toString();
                 registry.addResourceHandler("/uploads/**")
-                        .addResourceLocations("file:../uploads/");
+                        .addResourceLocations(uploadLocation);
             }
         };
     }

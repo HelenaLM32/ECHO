@@ -34,11 +34,15 @@ services:
       ECHO_JWT_SECRET: ${ECHO_JWT_SECRET}
       CORS_ALLOWED_ORIGIN: ${CORS_ALLOWED_ORIGIN}
       SERVER_SSL_ENABLED: "false"
+      APP_UPLOAD_DIR: ${APP_UPLOAD_DIR:-/app/uploads}
+      APP_BASE_URL: ${APP_BASE_URL:-${CORS_ALLOWED_ORIGIN}}
     depends_on:
       db:
         condition: service_healthy
     ports:
       - "${BACKEND_PORT:-8084}:8082"
+    volumes:
+      - ./uploads:/app/uploads
     networks:
       - internal
     restart: unless-stopped

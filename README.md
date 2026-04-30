@@ -43,6 +43,15 @@ docker compose up -d --build
 
 Frontend will be available on `http://localhost:${FRONTEND_PORT}` (8083).
 
+### Upload persistence (host folder)
+
+Uploaded files are persisted in the repository `uploads/` folder through a bind mount in Docker Compose:
+
+- Host: `./uploads`
+- Backend container: `/app/uploads`
+
+No additional container is required. The backend reads `APP_UPLOAD_DIR` and serves files from that location.
+
 ### 3) Create or promote an admin securely (no backend endpoint)
 
 A one-shot service is available for admin bootstrap (`admin-init`) and only runs when profile `tools` is requested.
