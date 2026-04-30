@@ -16,6 +16,9 @@ import Orders from './pages/Orders/Orders';
 import OrderDetail from './pages/OrderDetail/OrderDetail';
 import ProjectEditor from './pages/ItemProyect/ProjectEditor.jsx';
 import ProjectView from './pages/ItemProyect/ProjectView.jsx';
+import PrivacyPolicy from './pages/Legal/PrivacyPolicy';
+import TermsAndConditions from './pages/Legal/TermsAndConditions';
+import CookiesPolicy from './pages/Legal/CookiesPolicy';
 
 export default function App() {
   return (
@@ -72,6 +75,10 @@ export default function App() {
           </ProtectedRoute>
 
         } />
+
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsAndConditions />} />
+        <Route path="/cookies" element={<CookiesPolicy />} />
       </Routes>
     </AuthProvider>
   )

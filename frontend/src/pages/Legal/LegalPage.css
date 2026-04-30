@@ -1,0 +1,116 @@
+.legal-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(233, 94, 35, 0.14), transparent 32%),
+    radial-gradient(circle at 88% 8%, rgba(42, 95, 121, 0.16), transparent 30%),
+    linear-gradient(180deg, #f4f2ef 0%, #ffffff 60%);
+}
+
+.legal-hero {
+  padding: 88px 20px 46px;
+}
+
+.legal-hero-inner {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 40px 34px;
+  border-radius: 24px;
+  background: linear-gradient(120deg, var(--black) 0%, var(--black-secondary) 65%, #4f4f4f 100%);
+  color: var(--true-white);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+}
+
+.legal-eyebrow {
+  margin: 0 0 14px;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.legal-hero h1 {
+  margin: 0;
+  font-size: clamp(1.9rem, 3.7vw, 3rem);
+  line-height: 1.12;
+}
+
+.legal-updated {
+  margin: 16px 0 0;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.legal-main {
+  padding: 0 20px 34px;
+}
+
+.legal-article {
+  max-width: 980px;
+  margin: 0 auto;
+  border-radius: 24px;
+  padding: 34px 34px 38px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+}
+
+.legal-intro {
+  margin: 0 0 24px;
+  font-size: 1.03rem;
+  line-height: 1.72;
+  color: #1e1e1e;
+}
+
+.legal-section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #ece7e2;
+}
+
+.legal-section h2 {
+  margin: 0 0 12px;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  color: var(--black);
+}
+
+.legal-section p {
+  margin: 0 0 12px;
+  color: #2f2f2f;
+  line-height: 1.72;
+}
+
+.legal-section ul {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.legal-section li {
+  margin: 0 0 10px;
+  color: #2f2f2f;
+  line-height: 1.68;
+}
+
+.legal-contact a {
+  color: var(--complementary-blue);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .legal-hero {
+    padding: 78px 16px 24px;
+  }
+
+  .legal-hero-inner {
+    padding: 28px 22px;
+    border-radius: 18px;
+  }
+
+  .legal-main {
+    padding: 0 16px 24px;
+  }
+
+  .legal-article {
+    padding: 24px 20px 28px;
+    border-radius: 18px;
+  }
+}
