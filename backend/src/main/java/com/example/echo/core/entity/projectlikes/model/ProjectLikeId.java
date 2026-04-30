@@ -29,7 +29,6 @@ public class ProjectLikeId implements Serializable {
         return java.util.Objects.hash(userId, projectId);
     }
 
-    // getters/setters required by some JPA providers
     public Integer getUserId() {
         return userId;
     }
