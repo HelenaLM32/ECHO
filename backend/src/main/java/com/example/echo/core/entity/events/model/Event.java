@@ -2,6 +2,7 @@ package com.example.echo.core.entity.events.model;
 
 import com.example.echo.core.entity.domainservices.validations.Check;
 import com.example.echo.core.entity.sharedkernel.exceptions.BuildException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class Event {
@@ -11,10 +12,12 @@ public class Event {
     private Integer creatorId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private String status;
     private String title;
     private String description;
     private String img;
+    private BigDecimal precio;
+    private String categoria;
+    private String linkEntradas;
 
     protected Event() {
     }
@@ -75,10 +78,6 @@ public class Event {
         return endDate;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -89,6 +88,18 @@ public class Event {
 
     public String getImg() {
         return img;
+    }
+
+    public BigDecimal getPrecio() {
+        return precio;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public String getLinkEntradas() {
+        return linkEntradas;
     }
 
     public int setTitle(String title) {
@@ -139,7 +150,27 @@ public class Event {
         return 0;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public int setPrecio(BigDecimal precio) {
+        if (precio == null || precio.compareTo(BigDecimal.ZERO) >= 0) {
+            this.precio = precio;
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setCategoria(String categoria) {
+        if (categoria == null || Check.maxLength(categoria, 100)) {
+            this.categoria = categoria;
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setLinkEntradas(String linkEntradas) {
+        if (linkEntradas == null || Check.maxLength(linkEntradas, 500)) {
+            this.linkEntradas = linkEntradas;
+            return 0;
+        }
+        return -1;
     }
 }

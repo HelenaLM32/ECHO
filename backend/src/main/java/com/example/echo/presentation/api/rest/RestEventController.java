@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -22,15 +23,12 @@ public class RestEventController {
 
     @Autowired
     private EventService eventService;
-
     @Autowired
     private UserRepository userRepository;
 
     private static final DateTimeFormatter FLEXIBLE_DT = new DateTimeFormatterBuilder()
             .appendPattern("yyyy-MM-dd'T'HH:mm")
-            .optionalStart()
-            .appendPattern(":ss")
-            .optionalEnd()
+            .optionalStart().appendPattern(":ss").optionalEnd()
             .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
             .toFormatter();
 
@@ -78,6 +76,9 @@ public class RestEventController {
             @RequestParam("endDate") String endDate,
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "precio", required = false) BigDecimal precio,
+            @RequestParam(value = "categoria", required = false) String categoria,
+            @RequestParam(value = "linkEntradas", required = false) String linkEntradas,
             @RequestParam(value = "img", required = false) MultipartFile img,
             @RequestHeader("Authorization") String authHeader) {
         try {
@@ -85,7 +86,8 @@ public class RestEventController {
             LocalDateTime start = parseDate(startDate, "startDate");
             LocalDateTime end = parseDate(endDate, "endDate");
             return ResponseEntity.ok(eventService.createEvent(
-                    userId, venueId, start, end, title, description, img));
+                    userId, venueId, start, end, title, description,
+                    precio, categoria, linkEntradas, img));
         } catch (ServiceException e) {
             return ResponseEntity.status(403).body(e.getMessage());
         }
@@ -98,12 +100,16 @@ public class RestEventController {
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "startDate", required = false) String startDate,
             @RequestParam(value = "endDate", required = false) String endDate,
+            @RequestParam(value = "precio", required = false) BigDecimal precio,
+            @RequestParam(value = "categoria", required = false) String categoria,
+            @RequestParam(value = "linkEntradas", required = false) String linkEntradas,
             @RequestParam(value = "img", required = false) MultipartFile img,
             @RequestHeader("Authorization") String authHeader) {
         try {
             Integer userId = getUserIdFromToken(authHeader);
-            return ResponseEntity.ok(
-                    eventService.updateEvent(id, userId, title, description, startDate, endDate, img));
+            return ResponseEntity.ok(eventService.updateEvent(
+                    id, userId, title, description, startDate, endDate,
+                    precio, categoria, linkEntradas, img));
         } catch (ServiceException e) {
             return ResponseEntity.status(403).body(e.getMessage());
         }

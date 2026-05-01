@@ -10,6 +10,10 @@ public class VenueMapper {
         if (dto == null)
             return null;
         Venue v = Venue.getInstance(dto.getManagerId(), dto.getName(), dto.getAddress(), dto.getCapacity());
+        v.setTelefono(dto.getTelefono());
+        v.setEmail(dto.getEmail());
+        v.setSitioWeb(dto.getSitioWeb());
+        v.setHorario(dto.getHorario());
         v.setImg1(dto.getImg1());
         v.setImg2(dto.getImg2());
         v.setImg3(dto.getImg3());
@@ -20,6 +24,7 @@ public class VenueMapper {
         if (v == null)
             return null;
         return new VenueDTO(v.getId(), v.getManagerId(), v.getName(), v.getAddress(),
-                v.getCapacity(), v.getImg1(), v.getImg2(), v.getImg3());
+                v.getCapacity(), v.getTelefono(), v.getEmail(), v.getSitioWeb(),
+                v.getHorario(), v.getImg1(), v.getImg2(), v.getImg3());
     }
 }

@@ -11,9 +11,11 @@ public class EventMapper {
             return null;
         Event e = Event.getInstance(dto.getVenueId(), dto.getCreatorId(),
                 dto.getStartDate(), dto.getEndDate(), dto.getTitle());
-        e.setStatus(dto.getStatus() != null ? dto.getStatus() : "ACTIVO");
         e.setDescription(dto.getDescription());
         e.setImg(dto.getImg());
+        e.setPrecio(dto.getPrecio());
+        e.setCategoria(dto.getCategoria());
+        e.setLinkEntradas(dto.getLinkEntradas());
         return e;
     }
 
@@ -21,7 +23,8 @@ public class EventMapper {
         if (e == null)
             return null;
         return new EventDTO(e.getId(), e.getVenueId(), e.getCreatorId(),
-                e.getStartDate(), e.getEndDate(), e.getStatus(),
-                e.getTitle(), e.getDescription(), e.getImg());
+                e.getStartDate(), e.getEndDate(),
+                e.getTitle(), e.getDescription(), e.getImg(),
+                e.getPrecio(), e.getCategoria(), e.getLinkEntradas());
     }
 }

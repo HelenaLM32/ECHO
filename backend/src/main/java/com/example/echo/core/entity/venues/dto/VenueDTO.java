@@ -28,6 +28,22 @@ public class VenueDTO {
     @JsonProperty("capacity")
     private Integer capacity;
 
+    @Column(name = "telefono", length = 20)
+    @JsonProperty("telefono")
+    private String telefono;
+
+    @Column(name = "email", length = 255)
+    @JsonProperty("email")
+    private String email;
+
+    @Column(name = "sitio_web", length = 500)
+    @JsonProperty("sitioWeb")
+    private String sitioWeb;
+
+    @Column(name = "horario", length = 500)
+    @JsonProperty("horario")
+    private String horario;
+
     @Column(name = "img1", length = 500)
     @JsonProperty("img1")
     private String img1;
@@ -44,12 +60,17 @@ public class VenueDTO {
     }
 
     public VenueDTO(Integer id, Integer managerId, String name, String address,
-            Integer capacity, String img1, String img2, String img3) {
+            Integer capacity, String telefono, String email, String sitioWeb,
+            String horario, String img1, String img2, String img3) {
         this.id = id;
         this.managerId = managerId;
         this.name = name;
         this.address = address;
         this.capacity = capacity;
+        this.telefono = telefono;
+        this.email = email;
+        this.sitioWeb = sitioWeb;
+        this.horario = horario;
         this.img1 = img1;
         this.img2 = img2;
         this.img3 = img3;
@@ -73,6 +94,22 @@ public class VenueDTO {
 
     public Integer getCapacity() {
         return capacity;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getSitioWeb() {
+        return sitioWeb;
+    }
+
+    public String getHorario() {
+        return horario;
     }
 
     public String getImg1() {
@@ -105,6 +142,22 @@ public class VenueDTO {
 
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setSitioWeb(String sitioWeb) {
+        this.sitioWeb = sitioWeb;
+    }
+
+    public void setHorario(String horario) {
+        this.horario = horario;
     }
 
     public void setImg1(String img1) {

@@ -17,6 +17,10 @@ export default function EditVenue() {
     name: "",
     address: "",
     capacity: "",
+    telefono: "",
+    email: "",
+    sitioWeb: "",
+    horario: "",
   });
 
   const [existingImages, setExistingImages] = useState([null, null, null]);
@@ -28,9 +32,13 @@ export default function EditVenue() {
     getVenueById(venueId)
       .then((venue) => {
         setFormData({
-          name: venue.name || "",
-          address: venue.address || "",
-          capacity: venue.capacity || "",
+          name:      venue.name      || "",
+          address:   venue.address   || "",
+          capacity:  venue.capacity  || "",
+          telefono:  venue.telefono  || "",
+          email:     venue.email     || "",
+          sitioWeb:  venue.sitioWeb  || "",
+          horario:   venue.horario   || "",
         });
         const imgs = [venue.img1 || null, venue.img2 || null, venue.img3 || null];
         setExistingImages(imgs);
@@ -82,11 +90,13 @@ export default function EditVenue() {
     setSuccess("");
 
     const data = new FormData();
-    data.append("name", formData.name);
+    data.append("name",    formData.name);
     data.append("address", formData.address);
     if (formData.capacity) data.append("capacity", formData.capacity);
-
-    // Solo enviar imágenes nuevas si las hay; si no, el backend mantiene las existentes
+    data.append("telefono", formData.telefono);
+    data.append("email",    formData.email);
+    data.append("sitioWeb", formData.sitioWeb);
+    data.append("horario",  formData.horario);
     newImages.forEach((img) => { if (img) data.append("images", img); });
 
     try {
@@ -107,16 +117,13 @@ export default function EditVenue() {
       <div className="event-container">
         <header className="event-header">
           <h1 className="event-title">Editar local</h1>
-          <p className="event-desc">
-            Modifica los datos de tu espacio.
-          </p>
+          <p className="event-desc">Modifica los datos de tu espacio.</p>
         </header>
 
-        {error && <div className="msg error">{error}</div>}
+        {error   && <div className="msg error">{error}</div>}
         {success && <div className="msg success">{success}</div>}
 
         <form onSubmit={handleSubmit} className="event-form">
-          {/* Card 1: Detalles */}
           <div className="event-card">
             <h2 className="event-section-title">Detalles del espacio</h2>
 
@@ -151,6 +158,59 @@ export default function EditVenue() {
                 name="capacity"
                 value={formData.capacity}
                 onChange={handleChange}
+                min="1"
+                className="input-field"
+              />
+            </div>
+          </div>
+
+          <div className="event-card">
+            <h2 className="event-section-title">Información de contacto</h2>
+
+            <div className="field-group">
+              <label>Teléfono de contacto</label>
+              <input
+                type="tel"
+                name="telefono"
+                value={formData.telefono}
+                onChange={handleChange}
+                placeholder="Ej: +34 93 123 45 67"
+                className="input-field"
+              />
+            </div>
+
+            <div className="field-group">
+              <label>Email de contacto</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Ej: info@salaapolo.com"
+                className="input-field"
+              />
+            </div>
+
+            <div className="field-group">
+              <label>Sitio web</label>
+              <input
+                type="url"
+                name="sitioWeb"
+                value={formData.sitioWeb}
+                onChange={handleChange}
+                placeholder="Ej: https://www.salaapolo.com"
+                className="input-field"
+              />
+            </div>
+
+            <div className="field-group">
+              <label>Horario de atención</label>
+              <input
+                type="text"
+                name="horario"
+                value={formData.horario}
+                onChange={handleChange}
+                placeholder="Ej: Lunes a Viernes 10:00 - 22:00"
                 className="input-field"
               />
             </div>

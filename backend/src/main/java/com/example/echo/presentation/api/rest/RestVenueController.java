@@ -19,7 +19,6 @@ public class RestVenueController {
 
     @Autowired
     private VenueService venueService;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -55,11 +54,37 @@ public class RestVenueController {
             @RequestParam("name") String name,
             @RequestParam("address") String address,
             @RequestParam(value = "capacity", required = false) Integer capacity,
+            @RequestParam(value = "telefono", required = false) String telefono,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "sitioWeb", required = false) String sitioWeb,
+            @RequestParam(value = "horario", required = false) String horario,
             @RequestParam(value = "images", required = false) List<MultipartFile> images,
             @RequestHeader("Authorization") String authHeader) {
         try {
             Integer userId = getUserIdFromToken(authHeader);
-            return ResponseEntity.ok(venueService.createVenue(userId, name, address, capacity, images));
+            return ResponseEntity.ok(venueService.createVenue(
+                    userId, name, address, capacity, telefono, email, sitioWeb, horario, images));
+        } catch (ServiceException e) {
+            return ResponseEntity.status(403).body(e.getMessage());
+        }
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> update(
+            @PathVariable Integer id,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "address", required = false) String address,
+            @RequestParam(value = "capacity", required = false) Integer capacity,
+            @RequestParam(value = "telefono", required = false) String telefono,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "sitioWeb", required = false) String sitioWeb,
+            @RequestParam(value = "horario", required = false) String horario,
+            @RequestParam(value = "images", required = false) List<MultipartFile> images,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            Integer userId = getUserIdFromToken(authHeader);
+            return ResponseEntity.ok(venueService.updateVenue(
+                    id, userId, name, address, capacity, telefono, email, sitioWeb, horario, images));
         } catch (ServiceException e) {
             return ResponseEntity.status(403).body(e.getMessage());
         }
@@ -88,21 +113,5 @@ public class RestVenueController {
         UserDTO user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
         return user.getId();
-    }
-
-    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> update(
-            @PathVariable Integer id,
-            @RequestParam(value = "name", required = false) String name,
-            @RequestParam(value = "address", required = false) String address,
-            @RequestParam(value = "capacity", required = false) Integer capacity,
-            @RequestParam(value = "images", required = false) List<MultipartFile> images,
-            @RequestHeader("Authorization") String authHeader) {
-        try {
-            Integer userId = getUserIdFromToken(authHeader);
-            return ResponseEntity.ok(venueService.updateVenue(id, userId, name, address, capacity, images));
-        } catch (ServiceException e) {
-            return ResponseEntity.status(403).body(e.getMessage());
-        }
     }
 }

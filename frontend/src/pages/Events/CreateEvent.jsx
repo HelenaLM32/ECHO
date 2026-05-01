@@ -16,6 +16,9 @@ export default function CreateEvent() {
     venueId: "",
     startDate: "",
     endDate: "",
+    precio: "",
+    categoria: "",
+    linkEntradas: "",
   });
   const [imgFile, setImgFile] = useState(null);
   const [imgPreview, setImgPreview] = useState(null);
@@ -53,16 +56,24 @@ export default function CreateEvent() {
       setError("La fecha de inicio debe ser anterior a la fecha de fin");
       return;
     }
+    if (form.precio !== "" && (isNaN(parseFloat(form.precio)) || parseFloat(form.precio) < 0)) {
+      setError("El precio debe ser un número positivo");
+      return;
+    }
+
     setLoading(true);
     setError("");
     try {
       await createEvent(
         {
-          title: form.title,
-          description: form.description,
-          venueId: parseInt(form.venueId),
-          startDate: form.startDate,
-          endDate: form.endDate,
+          title:        form.title,
+          description:  form.description,
+          venueId:      parseInt(form.venueId),
+          startDate:    form.startDate,
+          endDate:      form.endDate,
+          precio:       form.precio       !== "" ? parseFloat(form.precio) : undefined,
+          categoria:    form.categoria    || undefined,
+          linkEntradas: form.linkEntradas || undefined,
         },
         imgFile
       );
@@ -89,7 +100,7 @@ export default function CreateEvent() {
         <form onSubmit={handleSubmit} className="event-form">
           <div className="event-card">
             <h2 className="event-section-title">Información General</h2>
-            
+
             <div className="field-group">
               <label>Título del evento *</label>
               <input
@@ -104,9 +115,9 @@ export default function CreateEvent() {
 
             <div className="field-group">
               <label>Local *</label>
-              <select 
-                name="venueId" 
-                value={form.venueId} 
+              <select
+                name="venueId"
+                value={form.venueId}
                 onChange={handleChange}
                 className="input-field"
               >
@@ -120,7 +131,10 @@ export default function CreateEvent() {
               {venues.length === 0 && (
                 <p className="field-hint">
                   No tienes locales registrados.{" "}
-                  <span className="field-link" onClick={() => navigate("/venues/venue-create")}>
+                  <span
+                    className="field-link"
+                    onClick={() => navigate("/venues/venue-create")}
+                  >
                     Crear uno ahora
                   </span>
                 </p>
@@ -156,6 +170,7 @@ export default function CreateEvent() {
 
           <div className="event-card">
             <h2 className="event-section-title">Detalles Visuales</h2>
+
             <div className="field-group">
               <label>Descripción</label>
               <textarea
@@ -187,7 +202,12 @@ export default function CreateEvent() {
                   ) : (
                     <label className="upload-label">
                       <span className="upload-icon">+</span>
-                      <input type="file" accept="image/*" onChange={handleImageChange} hidden />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        hidden
+                      />
                     </label>
                   )}
                 </div>
@@ -195,8 +215,54 @@ export default function CreateEvent() {
             </div>
           </div>
 
+          <div className="event-card">
+            <h2 className="event-section-title">Información adicional</h2>
+
+            <div className="field-group">
+              <label>Precio (€)</label>
+              <input
+                type="number"
+                name="precio"
+                value={form.precio}
+                onChange={handleChange}
+                placeholder="Ej: 15.00 — dejar vacío si es gratuito"
+                min="0"
+                step="0.01"
+                className="input-field"
+              />
+            </div>
+
+            <div className="field-group">
+              <label>Categoría</label>
+              <input
+                type="text"
+                name="categoria"
+                value={form.categoria}
+                onChange={handleChange}
+                placeholder="Ej: Concierto, Exposición, Teatro, Fiesta..."
+                className="input-field"
+              />
+            </div>
+
+            <div className="field-group">
+              <label>Link de entradas</label>
+              <input
+                type="url"
+                name="linkEntradas"
+                value={form.linkEntradas}
+                onChange={handleChange}
+                placeholder="Ej: https://www.ticketmaster.es/..."
+                className="input-field"
+              />
+            </div>
+          </div>
+
           <div className="event-actions">
-            <button type="button" className="btn-back-text" onClick={() => navigate(-1)}>
+            <button
+              type="button"
+              className="btn-back-text"
+              onClick={() => navigate(-1)}
+            >
               Volver
             </button>
             <button type="submit" className="btn-save" disabled={loading}>

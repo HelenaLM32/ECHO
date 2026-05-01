@@ -1,4 +1,3 @@
-// src/main/java/com/example/echo/core/entity/venues/model/Venue.java
 package com.example.echo.core.entity.venues.model;
 
 import com.example.echo.core.entity.domainservices.validations.Check;
@@ -11,6 +10,10 @@ public class Venue {
     private String name;
     private String address;
     private Integer capacity;
+    private String telefono;
+    private String email;
+    private String sitioWeb;
+    private String horario;
     private String img1;
     private String img2;
     private String img3;
@@ -80,6 +83,22 @@ public class Venue {
         return img3;
     }
 
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getSitioWeb() {
+        return sitioWeb;
+    }
+
+    public String getHorario() {
+        return horario;
+    }
+
     public int setName(String name) {
         if (Check.lengthBetween(name, 2, 150)) {
             this.name = name.trim();
@@ -123,6 +142,39 @@ public class Venue {
     public int setImg3(String img3) {
         if (img3 == null || Check.maxLength(img3, 500)) {
             this.img3 = img3;
+            return 0;
+        }
+        return -1;
+    }
+
+    // Nuevos setters con validación
+    public int setTelefono(String telefono) {
+        if (telefono == null || Check.maxLength(telefono, 20)) {
+            this.telefono = telefono;
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setEmail(String email) {
+        if (email == null || Check.maxLength(email, 255)) {
+            this.email = email;
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setSitioWeb(String sitioWeb) {
+        if (sitioWeb == null || Check.maxLength(sitioWeb, 500)) {
+            this.sitioWeb = sitioWeb;
+            return 0;
+        }
+        return -1;
+    }
+
+    public int setHorario(String horario) {
+        if (horario == null || Check.maxLength(horario, 500)) {
+            this.horario = horario;
             return 0;
         }
         return -1;

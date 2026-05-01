@@ -60,14 +60,18 @@ CREATE TABLE items (
 );
 
 CREATE TABLE venues (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    manager_id INT NOT NULL,
-    name VARCHAR(150) NOT NULL,
-    address VARCHAR(255) NOT NULL,
-    capacity INT,
-    img1 VARCHAR(500),
-    img2 VARCHAR(500),
-    img3 VARCHAR(500),
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    manager_id  INT NOT NULL,
+    name        VARCHAR(150) NOT NULL,
+    address     VARCHAR(255) NOT NULL,
+    capacity    INT,
+    telefono    VARCHAR(20),
+    email       VARCHAR(255),
+    sitio_web   VARCHAR(500),
+    horario     VARCHAR(500),
+    img1        VARCHAR(500),
+    img2        VARCHAR(500),
+    img3        VARCHAR(500),
     FOREIGN KEY (manager_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -92,16 +96,19 @@ CREATE TABLE payments (
 );
 
 CREATE TABLE events (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    venue_id INT NOT NULL,
-    creator_id INT NOT NULL,
-    start_date DATETIME NOT NULL,
-    end_date DATETIME NOT NULL,
-    title VARCHAR(150),
-    description TEXT,
-    img VARCHAR(500),
-    FOREIGN KEY (venue_id) REFERENCES venues(id) ON DELETE CASCADE,
-    FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE
+    id             INT AUTO_INCREMENT PRIMARY KEY,
+    venue_id       INT NOT NULL,
+    creator_id     INT NOT NULL,
+    start_date     DATETIME NOT NULL,
+    end_date       DATETIME NOT NULL,
+    title          VARCHAR(150),
+    description    TEXT,
+    img            VARCHAR(500),
+    precio         DECIMAL(10, 2),
+    categoria      VARCHAR(100),
+    link_entradas  VARCHAR(500),
+    FOREIGN KEY (venue_id)    REFERENCES venues(id) ON DELETE CASCADE,
+    FOREIGN KEY (creator_id)  REFERENCES users(id)  ON DELETE CASCADE
 );
 
 

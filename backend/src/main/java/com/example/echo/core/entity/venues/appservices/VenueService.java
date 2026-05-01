@@ -11,11 +11,13 @@ public interface VenueService {
 
         String getByManagerIdToJson(Integer managerId) throws ServiceException;
 
-        String createVenue(Integer managerId, String name, String address,
-                        Integer capacity, List<MultipartFile> images) throws ServiceException;
-
-        void deleteById(Integer id, Integer requesterId) throws ServiceException;
+        String createVenue(Integer managerId, String name, String address, Integer capacity,
+                        String telefono, String email, String sitioWeb, String horario,
+                        List<MultipartFile> images) throws ServiceException;
 
         String updateVenue(Integer id, Integer managerId, String name, String address,
-                        Integer capacity, List<MultipartFile> images) throws ServiceException;
+                        Integer capacity, String telefono, String email, String sitioWeb,
+                        String horario, List<MultipartFile> images) throws ServiceException;
+
+        void deleteById(Integer id, Integer requesterId) throws ServiceException;
 }

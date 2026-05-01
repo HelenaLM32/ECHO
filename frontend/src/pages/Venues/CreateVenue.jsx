@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createVenue } from "../../services/venues";
 import Footer from "../../components/Footer/Footer";
-import "../Events/CreateEvent.css"; 
+import "../Events/CreateEvent.css";
 
 export default function CreateVenue() {
   const navigate = useNavigate();
@@ -13,6 +13,10 @@ export default function CreateVenue() {
     name: "",
     address: "",
     capacity: "",
+    telefono: "",
+    email: "",
+    sitioWeb: "",
+    horario: "",
   });
 
   const [images, setImages] = useState([null, null, null]);
@@ -54,11 +58,17 @@ export default function CreateVenue() {
     }
     setLoading(true);
     setError("");
+
     const data = new FormData();
     data.append("name", formData.name);
     data.append("address", formData.address);
-    if (formData.capacity) data.append("capacity", formData.capacity);
+    if (formData.capacity)   data.append("capacity",  formData.capacity);
+    if (formData.telefono)   data.append("telefono",  formData.telefono);
+    if (formData.email)      data.append("email",     formData.email);
+    if (formData.sitioWeb)   data.append("sitioWeb",  formData.sitioWeb);
+    if (formData.horario)    data.append("horario",   formData.horario);
     images.forEach((img) => { if (img) data.append("images", img); });
+
     try {
       await createVenue(data);
       navigate("/profile");
@@ -119,6 +129,59 @@ export default function CreateVenue() {
                 value={formData.capacity}
                 onChange={handleChange}
                 placeholder="Ej: 500"
+                min="1"
+                className="input-field"
+              />
+            </div>
+          </div>
+
+          <div className="event-card">
+            <h2 className="event-section-title">Información de contacto</h2>
+
+            <div className="field-group">
+              <label>Teléfono de contacto</label>
+              <input
+                type="tel"
+                name="telefono"
+                value={formData.telefono}
+                onChange={handleChange}
+                placeholder="Ej: +34 93 123 45 67"
+                className="input-field"
+              />
+            </div>
+
+            <div className="field-group">
+              <label>Email de contacto</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Ej: info@salaapolo.com"
+                className="input-field"
+              />
+            </div>
+
+            <div className="field-group">
+              <label>Sitio web</label>
+              <input
+                type="url"
+                name="sitioWeb"
+                value={formData.sitioWeb}
+                onChange={handleChange}
+                placeholder="Ej: https://www.salaapolo.com"
+                className="input-field"
+              />
+            </div>
+
+            <div className="field-group">
+              <label>Horario de atención</label>
+              <input
+                type="text"
+                name="horario"
+                value={formData.horario}
+                onChange={handleChange}
+                placeholder="Ej: Lunes a Viernes 10:00 - 22:00"
                 className="input-field"
               />
             </div>

@@ -1,13 +1,10 @@
-// src/pages/Events/EditEvent.jsx
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { updateEvent } from "../../services/events";
+import { getEventById, updateEvent } from "../../services/events";
 import { getVenuesByUser } from "../../services/venues";
 import { useAuth } from "../../context/AuthContext";
 import Footer from "../../components/Footer/Footer";
 import "./CreateEvent.css";
-
-import { getEventById } from "../../services/events";
 
 export default function EditEvent() {
   const navigate = useNavigate();
@@ -26,6 +23,9 @@ export default function EditEvent() {
     venueId: "",
     startDate: "",
     endDate: "",
+    precio: "",
+    categoria: "",
+    linkEntradas: "",
   });
 
   const [imgFile, setImgFile] = useState(null);
@@ -49,11 +49,14 @@ export default function EditEvent() {
           return isoString.slice(0, 16);
         };
         setForm({
-          title: event.title || "",
-          description: event.description || "",
-          venueId: event.venueId ? String(event.venueId) : "",
-          startDate: toLocalInput(event.startDate),
-          endDate: toLocalInput(event.endDate),
+          title:        event.title        || "",
+          description:  event.description  || "",
+          venueId:      event.venueId      ? String(event.venueId) : "",
+          startDate:    toLocalInput(event.startDate),
+          endDate:      toLocalInput(event.endDate),
+          precio:       event.precio       != null ? String(event.precio) : "",
+          categoria:    event.categoria    || "",
+          linkEntradas: event.linkEntradas || "",
         });
         if (event.img) {
           setExistingImg(event.img);
@@ -93,21 +96,30 @@ export default function EditEvent() {
       setError("La fecha de inicio debe ser anterior a la fecha de fin");
       return;
     }
+    if (form.precio !== "" && (isNaN(parseFloat(form.precio)) || parseFloat(form.precio) < 0)) {
+      setError("El precio debe ser un número positivo");
+      return;
+    }
+
     setLoading(true);
     setError("");
     setSuccess("");
+
     try {
       await updateEvent(
-  eventId,
-  {
-    title: form.title,
-    ...(form.description ? { description: form.description } : {}),
-    venueId: parseInt(form.venueId),
-    startDate: form.startDate,
-    endDate: form.endDate,
-  },
-  imgFile
-);
+        eventId,
+        {
+          title:        form.title,
+          description:  form.description,
+          venueId:      parseInt(form.venueId),
+          startDate:    form.startDate,
+          endDate:      form.endDate,
+          precio:       form.precio       !== "" ? parseFloat(form.precio) : undefined,
+          categoria:    form.categoria    || undefined,
+          linkEntradas: form.linkEntradas || undefined,
+        },
+        imgFile
+      );
       setSuccess("Evento actualizado correctamente");
       setTimeout(() => navigate("/profile"), 1200);
     } catch (err) {
@@ -124,12 +136,10 @@ export default function EditEvent() {
       <div className="event-container">
         <header className="event-header">
           <h1 className="event-title">Editar evento</h1>
-          <p className="event-desc">
-            Modifica los detalles de tu evento.
-          </p>
+          <p className="event-desc">Modifica los detalles de tu evento.</p>
         </header>
 
-        {error && <div className="msg error">{error}</div>}
+        {error   && <div className="msg error">{error}</div>}
         {success && <div className="msg success">{success}</div>}
 
         <form onSubmit={handleSubmit} className="event-form">
@@ -238,6 +248,48 @@ export default function EditEvent() {
                   )}
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div className="event-card">
+            <h2 className="event-section-title">Información adicional</h2>
+
+            <div className="field-group">
+              <label>Precio (€)</label>
+              <input
+                type="number"
+                name="precio"
+                value={form.precio}
+                onChange={handleChange}
+                placeholder="Ej: 15.00 — dejar vacío si es gratuito"
+                min="0"
+                step="0.01"
+                className="input-field"
+              />
+            </div>
+
+            <div className="field-group">
+              <label>Categoría</label>
+              <input
+                type="text"
+                name="categoria"
+                value={form.categoria}
+                onChange={handleChange}
+                placeholder="Ej: Concierto, Exposición, Teatro, Fiesta..."
+                className="input-field"
+              />
+            </div>
+
+            <div className="field-group">
+              <label>Link de entradas</label>
+              <input
+                type="url"
+                name="linkEntradas"
+                value={form.linkEntradas}
+                onChange={handleChange}
+                placeholder="Ej: https://www.ticketmaster.es/..."
+                className="input-field"
+              />
             </div>
           </div>
 
