@@ -1,6 +1,7 @@
 :root {
     --black: #282828;
     --black-secondary: #353535;
+    --black-new: #000000;
 
     --true-white: #FFFFFF;
     --white: #F8F8F8;
@@ -12,5 +13,8 @@
     --gray-dark: #dbdbdb;
     --gray-dark-secondary: #bebebe;
     --gray-stroke: #e0e0e0;
+
+    --complementary-blue: #2A5F79;
+    --complementary-blue-secondary: #3587b1;
 
 }

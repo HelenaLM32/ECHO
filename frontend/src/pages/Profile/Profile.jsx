@@ -8,22 +8,27 @@ import {
   getProfileProducts,
   getProfileServices,
 } from "../../services/profile";
-import { getVenuesByUser } from "../../services/venues";
-import { getEventsByUser } from "../../services/events";
-import { deleteVenue } from "../../services/venues";
-import { deleteEvent } from "../../services/events";
-import linkedinIcon from "../../assets/icons8-linkedin-24.png";
-import twitterIcon from "../../assets/icons8-x-24.png";
-import instagramIcon from "../../assets/icons8-instagram-24.png";
-import Footer from "../../components/Footer/Footer";
-import DetailModal from "../../components/DetailModal/DetailModal";
-import "./Profile.css";
+import { getVenuesByUser, deleteVenue } from "../../services/venues";
+import { getEventsByUser, deleteEvent } from "../../services/events";
+import { getProjectsByUserId } from "../../services/projects";
+import { getAverageByUser, getReviewsByUser } from "../../services/reviews";
 import {
   getFollowStats,
   checkIsFollowing,
   followUser,
   unfollowUser,
 } from "../../services/follows";
+
+import ProjectCard from "../../components/ProjectCard/ProjectCard";
+import ProjectView from "../../pages/ItemProyect/ProjectView";
+import Footer from "../../components/Footer/Footer";
+import DetailModal from "../../components/DetailModal/DetailModal";
+import ReviewsModal from "../../components/ReviewsModal/ReviewsModal"; // Asegúrate de que este componente existe
+
+import linkedinIcon from "../../assets/icons8-linkedin-24.png";
+import twitterIcon from "../../assets/icons8-x-24.png";
+import instagramIcon from "../../assets/icons8-instagram-24.png";
+import "./Profile.css";
 
 export default function Profile() {
   const { user, loadingContext } = useAuth();
@@ -40,22 +45,31 @@ export default function Profile() {
   const [services, setServices] = useState([]);
   const [venues, setVenues] = useState([]);
   const [events, setEvents] = useState([]);
+  const [projects, setProjects] = useState([]);
+
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("Proyectos");
+  const [error, setError] = useState("");
   const [itemsLoading, setItemsLoading] = useState({
     products: false,
     services: false,
     venues: false,
     events: false,
+    projects: false,
   });
-  const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("Productos");
+
   const [followStats, setFollowStats] = useState({ followers: 0, following: 0 });
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
+  const [reviewStats, setReviewStats] = useState({ average: null, count: 0 });
+  const [reviews, setReviews] = useState([]);
+  const [showReviews, setShowReviews] = useState(false);
 
   const [modal, setModal] = useState({ open: false, type: null, data: null });
-  const openModal  = (type, data) => setModal({ open: true, type, data });
-  const closeModal = ()           => setModal({ open: false, type: null, data: null });
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
+
+  const openModal = (type, data) => setModal({ open: true, type, data });
+  const closeModal = () => setModal({ open: false, type: null, data: null });
 
   useEffect(() => {
     if (loadingContext) return;
@@ -65,7 +79,6 @@ export default function Profile() {
       return;
     }
     setLoading(true);
-    setError("");
     getProfileByUserId(targetId)
       .then((data) => setProfile(data))
       .catch(() => setError("No se pudo cargar el perfil"))
@@ -73,44 +86,56 @@ export default function Profile() {
   }, [targetId, loadingContext]);
 
   useEffect(() => {
-    if (!targetId || !profile) return;
-    const loadTabContent = async () => {
-      if (activeTab === "Productos") {
-        setItemsLoading((prev) => ({ ...prev, products: true }));
-        try { const data = await getProfileProducts(targetId); setProducts(data); } 
-        catch { setProducts([]); }
-        finally { setItemsLoading((prev) => ({ ...prev, products: false })); }
-      } else if (activeTab === "Servicios") {
-        setItemsLoading((prev) => ({ ...prev, services: true }));
-        try { const data = await getProfileServices(targetId); setServices(data); } 
-        catch { setServices([]); }
-        finally { setItemsLoading((prev) => ({ ...prev, services: false })); }
-      } else if (activeTab === "Locales") {
-        setItemsLoading((prev) => ({ ...prev, venues: true }));
-        try { const data = await getVenuesByUser(targetId); setVenues(data); } 
-        catch { setVenues([]); }
-        finally { setItemsLoading((prev) => ({ ...prev, venues: false })); }
-      } else if (activeTab === "Eventos") {
-        setItemsLoading((prev) => ({ ...prev, events: true }));
-        try { const data = await getEventsByUser(targetId); setEvents(data); } 
-        catch { setEvents([]); }
-        finally { setItemsLoading((prev) => ({ ...prev, events: false })); }
-      }
-    };
-    loadTabContent();
-  }, [activeTab, targetId, profile]);
-
-  useEffect(() => {
     if (!targetId) return;
     getFollowStats(targetId).then(setFollowStats).catch(() => {});
+    getAverageByUser(targetId)
+      .then((data) => setReviewStats({ average: data.average, count: data.count ?? 0 }))
+      .catch(() => {});
+
     if (user && !isOwnProfile) {
       checkIsFollowing(targetId).then((data) => setIsFollowing(data.following)).catch(() => {});
     }
   }, [targetId, user, isOwnProfile]);
 
+  useEffect(() => {
+    if (!targetId || !profile) return;
+
+    const loadTabContent = async () => {
+      switch (activeTab) {
+        case "Productos":
+          setItemsLoading(p => ({ ...p, products: true }));
+          try { setProducts(await getProfileProducts(targetId)); } catch { setProducts([]); }
+          setItemsLoading(p => ({ ...p, products: false }));
+          break;
+        case "Servicios":
+          setItemsLoading(p => ({ ...p, services: true }));
+          try { setServices(await getProfileServices(targetId)); } catch { setServices([]); }
+          setItemsLoading(p => ({ ...p, services: false }));
+          break;
+        case "Locales":
+          setItemsLoading(p => ({ ...p, venues: true }));
+          try { setVenues(await getVenuesByUser(targetId)); } catch { setVenues([]); }
+          setItemsLoading(p => ({ ...p, venues: false }));
+          break;
+        case "Eventos":
+          setItemsLoading(p => ({ ...p, events: true }));
+          try { setEvents(await getEventsByUser(targetId)); } catch { setEvents([]); }
+          setItemsLoading(p => ({ ...p, events: false }));
+          break;
+        case "Proyectos":
+          setItemsLoading(p => ({ ...p, projects: true }));
+          try { setProjects(await getProjectsByUserId(targetId)); } catch { setProjects([]); }
+          setItemsLoading(p => ({ ...p, projects: false }));
+          break;
+        default: break;
+      }
+    };
+    loadTabContent();
+  }, [activeTab, targetId, profile]);
+
   const handleBannerChange = async (e) => {
     const file = e.target.files[0];
-    if (!file) return;
+    if (!file || !isOwnProfile) return;
     try {
       const updated = await updateBanner(user.id, file);
       setProfile(updated);
@@ -119,7 +144,7 @@ export default function Profile() {
 
   const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
-    if (!file) return;
+    if (!file || !isOwnProfile) return;
     try {
       const updated = await updateAvatar(user.id, file);
       setProfile(updated);
@@ -136,41 +161,24 @@ export default function Profile() {
         await followUser(targetId);
         setIsFollowing(true);
       }
-      const stats = await getFollowStats(targetId);
-      setFollowStats(stats);
+      setFollowStats(await getFollowStats(targetId));
     } catch (error) { alert(error.message); } 
     finally { setFollowLoading(false); }
   };
 
-  const handleDeleteVenue = async (id) => {
-    if (!confirm("¿Eliminar este local?")) return;
-    try {
-      await deleteVenue(id);
-      setVenues((prev) => prev.filter((v) => v.id !== id));
-    } catch (err) { alert(err.message); }
-  };
-
-  const handleDeleteEvent = async (id) => {
-    if (!confirm("¿Eliminar este evento?")) return;
-    try {
-      await deleteEvent(id);
-      setEvents((prev) => prev.filter((ev) => ev.id !== id));
-    } catch (err) { alert(err.message); }
+  const handleOpenReviews = () => {
+    getReviewsByUser(targetId)
+      .then((data) => { setReviews(data); setShowReviews(true); })
+      .catch(() => setShowReviews(true));
   };
 
   const renderItemGrid = (items, isLoading, type) => {
     if (isLoading) return <div className="empty-state">Cargando...</div>;
-    
     const path = type === "Productos" ? "/products/create" : "/services/create";
-    const label = type === "Productos" ? "un producto" : "un servicio";
-    const icon = type === "Productos" ? "📦" : "🛠️";
-
     return (
       <div>
         {isOwnProfile && (
-          <button className="create-tab-btn" onClick={() => navigate(path)}>
-            <span className="create-icon"></span> Crear {label}
-          </button>
+          <button className="create-tab-btn" onClick={() => navigate(path)}>Crear {type.toLowerCase()}</button>
         )}
         {!items || items.length === 0 ? (
           <div className="empty-state">No hay {type.toLowerCase()} disponibles</div>
@@ -179,17 +187,8 @@ export default function Profile() {
             {items.map((item) => (
               <div key={item.id} className="item-card">
                 <div className="item-image-container">
-                  {item.images && item.images.length > 0 ? (
-                    <img 
-                      src={item.images[0]} 
-                      alt={item.title} 
-                      className="item-card-img" 
-                    />
-                  ) : (
-                    <div className="item-image-placeholder">{icon}</div>
-                  )}
+                  {item.images?.[0] ? <img src={item.images[0]} alt={item.title} className="item-card-img" /> : <div className="item-image-placeholder">📦</div>}
                 </div>
-
                 <div className="item-info">
                   <h3 className="item-title">{item.title}</h3>
                   <p className="item-price">€{item.basePrice}</p>
@@ -202,128 +201,10 @@ export default function Profile() {
     );
   };
 
-  const renderVenues = () => {
-    if (itemsLoading.venues) return <div className="empty-state">Cargando...</div>;
-    return (
-      <div>
-        {isOwnProfile && (
-          <button className="create-tab-btn" onClick={() => navigate("/venues/venue-create")}>
-            <span className="create-icon"></span> Crear un local
-          </button>
-        )}
-        {venues.length === 0 ? (
-          <div className="empty-state">Sin locales registrados</div>
-        ) : (
-          <div className="items-grid">
-            {venues.map((v) => (
-              <div
-                key={v.id}
-                className="item-card"
-                style={!isOwnProfile ? { cursor: "pointer" } : {}}
-                onClick={!isOwnProfile ? () => openModal("venue", v) : undefined}
-              >
-                <div className="item-image-container">
-                  {v.img1 ? (
-                    <img src={v.img1} alt={v.name} className="item-card-img" />
-                  ) : (
-                    <div className="item-image-placeholder">🏠</div>
-                  )}
-                </div>
-
-                <div className="item-info">
-                  <h3 className="item-title">{v.name}</h3>
-                  <p className="item-address">{v.address}</p>
-                  {v.capacity && <p className="item-extra">Aforo: {v.capacity}</p>}
-                </div>
-
-                {isOwnProfile && (
-                  <div className="item-actions">
-                    <button className="btn-item-edit" onClick={() => navigate(`/venues/${v.id}/edit`)}>
-                      Editar
-                    </button>
-                    <button className="btn-item-delete" onClick={() => handleDeleteVenue(v.id)}>
-                      Eliminar
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  const renderEvents = () => {
-    if (itemsLoading.events) return <div className="empty-state">Cargando...</div>;
-    return (
-      <div>
-        {isOwnProfile && (
-          <button className="create-tab-btn" onClick={() => navigate("/events/event-create")}>
-            <span className="create-icon"></span> Crear un evento
-          </button>
-        )}
-        {events.length === 0 ? (
-          <div className="empty-state">Sin eventos registrados</div>
-        ) : (
-          <div className="items-grid">
-            {events.map((ev) => (
-              <div
-                key={ev.id}
-                className="item-card"
-                style={!isOwnProfile ? { cursor: "pointer" } : {}}
-                onClick={!isOwnProfile ? () => openModal("event", ev) : undefined}
-              >
-                <div className="item-image-container">
-                  {ev.img ? (
-                    <img
-                      src={ev.img}
-                      alt={ev.title || "Evento"}
-                      className="item-card-img"
-                    />
-                  ) : (
-                    <div className="item-image-placeholder">🎭</div>
-                  )}
-                </div>
-                <div className="item-info">
-                  <h3 className="item-title">{ev.title || "Evento sin título"}</h3>
-                  <p className="item-price">
-                    {ev.startDate
-                      ? new Date(ev.startDate).toLocaleDateString("es-ES")
-                      : "Fecha no definida"}
-                  </p>
-                  <p className="item-price">
-                    {ev.precio != null ? `${ev.precio} €` : "Gratuito"}
-                  </p>
-                  {ev.categoria && <p className="item-extra">{ev.categoria}</p>}
-                  {ev.description && (
-                    <p className="item-extra line-clamp">
-                      {ev.description.substring(0, 60)}...
-                    </p>
-                  )}
-                </div>
-                {isOwnProfile && (
-                  <div className="item-actions">
-                    <button className="btn-item-edit" onClick={() => navigate(`/events/${ev.id}/edit`)}>
-                      Editar
-                    </button>
-                    <button className="btn-item-delete" onClick={() => handleDeleteEvent(ev.id)}>
-                      Eliminar
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  };
-
   if (loadingContext || loading) return <div className="profile-page-loading">Cargando perfil...</div>;
   if (error || !profile) return <div className="profile-page-error">{error || "Perfil no encontrado"}</div>;
 
-  const tabs = ["Productos", "Servicios", "Locales", "Eventos", "Valoraciones", ...(isOwnProfile ? ["Calendario"] : [])];
+  const tabs = ["Proyectos", "Productos", "Servicios", "Locales", "Eventos", "Valoraciones", ...(isOwnProfile ? ["Calendario"] : [])];
 
   return (
     <div className="profile-page">
@@ -332,9 +213,7 @@ export default function Profile() {
           <img src={profile.bannerUrl} alt="Portada" className="banner-image" />
         ) : (
           <div className="banner-placeholder" onClick={() => isOwnProfile && bannerInputRef.current?.click()} style={{ cursor: isOwnProfile ? "pointer" : "default" }}>
-            <div className="banner-download-icon">↓</div>
             <p>Agregar imagen de portada</p>
-            <small>Recomendado: 3200 x 410 px</small>
           </div>
         )}
         {isOwnProfile && profile.bannerUrl && (
@@ -345,11 +224,7 @@ export default function Profile() {
 
       <div className="avatar-float-wrapper">
         <div className={`avatar-container ${isOwnProfile ? "editable" : ""}`} onClick={() => isOwnProfile && avatarInputRef.current?.click()}>
-          {profile.avatarUrl ? (
-            <img src={profile.avatarUrl} alt={profile.username} className="avatar-img" />
-          ) : (
-            <div className="avatar-initials">{profile.username?.charAt(0).toUpperCase() || "U"}</div>
-          )}
+          {profile.avatarUrl ? <img src={profile.avatarUrl} alt={profile.username} className="avatar-img" /> : <div className="avatar-initials">{profile.username?.charAt(0).toUpperCase()}</div>}
           {isOwnProfile && <div className="avatar-overlay"><span>Cambiar</span></div>}
         </div>
         <input ref={avatarInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleAvatarChange} />
@@ -362,99 +237,63 @@ export default function Profile() {
             <p className="username">@{profile.username}</p>
             <p className="display-location">{profile.location || "Ubicación no especificada"}</p>
             
-            {isOwnProfile && (
-              <div className="sidebar-actions">
-                <Link to="/edit-profile" className="btn-edit-info">Editar perfil</Link>
-              </div>
-            )}
+            <button className="profile-rating-badge" onClick={handleOpenReviews}>
+              <span className="profile-rating-star">★</span>
+              <span className="profile-rating-avg">{reviewStats.average != null ? reviewStats.average.toFixed(1) : "—"}</span>
+              <span className="profile-rating-count">({reviewStats.count})</span>
+            </button>
 
             <div className="follow-stats">
               <span className="stat-item"><strong>{followStats.followers}</strong> seguidores</span>
               <span className="stat-item"><strong>{followStats.following}</strong> siguiendo</span>
             </div>
 
-            {!isOwnProfile && user && (
-              <button 
-                onClick={handleFollow} 
-                disabled={followLoading} 
-                className={`btn-follow-action ${isFollowing ? "active" : ""}`}
-              >
+            {isOwnProfile ? (
+              <Link to="/edit-profile" className="btn-edit-info">Editar perfil</Link>
+            ) : user && (
+              <button onClick={handleFollow} disabled={followLoading} className={`btn-follow-action ${isFollowing ? "active" : ""}`}>
                 {followLoading ? "..." : isFollowing ? "Dejar de seguir" : "Seguir"}
               </button>
             )}
 
             <p className="display-label">Sobre mí</p>
-            <p className="display-text">{profile.bio || "Este usuario aún no ha añadido una descripción."}</p>
-            
-            <p className="display-label">Experiencia</p>
-            <p className="display-text">{profile.experience || "Sin experiencia añadida."}</p>
+            <p className="display-text">{profile.bio || "Sin descripción."}</p>
           </div>
         </aside>
 
         <main className="profile-main">
           <div className="social-header">
-            {profile.linkedin && (
-              <a href={profile.linkedin} className="social-link" target="_blank" rel="noreferrer">
-                <img src={linkedinIcon} alt="LinkedIn" />
-              </a>
-            )}
-            {profile.instagram && (
-              <a href={profile.instagram} className="social-link" target="_blank" rel="noreferrer">
-                <img src={instagramIcon} alt="Instagram" />
-              </a>
-            )}
-            {profile.twitter && (
-              <a href={profile.twitter} className="social-link" target="_blank" rel="noreferrer">
-                <img src={twitterIcon} alt="Twitter" />
-              </a>
-            )}
+            {profile.linkedin && <a href={profile.linkedin} className="social-link" target="_blank" rel="noreferrer"><img src={linkedinIcon} alt="LinkedIn" /></a>}
+            {profile.instagram && <a href={profile.instagram} className="social-link" target="_blank" rel="noreferrer"><img src={instagramIcon} alt="Instagram" /></a>}
+            {profile.twitter && <a href={profile.twitter} className="social-link" target="_blank" rel="noreferrer"><img src={twitterIcon} alt="Twitter" /></a>}
           </div>
 
           <nav className="content-tabs">
             {tabs.map((tab) => (
-              <button key={tab} className={`tab-item ${activeTab === tab ? "active" : ""}`} onClick={() => setActiveTab(tab)}>
-                {tab}
-              </button>
+              <button key={tab} className={`tab-item ${activeTab === tab ? "active" : ""}`} onClick={() => setActiveTab(tab)}>{tab}</button>
             ))}
           </nav>
 
           <div className="tab-content">
-            {activeTab === "Productos" && renderItemGrid(products, itemsLoading.products, "Productos")}
-            {activeTab === "Servicios" && renderItemGrid(services, itemsLoading.services, "Servicios")}
-            {activeTab === "Locales" && renderVenues()}
-            {activeTab === "Eventos" && renderEvents()}
-            {activeTab === "Valoraciones" && <div className="empty-state">Sin valoraciones aún</div>}
-            {activeTab === "Calendario" && (
-              <div className="calendar-tab">
-                {profile.calendarUrl ? (
-                  <>
-                    <p className="calendar-title">Disponibilidad de {profile.publicName || profile.username}</p>
-                    <iframe src={profile.calendarUrl} className="calendar-iframe" title="Google Calendar" />
-                  </>
-                ) : (
-                  <div className="empty-state">
-                    {isOwnProfile ? (
-                      <>
-                        <p>Aún no has vinculado tu calendario.</p>
-                        <Link to="/edit-profile" className="btn-edit-info" style={{ marginTop: "12px", width: "auto" }}>Añadir calendario</Link>
-                      </>
-                    ) : <p>Este usuario no ha vinculado su calendario.</p>}
+            {activeTab === "Proyectos" && (
+              <div className="projects-section">
+                {isOwnProfile && <Link to="/proyect" className="create-project-button">Crear nuevo proyecto</Link>}
+                {itemsLoading.projects ? <p>Cargando...</p> : (
+                  <div className="projects-grid">
+                    {projects.map(p => <ProjectCard key={p.id} project={p} onOpen={setSelectedProjectId} />)}
                   </div>
                 )}
               </div>
             )}
+            {activeTab === "Productos" && renderItemGrid(products, itemsLoading.products, "Productos")}
+            {activeTab === "Servicios" && renderItemGrid(services, itemsLoading.services, "Servicios")}
           </div>
         </main>
       </div>
 
-      {modal.open && (
-        <DetailModal
-          type={modal.type}
-          data={modal.data}
-          onClose={closeModal}
-        />
-      )}
-
+      {showReviews && <ReviewsModal reviews={reviews} average={reviewStats.average} count={reviewStats.count} onClose={() => setShowReviews(false)} />}
+      {selectedProjectId && <ProjectView projectId={selectedProjectId} onClose={() => setSelectedProjectId(null)} />}
+      {modal.open && <DetailModal type={modal.type} data={modal.data} onClose={closeModal} />}
       <Footer />
     </div>
   );

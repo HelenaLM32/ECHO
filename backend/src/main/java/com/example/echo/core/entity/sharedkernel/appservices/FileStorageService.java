@@ -18,6 +18,8 @@ public class FileStorageService {
 
     @Value("${app.base-url}")
     private String baseUrl;
+    @Value("${server.servlet.context-path:}")
+    private String contextPath;
 
     public String store(MultipartFile file, String subDir) throws IOException {
         String originalName = file.getOriginalFilename();
@@ -33,13 +35,19 @@ public class FileStorageService {
         Path destination = dir.resolve(filename);
         file.transferTo(destination);
 
-        return baseUrl + "/uploads/" + subDir + "/" + filename;
+        String ctx = (contextPath == null) ? "" : contextPath.trim();
+        if (ctx.equals("/")) ctx = "";
+        return baseUrl + (ctx.isEmpty() ? "" : ctx) + "/uploads/" + subDir + "/" + filename;
     }
 
     public void delete(String fileUrl) {
         if (fileUrl == null || !fileUrl.startsWith(baseUrl))
             return;
-        String relativePath = fileUrl.replace(baseUrl + "/uploads/", "");
+        String ctx = (contextPath == null) ? "" : contextPath.trim();
+        if (ctx.equals("/")) ctx = "";
+        String prefix = baseUrl + (ctx.isEmpty() ? "" : ctx) + "/uploads/";
+        if (!fileUrl.startsWith(prefix)) return;
+        String relativePath = fileUrl.replace(prefix, "");
         Path file = Paths.get(uploadDir, relativePath);
         try {
             Files.deleteIfExists(file);

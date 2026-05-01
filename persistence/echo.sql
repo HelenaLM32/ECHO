@@ -1,4 +1,3 @@
-CREATE DATABASE echo;
 USE echo;
 
 CREATE TABLE users (
@@ -29,8 +28,8 @@ CREATE TABLE profiles (
     public_name VARCHAR(100) NOT NULL,
     bio TEXT,
     location VARCHAR(100),
-    avatar_url VARCHAR(255),
-    banner_url VARCHAR(255),
+    avatar_url LONGTEXT,
+    banner_url LONGTEXT,
     linkedin VARCHAR(255),
     instagram VARCHAR(255),
     twitter VARCHAR(255),
@@ -54,7 +53,7 @@ CREATE TABLE items (
     creator_id INT NOT NULL,
     title VARCHAR(150) NOT NULL,
     description TEXT,
-    base_price DECIMAL(10, 2) NOT NULL,
+    base_price DOUBLE NOT NULL,
     item_type VARCHAR(50) NOT NULL,
     FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -79,7 +78,7 @@ CREATE TABLE orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     buyer_id INT NOT NULL,
     item_id INT NOT NULL,
-    final_price DECIMAL(10, 2) NOT NULL,
+    final_price DOUBLE NOT NULL,
     status VARCHAR(50) DEFAULT 'PENDING',
     FOREIGN KEY (buyer_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (item_id) REFERENCES items(id)
@@ -89,8 +88,8 @@ CREATE TABLE payments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT UNIQUE NOT NULL,
     stripe_tx_id VARCHAR(255),
-    total_amount DECIMAL(10, 2) NOT NULL,
-    platform_fee DECIMAL(10, 2) NOT NULL,
+    total_amount DOUBLE NOT NULL,
+    platform_fee DOUBLE NOT NULL,
     payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
@@ -141,6 +140,50 @@ CREATE TABLE categories (
     is_active BOOLEAN DEFAULT TRUE
 );
 
+--nueva tabla de item_projects
+
+CREATE TABLE IF NOT EXISTS item_projects (
+  id INT NOT NULL,
+  blocks LONGTEXT,
+  background LONGTEXT,
+  block_gap INT,
+  likes INT DEFAULT 0,
+  views INT DEFAULT 0,
+  comments INT DEFAULT 0,
+  block_border_radius INT,
+  published BOOLEAN DEFAULT FALSE,
+  slug VARCHAR(255) UNIQUE,
+  created_at DATETIME NULL,
+  updated_at DATETIME NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_item_projects_item FOREIGN KEY (id) REFERENCES items(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla para likes por usuario en proyectos
+CREATE TABLE IF NOT EXISTS project_likes (
+    user_id INT NOT NULL,
+    project_id INT NOT NULL,
+    PRIMARY KEY (user_id, project_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (project_id) REFERENCES item_projects(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla para comentarios de proyectos
+CREATE TABLE IF NOT EXISTS project_comments (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    project_id INT NOT NULL,
+    user_id INT NOT NULL,
+    comment LONGTEXT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (project_id) REFERENCES item_projects(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Indexes (plain CREATE INDEX is compatible with MySQL versions)
+CREATE INDEX idx_item_projects_slug ON item_projects(slug);
+CREATE INDEX idx_item_projects_published ON item_projects(published);
+
+--- fin de la tabla
 
 ALTER TABLE items
     ADD COLUMN category_id INT,
@@ -170,6 +213,7 @@ CREATE TABLE disputes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
     created_by_user_id INT NOT NULL,
+    created_by_username VARCHAR(50),
     reason VARCHAR(500) NOT NULL,
     status VARCHAR(50) DEFAULT 'OPEN',
     resolution TEXT,
@@ -183,6 +227,7 @@ CREATE TABLE dispute_messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
     dispute_id INT NOT NULL,
     user_id INT NOT NULL,
+    username VARCHAR(50),
     message TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (dispute_id) REFERENCES disputes(id) ON DELETE CASCADE,

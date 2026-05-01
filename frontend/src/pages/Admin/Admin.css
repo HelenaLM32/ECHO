@@ -288,3 +288,32 @@
 .btn-secondary:hover {
   background-color: var(--orange-secondary);
 }
+
+.admin-reviews h2 {
+  margin: 0 0 12px;
+  color: var(--black);
+}
+
+.admin-empty {
+  color: var(--gray-dark-secondary);
+}
+
+.admin-review-comment {
+  max-width: 360px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-btn-danger {
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.78rem;
+  background: #b93142;
+  color: #fff;
+  padding: 7px 10px;
+}
+
+.admin-btn-danger:hover { opacity: 0.9; }

@@ -1,24 +1,21 @@
 package com.example.echo.security;
 
+import java.nio.file.Paths;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.Arrays;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -26,13 +23,16 @@ public class SecurityConfig {
 
     private final RateLimitingFilter rateLimitingFilter;
 
+    @Value("${app.upload.dir:../uploads}")
+    private String uploadDir;
+
     public SecurityConfig(RateLimitingFilter rateLimitingFilter) {
         this.rateLimitingFilter = rateLimitingFilter;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        http.cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
@@ -57,6 +57,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/follows/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/follows/**").authenticated()
                         .requestMatchers("/disputes/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/reviews/user/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/reviews/order/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/reviews").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/reviews").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/reviews/**").hasAuthority("ADMIN")
+
 
                         .requestMatchers(HttpMethod.GET, "/venues/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/venues/**").authenticated()
@@ -67,6 +73,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/events/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/events/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/events/**").authenticated()
+
+
+                        .requestMatchers(HttpMethod.GET, "/proyect").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/proyect/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/proyect").authenticated()
 
                         .anyRequest().permitAll())
                 .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -80,26 +91,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
-    @Bean
     public WebMvcConfigurer uploadResourceHandler() {
         return new WebMvcConfigurer() {
             @Override
             public void addResourceHandlers(ResourceHandlerRegistry registry) {
+                String uploadLocation = Paths.get(uploadDir).toAbsolutePath().normalize().toUri().toString();
                 registry.addResourceHandler("/uploads/**")
-                        .addResourceLocations("file:../uploads/");
+                        .addResourceLocations(uploadLocation);
             }
         };
     }
+
 }

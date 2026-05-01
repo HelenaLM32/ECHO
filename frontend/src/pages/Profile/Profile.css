@@ -35,10 +35,7 @@
     padding: 20px;
     border-radius: 12px;
     color: var(--white);
-}
-
-.banner-placeholder p, .banner-placeholder small {
-    color: var(--white);
+    cursor: pointer;
 }
 
 .banner-download-icon {
@@ -69,7 +66,6 @@
 
 .banner-change-btn:hover {
     background-color: var(--orange);
-    color: var(--true-white);
 }
 
 /* --- Avatar --- */
@@ -129,7 +125,6 @@
 
 .avatar-container.editable:hover .avatar-overlay { opacity: 1; }
 
-/* --- Layout --- */
 .profile-layout-container {
     max-width: 1100px;
     margin: 20px auto 0;
@@ -137,6 +132,11 @@
     grid-template-columns: 280px 1fr;
     gap: 50px;
     padding: 0 30px 80px;
+}
+
+.profile-main {
+    flex-grow: 1;
+    min-width: 0;
 }
 
 .display-name {
@@ -150,6 +150,29 @@
     font-weight: 600;
     margin-bottom: 15px;
 }
+
+.profile-rating-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: rgba(255, 152, 0, 0.1);
+    border: 1px solid rgba(255, 152, 0, 0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    margin-bottom: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.875rem;
+    color: var(--black);
+}
+
+.profile-rating-badge:hover {
+    background: rgba(255, 152, 0, 0.2);
+}
+
+.profile-rating-star { color: var(--orange); font-size: 1rem; }
+.profile-rating-avg { font-weight: 700; }
+.profile-rating-count { color: var(--gray-dark-secondary); font-size: 0.78rem; }
 
 .follow-stats {
     display: flex;
@@ -184,10 +207,11 @@
     text-transform: uppercase;
 }
 
-.display-text {
+.display-text, .display-bio {
     font-size: 0.9rem;
     color: var(--black-secondary);
     line-height: 1.5;
+    margin-bottom: 18px;
 }
 
 .btn-edit-info {
@@ -203,9 +227,24 @@
     margin-top: 15px;
 }
 
-.btn-edit-info:hover { background-color: var(--orange); }
+.btn-edit-info:hover {
+    background-color: var(--orange);
+}
 
-/* --- Tabs --- */
+.social-header {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 14px 0;
+}
+
+.social-link {
+    padding: 4px;
+    transition: all 0.2s ease;
+}
+
+.social-link:hover { opacity: 0.8; }
+
 .content-tabs {
     display: flex;
     gap: 8px;
@@ -225,9 +264,34 @@
     color: var(--black-secondary);
 }
 
-.tab-item.active { color: var(--orange); }
+.tab-item.active {
+    color: var(--white);
+    background-color: var(--orange);
+}
 
-/* --- Grid & Cards (Estilo Wallapop) --- */
+.project-editor-action { margin-bottom: 18px; }
+
+.create-project-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 15rem;
+    height: 36px;
+    background: var(--orange);
+    border-radius: 18px;
+    text-decoration: none;
+    transition: 150ms;
+}
+
+.create-project-button:hover { background: var(--black-secondary); }
+.create-project-span { font-size: 0.85rem; color: var(--white); font-weight: 600; }
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+}
+
 .items-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -245,14 +309,13 @@
 }
 
 .item-card:hover {
-    border-color: var(--orange-secondary);
+    border-color: var(--orange);
     box-shadow: var(--shadow-md);
 }
 
-/* Contenedor de Imagen */
 .item-image-container {
     width: 100%;
-    aspect-ratio: 1 / 1; /* Cuadrado perfecto */
+    aspect-ratio: 1 / 1;
     overflow: hidden;
     background-color: var(--gray-dark);
     display: flex;
@@ -264,45 +327,35 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
     transition: transform 0.3s ease;
 }
 
-.item-card:hover .item-card-img {
-    transform: scale(1.05);
-}
+.item-card:hover .item-card-img { transform: scale(1.05); }
 
-.item-image-placeholder {
-    font-size: 3rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Info del Card */
 .item-info { padding: 16px; }
 .item-title { font-size: 1rem; margin-bottom: 8px; font-weight: 600; }
 .item-price { color: var(--orange); font-weight: 800; font-size: 1.1rem; }
-.item-extra { font-size: 0.8rem; color: var(--gray-dark-secondary); margin-top: 5px; }
-.item-address { font-size: 0.85rem; color: var(--black-secondary); margin-bottom: 4px; }
 
-/* --- Botón Crear --- */
-.create-tab-btn {
-    background: var(--true-white);
-    border: 1px solid var(--orange);
-    color: var(--orange);
-    padding: 10px 20px;
-    border-radius: 10px;
+/* --- Botones de Acción en Items --- */
+.item-actions {
+    display: flex;
+    gap: 8px;
+    padding: 8px 12px 12px;
+}
+
+.btn-item-edit, .btn-item-delete {
+    flex: 1;
+    padding: 6px 0;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.8rem;
     font-weight: 700;
     cursor: pointer;
-    margin-bottom: 20px;
-    transition: var(--transition);
 }
 
-.create-tab-btn:hover {
-    background: var(--orange);
-    color: var(--true-white);
-}
+.btn-item-edit { background: var(--gray-light); color: var(--black); }
+.btn-item-delete { background: #ffebee; color: #c62828; }
+.btn-item-delete:hover { background: #c62828; color: white; }
 
 /* --- Empty State --- */
 .empty-state {
@@ -314,58 +367,9 @@
     color: var(--gray-dark-secondary);
 }
 
-/* --- Social --- */
-.social-header { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 20px; }
-.social-link {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* --- Calendario --- */
 .calendar-iframe {
     width: 100%;
     height: 500px;
     border: 1px solid var(--gray-stroke);
     border-radius: 12px;
-}
-
-.item-actions {
-  display: flex;
-  gap: 8px;
-  padding: 8px 12px 12px;
-}
-
-.btn-item-edit,
-.btn-item-delete {
-  flex: 1;
-  padding: 6px 0;
-  border-radius: 8px;
-  border: none;
-  font-size: 0.8rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-item-edit {
-  background: var(--gray-light);
-  color: var(--black);
-}
-
-.btn-item-edit:hover {
-  background: var(--gray-stroke);
-}
-
-.btn-item-delete {
-  background: #ffebee;
-  color: #c62828;
-}
-
-.btn-item-delete:hover {
-  background: #c62828;
-  color: white;
 }
