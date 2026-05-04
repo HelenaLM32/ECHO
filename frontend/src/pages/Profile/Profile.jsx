@@ -491,8 +491,8 @@ export default function Profile() {
                   <div className="empty-state">Sin proyectos aún</div>
                 ) : (
                   <div className="projects-grid">
-                    {projects.map(p => (
-                      <ProjectCard key={p.id} project={p} onOpen={setSelectedProjectId} />
+                    {projects.map((p) => (
+                      <ProjectCard key={p.id} project={p} onOpen={setSelectedProjectId} small={true} />
                     ))}
                   </div>
                 )}

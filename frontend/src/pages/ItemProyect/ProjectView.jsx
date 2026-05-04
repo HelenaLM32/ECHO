@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getProjectById } from '../../services/projects'
+import { getProjectById, deleteProject, deleteProjectComment } from '../../services/projects'
 import './ProjectEditor.css'
 import { BLOCK_TYPES, toEmbedUrl, parseJsonSafe } from './store/useProjectStore'
 import ProjectFooter from '../../components/ProjectFooter/ProjectFooter'
 import { API_URL } from '../../services/config'
+import { useAuth } from '../../context/AuthContext'
 
 function RenderBlock({ block }) {
   if (!block) return null
@@ -52,6 +53,11 @@ export default function ProjectView({ projectId, onClose }) {
   const [error, setError] = useState(null)
   const [profile, setProfile] = useState(null)
   const [commentsList, setCommentsList] = useState([])
+  const { user } = useAuth()
+
+  const isProjectOwner = !!project?.item?.creatorId && user?.id === project.item.creatorId
+  const isAdmin = !!user?.roles?.includes('ADMIN')
+  const canDeleteProject = isAdmin || isProjectOwner
 
   useEffect(() => {
     let mounted = true
@@ -65,11 +71,8 @@ export default function ProjectView({ projectId, onClose }) {
 
   useEffect(() => {
     if (!project || !project.item || !project.item.creatorId) return
-    const creatorId = project.item.creatorId
-    fetch(`${API_URL}/profiles/${creatorId}`)
-      .then((r) => { if (!r.ok) throw new Error('No profile'); return r.json() })
-      .then((data) => setProfile(data))
-      .catch(() => setProfile(null))
+    // Profile is already included in the project response
+    setProfile(project.profile || null)
   }, [project])
 
   useEffect(() => {
@@ -124,6 +127,36 @@ export default function ProjectView({ projectId, onClose }) {
       .catch(() => setCommentsList([]))
   }
 
+  async function handleDeleteProject() {
+    if (!project?.id) return
+    if (!window.confirm('¿Eliminar este proyecto? Esta acción no se puede deshacer.')) return
+    try {
+      await deleteProject(project.id)
+      if (onClose) {
+        onClose()
+      } else {
+        const target = project?.item?.creatorId ? `/profile/${project.item.creatorId}` : '/'
+        navigate(target)
+      }
+    } catch (e) {
+      console.error('Error al borrar proyecto', e)
+      alert('No se pudo borrar el proyecto: ' + (e.message || 'error'))
+    }
+  }
+
+  async function handleDeleteComment(commentId) {
+    if (!project?.id || !commentId) return
+    if (!window.confirm('¿Eliminar este comentario?')) return
+    try {
+      const updatedProject = await deleteProjectComment(project.id, commentId)
+      setProject(updatedProject)
+      loadComments()
+    } catch (e) {
+      console.error('Error al borrar comentario', e)
+      alert('No se pudo borrar el comentario: ' + (e.message || 'error'))
+    }
+  }
+
   function handleAddComment(commentText) {
     const token = sessionStorage.getItem('token')
     if (!token) {
@@ -170,6 +203,11 @@ export default function ProjectView({ projectId, onClose }) {
   return (
     <div className="previewOverlay" onClick={handleOverlayClick}>
       <div className="previewWindow" style={{ ...bgStyle, width: '100%', maxWidth: 1200, margin: '0 auto', borderRadius: 16 }} onClick={(e) => e.stopPropagation()}>
+        {canDeleteProject && (
+          <button className="project-delete-button" onClick={handleDeleteProject}>
+            Borrar proyecto
+          </button>
+        )}
         <div className="previewContentList" style={{ gap: `${blockGap}px` }}>
           {blocks.length === 0 && <p className="previewEmptyMessage">No hay contenido para previsualizar.</p>}
           {blocks.map((b) => (
@@ -186,6 +224,10 @@ export default function ProjectView({ projectId, onClose }) {
             commentItems={commentsList}
             onLike={handleToggleLike}
             onSubmitComment={handleAddComment}
+            onDeleteComment={handleDeleteComment}
+            currentUserId={user?.id}
+            projectOwnerId={project?.item?.creatorId}
+            isAdmin={isAdmin}
             isLiked={isLiked}
           />
         </div>

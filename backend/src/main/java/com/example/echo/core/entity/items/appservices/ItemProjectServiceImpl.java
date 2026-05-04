@@ -51,12 +51,20 @@ public class ItemProjectServiceImpl implements ItemProjectService {
         return (Serializer<ItemProjectDTO>) SerializersCatalog.getInstance(Serializers.JSON_ITEM_PROJECT);
     }
 
-    protected ItemProjectDTO getDTO(Integer id) {
-        return projectRepository.findById(id).orElse(null);
+    private void embedProfile(com.fasterxml.jackson.databind.node.ObjectNode node, Integer creatorId) throws Exception {
+        if (creatorId != null) {
+            com.example.echo.core.entity.user.dto.UserDTO user = userRepository.findById(creatorId).orElse(null);
+            if (user != null) {
+                com.example.echo.core.entity.profile.dto.ProfileDTO profile = profileRepository.findByUserId(creatorId)
+                        .orElseGet(() -> com.example.echo.core.entity.profile.mappers.ProfileMapper.newProfileForUser(user));
+                com.fasterxml.jackson.databind.node.ObjectNode profileNode = com.example.echo.core.entity.profile.mappers.ProfileMapper.toResponseNode(profile, user, mapper);
+                node.set("profile", profileNode);
+            }
+        }
     }
 
     protected ItemProjectDTO getById(Integer id) throws ServiceException {
-        ItemProjectDTO dto = this.getDTO(id);
+        ItemProjectDTO dto = projectRepository.findById(id).orElse(null);
         if (dto == null) {
             throw new ServiceException("ItemProject " + id + " not found");
         }
@@ -131,7 +139,14 @@ public class ItemProjectServiceImpl implements ItemProjectService {
     @SuppressWarnings("unchecked")
     public String getAllToJson() throws ServiceException {
         try {
-            return jsonSerializer().serializeList(projectRepository.findAll());
+            java.util.List<ItemProjectDTO> projects = projectRepository.findAll();
+            com.fasterxml.jackson.databind.node.ArrayNode arrayNode = mapper.createArrayNode();
+            for (ItemProjectDTO dto : projects) {
+                com.fasterxml.jackson.databind.node.ObjectNode node = mapper.valueToTree(dto);
+                embedProfile(node, dto.getItem() != null ? dto.getItem().getCreatorId() : null);
+                arrayNode.add(node);
+            }
+            return mapper.writeValueAsString(arrayNode);
         } catch (Exception e) {
             throw new ServiceException("Error getting all projects: " + e.getMessage());
         }
@@ -140,7 +155,14 @@ public class ItemProjectServiceImpl implements ItemProjectService {
     @Override
     public String getByCreatorIdToJson(Integer creatorId) throws ServiceException {
         try {
-            return jsonSerializer().serializeList(projectRepository.findByItemCreatorId(creatorId));
+            java.util.List<ItemProjectDTO> projects = projectRepository.findByItemCreatorId(creatorId);
+            com.fasterxml.jackson.databind.node.ArrayNode arrayNode = mapper.createArrayNode();
+            for (ItemProjectDTO dto : projects) {
+                com.fasterxml.jackson.databind.node.ObjectNode node = mapper.valueToTree(dto);
+                embedProfile(node, dto.getItem() != null ? dto.getItem().getCreatorId() : null);
+                arrayNode.add(node);
+            }
+            return mapper.writeValueAsString(arrayNode);
         } catch (Exception e) {
             throw new ServiceException("Error getting projects by creator: " + e.getMessage());
         }
@@ -151,17 +173,7 @@ public class ItemProjectServiceImpl implements ItemProjectService {
         try {
             ItemProjectDTO dto = this.getById(id);
             com.fasterxml.jackson.databind.node.ObjectNode node = mapper.valueToTree(dto);
-            // embed profile
-            Integer creatorId = dto.getItem() != null ? dto.getItem().getCreatorId() : null;
-            if (creatorId != null) {
-                com.example.echo.core.entity.user.dto.UserDTO user = userRepository.findById(creatorId).orElse(null);
-                if (user != null) {
-                    com.example.echo.core.entity.profile.dto.ProfileDTO profile = profileRepository.findByUserId(creatorId)
-                            .orElseGet(() -> com.example.echo.core.entity.profile.mappers.ProfileMapper.newProfileForUser(user));
-                    com.fasterxml.jackson.databind.node.ObjectNode profileNode = com.example.echo.core.entity.profile.mappers.ProfileMapper.toResponseNode(profile, user, mapper);
-                    node.set("profile", profileNode);
-                }
-            }
+            embedProfile(node, dto.getItem() != null ? dto.getItem().getCreatorId() : null);
             return mapper.writeValueAsString(node);
         } catch (Exception e) {
             throw new ServiceException(e.getMessage(), e);
@@ -190,6 +202,32 @@ public class ItemProjectServiceImpl implements ItemProjectService {
             ItemProjectDTO dto = this.getById(projectId);
             dto.setComments((dto.getComments() == null ? 0 : dto.getComments()) + 1);
             projectRepository.save(dto);
+            return getByIdToJson(projectId);
+        } catch (Exception e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public String deleteCommentAndGetByIdToJson(Integer projectId, Long commentId, Integer userId) throws ServiceException {
+        try {
+            com.example.echo.core.entity.projectcomments.model.ProjectComment comment = projectCommentRepo.findById(commentId)
+                    .orElseThrow(() -> new ServiceException("Comentario no encontrado"));
+            if (!comment.getProjectId().equals(projectId)) {
+                throw new ServiceException("El comentario no pertenece a este proyecto");
+            }
+            ItemProjectDTO project = this.getById(projectId);
+            Integer creatorId = project.getItem() != null ? project.getItem().getCreatorId() : null;
+            com.example.echo.core.entity.user.dto.UserDTO currentUser = userRepository.findById(userId).orElse(null);
+            boolean isAdmin = currentUser != null && currentUser.getRoles().stream().anyMatch(r -> r.getName().equals("ADMIN"));
+            if (!comment.getUserId().equals(userId) && !isAdmin && (creatorId == null || !creatorId.equals(userId))) {
+                throw new ServiceException("No tienes permiso para eliminar este comentario");
+            }
+            projectCommentRepo.deleteById(commentId);
+            if (project.getComments() != null && project.getComments() > 0) {
+                project.setComments(project.getComments() - 1);
+                projectRepository.save(project);
+            }
             return getByIdToJson(projectId);
         } catch (Exception e) {
             throw new ServiceException(e.getMessage(), e);

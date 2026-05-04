@@ -14,6 +14,8 @@ public interface ItemProjectService {
 
     String addCommentAndGetByIdToJson(Integer projectId, Integer userId, String commentText) throws ServiceException;
 
+    String deleteCommentAndGetByIdToJson(Integer projectId, Long commentId, Integer userId) throws ServiceException;
+
     String getCommentsByProjectIdToJson(Integer projectId) throws ServiceException;
 
     String toggleLikeAndGetByIdToJson(Integer projectId, Integer userId) throws ServiceException;

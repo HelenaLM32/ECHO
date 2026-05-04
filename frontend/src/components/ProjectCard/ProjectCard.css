@@ -1,10 +1,10 @@
-.project-card-wrapper {
+.pc-card-wrapper {
   display: flex;
   flex-direction: column;
   gap: 0;
 }
 
-.project-card-button {
+.pc-card-button {
   border: none;
   background: none;
   cursor: pointer;
@@ -14,29 +14,42 @@
   border-radius: 16px;
 }
 
-.project-card {
+.pc-card {
   background: var(--white);
-  border: 1px solid var(--gray-stroke);
-  border-radius: 16px;
+  border: 1px solid rgba(116, 122, 138, 0.14);
+  border-radius: 24px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   width: 100%;
-  transition: box-shadow 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
 }
 
-
+.project-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 44px rgba(15, 23, 42, 0.14);
+}
 
 .pc-cover {
   width: 100%;
-  height: 160px;
-  background: var(--gray-stroke);
+  height: 280px;
+  background: linear-gradient(180deg, rgba(235, 238, 244, 0.95), rgba(216, 221, 232, 0.98));
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
   border-radius: 0;
+  position: relative;
+}
+
+.pc-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.16));
+  pointer-events: none;
 }
 
 .pc-cover-img {
@@ -44,6 +57,7 @@
   height: 100%;
   object-fit: cover;
   border-radius: 0;
+  display: block;
 }
 
 .pc-cover-fallback {
@@ -75,27 +89,28 @@
 }
 
 .pc-footer {
-  padding: 14px 16px;
+  padding: 10px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 16px;
 }
 
 .pc-footer-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   min-width: 0;
 }
 
 .pc-creator-avatar {
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
   background: #ff8c00;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
 }
 
 .pc-creator-fallback {
@@ -109,11 +124,11 @@
 }
 
 .pc-title {
-  font-size: 1rem;
+  font-size: 1.05rem;
   margin: 0;
   font-weight: 700;
   text-align: left;
-  color: var(--black);
+  color: #000;
   line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -124,19 +139,50 @@
   min-width: 0;
 }
 
-.pc-creator-name {
-  font-size: 0.75rem;
-  color: #666;
+.pc-author {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: #6d7280;
+  line-height: 1.35;
   font-weight: 500;
 }
 
 .pc-stats {
   display: flex;
-  gap: 8px;
+  gap: 12px;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #000;
+  font-weight: 500;
+}
+
+
+
+.pc-card--small .pc-cover {
+  height: 140px;
+}
+
+.pc-card--small .pc-footer {
+  padding: 10px 12px;
+}
+
+.pc-card--small .pc-creator-avatar {
+  width: 32px;
+  height: 32px;
+}
+
+.pc-card--small .pc-title {
+  font-size: 0.85rem;
+}
+
+.pc-card--small .pc-author {
   font-size: 0.75rem;
 }
 
-.pc-stat {
-  color: #666;
-  white-space: nowrap;
+.pc-card--small .pc-stats {
+  font-size: 0.7rem;
+}
+
+.pc-card--small .pc-stat-label {
+  font-size: 0.65rem;
 }

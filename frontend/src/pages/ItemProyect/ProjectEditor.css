@@ -435,6 +435,25 @@
   cursor: pointer;
 }
 
+.project-delete-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 1;
+  border: none;
+  background: #dc2626;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(220, 38, 38, 0.2);
+}
+
+.project-delete-button:hover {
+  background: #b91c1c;
+}
+
 .previewContentList {
   display: flex;
   flex-direction: column;
