@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import "./DetailModal.css";
 
 export default function DetailModal({ type, data, onClose }) {
@@ -5,7 +6,7 @@ export default function DetailModal({ type, data, onClose }) {
 
   const isVenue = type === "venue";
 
-  return (
+  return createPortal(
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close-btn" onClick={onClose}>✕</button>
@@ -67,6 +68,7 @@ export default function DetailModal({ type, data, onClose }) {
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -1,7 +1,8 @@
+import { createPortal } from "react-dom";
 import "./ReviewsModal.css";
 
 export default function ReviewsModal({ reviews, average, count, onClose }) {
-  return (
+  return createPortal(
     <div className="rmodal-overlay" onClick={onClose}>
       <div className="rmodal" onClick={(e) => e.stopPropagation()}>
         <button className="rmodal-close" onClick={onClose} aria-label="Cerrar">✕</button>
@@ -37,6 +38,7 @@ export default function ReviewsModal({ reviews, average, count, onClose }) {
           ))}
         </ul>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

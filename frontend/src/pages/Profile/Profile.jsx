@@ -23,7 +23,7 @@ import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import ProjectView from "../../pages/ItemProyect/ProjectView";
 import Footer from "../../components/Footer/Footer";
 import DetailModal from "../../components/DetailModal/DetailModal";
-import ReviewsModal from "../../components/ReviewsModal/ReviewsModal"; // Asegúrate de que este componente existe
+import ReviewsModal from "../../components/ReviewsModal/ReviewsModal";
 
 import linkedinIcon from "../../assets/icons8-linkedin-24.png";
 import twitterIcon from "../../assets/icons8-x-24.png";
@@ -162,8 +162,24 @@ export default function Profile() {
         setIsFollowing(true);
       }
       setFollowStats(await getFollowStats(targetId));
-    } catch (error) { alert(error.message); } 
+    } catch (error) { alert(error.message); }
     finally { setFollowLoading(false); }
+  };
+
+  const handleDeleteVenue = async (id) => {
+    if (!confirm("¿Eliminar este local?")) return;
+    try {
+      await deleteVenue(id);
+      setVenues((prev) => prev.filter((v) => v.id !== id));
+    } catch (err) { alert(err.message); }
+  };
+
+  const handleDeleteEvent = async (id) => {
+    if (!confirm("¿Eliminar este evento?")) return;
+    try {
+      await deleteEvent(id);
+      setEvents((prev) => prev.filter((ev) => ev.id !== id));
+    } catch (err) { alert(err.message); }
   };
 
   const handleOpenReviews = () => {
@@ -178,7 +194,9 @@ export default function Profile() {
     return (
       <div>
         {isOwnProfile && (
-          <button className="create-tab-btn" onClick={() => navigate(path)}>Crear {type.toLowerCase()}</button>
+          <button className="create-tab-btn" onClick={() => navigate(path)}>
+            Crear {type.toLowerCase()}
+          </button>
         )}
         {!items || items.length === 0 ? (
           <div className="empty-state">No hay {type.toLowerCase()} disponibles</div>
@@ -187,7 +205,9 @@ export default function Profile() {
             {items.map((item) => (
               <div key={item.id} className="item-card">
                 <div className="item-image-container">
-                  {item.images?.[0] ? <img src={item.images[0]} alt={item.title} className="item-card-img" /> : <div className="item-image-placeholder">📦</div>}
+                 
+                    <img src={item.images[0]} alt={item.title} className="item-card-img" />
+                    
                 </div>
                 <div className="item-info">
                   <h3 className="item-title">{item.title}</h3>
@@ -201,10 +221,138 @@ export default function Profile() {
     );
   };
 
+  const renderVenues = () => {
+    if (itemsLoading.venues) return <div className="empty-state">Cargando...</div>;
+    return (
+      <div>
+        {isOwnProfile && (
+          <button className="create-tab-btn" onClick={() => navigate("/venues/venue-create")}>
+            Crear un local
+          </button>
+        )}
+        {venues.length === 0 ? (
+          <div className="empty-state">Sin locales registrados</div>
+        ) : (
+          <div className="items-grid">
+            {venues.map((v) => (
+              <div
+                key={v.id}
+                className="item-card"
+                style={!isOwnProfile ? { cursor: "pointer" } : {}}
+                onClick={!isOwnProfile ? () => openModal("venue", v) : undefined}
+              >
+                <div className="item-image-container">
+                 
+                    ? <img src={v.img1} alt={v.name} className="item-card-img" />
+              
+                </div>
+                <div className="item-info">
+                  <h3 className="item-title">{v.name}</h3>
+                  <p className="item-address">{v.address}</p>
+                  {v.capacity && <p className="item-extra">Aforo: {v.capacity}</p>}
+                </div>
+                {isOwnProfile && (
+                  <div className="item-actions">
+                    <button
+                      className="btn-item-edit"
+                      onClick={() => navigate(`/venues/${v.id}/edit`)}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      className="btn-item-delete"
+                      onClick={() => handleDeleteVenue(v.id)}
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderEvents = () => {
+    if (itemsLoading.events) return <div className="empty-state">Cargando...</div>;
+    return (
+      <div>
+        {isOwnProfile && (
+          <button className="create-tab-btn" onClick={() => navigate("/events/event-create")}>
+            Crear un evento
+          </button>
+        )}
+        {events.length === 0 ? (
+          <div className="empty-state">Sin eventos registrados</div>
+        ) : (
+          <div className="items-grid">
+            {events.map((ev) => (
+              <div
+                key={ev.id}
+                className="item-card"
+                style={!isOwnProfile ? { cursor: "pointer" } : {}}
+                onClick={!isOwnProfile ? () => openModal("event", ev) : undefined}
+              >
+                <div className="item-image-container">
+                  {ev.img
+                    ? <img src={ev.img} alt={ev.title || "Evento"} className="item-card-img" />
+                    : <div className="item-image-placeholder"></div>}
+                </div>
+                <div className="item-info">
+                  <h3 className="item-title">{ev.title || "Evento sin título"}</h3>
+                  <p className="item-price">
+                    {ev.startDate
+                      ? new Date(ev.startDate).toLocaleDateString("es-ES")
+                      : "Fecha no definida"}
+                  </p>
+                  <p className="item-price">
+                    {ev.precio != null ? `${ev.precio} €` : "Gratuito"}
+                  </p>
+                  {ev.categoria && <p className="item-extra">{ev.categoria}</p>}
+                  {ev.description && (
+                    <p className="item-extra">
+                      {ev.description.substring(0, 60)}...
+                    </p>
+                  )}
+                </div>
+                {isOwnProfile && (
+                  <div className="item-actions">
+                    <button
+                      className="btn-item-edit"
+                      onClick={() => navigate(`/events/${ev.id}/edit`)}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      className="btn-item-delete"
+                      onClick={() => handleDeleteEvent(ev.id)}
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   if (loadingContext || loading) return <div className="profile-page-loading">Cargando perfil...</div>;
   if (error || !profile) return <div className="profile-page-error">{error || "Perfil no encontrado"}</div>;
 
-  const tabs = ["Proyectos", "Productos", "Servicios", "Locales", "Eventos", "Valoraciones", ...(isOwnProfile ? ["Calendario"] : [])];
+  const tabs = [
+    "Proyectos",
+    "Productos",
+    "Servicios",
+    "Locales",
+    "Eventos",
+    "Valoraciones",
+    ...(isOwnProfile ? ["Calendario"] : []),
+  ];
 
   return (
     <div className="profile-page">
@@ -212,34 +360,60 @@ export default function Profile() {
         {profile.bannerUrl ? (
           <img src={profile.bannerUrl} alt="Portada" className="banner-image" />
         ) : (
-          <div className="banner-placeholder" onClick={() => isOwnProfile && bannerInputRef.current?.click()} style={{ cursor: isOwnProfile ? "pointer" : "default" }}>
+          <div
+            className="banner-placeholder"
+            onClick={() => isOwnProfile && bannerInputRef.current?.click()}
+            style={{ cursor: isOwnProfile ? "pointer" : "default" }}
+          >
             <p>Agregar imagen de portada</p>
           </div>
         )}
         {isOwnProfile && profile.bannerUrl && (
-          <button className="banner-change-btn" onClick={() => bannerInputRef.current?.click()}>Cambiar portada</button>
+          <button className="banner-change-btn" onClick={() => bannerInputRef.current?.click()}>
+            Cambiar portada
+          </button>
         )}
-        <input ref={bannerInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleBannerChange} />
+        <input
+          ref={bannerInputRef}
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          onChange={handleBannerChange}
+        />
       </header>
 
       <div className="avatar-float-wrapper">
-        <div className={`avatar-container ${isOwnProfile ? "editable" : ""}`} onClick={() => isOwnProfile && avatarInputRef.current?.click()}>
-          {profile.avatarUrl ? <img src={profile.avatarUrl} alt={profile.username} className="avatar-img" /> : <div className="avatar-initials">{profile.username?.charAt(0).toUpperCase()}</div>}
+        <div
+          className={`avatar-container ${isOwnProfile ? "editable" : ""}`}
+          onClick={() => isOwnProfile && avatarInputRef.current?.click()}
+        >
+          {profile.avatarUrl
+            ? <img src={profile.avatarUrl} alt={profile.username} className="avatar-img" />
+            : <div className="avatar-initials">{profile.username?.charAt(0).toUpperCase()}</div>}
           {isOwnProfile && <div className="avatar-overlay"><span>Cambiar</span></div>}
         </div>
-        <input ref={avatarInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleAvatarChange} />
+        <input
+          ref={avatarInputRef}
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          onChange={handleAvatarChange}
+        />
       </div>
 
       <div className="profile-layout-container">
+
         <aside className="profile-sidebar">
           <div className="sidebar-info">
             <h1 className="display-name">{profile.publicName || profile.username}</h1>
             <p className="username">@{profile.username}</p>
             <p className="display-location">{profile.location || "Ubicación no especificada"}</p>
-            
+
             <button className="profile-rating-badge" onClick={handleOpenReviews}>
               <span className="profile-rating-star">★</span>
-              <span className="profile-rating-avg">{reviewStats.average != null ? reviewStats.average.toFixed(1) : "—"}</span>
+              <span className="profile-rating-avg">
+                {reviewStats.average != null ? reviewStats.average.toFixed(1) : "—"}
+              </span>
               <span className="profile-rating-count">({reviewStats.count})</span>
             </button>
 
@@ -251,49 +425,150 @@ export default function Profile() {
             {isOwnProfile ? (
               <Link to="/edit-profile" className="btn-edit-info">Editar perfil</Link>
             ) : user && (
-              <button onClick={handleFollow} disabled={followLoading} className={`btn-follow-action ${isFollowing ? "active" : ""}`}>
+              <button
+                onClick={handleFollow}
+                disabled={followLoading}
+                className={`btn-follow-action ${isFollowing ? "active" : ""}`}
+              >
                 {followLoading ? "..." : isFollowing ? "Dejar de seguir" : "Seguir"}
               </button>
             )}
 
             <p className="display-label">Sobre mí</p>
-            <p className="display-text">{profile.bio || "Sin descripción."}</p>
+            <p className="display-bio">{profile.bio || "Sin descripción."}</p>
+
+            {profile.experience && (
+              <>
+                <p className="display-label">Experiencia</p>
+                <p className="display-bio">{profile.experience}</p>
+              </>
+            )}
           </div>
         </aside>
 
         <main className="profile-main">
           <div className="social-header">
-            {profile.linkedin && <a href={profile.linkedin} className="social-link" target="_blank" rel="noreferrer"><img src={linkedinIcon} alt="LinkedIn" /></a>}
-            {profile.instagram && <a href={profile.instagram} className="social-link" target="_blank" rel="noreferrer"><img src={instagramIcon} alt="Instagram" /></a>}
-            {profile.twitter && <a href={profile.twitter} className="social-link" target="_blank" rel="noreferrer"><img src={twitterIcon} alt="Twitter" /></a>}
+            {profile.linkedin && (
+              <a href={profile.linkedin} className="social-link" target="_blank" rel="noreferrer">
+                <img src={linkedinIcon} alt="LinkedIn" />
+              </a>
+            )}
+            {profile.instagram && (
+              <a href={profile.instagram} className="social-link" target="_blank" rel="noreferrer">
+                <img src={instagramIcon} alt="Instagram" />
+              </a>
+            )}
+            {profile.twitter && (
+              <a href={profile.twitter} className="social-link" target="_blank" rel="noreferrer">
+                <img src={twitterIcon} alt="Twitter" />
+              </a>
+            )}
           </div>
 
           <nav className="content-tabs">
             {tabs.map((tab) => (
-              <button key={tab} className={`tab-item ${activeTab === tab ? "active" : ""}`} onClick={() => setActiveTab(tab)}>{tab}</button>
+              <button
+                key={tab}
+                className={`tab-item ${activeTab === tab ? "active" : ""}`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab}
+              </button>
             ))}
           </nav>
 
           <div className="tab-content">
             {activeTab === "Proyectos" && (
               <div className="projects-section">
-                {isOwnProfile && <Link to="/proyect" className="create-project-button">Crear nuevo proyecto</Link>}
-                {itemsLoading.projects ? <p>Cargando...</p> : (
+                {isOwnProfile && (
+                  <button className="create-tab-btn" onClick={() => navigate("/proyect")}>
+                    Crear nuevo proyecto
+                  </button>
+                )}
+                {itemsLoading.projects ? (
+                  <div className="empty-state">Cargando...</div>
+                ) : projects.length === 0 ? (
+                  <div className="empty-state">Sin proyectos aún</div>
+                ) : (
                   <div className="projects-grid">
-                    {projects.map(p => <ProjectCard key={p.id} project={p} onOpen={setSelectedProjectId} />)}
+                    {projects.map(p => (
+                      <ProjectCard key={p.id} project={p} onOpen={setSelectedProjectId} />
+                    ))}
                   </div>
                 )}
               </div>
             )}
+
+            {/* Productos */}
             {activeTab === "Productos" && renderItemGrid(products, itemsLoading.products, "Productos")}
+
+            {/* Servicios */}
             {activeTab === "Servicios" && renderItemGrid(services, itemsLoading.services, "Servicios")}
+
+            {/* Locales */}
+            {activeTab === "Locales" && renderVenues()}
+
+            {/* Eventos */}
+            {activeTab === "Eventos" && renderEvents()}
+
+            {/* Valoraciones */}
+            {activeTab === "Valoraciones" && (
+              <div className="empty-state">Sin valoraciones aún</div>
+            )}
+
+            {/* Calendario */}
+            {activeTab === "Calendario" && (
+              <div className="calendar-tab">
+                {profile.calendarUrl ? (
+                  <>
+                    <p className="calendar-title">
+                      Disponibilidad de {profile.publicName || profile.username}
+                    </p>
+                    <iframe
+                      src={profile.calendarUrl}
+                      className="calendar-iframe"
+                      title="Google Calendar"
+                    />
+                  </>
+                ) : (
+                  <div className="empty-state">
+                    {isOwnProfile ? (
+                      <>
+                        <p>Aún no has vinculado tu calendario.</p>
+                        <Link
+                          to="/edit-profile"
+                          className="btn-edit-info"
+                          style={{ marginTop: "12px", width: "auto", display: "inline-block" }}
+                        >
+                          Añadir calendario
+                        </Link>
+                      </>
+                    ) : (
+                      <p>Este usuario no ha vinculado su calendario.</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </main>
       </div>
 
-      {showReviews && <ReviewsModal reviews={reviews} average={reviewStats.average} count={reviewStats.count} onClose={() => setShowReviews(false)} />}
-      {selectedProjectId && <ProjectView projectId={selectedProjectId} onClose={() => setSelectedProjectId(null)} />}
-      {modal.open && <DetailModal type={modal.type} data={modal.data} onClose={closeModal} />}
+      {showReviews && (
+        <ReviewsModal
+          reviews={reviews}
+          average={reviewStats.average}
+          count={reviewStats.count}
+          onClose={() => setShowReviews(false)}
+        />
+      )}
+      {selectedProjectId && (
+        <ProjectView projectId={selectedProjectId} onClose={() => setSelectedProjectId(null)} />
+      )}
+      {modal.open && (
+        <DetailModal type={modal.type} data={modal.data} onClose={closeModal} />
+      )}
+
       <Footer />
     </div>
   );
