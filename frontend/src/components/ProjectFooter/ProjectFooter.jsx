@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './ProjectFooter.css'
 
-export default function ProjectFooter({ name, avatar, likes = 0, views = 0, comments = 0, commentItems = [], onLike, onSubmitComment, isLiked = false }) {
+export default function ProjectFooter({ name, avatar, likes = 0, views = 0, comments = 0, commentItems = [], onLike, onSubmitComment, onDeleteComment, currentUserId, projectOwnerId, isAdmin = false, isLiked = false }) {
     const [draft, setDraft] = useState('')
     const initials = (name || 'U').charAt(0).toUpperCase()
     const authorName = name || 'Anónimo'
@@ -19,7 +19,6 @@ export default function ProjectFooter({ name, avatar, likes = 0, views = 0, comm
         const date = new Date(createdAt)
         const now = new Date()
         const diff = Math.floor((now - date) / 1000)
-        // muestra segundos para comentarios recientes, y luego minutos, horas o días según corresponda!!!
         if (diff < 60) return 'Hace unos segundos'
         if (diff < 3600) return `Hace ${Math.floor(diff / 60)} min`
         if (diff < 86400) return `Hace ${Math.floor(diff / 3600)} h`
@@ -77,6 +76,15 @@ export default function ProjectFooter({ name, avatar, likes = 0, views = 0, comm
                                         <div className="pf-comment-meta">
                                             <span className="pf-comment-author">{displayName}</span>
                                             <span className="pf-comment-time">· {timeAgo}</span>
+                                            {onDeleteComment && (comment.author?.id === currentUserId || projectOwnerId === currentUserId || isAdmin) && (
+                                                <button
+                                                    type="button"
+                                                    className="pf-comment-delete-btn"
+                                                    onClick={() => onDeleteComment(comment.id)}
+                                                >
+                                                    ×
+                                                </button>
+                                            )}
                                             <button className="pf-reply-btn">· Responder</button>
                                         </div>
                                         <div className="pf-comment-text">{comment.comment}</div>

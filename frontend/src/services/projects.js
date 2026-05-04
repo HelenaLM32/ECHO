@@ -1,4 +1,4 @@
-import { API_URL } from "./config";
+import { API_URL, fetchWithToken } from "./config";
 import { uploadFile } from './uploads'
 
 const API = API_URL || import.meta.env.VITE_API_URL || 'http://localhost:8082/api'
@@ -128,4 +128,20 @@ async function getProjectById(id) {
   return res.json()
 }
 
-export { createItem, createProject, getCategories, getAllProjects, getProjectsByUserId, getProjectById }
+async function deleteProject(projectId) {
+  const res = await fetchWithToken(`/item-projects/${projectId}`, {
+    method: 'DELETE',
+  })
+  if (!res.ok) throw new Error(await res.text())
+  return true
+}
+
+async function deleteProjectComment(projectId, commentId) {
+  const res = await fetchWithToken(`/item-projects/${projectId}/comments/${commentId}`, {
+    method: 'DELETE',
+  })
+  if (!res.ok) throw new Error(await res.text())
+  return res.json()
+}
+
+export { createItem, createProject, getCategories, getAllProjects, getProjectsByUserId, getProjectById, deleteProject, deleteProjectComment }
