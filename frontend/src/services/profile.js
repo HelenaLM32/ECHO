@@ -24,7 +24,10 @@ export const updateProfile = async (userId, profileData) => {
     body: JSON.stringify(profileData),
   });
 
-  if (!response.ok) throw new Error("Error al actualizar el perfil");
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || "Error al actualizar el perfil");
+  }
   return response.json();
 };
 

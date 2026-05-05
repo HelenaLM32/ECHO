@@ -98,7 +98,7 @@ public class Profile {
     }
 
     public int setBio(String bio) {
-        if (bio == null || Check.maxLength(bio, 1000)) {
+        if (bio == null || Check.isEmpty(bio) || Check.maxLength(bio, 1000)) {
             this.bio = bio;
             return 0;
         }
@@ -106,7 +106,7 @@ public class Profile {
     }
 
     public int setLocation(String location) {
-        if (location == null || Check.maxLength(location, 150)) {
+        if (location == null || Check.isEmpty(location) || Check.maxLength(location, 100)) {
             this.location = location;
             return 0;
         }
@@ -114,7 +114,7 @@ public class Profile {
     }
 
     public int setLinkedin(String url) {
-        if (url == null || Check.maxLength(url, 255)) {
+        if (url == null || Check.isEmpty(url) || Check.maxLength(url, 255)) {
             this.linkedin = url;
             return 0;
         }
@@ -122,7 +122,7 @@ public class Profile {
     }
 
     public int setInstagram(String url) {
-        if (url == null || Check.maxLength(url, 255)) {
+        if (url == null || Check.isEmpty(url) || Check.maxLength(url, 255)) {
             this.instagram = url;
             return 0;
         }
@@ -130,7 +130,7 @@ public class Profile {
     }
 
     public int setTwitter(String url) {
-        if (url == null || Check.maxLength(url, 255)) {
+        if (url == null || Check.isEmpty(url) || Check.maxLength(url, 255)) {
             this.twitter = url;
             return 0;
         }
@@ -138,7 +138,7 @@ public class Profile {
     }
 
     public int setExperience(String experience) {
-        if (experience == null || Check.maxLength(experience, 2000)) {
+        if (experience == null || Check.isEmpty(experience) || Check.maxLength(experience, 255)) {
             this.experience = experience;
             return 0;
         }
@@ -146,7 +146,7 @@ public class Profile {
     }
 
     public int setCalendarUrl(String url) {
-        if (url == null || Check.maxLength(url, 500)) {
+        if (url == null || Check.isEmpty(url) || Check.maxLength(url, 500)) {
             this.calendarUrl = url;
             return 0;
         }

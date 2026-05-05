@@ -346,7 +346,6 @@ export default function Profile() {
 
   const tabs = [
     "Proyectos",
-    "Productos",
     "Servicios",
     "Locales",
     "Eventos",

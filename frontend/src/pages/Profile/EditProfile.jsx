@@ -69,18 +69,44 @@ export default function EditProfile() {
   };
 
   const handleSave = async () => {
+    const toNullIfBlank = (value) => {
+      if (value == null) return null;
+      const trimmed = String(value).trim();
+      return trimmed === "" ? null : trimmed;
+    };
+
+    const profileData = {
+      publicName: `${form.nombre} ${form.apellidos}`.trim(),
+      bio: toNullIfBlank(form.bio),
+      location: toNullIfBlank(form.location),
+      twitter: toNullIfBlank(form.twitter),
+      instagram: toNullIfBlank(form.instagram),
+      linkedin: toNullIfBlank(form.linkedin),
+      experience: toNullIfBlank(form.experience),
+      calendarUrl: toNullIfBlank(form.calendarUrl),
+    };
+
+    const lengthRules = [
+      { key: "publicName", max: 100, label: "Nombre completo" },
+      { key: "bio", max: 1000, label: "Bio" },
+      { key: "location", max: 100, label: "Ubicación" },
+      { key: "linkedin", max: 255, label: "LinkedIn" },
+      { key: "instagram", max: 255, label: "Instagram" },
+      { key: "twitter", max: 255, label: "Twitter" },
+      { key: "experience", max: 255, label: "Experiencia" },
+      { key: "calendarUrl", max: 500, label: "URL de calendario" },
+    ];
+
+    for (const rule of lengthRules) {
+      const value = profileData[rule.key];
+      if (value && value.length > rule.max) {
+        alert(`${rule.label} supera el máximo de ${rule.max} caracteres.`);
+        return;
+      }
+    }
+
     setSaving(true);
     try {
-      const profileData = {
-        publicName: `${form.nombre} ${form.apellidos}`.trim(),
-        bio: form.bio,
-        location: form.location,
-        twitter: form.twitter,
-        instagram: form.instagram,
-        linkedin: form.linkedin,
-        experience: form.experience,
-        calendarUrl: form.calendarUrl,
-      };
       await updateProfile(user.id, profileData);
       navigate("/profile");
     } catch (error) {
