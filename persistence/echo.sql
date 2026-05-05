@@ -233,3 +233,25 @@ CREATE TABLE dispute_messages (
     FOREIGN KEY (dispute_id) REFERENCES disputes(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE item_services (
+    id              INT AUTO_INCREMENT PRIMARY KEY,
+    item_id         INT NOT NULL UNIQUE,
+    name            VARCHAR(150) NOT NULL,
+    description     TEXT,
+    delivery_time   INT NOT NULL,
+    category        VARCHAR(100) NOT NULL,
+    price           DOUBLE NOT NULL,
+    cover_image_url VARCHAR(500),
+    creator_id      INT NOT NULL,
+    FOREIGN KEY (item_id)    REFERENCES items(id)   ON DELETE CASCADE,
+    FOREIGN KEY (creator_id) REFERENCES users(id)   ON DELETE CASCADE
+);
+
+CREATE TABLE item_service_projects (
+    service_id INT NOT NULL,
+    project_id INT NOT NULL,
+    PRIMARY KEY (service_id, project_id),
+    FOREIGN KEY (service_id) REFERENCES item_services(id) ON DELETE CASCADE,
+    FOREIGN KEY (project_id) REFERENCES item_projects(id)      ON DELETE CASCADE
+);

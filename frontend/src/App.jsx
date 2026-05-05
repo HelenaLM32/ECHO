@@ -28,6 +28,10 @@ import PrivacyPolicy from './pages/Legal/PrivacyPolicy';
 import TermsAndConditions from './pages/Legal/TermsAndConditions';
 import CookiesPolicy from './pages/Legal/CookiesPolicy';
 
+// Rutas de servicios
+import ServiceCreate from './pages/Profile/ServiceCreate';
+import ServiceEdit from './pages/Profile/ServiceEdit';
+
 export default function App() {
   return (
     <AuthProvider>
@@ -98,6 +102,18 @@ export default function App() {
         <Route path="/project/:id" element={
           <ProtectedRoute>
             <ProjectView />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/profile/services/new" element={
+          <ProtectedRoute>
+            <ServiceCreate />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/profile/services/:id/edit" element={
+          <ProtectedRoute>
+            <ServiceEdit />
           </ProtectedRoute>
         } />
 

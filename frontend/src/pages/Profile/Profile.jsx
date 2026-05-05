@@ -24,6 +24,7 @@ import ProjectView from "../../pages/ItemProyect/ProjectView";
 import Footer from "../../components/Footer/Footer";
 import DetailModal from "../../components/DetailModal/DetailModal";
 import ReviewsModal from "../../components/ReviewsModal/ReviewsModal";
+import ServiceCard from "../../components/services/ServiceCard";
 
 import linkedinIcon from "../../assets/icons8-linkedin-24.png";
 import twitterIcon from "../../assets/icons8-x-24.png";
@@ -182,6 +183,17 @@ export default function Profile() {
     } catch (err) { alert(err.message); }
   };
 
+  const handleDeleteService = async (id) => {
+    if (!confirm("¿Eliminar este servicio?")) return;
+    try {
+      const token = sessionStorage.getItem('token');
+      await deleteService(id, token);
+      setServices((prev) => prev.filter((s) => s.id !== id));
+    } catch (err) {
+      alert("Error al eliminar el servicio: " + err.message);
+    }
+  };
+
   const handleOpenReviews = () => {
     getReviewsByUser(targetId)
       .then((data) => { setReviews(data); setShowReviews(true); })
@@ -334,6 +346,33 @@ export default function Profile() {
                   </div>
                 )}
               </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderServices = () => {
+    if (itemsLoading.services) return <div className="empty-state">Cargando...</div>;
+    return (
+      <div>
+        {isOwnProfile && (
+          <button className="create-tab-btn" onClick={() => navigate("/profile/services/new")}>
+            Crear servicio
+          </button>
+        )}
+        {services.length === 0 ? (
+          <div className="empty-state">Sin servicios registrados</div>
+        ) : (
+          <div className="items-grid">
+            {services.map((service) => (
+              <ServiceCard
+                key={service.id}
+                service={service}
+                onEdit={(id) => navigate(`/profile/services/${id}/edit`)}
+                onDelete={(id) => handleDeleteService(id)}
+              />
             ))}
           </div>
         )}
@@ -502,7 +541,7 @@ export default function Profile() {
             {activeTab === "Productos" && renderItemGrid(products, itemsLoading.products, "Productos")}
 
             {/* Servicios */}
-            {activeTab === "Servicios" && renderItemGrid(services, itemsLoading.services, "Servicios")}
+            {activeTab === "Servicios" && renderServices()}
 
             {/* Locales */}
             {activeTab === "Locales" && renderVenues()}
