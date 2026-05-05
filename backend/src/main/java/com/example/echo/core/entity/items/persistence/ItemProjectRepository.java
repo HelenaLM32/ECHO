@@ -11,6 +11,8 @@ public interface ItemProjectRepository {
 
     List<ItemProjectDTO> findAll();
 
+    List<ItemProjectDTO> findAllById(Iterable<Integer> ids);
+
     List<ItemProjectDTO> findByItemCreatorId(Integer creatorId);
 
     Optional<ItemProjectDTO> findBySlug(String slug);

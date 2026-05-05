@@ -186,23 +186,9 @@
     color: #000;
 }
 
-.pf-comment-time,
-.pf-reply-btn {
+.pf-comment-time {
     color: #666;
     font-size: 0.9rem;
-}
-
-.pf-reply-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    margin: 0;
-    color: #666;
-}
-
-.pf-reply-btn:hover {
-    color: #000;
 }
 
 .pf-comment-delete-btn {

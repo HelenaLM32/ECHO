@@ -1,0 +1,126 @@
+@import '../../styles/variables.css';
+
+.service-form {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 40px;
+  border-radius: 24px;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--black);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--gray-stroke);
+  border-radius: 12px;
+  font-size: 15px;
+  background-color: var(--true-white);
+  color: var(--black);
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--orange);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-group input[type="file"] {
+  padding: 10px;
+  border: 2px dashed var(--gray-stroke);
+  cursor: pointer;
+}
+
+.form-group input[type="file"]:hover {
+  border-color: var(--orange);
+}
+
+.image-preview {
+  margin-top: 16px;
+  padding: 16px;
+  background-color: var(--gray);
+  border-radius: 12px;
+}
+
+.image-preview p {
+  margin: 0 0 12px 0;
+  font-size: 13px;
+  color: var(--black-secondary);
+}
+
+.image-preview img {
+  max-width: 200px;
+  max-height: 150px;
+  border-radius: 8px;
+  display: block;
+}
+
+.form-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--gray-stroke);
+}
+
+.form-actions button {
+  padding: 14px 28px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.form-actions button[type="submit"] {
+  background-color: var(--orange);
+  color: var(--true-white);
+}
+
+.form-actions button[type="submit"]:hover {
+  background-color: var(--orange-secondary);
+}
+
+.form-actions button[type="button"] {
+  background-color: var(--gray);
+  color: var(--black);
+}
+
+.form-actions button[type="button"]:hover {
+  background-color: var(--gray-dark);
+}
+
+@media (max-width: 768px) {
+  .service-form {
+    padding: 24px;
+    margin: 16px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}
