@@ -1,5 +1,7 @@
 package com.example.echo.core.entity.services.appservices;
 
+import com.example.echo.core.entity.categories.dto.CategoryDTO;
+import com.example.echo.core.entity.categories.persistence.CategoryRepository;
 import com.example.echo.core.entity.items.dto.ItemDTO;
 import com.example.echo.core.entity.items.dto.ItemProjectDTO;
 import com.example.echo.core.entity.items.persistence.ItemRepository;
@@ -21,13 +23,16 @@ public class ItemServiceService {
     private final ItemServiceRepository itemServiceRepository;
     private final ItemRepository itemRepository;
     private final com.example.echo.core.entity.items.persistence.ItemProjectRepository projectRepository;
+    private final CategoryRepository categoryRepository;
 
     public ItemServiceService(ItemServiceRepository itemServiceRepository,
                               ItemRepository itemRepository,
-                              com.example.echo.core.entity.items.persistence.ItemProjectRepository projectRepository) {
+                              com.example.echo.core.entity.items.persistence.ItemProjectRepository projectRepository,
+                              CategoryRepository categoryRepository) {
         this.itemServiceRepository = itemServiceRepository;
         this.itemRepository = itemRepository;
         this.projectRepository = projectRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Transactional
@@ -56,7 +61,12 @@ public class ItemServiceService {
         item.setDescription(request.getDescription());
         item.setBasePrice(request.getPrice());
         item.setItemType("SERVICE");
+        item.setCategoryId(request.getCategoryId());
         item = itemRepository.save(item);
+
+        // Get category name for ItemService
+        CategoryDTO category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("Category not found"));
 
         // Create ItemService
         ItemService itemService = new ItemService();
@@ -64,7 +74,7 @@ public class ItemServiceService {
         itemService.setName(request.getName());
         itemService.setDescription(request.getDescription());
         itemService.setDeliveryDuration(request.getDeliveryDuration());
-        itemService.setCategory(request.getCategory());
+        itemService.setCategory(category.getName());
         itemService.setPrice(request.getPrice());
         itemService.setCoverImageUrl(request.getCoverImageUrl());
         itemService.setCreator(creator);
@@ -107,12 +117,25 @@ public class ItemServiceService {
             }
         }
 
+        // Get category name for ItemService
+        CategoryDTO category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("Category not found"));
+
+        // Update ItemService fields
         itemService.setName(request.getName());
         itemService.setDescription(request.getDescription());
         itemService.setDeliveryDuration(request.getDeliveryDuration());
-        itemService.setCategory(request.getCategory());
+        itemService.setCategory(category.getName());
         itemService.setPrice(request.getPrice());
         itemService.setCoverImageUrl(request.getCoverImageUrl());
+
+        // Update associated Item in cascade (shared fields)
+        ItemDTO item = itemService.getItem();
+        item.setTitle(request.getName());
+        item.setDescription(request.getDescription());
+        item.setBasePrice(request.getPrice());
+        item.setCategoryId(request.getCategoryId());
+        itemRepository.save(item);
 
         if (request.getProjectIds() != null) {
             Set<ItemProjectDTO> projects = request.getProjectIds().stream()
@@ -135,8 +158,14 @@ public class ItemServiceService {
             throw new SecurityException("Not authorized");
         }
 
+        // Get the associated item before deleting the service
+        Integer itemId = itemService.getItem().getId();
+        
+        // Delete the service first
         itemServiceRepository.delete(itemService);
-        // Item will be deleted in cascade
+        
+        // Delete the associated item in cascade
+        itemRepository.deleteById(itemId);
     }
 
     public ItemServiceResponse getById(Long id) {
@@ -164,6 +193,8 @@ public class ItemServiceService {
         response.setDescription(itemService.getDescription());
         response.setDeliveryDuration(itemService.getDeliveryDuration());
         response.setCategory(itemService.getCategory());
+        response.setCategoryId(itemService.getItem().getCategoryId());
+        response.setPrice(itemService.getPrice());
         response.setCoverImageUrl(itemService.getCoverImageUrl());
         response.setCreatorId(itemService.getCreator().getId().longValue());
 

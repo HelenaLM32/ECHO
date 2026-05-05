@@ -29,8 +29,8 @@ import TermsAndConditions from './pages/Legal/TermsAndConditions';
 import CookiesPolicy from './pages/Legal/CookiesPolicy';
 
 // Rutas de servicios
-import ServiceCreate from './pages/Profile/ServiceCreate';
-import ServiceEdit from './pages/Profile/ServiceEdit';
+import ServiceCreate from './pages/Services/ServiceCreate';
+import ServiceEdit from './pages/Services/ServiceEdit';
 
 export default function App() {
   return (

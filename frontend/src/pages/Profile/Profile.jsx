@@ -10,6 +10,7 @@ import {
 } from "../../services/profile";
 import { getVenuesByUser, deleteVenue } from "../../services/venues";
 import { getEventsByUser, deleteEvent } from "../../services/events";
+import { deleteService } from "../../services/servicesApi";
 import { getProjectsByUserId } from "../../services/projects";
 import { getAverageByUser, getReviewsByUser } from "../../services/reviews";
 import {
@@ -24,7 +25,7 @@ import ProjectView from "../../pages/ItemProyect/ProjectView";
 import Footer from "../../components/Footer/Footer";
 import DetailModal from "../../components/DetailModal/DetailModal";
 import ReviewsModal from "../../components/ReviewsModal/ReviewsModal";
-import ServiceCard from "../../components/services/ServiceCard";
+import ServiceCard from "../../components/ServiceCard/ServiceCard";
 
 import linkedinIcon from "../../assets/icons8-linkedin-24.png";
 import twitterIcon from "../../assets/icons8-x-24.png";
@@ -110,7 +111,13 @@ export default function Profile() {
           break;
         case "Servicios":
           setItemsLoading(p => ({ ...p, services: true }));
-          try { setServices(await getProfileServices(targetId)); } catch { setServices([]); }
+          try { 
+            const servicesData = await getProfileServices(targetId);
+            console.log('Services data from API:', servicesData);
+            setServices(servicesData); 
+          } catch { 
+            setServices([]); 
+          }
           setItemsLoading(p => ({ ...p, services: false }));
           break;
         case "Locales":
@@ -365,13 +372,15 @@ export default function Profile() {
         {services.length === 0 ? (
           <div className="empty-state">Sin servicios registrados</div>
         ) : (
-          <div className="items-grid">
+          <div className="projects-grid">
             {services.map((service) => (
               <ServiceCard
                 key={service.id}
                 service={service}
-                onEdit={(id) => navigate(`/profile/services/${id}/edit`)}
-                onDelete={(id) => handleDeleteService(id)}
+                profile={profile}
+                onEdit={isOwnProfile ? (id) => navigate(`/profile/services/${id}/edit`) : null}
+                onDelete={isOwnProfile ? (id) => handleDeleteService(id) : null}
+                small={true}
               />
             ))}
           </div>

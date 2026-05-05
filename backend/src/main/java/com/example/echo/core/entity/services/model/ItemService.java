@@ -24,7 +24,7 @@ public class ItemService {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "delivery_time", nullable = false)
+    @Column(name = "delivery_duration", nullable = false)
     private Integer deliveryDuration;
 
     @Column(nullable = false, length = 100)

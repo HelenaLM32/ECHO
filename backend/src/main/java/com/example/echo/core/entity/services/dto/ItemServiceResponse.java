@@ -10,6 +10,7 @@ public class ItemServiceResponse {
     private String description;
     private Integer deliveryDuration;
     private String category;
+    private Integer categoryId;
     private Double price;
     private String coverImageUrl;
     private Long creatorId;
@@ -88,6 +89,14 @@ public class ItemServiceResponse {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
     }
 
     public Double getPrice() {

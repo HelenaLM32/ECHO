@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createService, updateService, deleteService, getMyServices, getServiceById } from '../services/servicesApi.js';
+import { fetchWithToken } from '../services/config.js';
 
 export const useServices = () => {
   const [services, setServices] = useState([]);
@@ -26,16 +27,60 @@ export const useServices = () => {
     }
   };
 
+  const uploadImage = async (file) => {
+    if (!file) return null;
+    
+    const uploadData = new FormData();
+    uploadData.append('file', file);
+    uploadData.append('subDir', 'images');
+    
+    const response = await fetchWithToken('/uploads', {
+      method: 'POST',
+      body: uploadData,
+    });
+    
+    if (!response.ok) {
+      throw new Error('Error subiendo imagen');
+    }
+    
+    return await response.text();
+  };
+
   const addService = async (serviceData) => {
     setLoading(true);
     try {
-      const response = await createService(serviceData, token);
+      // Si hay un archivo de imagen, subirlo primero
+      let coverImageUrl = serviceData.coverImageUrl || null;
+      if (serviceData.coverImageFile) {
+        coverImageUrl = await uploadImage(serviceData.coverImageFile);
+      }
+      
+      // Preparar datos para enviar (sin el archivo)
+      const dataToSend = {
+        name: serviceData.name,
+        description: serviceData.description,
+        deliveryDuration: serviceData.deliveryDuration,
+        categoryId: serviceData.categoryId,
+        price: serviceData.price,
+        coverImageUrl: coverImageUrl,
+        projectIds: serviceData.projectIds
+      };
+
+      // Debug
+      console.log('useServices - Sending data to API:', dataToSend);
+
+      const response = await createService(dataToSend, token);
+      
+      console.log('useServices - Response status:', response.status);
+      
       if (response.ok) {
         const newService = await response.json();
+        console.log('useServices - Response data:', newService);
         setServices(prev => [...prev, newService]);
         return newService;
       }
       const errorText = await response.text();
+      console.error('useServices - Error response:', errorText);
       throw new Error(errorText || 'Error creating service');
     } catch (err) {
       setError(err.message);
@@ -48,7 +93,24 @@ export const useServices = () => {
   const editService = async (id, serviceData) => {
     setLoading(true);
     try {
-      const response = await updateService(id, serviceData, token);
+      // Si hay un archivo de imagen nuevo, subirlo primero
+      let coverImageUrl = serviceData.coverImageUrl || null;
+      if (serviceData.coverImageFile) {
+        coverImageUrl = await uploadImage(serviceData.coverImageFile);
+      }
+      
+      // Preparar datos para enviar (sin el archivo)
+      const dataToSend = {
+        name: serviceData.name,
+        description: serviceData.description,
+        deliveryDuration: serviceData.deliveryDuration,
+        categoryId: serviceData.categoryId,
+        price: serviceData.price,
+        coverImageUrl: coverImageUrl,
+        projectIds: serviceData.projectIds
+      };
+
+      const response = await updateService(id, dataToSend, token);
       if (response.ok) {
         const updatedService = await response.json();
         setServices(prev => prev.map(s => s.id === id ? updatedService : s));

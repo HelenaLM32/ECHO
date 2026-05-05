@@ -16,9 +16,8 @@ public class ItemServiceRequest {
     @NotNull
     private Integer deliveryDuration;
 
-    @NotBlank
-    @Size(max = 100)
-    private String category;
+    @NotNull
+    private Integer categoryId;
 
     @NotNull
     @DecimalMin(value = "0.01", inclusive = false)
@@ -54,12 +53,12 @@ public class ItemServiceRequest {
         this.deliveryDuration = deliveryDuration;
     }
 
-    public String getCategory() {
-        return category;
+    public Integer getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
     }
 
     public Double getPrice() {
