@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./SectionsList.css";
 import { fetchSections } from "../../services/sections";
 
-function SectionsList({ onSelect }) {
+function SectionsList({ onSelect, selectedCategoryId = null }) {
 	const [sections, setSections] = useState([]);
 	const [loading, setLoading] = useState(true);
 
@@ -36,8 +36,9 @@ function SectionsList({ onSelect }) {
 				<div key={s.id} className="section-item">
 					<button
 						type="button"
-						className="section-card"
+						className={`section-card ${selectedCategoryId === s.id ? "is-active" : ""}`}
 						aria-label={`Ir a sección ${s.name}`}
+						aria-pressed={selectedCategoryId === s.id}
 						onClick={() => handleSelect(s)}
 					>
 						<span className="section-title">{s.name}</span>

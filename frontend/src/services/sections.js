@@ -16,7 +16,16 @@ export async function fetchSections() {
         const data = await res.json();
 
         return Array.isArray(data)
-            ? data.map((c) => ({ id: c.id, name: c.name }))
+            ? data
+                .filter((c) => c && c.id != null && c.name)
+                .filter((c) => c.isActive !== false)
+                .map((c) => ({
+                    id: c.id,
+                    name: c.name,
+                    slug: c.slug,
+                    description: c.description || "",
+                    iconUrl: c.iconUrl || "",
+                }))
             : [];
     } catch (err) {
         console.error("fetchSections error:", err.message);
