@@ -1,10 +1,8 @@
 package com.example.echo.presentation.api.rest;
 
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
-import com.example.echo.core.entity.user.dto.UserDTO;
-import com.example.echo.core.entity.user.persistence.UserRepository;
 import com.example.echo.core.entity.venues.appservices.VenueService;
-import com.example.echo.security.JwtUtil;
+import com.example.echo.security.AuthenticatedUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +18,7 @@ public class RestVenueController {
     @Autowired
     private VenueService venueService;
     @Autowired
-    private UserRepository userRepository;
+    private AuthenticatedUserService authenticatedUserService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getAll() {
@@ -58,10 +56,9 @@ public class RestVenueController {
             @RequestParam(value = "email", required = false) String email,
             @RequestParam(value = "sitioWeb", required = false) String sitioWeb,
             @RequestParam(value = "horario", required = false) String horario,
-            @RequestParam(value = "images", required = false) List<MultipartFile> images,
-            @RequestHeader("Authorization") String authHeader) {
+            @RequestParam(value = "images", required = false) List<MultipartFile> images) {
         try {
-            Integer userId = getUserIdFromToken(authHeader);
+            Integer userId = authenticatedUserService.getRequiredUserId();
             return ResponseEntity.ok(venueService.createVenue(
                     userId, name, address, capacity, telefono, email, sitioWeb, horario, images));
         } catch (ServiceException e) {
@@ -79,10 +76,9 @@ public class RestVenueController {
             @RequestParam(value = "email", required = false) String email,
             @RequestParam(value = "sitioWeb", required = false) String sitioWeb,
             @RequestParam(value = "horario", required = false) String horario,
-            @RequestParam(value = "images", required = false) List<MultipartFile> images,
-            @RequestHeader("Authorization") String authHeader) {
+            @RequestParam(value = "images", required = false) List<MultipartFile> images) {
         try {
-            Integer userId = getUserIdFromToken(authHeader);
+            Integer userId = authenticatedUserService.getRequiredUserId();
             return ResponseEntity.ok(venueService.updateVenue(
                     id, userId, name, address, capacity, telefono, email, sitioWeb, horario, images));
         } catch (ServiceException e) {
@@ -91,27 +87,13 @@ public class RestVenueController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(
-            @PathVariable Integer id,
-            @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<String> delete(@PathVariable Integer id) {
         try {
-            Integer userId = getUserIdFromToken(authHeader);
+            Integer userId = authenticatedUserService.getRequiredUserId();
             venueService.deleteById(id, userId);
             return ResponseEntity.ok("{\"message\":\"Local eliminado\"}");
         } catch (ServiceException e) {
             return ResponseEntity.status(403).body(e.getMessage());
         }
-    }
-
-    private Integer getUserIdFromToken(String authHeader) throws ServiceException {
-        if (authHeader == null || !authHeader.startsWith("Bearer "))
-            throw new ServiceException("No autorizado");
-        String token = authHeader.replace("Bearer ", "");
-        if (!JwtUtil.validateToken(token))
-            throw new ServiceException("Token inválido");
-        String email = JwtUtil.extractEmail(token);
-        UserDTO user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
-        return user.getId();
     }
 }

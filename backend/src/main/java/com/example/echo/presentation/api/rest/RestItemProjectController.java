@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import com.example.echo.core.entity.items.appservices.ItemProjectService;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
+import com.example.echo.core.entity.user.dto.UserDTO;
+import com.example.echo.security.AuthenticatedUserService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -23,7 +25,7 @@ public class RestItemProjectController {
     @Autowired
     com.fasterxml.jackson.databind.ObjectMapper mapper;
     @Autowired
-    com.example.echo.core.entity.user.persistence.UserRepository userRepository;
+    AuthenticatedUserService authenticatedUserService;
     @Autowired
     com.example.echo.infrastructure.persistence.jpa.JpaProjectLikeRepository projectLikeRepo;
 
@@ -66,18 +68,9 @@ public class RestItemProjectController {
     }
 
     @PostMapping(value = "/{id}/likes", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> toggleLike(@PathVariable Integer id,
-            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+    public ResponseEntity<String> toggleLike(@PathVariable Integer id) {
         try {
-            if (authHeader == null || !authHeader.startsWith("Bearer "))
-                return ResponseEntity.status(401).body("No autorizado");
-            String token = authHeader.replace("Bearer ", "");
-            if (!com.example.echo.security.JwtUtil.validateToken(token))
-                return ResponseEntity.status(401).body("Token inválido");
-            String email = com.example.echo.security.JwtUtil.extractEmail(token);
-            com.example.echo.core.entity.user.dto.UserDTO user = userRepository.findByEmail(email).orElse(null);
-            if (user == null)
-                return ResponseEntity.status(401).body("Usuario no encontrado");
+            UserDTO user = authenticatedUserService.getRequiredUser();
             return ResponseEntity.ok(projectService.toggleLikeAndGetByIdToJson(id, user.getId()));
         } catch (ServiceException e) {
             return ResponseEntity.status(400).body(e.getMessage());
@@ -85,18 +78,9 @@ public class RestItemProjectController {
     }
 
     @PostMapping(value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addComment(@PathVariable Integer id, @RequestBody String body,
-            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+    public ResponseEntity<String> addComment(@PathVariable Integer id, @RequestBody String body) {
         try {
-            if (authHeader == null || !authHeader.startsWith("Bearer "))
-                return ResponseEntity.status(401).body("No autorizado");
-            String token = authHeader.replace("Bearer ", "");
-            if (!com.example.echo.security.JwtUtil.validateToken(token))
-                return ResponseEntity.status(401).body("Token inválido");
-            String email = com.example.echo.security.JwtUtil.extractEmail(token);
-            com.example.echo.core.entity.user.dto.UserDTO user = userRepository.findByEmail(email).orElse(null);
-            if (user == null)
-                return ResponseEntity.status(401).body("Usuario no encontrado");
+            UserDTO user = authenticatedUserService.getRequiredUser();
             String commentText = new com.fasterxml.jackson.databind.ObjectMapper().readTree(body).path("comment")
                     .asText(null);
             return ResponseEntity.ok(projectService.addCommentAndGetByIdToJson(id, user.getId(), commentText));
@@ -117,18 +101,9 @@ public class RestItemProjectController {
     }
 
     @DeleteMapping(value = "/{projectId}/comments/{commentId}")
-    public ResponseEntity<String> deleteComment(@PathVariable Integer projectId, @PathVariable Long commentId,
-            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+    public ResponseEntity<String> deleteComment(@PathVariable Integer projectId, @PathVariable Long commentId) {
         try {
-            if (authHeader == null || !authHeader.startsWith("Bearer "))
-                return ResponseEntity.status(401).body("No autorizado");
-            String token = authHeader.replace("Bearer ", "");
-            if (!com.example.echo.security.JwtUtil.validateToken(token))
-                return ResponseEntity.status(401).body("Token inválido");
-            String email = com.example.echo.security.JwtUtil.extractEmail(token);
-            com.example.echo.core.entity.user.dto.UserDTO user = userRepository.findByEmail(email).orElse(null);
-            if (user == null)
-                return ResponseEntity.status(401).body("Usuario no encontrado");
+            UserDTO user = authenticatedUserService.getRequiredUser();
             return ResponseEntity.ok(projectService.deleteCommentAndGetByIdToJson(projectId, commentId, user.getId()));
         } catch (ServiceException e) {
             return ResponseEntity.status(400).body(e.getMessage());
@@ -136,19 +111,12 @@ public class RestItemProjectController {
     }
 
     @GetMapping(value = "/{id}/likes/status", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> likeStatus(@PathVariable Integer id,
-            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+    public ResponseEntity<String> likeStatus(@PathVariable Integer id) {
         try {
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            UserDTO user = authenticatedUserService.getCurrentUser().orElse(null);
+            if (user == null) {
                 return ResponseEntity.ok("{\"liked\":false}");
             }
-            String token = authHeader.replace("Bearer ", "");
-            if (!com.example.echo.security.JwtUtil.validateToken(token))
-                return ResponseEntity.ok("{\"liked\":false}");
-            String email = com.example.echo.security.JwtUtil.extractEmail(token);
-            com.example.echo.core.entity.user.dto.UserDTO user = userRepository.findByEmail(email).orElse(null);
-            if (user == null)
-                return ResponseEntity.ok("{\"liked\":false}");
             boolean exists = projectLikeRepo.existsByUserIdAndProjectId(user.getId(), id);
             return ResponseEntity.ok("{\"liked\":" + (exists ? "true" : "false") + "}");
         } catch (Exception e) {
@@ -175,17 +143,9 @@ public class RestItemProjectController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Integer id, @RequestHeader(value = "Authorization", required = false) String authHeader) {
+    public ResponseEntity<String> delete(@PathVariable Integer id) {
         try {
-            if (authHeader == null || !authHeader.startsWith("Bearer "))
-                return ResponseEntity.status(401).body("No autorizado");
-            String token = authHeader.replace("Bearer ", "");
-            if (!com.example.echo.security.JwtUtil.validateToken(token))
-                return ResponseEntity.status(401).body("Token inválido");
-            String email = com.example.echo.security.JwtUtil.extractEmail(token);
-            com.example.echo.core.entity.user.dto.UserDTO user = userRepository.findByEmail(email).orElse(null);
-            if (user == null)
-                return ResponseEntity.status(401).body("Usuario no encontrado");
+            UserDTO user = authenticatedUserService.getRequiredUser();
             boolean isAdmin = user.getRoles().stream().anyMatch(r -> r.getName().equals("ADMIN"));
             JsonNode projectNode = mapper.readTree(projectService.getByIdToJson(id));
             Integer creatorId = projectNode.path("item").path("creatorId").isInt() ? projectNode.path("item").path("creatorId").asInt() : null;

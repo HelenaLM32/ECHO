@@ -1,12 +1,16 @@
+import { clearAuthSession, getAuthToken } from "./session";
+
 export const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 export const fetchWithToken = async (endpoint, options = {}) => {
-  const token = sessionStorage.getItem("token");
+  const token = getAuthToken();
+  const isFormData = options.body instanceof FormData;
 
-  const headers = {
-    "Content-Type": "application/json",
-    ...options.headers,
-  };
+  const headers = { ...options.headers };
+
+  if (!isFormData && !headers["Content-Type"]) {
+    headers["Content-Type"] = "application/json";
+  }
 
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
@@ -18,8 +22,7 @@ export const fetchWithToken = async (endpoint, options = {}) => {
   });
 
   if (res.status === 401) {
-    sessionStorage.removeItem("user");
-    sessionStorage.removeItem("token");
+    clearAuthSession();
     window.location.href = "/login";
     throw new Error("Sesión expirada");
   }

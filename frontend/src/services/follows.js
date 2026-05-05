@@ -1,4 +1,4 @@
-import { API_URL } from "./config";
+import { API_URL, fetchWithToken } from "./config";
 
 export const getFollowStats = async (userId) => {
  const response = await fetch(`${API_URL}/follows/stats/${userId}`);
@@ -7,10 +7,7 @@ export const getFollowStats = async (userId) => {
 };
 
 export const checkIsFollowing = async (targetId) => {
- const token = sessionStorage.getItem("token");
- const response = await fetch(`${API_URL}/follows/check/${targetId}`, {
- headers: { Authorization: `Bearer ${token}` },
- });
+ const response = await fetchWithToken(`/follows/check/${targetId}`);
  if (!response.ok) return { following: false };
  return response.json();
 };
@@ -26,13 +23,8 @@ const parseResponse = async (res) => {
 };
 
 export const followUser = async (targetId) => {
- const token = sessionStorage.getItem("token");
- const response = await fetch(`${API_URL}/follows/${targetId}`, {
+ const response = await fetchWithToken(`/follows/${targetId}`, {
  method: "POST",
- headers: {
- Authorization: `Bearer ${token}`,
- "Content-Type": "application/json",
- },
  });
  if (!response.ok) {
  const text = await response.text();
@@ -42,13 +34,8 @@ export const followUser = async (targetId) => {
 };
 
 export const unfollowUser = async (targetId) => {
- const token = sessionStorage.getItem("token");
- const response = await fetch(`${API_URL}/follows/${targetId}`, {
+ const response = await fetchWithToken(`/follows/${targetId}`, {
  method: "DELETE",
- headers: {
- Authorization: `Bearer ${token}`,
- "Content-Type": "application/json",
- },
  });
  if (!response.ok) {
  const text = await response.text();

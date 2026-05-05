@@ -1,4 +1,4 @@
-import { API_URL } from "./config";
+import { API_URL, fetchWithToken } from "./config";
 
 export const getEventsByUser = async (userId) => {
   const res = await fetch(`${API_URL}/events/user/${userId}`);
@@ -7,8 +7,6 @@ export const getEventsByUser = async (userId) => {
 };
 
 export const createEvent = async (data, imgFile) => {
-  const token = sessionStorage.getItem("token");
-
   const formData = new FormData();
   formData.append("venueId",   data.venueId);
   formData.append("startDate", data.startDate);
@@ -20,9 +18,8 @@ export const createEvent = async (data, imgFile) => {
   if (data.linkEntradas)                 formData.append("linkEntradas", data.linkEntradas);
   if (imgFile)                           formData.append("img",          imgFile);
 
-  const res = await fetch(`${API_URL}/events`, {
+  const res = await fetchWithToken(`/events`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
     body: formData,
   });
 
@@ -34,8 +31,6 @@ export const createEvent = async (data, imgFile) => {
 };
 
 export const updateEvent = async (eventId, data, imgFile) => {
-  const token = sessionStorage.getItem("token");
-
   const formData = new FormData();
   if (data.title)                        formData.append("title",        data.title);
   if (data.description !== undefined)    formData.append("description",  data.description);
@@ -46,9 +41,8 @@ export const updateEvent = async (eventId, data, imgFile) => {
   if (data.linkEntradas)                 formData.append("linkEntradas", data.linkEntradas);
   if (imgFile)                           formData.append("img",          imgFile);
 
-  const res = await fetch(`${API_URL}/events/${eventId}`, {
+  const res = await fetchWithToken(`/events/${eventId}`, {
     method: "PUT",
-    headers: { Authorization: `Bearer ${token}` },
     body: formData,
   });
 
@@ -60,20 +54,15 @@ export const updateEvent = async (eventId, data, imgFile) => {
 };
 
 export const deleteEvent = async (eventId) => {
-  const token = sessionStorage.getItem("token");
-  const res = await fetch(`${API_URL}/events/${eventId}`, {
+  const res = await fetchWithToken(`/events/${eventId}`, {
     method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error("Error al eliminar evento");
   return res.json();
 };
 
 export const getEventById = async (eventId) => {
-  const token = sessionStorage.getItem("token");
-  const res = await fetch(`${API_URL}/events/${eventId}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  const res = await fetchWithToken(`/events/${eventId}`);
   if (!res.ok) throw new Error("Error al cargar el evento");
   return res.json();
 };

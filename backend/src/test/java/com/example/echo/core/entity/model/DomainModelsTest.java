@@ -138,7 +138,7 @@ class DomainModelsTest {
     }
 
     @Test
-    void profileGetInstanceSetsDefaults() {
+    void profileGetInstanceSetsDefaults() throws Exception {
         Profile profile = Profile.getInstance(1, "pepe");
         assertEquals(1, profile.getUserId());
         assertEquals("pepe", profile.getPublicName());

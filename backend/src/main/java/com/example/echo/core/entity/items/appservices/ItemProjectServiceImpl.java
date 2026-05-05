@@ -9,6 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.echo.core.entity.items.persistence.ItemProjectRepository;
 import com.example.echo.core.entity.items.dto.ItemProjectDTO;
 import com.example.echo.core.entity.items.persistence.ItemRepository;
+import com.example.echo.core.entity.projectcomments.model.ProjectComment;
+import com.example.echo.core.entity.projectcomments.persistence.ProjectCommentRepository;
+import com.example.echo.core.entity.projectlikes.persistence.ProjectLikeRepository;
 import com.example.echo.core.entity.items.dto.ItemDTO;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.Serializer;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.SerializersCatalog;
@@ -198,7 +201,8 @@ public class ItemProjectServiceImpl implements ItemProjectService {
             if (commentText == null || commentText.trim().isEmpty()) {
                 throw new ServiceException("El comentario no puede estar vacío");
             }
-            projectCommentRepo.save(new com.example.echo.core.entity.projectcomments.model.ProjectComment(projectId, userId, commentText.trim()));
+            ProjectComment newComment = new ProjectComment(projectId, userId, commentText.trim());
+            ((ProjectCommentRepository) projectCommentRepo).save(newComment);
             ItemProjectDTO dto = this.getById(projectId);
             dto.setComments((dto.getComments() == null ? 0 : dto.getComments()) + 1);
             projectRepository.save(dto);
@@ -282,7 +286,8 @@ public class ItemProjectServiceImpl implements ItemProjectService {
                 projectRepository.save(dto);
                 likedNow = false;
             } else {
-                projectLikeRepo.save(new com.example.echo.core.entity.projectlikes.model.ProjectLike(userId, projectId));
+                com.example.echo.core.entity.projectlikes.model.ProjectLike newLike = new com.example.echo.core.entity.projectlikes.model.ProjectLike(userId, projectId);
+                ((ProjectLikeRepository) projectLikeRepo).save(newLike);
                 ItemProjectDTO dto = this.getById(projectId);
                 dto.setLikes((dto.getLikes() == null ? 0 : dto.getLikes()) + 1);
                 projectRepository.save(dto);

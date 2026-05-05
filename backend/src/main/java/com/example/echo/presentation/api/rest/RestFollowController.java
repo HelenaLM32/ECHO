@@ -2,9 +2,7 @@ package com.example.echo.presentation.api.rest;
 
 import com.example.echo.core.entity.follows.appservices.FollowService;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
-import com.example.echo.core.entity.user.dto.UserDTO;
-import com.example.echo.core.entity.user.persistence.UserRepository;
-import com.example.echo.security.JwtUtil;
+import com.example.echo.security.AuthenticatedUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,14 +15,12 @@ public class RestFollowController {
     private FollowService followService;
 
     @Autowired
-    private UserRepository userRepository;
+    private AuthenticatedUserService authenticatedUserService;
 
     @PostMapping("/{targetId}")
-    public ResponseEntity<String> follow(
-            @PathVariable Integer targetId,
-            @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<String> follow(@PathVariable Integer targetId) {
         try {
-            Integer followerId = getUserIdFromToken(authHeader);
+            Integer followerId = authenticatedUserService.getRequiredUserId();
             followService.follow(followerId, targetId);
             return ResponseEntity.ok("{\"message\":\"Siguiendo\"}");
         } catch (ServiceException e) {
@@ -33,11 +29,9 @@ public class RestFollowController {
     }
 
     @DeleteMapping("/{targetId}")
-    public ResponseEntity<String> unfollow(
-            @PathVariable Integer targetId,
-            @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<String> unfollow(@PathVariable Integer targetId) {
         try {
-            Integer followerId = getUserIdFromToken(authHeader);
+            Integer followerId = authenticatedUserService.getRequiredUserId();
             followService.unfollow(followerId, targetId);
             return ResponseEntity.ok("{\"message\":\"Has dejado de seguir\"}");
         } catch (ServiceException e) {
@@ -46,11 +40,9 @@ public class RestFollowController {
     }
 
     @GetMapping("/check/{targetId}")
-    public ResponseEntity<String> isFollowing(
-            @PathVariable Integer targetId,
-            @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<String> isFollowing(@PathVariable Integer targetId) {
         try {
-            Integer followerId = getUserIdFromToken(authHeader);
+            Integer followerId = authenticatedUserService.getRequiredUserId();
             boolean following = followService.isFollowing(followerId, targetId);
             return ResponseEntity.ok("{\"following\":" + following + "}");
         } catch (ServiceException e) {
@@ -64,17 +56,5 @@ public class RestFollowController {
         long following = followService.countFollowing(userId);
         return ResponseEntity.ok(
                 "{\"followers\":" + followers + ",\"following\":" + following + "}");
-    }
-
-    private Integer getUserIdFromToken(String authHeader) throws ServiceException {
-        if (authHeader == null || !authHeader.startsWith("Bearer "))
-            throw new ServiceException("No autorizado");
-        String token = authHeader.replace("Bearer ", "");
-        if (!JwtUtil.validateToken(token))
-            throw new ServiceException("Token inválido");
-        String email = JwtUtil.extractEmail(token);
-        UserDTO user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
-        return user.getId();
     }
 }

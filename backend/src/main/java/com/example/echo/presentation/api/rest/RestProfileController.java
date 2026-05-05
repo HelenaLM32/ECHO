@@ -2,10 +2,8 @@ package com.example.echo.presentation.api.rest;
 
 import com.example.echo.core.entity.profile.appservices.ProfileService;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
-import com.example.echo.core.entity.user.dto.UserDTO;
-import com.example.echo.core.entity.user.persistence.UserRepository;
 import com.example.echo.core.entity.items.appservices.ItemService;
-import com.example.echo.security.JwtUtil;
+import com.example.echo.security.AuthenticatedUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,7 +19,7 @@ public class RestProfileController {
     ProfileService profileService;
 
     @Autowired
-    UserRepository userRepository;
+    AuthenticatedUserService authenticatedUserService;
 
     @Autowired
     ItemService itemService;
@@ -73,10 +71,9 @@ public class RestProfileController {
     @PutMapping(value = "/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateProfile(
             @PathVariable Integer userId,
-            @RequestBody String profileJson,
-            @RequestHeader("Authorization") String authHeader) {
+            @RequestBody String profileJson) {
         try {
-            if (!isAuthorized(authHeader, userId)) {
+            if (!authenticatedUserService.isCurrentUser(userId)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");
             }
             return ResponseEntity.ok(profileService.updateFromJson(userId, profileJson));
@@ -90,10 +87,9 @@ public class RestProfileController {
     @PutMapping(value = "/{userId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateAvatar(
             @PathVariable Integer userId,
-            @RequestParam("avatarUrl") MultipartFile file,
-            @RequestHeader("Authorization") String authHeader) {
+            @RequestParam("avatarUrl") MultipartFile file) {
         try {
-            if (!isAuthorized(authHeader, userId))
+            if (!authenticatedUserService.isCurrentUser(userId))
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");
             return ResponseEntity.ok(profileService.updateAvatar(userId, file));
         } catch (ServiceException e) {
@@ -106,10 +102,9 @@ public class RestProfileController {
     @PutMapping(value = "/{userId}/banner", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateBanner(
             @PathVariable Integer userId,
-            @RequestParam("bannerUrl") MultipartFile file,
-            @RequestHeader("Authorization") String authHeader) {
+            @RequestParam("bannerUrl") MultipartFile file) {
         try {
-            if (!isAuthorized(authHeader, userId))
+            if (!authenticatedUserService.isCurrentUser(userId))
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No autorizado");
             return ResponseEntity.ok(profileService.updateBanner(userId, file));
         } catch (ServiceException e) {
@@ -119,15 +114,4 @@ public class RestProfileController {
         }
     }
 
-    private boolean isAuthorized(String authHeader, Integer userId) throws ServiceException {
-        if (authHeader == null || !authHeader.startsWith("Bearer "))
-            return false;
-        String token = authHeader.replace("Bearer ", "");
-        if (!JwtUtil.validateToken(token))
-            return false;
-        String email = JwtUtil.extractEmail(token);
-        UserDTO user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
-        return user.getId().equals(userId);
-    }
 }

@@ -2,9 +2,7 @@ package com.example.echo.presentation.api.rest;
 
 import com.example.echo.core.entity.events.appservices.EventService;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
-import com.example.echo.core.entity.user.dto.UserDTO;
-import com.example.echo.core.entity.user.persistence.UserRepository;
-import com.example.echo.security.JwtUtil;
+import com.example.echo.security.AuthenticatedUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +22,7 @@ public class RestEventController {
     @Autowired
     private EventService eventService;
     @Autowired
-    private UserRepository userRepository;
+    private AuthenticatedUserService authenticatedUserService;
 
     private static final DateTimeFormatter FLEXIBLE_DT = new DateTimeFormatterBuilder()
             .appendPattern("yyyy-MM-dd'T'HH:mm")
@@ -79,10 +77,9 @@ public class RestEventController {
             @RequestParam(value = "precio", required = false) BigDecimal precio,
             @RequestParam(value = "categoria", required = false) String categoria,
             @RequestParam(value = "linkEntradas", required = false) String linkEntradas,
-            @RequestParam(value = "img", required = false) MultipartFile img,
-            @RequestHeader("Authorization") String authHeader) {
+            @RequestParam(value = "img", required = false) MultipartFile img) {
         try {
-            Integer userId = getUserIdFromToken(authHeader);
+            Integer userId = authenticatedUserService.getRequiredUserId();
             LocalDateTime start = parseDate(startDate, "startDate");
             LocalDateTime end = parseDate(endDate, "endDate");
             return ResponseEntity.ok(eventService.createEvent(
@@ -103,10 +100,9 @@ public class RestEventController {
             @RequestParam(value = "precio", required = false) BigDecimal precio,
             @RequestParam(value = "categoria", required = false) String categoria,
             @RequestParam(value = "linkEntradas", required = false) String linkEntradas,
-            @RequestParam(value = "img", required = false) MultipartFile img,
-            @RequestHeader("Authorization") String authHeader) {
+            @RequestParam(value = "img", required = false) MultipartFile img) {
         try {
-            Integer userId = getUserIdFromToken(authHeader);
+            Integer userId = authenticatedUserService.getRequiredUserId();
             return ResponseEntity.ok(eventService.updateEvent(
                     id, userId, title, description, startDate, endDate,
                     precio, categoria, linkEntradas, img));
@@ -116,27 +112,13 @@ public class RestEventController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(
-            @PathVariable Integer id,
-            @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<String> delete(@PathVariable Integer id) {
         try {
-            Integer userId = getUserIdFromToken(authHeader);
+            Integer userId = authenticatedUserService.getRequiredUserId();
             eventService.deleteById(id, userId);
             return ResponseEntity.ok("{\"message\":\"Evento eliminado\"}");
         } catch (ServiceException e) {
             return ResponseEntity.status(403).body(e.getMessage());
         }
-    }
-
-    private Integer getUserIdFromToken(String authHeader) throws ServiceException {
-        if (authHeader == null || !authHeader.startsWith("Bearer "))
-            throw new ServiceException("No autorizado");
-        String token = authHeader.replace("Bearer ", "");
-        if (!JwtUtil.validateToken(token))
-            throw new ServiceException("Token inválido");
-        String email = JwtUtil.extractEmail(token);
-        UserDTO user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
-        return user.getId();
     }
 }

@@ -19,13 +19,8 @@ export const getProfileServices = async (userId) => {
 };
 
 export const updateProfile = async (userId, profileData) => {
-  const token = sessionStorage.getItem("token");
-  const response = await fetch(`${API_URL}/profiles/${userId}`, {
+  const response = await fetchWithToken(`/profiles/${userId}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
     body: JSON.stringify(profileData),
   });
 
@@ -34,13 +29,8 @@ export const updateProfile = async (userId, profileData) => {
 };
 
 export const updateCredentials = async (userId, credentialsData) => {
-  const token = sessionStorage.getItem("token");
-  const response = await fetch(`${API_URL}/users/${userId}/credentials`, {
+  const response = await fetchWithToken(`/users/${userId}/credentials`, {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
     body: JSON.stringify(credentialsData),
   });
 
@@ -52,12 +42,8 @@ export const updateAvatar = async (userId, file) => {
   const formData = new FormData();
   formData.append("avatarUrl", file);
 
-  const token = sessionStorage.getItem("token");
-  const response = await fetch(`${API_URL}/profiles/${userId}/avatar`, {
+  const response = await fetchWithToken(`/profiles/${userId}/avatar`, {
     method: "PUT",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
     body: formData,
   });
 
@@ -69,12 +55,8 @@ export const updateBanner = async (userId, file) => {
   const formData = new FormData();
   formData.append("bannerUrl", file);
 
-  const token = sessionStorage.getItem("token"); 
-  const response = await fetch(`${API_URL}/profiles/${userId}/banner`, {
+  const response = await fetchWithToken(`/profiles/${userId}/banner`, {
     method: "PUT",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
     body: formData,
   });
 
@@ -83,12 +65,8 @@ export const updateBanner = async (userId, file) => {
 };
 
 export const deleteAccount = async (userId) => {
-  const token = sessionStorage.getItem("token");
-  const response = await fetch(`${API_URL}/users/${userId}`, {
+  const response = await fetchWithToken(`/users/${userId}`, {
     method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
   });
   if (!response.ok) throw new Error("Error al eliminar la cuenta");
   return response.json();

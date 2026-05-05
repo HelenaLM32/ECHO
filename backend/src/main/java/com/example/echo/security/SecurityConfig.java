@@ -10,6 +10,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,12 +24,22 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfig {
 
     private final RateLimitingFilter rateLimitingFilter;
+    private final JwtFilter jwtFilter;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final AccessDeniedHandler accessDeniedHandler;
 
     @Value("${app.upload.dir:../uploads}")
     private String uploadDir;
 
-    public SecurityConfig(RateLimitingFilter rateLimitingFilter) {
+    public SecurityConfig(
+            RateLimitingFilter rateLimitingFilter,
+            JwtFilter jwtFilter,
+            AuthenticationEntryPoint authenticationEntryPoint,
+            AccessDeniedHandler accessDeniedHandler) {
         this.rateLimitingFilter = rateLimitingFilter;
+        this.jwtFilter = jwtFilter;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.accessDeniedHandler = accessDeniedHandler;
     }
 
     @Bean
@@ -35,6 +47,9 @@ public class SecurityConfig {
         http.cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
@@ -80,7 +95,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/proyect").authenticated()
 
                         .anyRequest().permitAll())
-                .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
+        .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
