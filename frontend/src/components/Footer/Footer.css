@@ -63,9 +63,9 @@
 	align-items: flex-end;
 }
 
-span {
+/* span {
 	color: var(--white);
-}
+} */
 
 .footer-links-small {
 	color: var(--white);

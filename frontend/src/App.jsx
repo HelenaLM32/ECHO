@@ -27,6 +27,8 @@ import ProjectView from './pages/ItemProyect/ProjectView.jsx';
 import PrivacyPolicy from './pages/Legal/PrivacyPolicy';
 import TermsAndConditions from './pages/Legal/TermsAndConditions';
 import CookiesPolicy from './pages/Legal/CookiesPolicy';
+import Introduction from './pages/Resources/Introduction';
+import AboutUs from './pages/Resources/AboutUs';
 
 // Rutas de servicios
 import ServiceCreate from './pages/Services/ServiceCreate';
@@ -45,6 +47,8 @@ export default function App() {
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/cookies" element={<CookiesPolicy />} />
+        <Route path="/introduccion" element={<Introduction />} />
+        <Route path="/sobre-nosotros" element={<AboutUs />} />
 
         <Route path="/profile" element={
           <ProtectedRoute>

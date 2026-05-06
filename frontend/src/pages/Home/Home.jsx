@@ -87,7 +87,9 @@ export default function Home() {
             <div className="button-top" onClick={() => navigate('/proyect')}>
               Crear un proyecto
             </div>
-            <div className="button-top">Subir un servicio</div>
+            <div className="button-top" onClick={() => navigate('/profile/services/new')}>
+              Subir un servicio
+            </div>
           </div>
         </div>
       )}

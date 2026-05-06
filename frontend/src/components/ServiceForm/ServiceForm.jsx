@@ -94,7 +94,7 @@ function ServiceForm({ initialData = {}, onSubmit, onCancel }) {
           name="name"
           value={formData.name}
           onChange={handleChange}
-          placeholder="Ej: Diseno de logo profesional"
+          placeholder="Ej: Diseño de logo profesional"
           required
         />
       </div>

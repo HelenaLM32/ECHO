@@ -1,4 +1,4 @@
-import { API_URL, fetchWithToken } from './config.js';
+import { fetchApi, fetchWithToken } from './config.js';
 
 export const createService = (data, token) => {
   return fetchWithToken('/services', {
@@ -30,5 +30,5 @@ export const getMyServices = (token) => {
 };
 
 export const getServiceById = (id) => {
-  return fetch(`${API_URL}/services/${id}`);
+  return fetchApi(`/services/${id}`);
 };

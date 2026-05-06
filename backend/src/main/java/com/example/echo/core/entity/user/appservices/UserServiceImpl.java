@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 
 import com.example.echo.core.entity.role.dto.RoleDTO;
 import com.example.echo.core.entity.role.persistence.RoleRepository;
+import com.example.echo.core.entity.profile.persistence.ProfileRepository;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.Serializer;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.Serializers;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.SerializersCatalog;
@@ -39,6 +40,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordValidator passwordValidator;
+
+    @Autowired
+    private ProfileRepository profileRepository;
 
     private Serializer<UserDTO> serializer;
 
@@ -189,6 +193,8 @@ public class UserServiceImpl implements UserService {
             String token = JwtUtil.generateToken(user.getEmail(), roles);
 
             LoginResponseDTO response = new LoginResponseDTO(token, user);
+            profileRepository.findByUserId(user.getId())
+                    .ifPresent(p -> response.setAvatarUrl(p.getAvatarUrl()));
 
             return loginResponseSerializer().serialize(response);
         } catch (ServiceException e) {

@@ -18,6 +18,7 @@ public class LoginResponseDTO {
     private String username;
     private List<String> roles;
     private Boolean isActive;
+    private String avatarUrl;
 
     public LoginResponseDTO(String token, UserDTO user) {
         this.token = token;
