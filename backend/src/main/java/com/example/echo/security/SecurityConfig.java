@@ -94,6 +94,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/proyect/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/proyect").authenticated()
 
+                        .requestMatchers(HttpMethod.GET, "/item-projects/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/item-projects/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/item-projects/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/item-projects/**").authenticated()
+
                         .anyRequest().permitAll())
         .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

@@ -15,48 +15,50 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class RateLimitingFilter extends OncePerRequestFilter {
 
-    private static final int MAX_REQUESTS_PER_MINUTE = 10000;
+    private static final int MAX_REQUESTS_PER_MINUTE = 300;
+    private static final int MAX_TRACKED_IPS = 20_000;
+    private static final long WINDOW_MS = 60_000L;
+
     private final ConcurrentHashMap<String, AtomicInteger> requestCounts = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Long> windowStartTimes = new ConcurrentHashMap<>();
-
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        // Excluye el login y registro, temporal porque habra que limitarlos pero me daba problemas con el filtro de jwt
-        String path = request.getServletPath();
-        return path.equals("/users/login")
-                || path.equals("/users/register");
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String clientIP = getClientIP(request);
-
+        String clientIP = resolveClientIP(request);
         long currentTime = System.currentTimeMillis();
-        long windowStart = windowStartTimes.getOrDefault(clientIP, currentTime);
-        long windowEnd = windowStart + 60000; // 1 minute
 
-        if (currentTime > windowEnd) {
+        long windowStart = windowStartTimes.getOrDefault(clientIP, currentTime);
+
+        if (currentTime > windowStart + WINDOW_MS) {
             requestCounts.put(clientIP, new AtomicInteger(0));
             windowStartTimes.put(clientIP, currentTime);
+        }
+
+        if (requestCounts.size() > MAX_TRACKED_IPS) {
+            requestCounts.clear();
+            windowStartTimes.clear();
         }
 
         AtomicInteger count = requestCounts.computeIfAbsent(clientIP, k -> new AtomicInteger(0));
         if (count.incrementAndGet() > MAX_REQUESTS_PER_MINUTE) {
             response.setStatus(429);
-            response.getWriter().write("Too many requests. Maximum " + MAX_REQUESTS_PER_MINUTE + " requests per minute allowed.");
+            response.setContentType("application/json");
+            response.getWriter().write("{\"status\":429,\"error\":\"Too Many Requests\"}");
             return;
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private String getClientIP(HttpServletRequest request) {
+    private String resolveClientIP(HttpServletRequest request) {
         String xForwardedFor = request.getHeader("X-Forwarded-For");
-        if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
-            return xForwardedFor.split(",")[0].trim();
+        if (xForwardedFor != null && !xForwardedFor.isBlank()) {
+            String[] parts = xForwardedFor.split(",");
+            return parts[parts.length - 1].trim();
         }
         return request.getRemoteAddr();
     }
 }
+

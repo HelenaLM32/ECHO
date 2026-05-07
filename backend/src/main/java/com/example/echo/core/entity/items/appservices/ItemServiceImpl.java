@@ -82,8 +82,13 @@ public class ItemServiceImpl implements ItemService {
     public String getByCreatorIdToJson(Integer creatorId) throws ServiceException {
         try {
             List<ItemDTO> items = itemRepository.findByCreatorId(creatorId);
+            if (items.isEmpty()) {
+                throw new ServiceException("No se encontraron items para el creador con id: " + creatorId);
+            }
             Serializer<ItemDTO> ser = (Serializer<ItemDTO>) SerializersCatalog.getInstance(Serializers.JSON_ITEM);
             return ser.serializeList(items);
+        } catch (ServiceException e) {
+            throw e;
         } catch (Exception e) {
             throw new ServiceException("Error al obtener items del creador: " + e.getMessage());
         }

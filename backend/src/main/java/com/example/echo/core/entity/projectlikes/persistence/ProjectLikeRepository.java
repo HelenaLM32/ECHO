@@ -1,6 +1,5 @@
 package com.example.echo.core.entity.projectlikes.persistence;
 
-import java.util.Optional;
 import com.example.echo.core.entity.projectlikes.model.ProjectLike;
 
 public interface ProjectLikeRepository {

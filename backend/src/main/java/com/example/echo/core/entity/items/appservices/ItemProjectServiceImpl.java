@@ -9,16 +9,27 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.echo.core.entity.items.persistence.ItemProjectRepository;
 import com.example.echo.core.entity.items.dto.ItemProjectDTO;
 import com.example.echo.core.entity.items.persistence.ItemRepository;
+import com.example.echo.core.entity.profile.dto.ProfileDTO;
+import com.example.echo.core.entity.profile.mappers.ProfileMapper;
+import com.example.echo.core.entity.profile.persistence.ProfileRepository;
 import com.example.echo.core.entity.projectcomments.model.ProjectComment;
 import com.example.echo.core.entity.projectcomments.persistence.ProjectCommentRepository;
+import com.example.echo.core.entity.projectlikes.model.ProjectLike;
 import com.example.echo.core.entity.projectlikes.persistence.ProjectLikeRepository;
 import com.example.echo.core.entity.items.dto.ItemDTO;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.Serializer;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.SerializersCatalog;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.Serializers;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
+import com.example.echo.core.entity.user.dto.UserDTO;
+import com.example.echo.core.entity.user.persistence.UserRepository;
+import com.example.echo.infrastructure.persistence.jpa.JpaProjectCommentRepository;
+import com.example.echo.infrastructure.persistence.jpa.JpaProjectLikeRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -33,19 +44,19 @@ public class ItemProjectServiceImpl implements ItemProjectService {
     private ItemRepository itemRepository;
 
     @Autowired
-    private com.example.echo.core.entity.profile.persistence.ProfileRepository profileRepository;
+    private ProfileRepository profileRepository;
 
     @Autowired
-    private com.example.echo.core.entity.user.persistence.UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private com.example.echo.infrastructure.persistence.jpa.JpaProjectLikeRepository projectLikeRepo;
+    private JpaProjectLikeRepository projectLikeRepo;
 
     @Autowired
-    private com.example.echo.infrastructure.persistence.jpa.JpaProjectCommentRepository projectCommentRepo;
+    private JpaProjectCommentRepository projectCommentRepo;
 
     @Autowired
-    private com.fasterxml.jackson.databind.ObjectMapper mapper;
+    private ObjectMapper mapper;
 
     private Serializer<ItemProjectDTO> serializer;
 
@@ -54,13 +65,13 @@ public class ItemProjectServiceImpl implements ItemProjectService {
         return (Serializer<ItemProjectDTO>) SerializersCatalog.getInstance(Serializers.JSON_ITEM_PROJECT);
     }
 
-    private void embedProfile(com.fasterxml.jackson.databind.node.ObjectNode node, Integer creatorId) throws Exception {
+    private void embedProfile(ObjectNode node, Integer creatorId) throws Exception {
         if (creatorId != null) {
-            com.example.echo.core.entity.user.dto.UserDTO user = userRepository.findById(creatorId).orElse(null);
+            UserDTO user = userRepository.findById(creatorId).orElse(null);
             if (user != null) {
-                com.example.echo.core.entity.profile.dto.ProfileDTO profile = profileRepository.findByUserId(creatorId)
-                        .orElseGet(() -> com.example.echo.core.entity.profile.mappers.ProfileMapper.newProfileForUser(user));
-                com.fasterxml.jackson.databind.node.ObjectNode profileNode = com.example.echo.core.entity.profile.mappers.ProfileMapper.toResponseNode(profile, user, mapper);
+                ProfileDTO profile = profileRepository.findByUserId(creatorId)
+                        .orElseGet(() -> ProfileMapper.newProfileForUser(user));
+                ObjectNode profileNode = ProfileMapper.toResponseNode(profile, user, mapper);
                 node.set("profile", profileNode);
             }
         }
@@ -139,13 +150,12 @@ public class ItemProjectServiceImpl implements ItemProjectService {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public String getAllToJson() throws ServiceException {
         try {
-            java.util.List<ItemProjectDTO> projects = projectRepository.findAll();
-            com.fasterxml.jackson.databind.node.ArrayNode arrayNode = mapper.createArrayNode();
+            List<ItemProjectDTO> projects = projectRepository.findAll();
+            ArrayNode arrayNode = mapper.createArrayNode();
             for (ItemProjectDTO dto : projects) {
-                com.fasterxml.jackson.databind.node.ObjectNode node = mapper.valueToTree(dto);
+                ObjectNode node = mapper.valueToTree(dto);
                 embedProfile(node, dto.getItem() != null ? dto.getItem().getCreatorId() : null);
                 arrayNode.add(node);
             }
@@ -158,10 +168,10 @@ public class ItemProjectServiceImpl implements ItemProjectService {
     @Override
     public String getByCreatorIdToJson(Integer creatorId) throws ServiceException {
         try {
-            java.util.List<ItemProjectDTO> projects = projectRepository.findByItemCreatorId(creatorId);
-            com.fasterxml.jackson.databind.node.ArrayNode arrayNode = mapper.createArrayNode();
+            List<ItemProjectDTO> projects = projectRepository.findByItemCreatorId(creatorId);
+            ArrayNode arrayNode = mapper.createArrayNode();
             for (ItemProjectDTO dto : projects) {
-                com.fasterxml.jackson.databind.node.ObjectNode node = mapper.valueToTree(dto);
+                ObjectNode node = mapper.valueToTree(dto);
                 embedProfile(node, dto.getItem() != null ? dto.getItem().getCreatorId() : null);
                 arrayNode.add(node);
             }
@@ -175,7 +185,7 @@ public class ItemProjectServiceImpl implements ItemProjectService {
     public String getByIdToJson(Integer id) throws ServiceException {
         try {
             ItemProjectDTO dto = this.getById(id);
-            com.fasterxml.jackson.databind.node.ObjectNode node = mapper.valueToTree(dto);
+            ObjectNode node = mapper.valueToTree(dto);
             embedProfile(node, dto.getItem() != null ? dto.getItem().getCreatorId() : null);
             return mapper.writeValueAsString(node);
         } catch (Exception e) {
@@ -215,14 +225,14 @@ public class ItemProjectServiceImpl implements ItemProjectService {
     @Override
     public String deleteCommentAndGetByIdToJson(Integer projectId, Long commentId, Integer userId) throws ServiceException {
         try {
-            com.example.echo.core.entity.projectcomments.model.ProjectComment comment = projectCommentRepo.findById(commentId)
+            ProjectComment comment = projectCommentRepo.findById(commentId)
                     .orElseThrow(() -> new ServiceException("Comentario no encontrado"));
             if (!comment.getProjectId().equals(projectId)) {
                 throw new ServiceException("El comentario no pertenece a este proyecto");
             }
             ItemProjectDTO project = this.getById(projectId);
             Integer creatorId = project.getItem() != null ? project.getItem().getCreatorId() : null;
-            com.example.echo.core.entity.user.dto.UserDTO currentUser = userRepository.findById(userId).orElse(null);
+            UserDTO currentUser = userRepository.findById(userId).orElse(null);
             boolean isAdmin = currentUser != null && currentUser.getRoles().stream().anyMatch(r -> r.getName().equals("ADMIN"));
             if (!comment.getUserId().equals(userId) && !isAdmin && (creatorId == null || !creatorId.equals(userId))) {
                 throw new ServiceException("No tienes permiso para eliminar este comentario");
@@ -241,23 +251,23 @@ public class ItemProjectServiceImpl implements ItemProjectService {
     @Override
     public String getCommentsByProjectIdToJson(Integer projectId) throws ServiceException {
         try {
-            java.util.List<com.example.echo.core.entity.projectcomments.model.ProjectComment> comments = projectCommentRepo.findByProjectIdOrderByCreatedAtDesc(projectId);
-            com.fasterxml.jackson.databind.node.ArrayNode array = mapper.createArrayNode();
-            for (com.example.echo.core.entity.projectcomments.model.ProjectComment comment : comments) {
-                com.fasterxml.jackson.databind.node.ObjectNode commentNode = mapper.createObjectNode();
+            List<ProjectComment> comments = projectCommentRepo.findByProjectIdOrderByCreatedAtDesc(projectId);
+            ArrayNode array = mapper.createArrayNode();
+            for (ProjectComment comment : comments) {
+                ObjectNode commentNode = mapper.createObjectNode();
                 commentNode.put("id", comment.getId());
                 commentNode.put("comment", comment.getComment());
                 commentNode.put("createdAt", comment.getCreatedAt() != null ? comment.getCreatedAt().toString() : null);
                 commentNode.put("projectId", comment.getProjectId());
 
-                com.fasterxml.jackson.databind.node.ObjectNode authorNode = mapper.createObjectNode();
+                ObjectNode authorNode = mapper.createObjectNode();
                 if (comment.getUserId() != null) {
-                    com.example.echo.core.entity.user.dto.UserDTO user = userRepository.findById(comment.getUserId()).orElse(null);
+                    UserDTO user = userRepository.findById(comment.getUserId()).orElse(null);
                     if (user != null) {
                         authorNode.put("id", user.getId());
                         authorNode.put("username", user.getUsername());
                         authorNode.put("email", user.getEmail());
-                        com.example.echo.core.entity.profile.dto.ProfileDTO profile = profileRepository.findByUserId(user.getId())
+                        ProfileDTO profile = profileRepository.findByUserId(user.getId())
                                 .orElse(null);
                         if (profile != null) {
                             authorNode.put("publicName", profile.getPublicName());
@@ -286,7 +296,7 @@ public class ItemProjectServiceImpl implements ItemProjectService {
                 projectRepository.save(dto);
                 likedNow = false;
             } else {
-                com.example.echo.core.entity.projectlikes.model.ProjectLike newLike = new com.example.echo.core.entity.projectlikes.model.ProjectLike(userId, projectId);
+                ProjectLike newLike = new ProjectLike(userId, projectId);
                 ((ProjectLikeRepository) projectLikeRepo).save(newLike);
                 ItemProjectDTO dto = this.getById(projectId);
                 dto.setLikes((dto.getLikes() == null ? 0 : dto.getLikes()) + 1);
@@ -296,14 +306,14 @@ public class ItemProjectServiceImpl implements ItemProjectService {
 
             // Build response node: project + profile + liked flag
             ItemProjectDTO dto = this.getById(projectId);
-            com.fasterxml.jackson.databind.node.ObjectNode node = mapper.valueToTree(dto);
+            ObjectNode node = mapper.valueToTree(dto);
             Integer creatorId = dto.getItem() != null ? dto.getItem().getCreatorId() : null;
             if (creatorId != null) {
-                com.example.echo.core.entity.user.dto.UserDTO user = userRepository.findById(creatorId).orElse(null);
+                UserDTO user = userRepository.findById(creatorId).orElse(null);
                 if (user != null) {
-                    com.example.echo.core.entity.profile.dto.ProfileDTO profile = profileRepository.findByUserId(creatorId)
-                            .orElseGet(() -> com.example.echo.core.entity.profile.mappers.ProfileMapper.newProfileForUser(user));
-                    com.fasterxml.jackson.databind.node.ObjectNode profileNode = com.example.echo.core.entity.profile.mappers.ProfileMapper.toResponseNode(profile, user, mapper);
+                    ProfileDTO profile = profileRepository.findByUserId(creatorId)
+                            .orElseGet(() -> ProfileMapper.newProfileForUser(user));
+                    ObjectNode profileNode = ProfileMapper.toResponseNode(profile, user, mapper);
                     node.set("profile", profileNode);
                 }
             }
