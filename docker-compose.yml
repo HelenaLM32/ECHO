@@ -63,7 +63,7 @@ services:
     labels:
       - "traefik.enable=true"
       # cambiar el echo-fpnuria.net
-      - "traefik.http.routers.echo.rule=Host(`${TRAEFIK_HOST:-echo.fpnuria.net}`)"
+      - "traefik.http.routers.echo.rule=Host(`${TRAEFIK_HOST:-10.0.3.250}`)"
       - "traefik.http.services.echo.loadbalancer.server.port=80"
     networks:
       - internal
@@ -106,5 +106,5 @@ volumes:
 networks:
   internal:
   proxy:
-    external: false
+    external: true
     name: proxy
