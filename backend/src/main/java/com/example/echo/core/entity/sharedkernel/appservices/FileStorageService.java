@@ -1,14 +1,14 @@
 package com.example.echo.core.entity.sharedkernel.appservices;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileStorageService {
@@ -37,18 +37,25 @@ public class FileStorageService {
 
         String ctx = (contextPath == null) ? "" : contextPath.trim();
         if (ctx.equals("/")) ctx = "";
-        return baseUrl + (ctx.isEmpty() ? "" : ctx) + "/uploads/" + subDir + "/" + filename;
+        return (ctx.isEmpty() ? "" : ctx) + "/uploads/" + subDir + "/" + filename;
     }
 
     public void delete(String fileUrl) {
-        if (fileUrl == null || !fileUrl.startsWith(baseUrl))
-            return;
+        if (fileUrl == null || fileUrl.isBlank()) return;
         String ctx = (contextPath == null) ? "" : contextPath.trim();
         if (ctx.equals("/")) ctx = "";
-        String prefix = baseUrl + (ctx.isEmpty() ? "" : ctx) + "/uploads/";
-        if (!fileUrl.startsWith(prefix)) return;
-        String relativePath = fileUrl.replace(prefix, "");
-        Path file = Paths.get(uploadDir, relativePath);
+        String relativePrefix = (ctx.isEmpty() ? "" : ctx) + "/uploads/";
+        String absolutePrefix = baseUrl + relativePrefix;
+        String relativePath;
+        if (fileUrl.startsWith("http://") || fileUrl.startsWith("https://")) {
+            if (!fileUrl.startsWith(absolutePrefix)) return;
+            relativePath = fileUrl.substring(absolutePrefix.length());
+        } else {
+            if (!fileUrl.startsWith(relativePrefix)) return;
+            relativePath = fileUrl.substring(relativePrefix.length());
+        }
+        Path file = Paths.get(uploadDir).resolve(relativePath).normalize();
+        if (!file.startsWith(Paths.get(uploadDir).toAbsolutePath().normalize())) return;
         try {
             Files.deleteIfExists(file);
         } catch (IOException ignored) {

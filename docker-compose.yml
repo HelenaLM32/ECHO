@@ -58,6 +58,8 @@ services:
       - backend
     ports:
       - "${FRONTEND_PORT:-8083}:80"
+    volumes:
+      - ./uploads:/usr/share/nginx/uploads:ro
     labels:
       - "traefik.enable=true"
       # cambiar el echo-fpnuria.net
@@ -104,5 +106,5 @@ volumes:
 networks:
   internal:
   proxy:
-    external: true
+    external: false
     name: proxy
