@@ -397,7 +397,6 @@ export default function Profile() {
     "Servicios",
     "Locales",
     "Eventos",
-    "Valoraciones",
     ...(isOwnProfile ? ["Calendario"] : []),
   ];
 
