@@ -32,10 +32,10 @@ services:
       DB_USERNAME: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_PASSWORD}
       ECHO_JWT_SECRET: ${ECHO_JWT_SECRET}
-      CORS_ALLOWED_ORIGIN: ${CORS_ALLOWED_ORIGIN}
+      CORS_ALLOWED_ORIGIN: ${CORS_ALLOWED_ORIGIN:-http://10.0.3.250,https://10.0.3.250}
       SERVER_SSL_ENABLED: "false"
       APP_UPLOAD_DIR: ${APP_UPLOAD_DIR:-/app/uploads}
-      APP_BASE_URL: ${APP_BASE_URL:-${CORS_ALLOWED_ORIGIN}}
+      APP_BASE_URL: ${APP_BASE_URL:-http://10.0.3.250}
     depends_on:
       db:
         condition: service_healthy
@@ -62,7 +62,6 @@ services:
       - ./uploads:/usr/share/nginx/uploads:ro
     labels:
       - "traefik.enable=true"
-      # cambiar el echo-fpnuria.net
       - "traefik.http.routers.echo.rule=Host(`${TRAEFIK_HOST:-10.0.3.250}`)"
       - "traefik.http.services.echo.loadbalancer.server.port=80"
     networks:
