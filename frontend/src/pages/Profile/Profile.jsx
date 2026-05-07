@@ -557,10 +557,7 @@ export default function Profile() {
             {/* Eventos */}
             {activeTab === "Eventos" && renderEvents()}
 
-            {/* Valoraciones */}
-            {activeTab === "Valoraciones" && (
-              <div className="empty-state">Sin valoraciones aún</div>
-            )}
+
 
             {/* Calendario */}
             {activeTab === "Calendario" && (
