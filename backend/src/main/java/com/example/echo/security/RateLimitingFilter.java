@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class RateLimitingFilter extends OncePerRequestFilter {
 
-    private static final int MAX_REQUESTS_PER_MINUTE = 300;
+    private static final int MAX_REQUESTS_PER_MINUTE = 3000;
     private static final int MAX_TRACKED_IPS = 20_000;
     private static final long WINDOW_MS = 60_000L;
 
