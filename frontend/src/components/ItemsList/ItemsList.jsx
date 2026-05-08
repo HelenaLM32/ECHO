@@ -14,11 +14,9 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
     setLoadingProjects(true);
     getAllProjects()
       .then((list) => {
-        console.debug("Fetched all projects", list);
         setProjects(list || []);
       })
       .catch((err) => {
-        console.debug("Failed to fetch projects", err);
         setError("No se pudieron cargar los proyectos");
         setProjects([]);
       })

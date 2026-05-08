@@ -22,7 +22,7 @@ export default function Home() {
         const data = await fetchSections();
         if (mounted) setSections(data || []);
       } catch (e) {
-        console.error("Error fetching categories", e);
+        // Error silenciado
       }
     })();
     return () => (mounted = false);

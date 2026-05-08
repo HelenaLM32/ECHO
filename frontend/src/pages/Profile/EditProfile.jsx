@@ -54,7 +54,9 @@ export default function EditProfile() {
         });
         setCredentials((prev) => ({ ...prev, username: data.username || "" }));
       })
-      .catch(() => console.error("Error al obtener el perfil"))
+      .catch(() => {
+        // Error silenciado
+      })
       .finally(() => setLoading(false));
   }, [user, loadingContext]);
 

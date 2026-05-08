@@ -5,12 +5,10 @@ export async function fetchSections() {
     try {
         const res = await fetchApi('/categories');
         if (!res.ok) {
-            console.error("fetchSections: server responded", res.status);
             return [];
         }
         const contentType = res.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
-            console.error("fetchSections: received non-JSON response", contentType);
             return [];
         }
         const data = await res.json();
@@ -28,7 +26,6 @@ export async function fetchSections() {
                 }))
             : [];
     } catch (err) {
-        console.error("fetchSections error:", err.message);
         return [];
     }
 }

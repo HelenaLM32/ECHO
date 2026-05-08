@@ -29,6 +29,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 import java.util.List;
 
 @Service
@@ -57,6 +60,9 @@ public class ItemProjectServiceImpl implements ItemProjectService {
 
     @Autowired
     private ObjectMapper mapper;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     private Serializer<ItemProjectDTO> serializer;
 
@@ -339,6 +345,17 @@ public class ItemProjectServiceImpl implements ItemProjectService {
     @Override
     public void deleteById(Integer id) throws ServiceException {
         this.getById(id);
+        // Eliminar relaciones con servicios primero para evitar error de clave foránea
+        entityManager.createNativeQuery("DELETE FROM item_service_projects WHERE project_id = :projectId")
+                .setParameter("projectId", id)
+                .executeUpdate();
+        // Eliminar likes y comentarios asociados al proyecto
+        entityManager.createNativeQuery("DELETE FROM project_likes WHERE project_id = :projectId")
+                .setParameter("projectId", id)
+                .executeUpdate();
+        entityManager.createNativeQuery("DELETE FROM project_comments WHERE project_id = :projectId")
+                .setParameter("projectId", id)
+                .executeUpdate();
         projectRepository.deleteById(id);
     }
 }

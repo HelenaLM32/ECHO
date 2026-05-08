@@ -32,7 +32,7 @@ export default function ServiceCreate() {
         const cats = await getCategories();
         setCategories(cats);
       } catch {
-        console.error("Error cargando categorias");
+        // Error silenciado
       } finally {
         setLoadingCategories(false);
       }

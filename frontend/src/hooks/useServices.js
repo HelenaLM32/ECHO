@@ -66,21 +66,14 @@ export const useServices = () => {
         projectIds: serviceData.projectIds
       };
 
-      // Debug
-      console.log('useServices - Sending data to API:', dataToSend);
-
       const response = await createService(dataToSend, token);
-      
-      console.log('useServices - Response status:', response.status);
       
       if (response.ok) {
         const newService = await response.json();
-        console.log('useServices - Response data:', newService);
         setServices(prev => [...prev, newService]);
         return newService;
       }
       const errorText = await response.text();
-      console.error('useServices - Error response:', errorText);
       throw new Error(errorText || 'Error creating service');
     } catch (err) {
       setError(err.message);
