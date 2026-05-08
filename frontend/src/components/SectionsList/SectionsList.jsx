@@ -6,14 +6,14 @@ function SectionsList({ onSelect, selectedCategoryId = null }) {
 	const [sections, setSections] = useState([]);
 	const [loading, setLoading] = useState(true);
 
-	useEffect(() => {
+  useEffect(() => {
 		let mounted = true;
 		const load = async () => {
 			try {
 				const data = await fetchSections();
 				if (mounted) setSections(data);
 			} catch (e) {
-				console.error("Error cargando secciones", e);
+				// Error silenciado
 			} finally {
 				if (mounted) setLoading(false);
 			}
@@ -25,9 +25,8 @@ function SectionsList({ onSelect, selectedCategoryId = null }) {
 	if (loading) return <div className="sections-loading">Cargando secciones...</div>;
 	if (!sections.length) return null;
 
-	const handleSelect = (section) => {
+  const handleSelect = (section) => {
 		if (onSelect) onSelect(section);
-		else console.log("Sección seleccionada:", section);
 	};
 
 	return (

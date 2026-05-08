@@ -24,7 +24,7 @@ function ServiceForm({ initialData = {}, onSubmit, onCancel }) {
         const cats = await getCategories();
         setCategories(cats);
       } catch {
-        console.error('Error cargando categorias');
+        // Error silenciado
       } finally {
         setLoadingCategories(false);
       }
@@ -85,19 +85,20 @@ function ServiceForm({ initialData = {}, onSubmit, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="service-form">
-      <div className="form-group">
-        <label htmlFor="name">Nombre del servicio *</label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Ej: Diseño de logo profesional"
-          required
-        />
-      </div>
+    <>
+      <form onSubmit={handleSubmit} className="service-form">
+        <div className="form-group">
+          <label htmlFor="name">Nombre del servicio *</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Ej: Diseño de logo profesional"
+            required
+          />
+        </div>
 
       <div className="form-group">
         <label htmlFor="description">Descripcion</label>
@@ -193,7 +194,8 @@ function ServiceForm({ initialData = {}, onSubmit, onCancel }) {
         <button type="submit">Guardar</button>
       </div>
     </form>
-  );
+  </>
+);
 }
 
 export default ServiceForm;

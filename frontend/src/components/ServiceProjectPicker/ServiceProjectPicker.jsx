@@ -32,7 +32,7 @@ function ServiceProjectPicker({ selectedProjects, onSelectionChange, maxSelectio
         const data = await getProjectsByUserId(user.id);
         setProjects(data);
       } catch {
-        console.error('Error cargando proyectos');
+        // Error silenciado
       } finally {
         setLoading(false);
       }
