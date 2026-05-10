@@ -1,113 +1,215 @@
 /* =========================================
-   MODAL COMPONENT - LARGE VERSION
+   DETAIL MODAL — ECHO design system
    ========================================= */
 
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(40, 40, 40, 0.9); /* --black con opacidad alta */
+  background: rgba(40, 40, 40, 0.88);
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  backdrop-filter: blur(6px);
+  font-family: Arial, sans-serif;
+  backdrop-filter: blur(8px);
+  overflow-y: auto;
 }
 
 .modal-box {
   position: relative;
   background: var(--black-secondary);
   border-radius: 20px;
-  max-width: 800px; /* Tamaño grande */
+  max-width: 1000px;
   width: 100%;
-  max-height: 85vh;
-  overflow-y: auto;
-  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7);
-  border: 1px solid var(--black);
-  animation: modalFadeIn 0.3s ease-out;
+  margin: auto;
+  overflow-y: visible;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  animation: modalFadeIn 0.28s ease-out;
 }
 
 @keyframes modalFadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)   scale(1); }
 }
 
-/* Botón de cerrar */
+/* ── Scrollbar del overlay ── */
+.modal-overlay::-webkit-scrollbar        { width: 6px; }
+.modal-overlay::-webkit-scrollbar-track  { background: transparent; }
+.modal-overlay::-webkit-scrollbar-thumb  {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+}
+.modal-overlay::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+
+/* ── Botón cerrar ── */
 .modal-close-btn {
   position: absolute;
-  top: 20px;
-  left: 20px;
-  background: var(--black);
+  top: 16px;
+  left: 16px;
+  background: rgba(0, 0, 0, 0.5);
   color: var(--true-white);
-  border: 1px solid var(--black-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  font-size: 18px;
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
-  transition: all 0.2s ease;
+  transition: background 0.2s, transform 0.2s, border-color 0.2s;
 }
 
 .modal-close-btn:hover {
   background: var(--orange);
+  border-color: var(--orange);
   transform: rotate(90deg);
-  border-color: var(--orange-secondary);
 }
 
-/* Imagen Principal */
+/* ── Imagen principal ── */
 .modal-img {
   width: 100%;
-  height: 380px; /* Altura proporcional al ancho de 800px */
+  height: 340px;
   object-fit: cover;
   border-radius: 20px 20px 0 0;
   display: block;
-  border-bottom: 4px solid var(--orange);
 }
 
-/* Cuerpo del Modal */
+.modal-img-bar {
+  height: 3px;
+  background: var(--orange);
+  width: 100%;
+}
+
+/* ── Cuerpo ── */
 .modal-body {
-  padding: 40px 48px; /* Espaciado amplio para formato grande */
+  padding: 28px 36px 36px;
 }
 
 .modal-title {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 800;
   color: var(--true-white);
-  margin: 0 0 24px;
+  margin: 0 0 16px;
   line-height: 1.2;
 }
 
-/* Campos de información */
+/* ── Chip del creador ── */
+.modal-creator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(233, 94, 35, 0.1);
+  border: 1px solid rgba(233, 94, 35, 0.25);
+  border-radius: 100px;
+  padding: 5px 14px 5px 5px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  text-decoration: none;
+}
+
+.modal-creator:hover {
+  background: rgba(233, 94, 35, 0.2);
+  border-color: rgba(233, 94, 35, 0.5);
+}
+
+.modal-creator-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--orange);
+  flex-shrink: 0;
+}
+
+.modal-creator-avatar--placeholder {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: var(--true-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.modal-creator-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.modal-creator-label {
+  font-size: 10px;
+  color: var(--orange-secondary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.modal-creator-name {
+  font-size: 13px;
+  color: var(--true-white);
+  font-weight: 700;
+}
+
+/* ── Divisor ── */
+.modal-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin: 4px 0 18px;
+}
+
+/* ── Campos de información ── */
 .modal-field {
   display: flex;
   gap: 16px;
   align-items: flex-start;
-  color: var(--gray-dark-secondary);
-  font-size: 1rem;
-  margin-bottom: 14px;
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  padding-bottom: 8px;
 }
 
-.modal-field span {
-  min-width: 140px;
+.modal-field:last-of-type {
+  border-bottom: none;
+}
+
+.modal-field span:first-child {
+  min-width: 120px;
+  font-size: 0.72rem;
   font-weight: 700;
-  color: var(--white);
+  color: var(--gray-dark-secondary);
   text-transform: uppercase;
-  font-size: 0.85rem;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
+  padding-top: 2px;
   flex-shrink: 0;
+}
+
+.modal-field span:last-child,
+.modal-field p {
+  color: var(--gray-dark);
+  font-weight: 400;
+  line-height: 1.55;
+}
+
+.modal-field .modal-price {
+  color: var(--orange);
+  font-weight: 800;
+  font-size: 1.05rem;
 }
 
 .modal-field a {
   color: var(--orange-secondary);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
   transition: color 0.2s;
 }
 
@@ -116,28 +218,28 @@
   text-decoration: underline;
 }
 
-/* Descripción */
+/* ── Descripción ── */
 .modal-description {
-  margin-top: 24px;
+  margin-top: 20px;
   color: var(--gray-dark);
-  font-size: 1.05rem;
-  line-height: 1.8;
+  font-size: 0.95rem;
+  line-height: 1.75;
 }
 
-/* Galería de imágenes */
+/* ── Galería ── */
 .modal-gallery {
   display: flex;
-  gap: 16px;
-  margin-top: 32px;
+  gap: 12px;
+  margin-top: 24px;
 }
 
 .modal-gallery img {
   flex: 1;
-  height: 160px;
+  height: 140px;
   object-fit: cover;
   border-radius: 12px;
-  border: 2px solid var(--black);
-  transition: transform 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: transform 0.25s ease, border-color 0.2s;
   cursor: pointer;
 }
 
@@ -146,66 +248,35 @@
   border-color: var(--orange-secondary);
 }
 
-/* Botón de acción */
+/* ── Botón entradas ── */
 .modal-ticket-btn {
   display: inline-block;
-  margin-top: 32px;
-  padding: 16px 40px;
+  margin-top: 24px;
+  padding: 13px 36px;
   background: var(--orange);
   color: var(--true-white);
   border-radius: 12px;
   text-decoration: none;
   font-weight: 700;
-  font-size: 1.1rem;
-  text-align: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(233, 94, 35, 0.3);
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(233, 94, 35, 0.3);
 }
 
 .modal-ticket-btn:hover {
   background: var(--orange-secondary);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(233, 94, 35, 0.4);
+  box-shadow: 0 6px 22px rgba(233, 94, 35, 0.42);
 }
 
-/* Personalización del Scroll */
-.modal-box::-webkit-scrollbar {
-  width: 10px;
-}
-
-.modal-box::-webkit-scrollbar-track {
-  background: var(--black);
-}
-
-.modal-box::-webkit-scrollbar-thumb {
-  background: var(--black-secondary);
-  border: 2px solid var(--black);
-  border-radius: 10px;
-}
-
-.modal-box::-webkit-scrollbar-thumb:hover {
-  background: var(--gray-dark-secondary);
-}
-
-/* Adaptabilidad para tablets/móviles */
-@media (max-width: 850px) {
-  .modal-box {
-    max-width: 95%;
-  }
-  
-  .modal-body {
-    padding: 30px;
-  }
-  
-  .modal-img {
-    height: 280px;
-  }
-
-  .modal-gallery {
-    flex-wrap: wrap;
-  }
-  
-  .modal-gallery img {
-    flex: 1 1 45%;
-  }
+/* ── Responsive ── */
+@media (max-width: 1040px) {
+  .modal-box     { max-width: 96%; }
+  .modal-body    { padding: 22px 22px 28px; }
+  .modal-img     { height: 240px; }
+  .modal-gallery { flex-wrap: wrap; }
+  .modal-gallery img { flex: 1 1 45%; }
+  .modal-title   { font-size: 1.4rem; }
 }

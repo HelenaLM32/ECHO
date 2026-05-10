@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import org.hibernate.annotations.Formula;
 
 @Entity
 @Table(name = "events")
@@ -53,6 +54,14 @@ public class EventDTO {
     @Column(name = "link_entradas", length = 500)
     @JsonProperty("linkEntradas")
     private String linkEntradas;
+
+    @Formula("(SELECT p.avatar_url FROM profiles p WHERE p.user_id = creator_id LIMIT 1)")
+    @JsonProperty("creatorAvatarUrl")
+    private String creatorAvatarUrl;
+
+    @Formula("(SELECT p.public_name FROM profiles p WHERE p.user_id = creator_id LIMIT 1)")
+    @JsonProperty("creatorPublicName")
+    private String creatorPublicName;
 
     public EventDTO() {
     }
@@ -116,6 +125,14 @@ public class EventDTO {
 
     public String getLinkEntradas() {
         return linkEntradas;
+    }
+
+    public String getCreatorAvatarUrl() {
+        return creatorAvatarUrl;
+    }
+
+    public String getCreatorPublicName() {
+        return creatorPublicName;
     }
 
     public void setId(Integer id) {

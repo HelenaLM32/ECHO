@@ -52,9 +52,9 @@ public class SecurityConfig {
         http.cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .exceptionHandling(ex -> ex
-                .authenticationEntryPoint(authenticationEntryPoint)
-                .accessDeniedHandler(accessDeniedHandler))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
@@ -83,7 +83,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/reviews").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/reviews/**").hasAuthority("ADMIN")
 
-
                         .requestMatchers(HttpMethod.GET, "/venues/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/venues/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/venues/**").authenticated()
@@ -94,7 +93,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/events/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/events/**").authenticated()
 
-
                         .requestMatchers(HttpMethod.GET, "/proyect").authenticated()
                         .requestMatchers(HttpMethod.POST, "/proyect/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/proyect").authenticated()
@@ -104,9 +102,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/item-projects/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/item-projects/**").authenticated()
 
+                        .requestMatchers(HttpMethod.GET, "/venue-event-reviews/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/venue-event-reviews").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/venue-event-reviews").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/venue-event-reviews/**").authenticated()
+
                         .anyRequest().permitAll())
-        .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
-        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -123,12 +126,12 @@ public class SecurityConfig {
             public void addResourceHandlers(ResourceHandlerRegistry registry) {
                 Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
                 String uploadLocation = "file:" + uploadPath.toString().replace("\\", "/") + "/";
-                
+
                 logger.info("Configuring upload resource handler:");
                 logger.info("  - Handler pattern: /uploads/**");
                 logger.info("  - Upload directory: {}", uploadPath);
                 logger.info("  - Resource location: {}", uploadLocation);
-                
+
                 registry.addResourceHandler("/uploads/**")
                         .addResourceLocations(uploadLocation)
                         .setCachePeriod(3600);

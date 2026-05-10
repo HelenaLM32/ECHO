@@ -255,3 +255,14 @@ CREATE TABLE item_service_projects (
     FOREIGN KEY (service_id) REFERENCES item_services(id) ON DELETE CASCADE,
     FOREIGN KEY (project_id) REFERENCES item_projects(id)      ON DELETE CASCADE
 );
+
+CREATE TABLE venue_event_reviews (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    author_id   INT         NOT NULL,
+    target_id   INT         NOT NULL,
+    target_type VARCHAR(10) NOT NULL,
+    score       INT         NOT NULL CHECK (score BETWEEN 1 AND 5),
+    comment     TEXT,
+    created_at  TIMESTAMP   DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_author_target (author_id, target_id, target_type)
+);

@@ -3,6 +3,8 @@ package com.example.echo.core.entity.venues.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
+import org.hibernate.annotations.Formula;
+
 @Entity
 @Table(name = "venues")
 public class VenueDTO {
@@ -55,6 +57,14 @@ public class VenueDTO {
     @Column(name = "img3", length = 500)
     @JsonProperty("img3")
     private String img3;
+
+    @Formula("(SELECT p.avatar_url FROM profiles p WHERE p.user_id = manager_id LIMIT 1)")
+    @JsonProperty("managerAvatarUrl")
+    private String managerAvatarUrl;
+
+    @Formula("(SELECT p.public_name FROM profiles p WHERE p.user_id = manager_id LIMIT 1)")
+    @JsonProperty("managerPublicName")
+    private String managerPublicName;
 
     public VenueDTO() {
     }
@@ -122,6 +132,14 @@ public class VenueDTO {
 
     public String getImg3() {
         return img3;
+    }
+
+    public String getManagerAvatarUrl() {
+        return managerAvatarUrl;
+    }
+
+    public String getManagerPublicName() {
+        return managerPublicName;
     }
 
     public void setId(Integer id) {
