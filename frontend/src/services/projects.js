@@ -1,10 +1,8 @@
-import { API_URL, fetchWithToken } from "./config";
+import { fetchApi, fetchWithToken } from "./config";
 import { uploadFile } from './uploads'
 
-const API = API_URL || import.meta.env.VITE_API_URL || 'http://localhost:8082/api'
-
 async function createItem(itemPayload) {
-  const res = await fetch(`${API}/items/register`, {
+  const res = await fetchApi('/items/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(itemPayload),
@@ -32,14 +30,12 @@ async function createProject(projectPayload) {
   if (payload.background && typeof payload.background !== 'string') payload.background = JSON.stringify(payload.background)
 
   const body = JSON.stringify(payload)
-  console.debug('createProject - request body:', payload)
-  const res = await fetch(`${API}/item-projects/register`, {
+  const res = await fetchApi('/item-projects/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body,
   })
   const text = await res.text()
-  console.debug('createProject - response status:', res.status, 'body:', text)
   if (!res.ok) throw new Error(text)
   try { return JSON.parse(text) } catch { return text }
 }
@@ -59,7 +55,7 @@ async function replaceEmbeddedMedia(project) {
     if (b.type === 'IMAGE') {
       if (typeof b.src === 'string' && b.src.startsWith('data:')) {
         const file = dataURLtoFile(b.src)
-        try { b.src = await uploadFile(file, 'images') } catch (e) { console.error('upload image failed', e) }
+        try { b.src = await uploadFile(file, 'images') } catch (e) { /* silent fail */ }
       }
     }
     if (b.type === 'GALLERY') {
@@ -68,7 +64,7 @@ async function replaceEmbeddedMedia(project) {
           const src = b.images[i]
           if (typeof src === 'string' && src.startsWith('data:')) {
             const file = dataURLtoFile(src)
-            try { b.images[i] = await uploadFile(file, 'images') } catch (e) { console.error('upload gallery image failed', e) }
+            try { b.images[i] = await uploadFile(file, 'images') } catch (e) { /* silent fail */ }
           }
         }
       }
@@ -76,13 +72,13 @@ async function replaceEmbeddedMedia(project) {
     if (b.type === 'VIDEO') {
       if (typeof b.url === 'string' && b.url.startsWith('data:')) {
         const file = dataURLtoFile(b.url)
-        try { b.url = await uploadFile(file, 'video') } catch (e) { console.error('upload video failed', e) }
+        try { b.url = await uploadFile(file, 'video') } catch (e) { /* silent fail */ }
       }
     }
     if (b.type === 'AUDIO') {
       if (typeof b.audioSrc === 'string' && b.audioSrc.startsWith('data:')) {
         const file = dataURLtoFile(b.audioSrc)
-        try { b.audioSrc = await uploadFile(file, 'audio') } catch (e) { console.error('upload audio failed', e) }
+        try { b.audioSrc = await uploadFile(file, 'audio') } catch (e) { /* silent fail */ }
       }
     }
   }
@@ -92,7 +88,7 @@ async function replaceEmbeddedMedia(project) {
   let bg = clone.background
   if (bg && bg.mode === 'image' && typeof bg.value === 'string' && bg.value.startsWith('data:')) {
     const file = dataURLtoFile(bg.value)
-    try { bg.value = await uploadFile(file, 'images') } catch (e) { console.error('upload background failed', e) }
+    try { bg.value = await uploadFile(file, 'images') } catch (e) { /* silent fail */ }
     clone.background = bg
   }
 
@@ -100,19 +96,19 @@ async function replaceEmbeddedMedia(project) {
 }
 
 async function getCategories() {
-  const res = await fetch(`${API}/categories`)
+  const res = await fetchApi('/categories')
   if (!res.ok) throw new Error(await res.text())
   return res.json()
 }
 
 async function getAllProjects() {
-  const res = await fetch(`${API}/item-projects`);
+  const res = await fetchApi('/item-projects');
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 }
 
 async function getProjectsByUserId(userId) {
-  const res = await fetch(`${API}/item-projects/by-creator/${userId}`);
+  const res = await fetchApi(`/item-projects/by-creator/${userId}`);
   if (!res.ok) {
     // fall back to full list when server endpoint not available
     const all = await getAllProjects();
@@ -123,7 +119,7 @@ async function getProjectsByUserId(userId) {
 }
 
 async function getProjectById(id) {
-  const res = await fetch(`${API}/item-projects/${id}`)
+  const res = await fetchApi(`/item-projects/${id}`)
   if (!res.ok) throw new Error(await res.text())
   return res.json()
 }

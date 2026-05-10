@@ -13,7 +13,7 @@ export const getProfileProducts = async (userId) => {
 };
 
 export const getProfileServices = async (userId) => {
-  const response = await fetch(`${API_URL}/profiles/${userId}/services`);
+  const response = await fetch(`${API_URL}/services/user/${userId}`);
   if (!response.ok) throw new Error("Error al obtener los servicios");
   return response.json();
 };

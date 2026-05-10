@@ -239,7 +239,6 @@ export function VideoBlock({ block, onChange }) {
       const url = await uploadFile(file, 'video')
       onChange({ url })
     } catch (err) {
-      console.error('video upload failed', err)
       onChange({ url: '' })
     }
   }

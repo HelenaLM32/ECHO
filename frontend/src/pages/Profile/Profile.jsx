@@ -10,6 +10,7 @@ import {
 } from "../../services/profile";
 import { getVenuesByUser, deleteVenue } from "../../services/venues";
 import { getEventsByUser, deleteEvent } from "../../services/events";
+import { deleteService } from "../../services/servicesApi";
 import { getProjectsByUserId } from "../../services/projects";
 import { getAverageByUser, getReviewsByUser } from "../../services/reviews";
 import {
@@ -24,6 +25,8 @@ import ProjectView from "../../pages/ItemProyect/ProjectView";
 import Footer from "../../components/Footer/Footer";
 import DetailModal from "../../components/DetailModal/DetailModal";
 import ReviewsModal from "../../components/ReviewsModal/ReviewsModal";
+import ServiceCard from "../../components/ServiceCard/ServiceCard";
+import { PopupConfirm, useConfirmPopup } from "../../components/PopupConfirm/PopupConfirm";
 
 import linkedinIcon from "../../assets/icons8-linkedin-24.png";
 import twitterIcon from "../../assets/icons8-x-24.png";
@@ -36,6 +39,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const bannerInputRef = useRef(null);
   const avatarInputRef = useRef(null);
+  const { confirmState, showConfirm, handleConfirm, handleCancel } = useConfirmPopup();
 
   const targetId = userId ? parseInt(userId) : user?.id;
   const isOwnProfile = !userId || parseInt(userId) === user?.id;
@@ -109,7 +113,12 @@ export default function Profile() {
           break;
         case "Servicios":
           setItemsLoading(p => ({ ...p, services: true }));
-          try { setServices(await getProfileServices(targetId)); } catch { setServices([]); }
+          try { 
+            const servicesData = await getProfileServices(targetId);
+            setServices(servicesData); 
+          } catch { 
+            setServices([]); 
+          }
           setItemsLoading(p => ({ ...p, services: false }));
           break;
         case "Locales":
@@ -166,20 +175,46 @@ export default function Profile() {
     finally { setFollowLoading(false); }
   };
 
-  const handleDeleteVenue = async (id) => {
-    if (!confirm("¿Eliminar este local?")) return;
-    try {
-      await deleteVenue(id);
-      setVenues((prev) => prev.filter((v) => v.id !== id));
-    } catch (err) { alert(err.message); }
+  const handleDeleteVenue = (id) => {
+    showConfirm(
+      "¿Eliminar este local?",
+      "Confirmar eliminación",
+      async () => {
+        try {
+          await deleteVenue(id);
+          setVenues((prev) => prev.filter((v) => v.id !== id));
+        } catch (err) { alert(err.message); }
+      }
+    );
   };
 
-  const handleDeleteEvent = async (id) => {
-    if (!confirm("¿Eliminar este evento?")) return;
-    try {
-      await deleteEvent(id);
-      setEvents((prev) => prev.filter((ev) => ev.id !== id));
-    } catch (err) { alert(err.message); }
+  const handleDeleteEvent = (id) => {
+    showConfirm(
+      "¿Eliminar este evento?",
+      "Confirmar eliminación",
+      async () => {
+        try {
+          await deleteEvent(id);
+          setEvents((prev) => prev.filter((ev) => ev.id !== id));
+        } catch (err) { alert(err.message); }
+      }
+    );
+  };
+
+  const handleDeleteService = (id) => {
+    showConfirm(
+      "¿Eliminar este servicio?",
+      "Confirmar eliminación",
+      async () => {
+        try {
+          const token = sessionStorage.getItem('token');
+          await deleteService(id, token);
+          setServices((prev) => prev.filter((s) => s.id !== id));
+        } catch (err) {
+          alert("Error al eliminar el servicio: " + err.message);
+        }
+      }
+    );
   };
 
   const handleOpenReviews = () => {
@@ -314,6 +349,35 @@ export default function Profile() {
                   </div>
                 )}
               </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderServices = () => {
+    if (itemsLoading.services) return <div className="empty-state">Cargando...</div>;
+    return (
+      <div>
+        {isOwnProfile && (
+          <button className="create-tab-btn" onClick={() => navigate("/profile/services/new")}>
+            Crear servicio
+          </button>
+        )}
+        {services.length === 0 ? (
+          <div className="empty-state">Sin servicios registrados</div>
+        ) : (
+          <div className="projects-grid">
+            {services.map((service) => (
+              <ServiceCard
+                key={service.id}
+                service={service}
+                profile={profile}
+                onEdit={isOwnProfile ? (id) => navigate(`/profile/services/${id}/edit`) : null}
+                onDelete={isOwnProfile ? (id) => handleDeleteService(id) : null}
+                small={true}
+              />
             ))}
           </div>
         )}
@@ -482,7 +546,7 @@ export default function Profile() {
             {activeTab === "Productos" && renderItemGrid(products, itemsLoading.products, "Productos")}
 
             {/* Servicios */}
-            {activeTab === "Servicios" && renderItemGrid(services, itemsLoading.services, "Servicios")}
+            {activeTab === "Servicios" && renderServices()}
 
             {/* Locales */}
             {activeTab === "Locales" && renderVenues()}
@@ -547,6 +611,14 @@ export default function Profile() {
       {modal.open && (
         <DetailModal type={modal.type} data={modal.data} onClose={closeModal} />
       )}
+
+      <PopupConfirm
+        isOpen={confirmState.isOpen}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        message={confirmState.message}
+        title={confirmState.title}
+      />
 
       <Footer />
     </div>

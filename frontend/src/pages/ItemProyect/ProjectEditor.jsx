@@ -9,6 +9,8 @@ import useProjectStore, {
 import { uploadFile } from '../../services/uploads'
 import { useAuth } from '../../context/AuthContext'
 import { createItem, createProject, getCategories } from '../../services/projects'
+import { PopupConfirm, useConfirmPopup } from '../../components/PopupConfirm/PopupConfirm'
+import { PopupSuccess, useSuccessPopup } from '../../components/PopupSuccess/PopupSuccess'
 
 /* ── Sidebar (inline) ────────────────────────── */
 
@@ -44,7 +46,7 @@ function ProjectSidebar({ onPreview }) {
         try {
           const url = await uploadFile(file, 'images')
           addBlockWithData('IMAGE', { src: url })
-        } catch (e) { console.error('upload failed', e); addBlockWithData('IMAGE', { src: '' }) }
+        } catch (e) { addBlockWithData('IMAGE', { src: '' }) }
       }
     }
     input.click()
@@ -61,7 +63,6 @@ function ProjectSidebar({ onPreview }) {
         const url = await uploadFile(file, 'video')
         addBlockWithData('VIDEO', { url })
       } catch (e) {
-        console.error('video upload failed', e)
         addBlockWithData('VIDEO', { url: '' })
       }
     }
@@ -78,7 +79,7 @@ function ProjectSidebar({ onPreview }) {
       if (files.length === 0) return
       const uploads = []
       for (const f of files) {
-        try { uploads.push(await uploadFile(f, 'images')) } catch (e) { console.error('gallery upload failed', e) }
+        try { uploads.push(await uploadFile(f, 'images')) } catch (e) { /* silent fail */ }
       }
       addBlockWithData('GALLERY', { images: uploads })
     }
@@ -95,7 +96,7 @@ function ProjectSidebar({ onPreview }) {
       try {
         const url = await uploadFile(file, 'audio')
         addBlockWithData('AUDIO', { audioSrc: url })
-      } catch (e) { console.error('audio upload failed', e); addBlockWithData('AUDIO', { audioSrc: '' }) }
+      } catch (e) { addBlockWithData('AUDIO', { audioSrc: '' }) }
     }
     input.click()
   }
@@ -110,7 +111,7 @@ function ProjectSidebar({ onPreview }) {
       try {
         const url = await uploadFile(file, 'images')
         setBackground('image', url)
-      } catch (e) { console.error('background upload failed', e) }
+      } catch (e) { /* silent fail */ }
     }
     input.click()
   }
@@ -255,6 +256,7 @@ function SaveProjectButton() {
 
 function SaveProjectModal({ onClose, exportJSON, user }) {
   const navigate = useNavigate()
+  const { successState, showSuccess, hideSuccess } = useSuccessPopup()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [basePrice, setBasePrice] = useState('')
@@ -273,16 +275,23 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
 
   async function handleSubmit(e) {
     e.preventDefault()
-    if (!title || title.trim().length < 3) return alert('El título debe tener al menos 3 caracteres')
+    if (!title || title.trim().length < 3) {
+      alert('El título debe tener al menos 3 caracteres')
+      return
+    }
     const price = Number(basePrice)
-    if (Number.isNaN(price) || price <= 0) return alert('Base price debe ser un número mayor que 0')
-    if (!itemType || itemType.trim().length < 3) return alert('Item type inválido')
+    if (Number.isNaN(price) || price <= 0) {
+      alert('Base price debe ser un número mayor que 0')
+      return
+    }
+    if (!itemType || itemType.trim().length < 3) {
+      alert('Item type inválido')
+      return
+    }
 
     setSaving(true)
     try {
     const data = exportJSON()
-
-    console.debug('Item payload about to be sent')
 
       const itemPayload = {
         creatorId: user?.id,
@@ -293,9 +302,7 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
         categoryId: categoryId ? Number(categoryId) : null,
       }
 
-      console.debug('Item payload', itemPayload)
       const createdItem = await createItem(itemPayload)
-      console.debug('Created item response', createdItem)
 
       const projectPayload = {
         blocks: JSON.stringify(data.blocks || []),
@@ -312,20 +319,16 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
       projectPayload.id = itemId
       projectPayload.item = { id: itemId }
 
-      console.debug('Created item:', createdItem)
-      console.debug('Project payload being sent:', projectPayload)
-
       const createdProject = await createProject(projectPayload)
-      alert('Proyecto guardado correctamente (id: ' + (createdProject.id || createdProject.item?.id) + ')')
+      showSuccess('Proyecto guardado correctamente (id: ' + (createdProject.id || createdProject.item?.id) + ')', 'Éxito')
       onClose()
       try {
         // Redirect to the user's profile so they can see their projects immediately
         if (user?.id) navigate(`/profile/${user.id}`)
       } catch (e) {
-        console.debug('Navigation to profile failed', e)
+        // Navigation error silenced
       }
     } catch (err) {
-      console.error(err)
       alert('Error al guardar: ' + (err.message || err))
     } finally {
       setSaving(false)
@@ -333,37 +336,45 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
   }
 
   return (
-    <div className="modalOverlay" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <h3 className="modalTitle">Guardar proyecto</h3>
-        <form onSubmit={handleSubmit} className="modalForm">
-          <label className="modalLabel">Título</label>
-          <input className="modalInput" value={title} onChange={(e) => setTitle(e.target.value)} required />
+    <>
+      <div className="modalOverlay" onClick={onClose}>
+        <div className="modal" onClick={(e) => e.stopPropagation()}>
+          <h3 className="modalTitle">Guardar proyecto</h3>
+          <form onSubmit={handleSubmit} className="modalForm">
+            <label className="modalLabel">Título</label>
+            <input className="modalInput" value={title} onChange={(e) => setTitle(e.target.value)} required />
 
-          <label className="modalLabel">Descripción</label>
-          <textarea className="modalTextarea" value={description} onChange={(e) => setDescription(e.target.value)} />
+            <label className="modalLabel">Descripción</label>
+            <textarea className="modalTextarea" value={description} onChange={(e) => setDescription(e.target.value)} />
 
-          <label className="modalLabel">Base price</label>
-          <input className="modalInput" type="number" step="0.01" value={basePrice} onChange={(e) => setBasePrice(e.target.value)} required />
+            <label className="modalLabel">Base price</label>
+            <input className="modalInput" type="number" step="0.01" value={basePrice} onChange={(e) => setBasePrice(e.target.value)} required />
 
-          <label className="modalLabel">Item type</label>
-          <input className="modalInput" value={itemType} onChange={(e) => setItemType(e.target.value)} required />
+            <label className="modalLabel">Item type</label>
+            <input className="modalInput" value={itemType} onChange={(e) => setItemType(e.target.value)} required />
 
-          <label className="modalLabel">Categoría (opcional)</label>
-          <select className="modalSelect" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-            <option value="">-- Ninguna --</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
+            <label className="modalLabel">Categoría (opcional)</label>
+            <select className="modalSelect" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
+              <option value="">-- Ninguna --</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
 
-          <div className="modalButtons">
-            <button type="button" onClick={onClose} disabled={saving} className="modalButton modalCancel">Cancelar</button>
-            <button type="submit" disabled={saving} className="modalButton modalSave">{saving ? 'Guardando...' : 'Guardar'}</button>
-          </div>
-        </form>
+            <div className="modalButtons">
+              <button type="button" onClick={onClose} disabled={saving} className="modalButton modalCancel">Cancelar</button>
+              <button type="submit" disabled={saving} className="modalButton modalSave">{saving ? 'Guardando...' : 'Guardar'}</button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+      <PopupSuccess
+        isOpen={successState.isOpen}
+        onClose={hideSuccess}
+        message={successState.message}
+        title={successState.title}
+      />
+    </>
   )
 }
 

@@ -85,7 +85,7 @@ export default function ProjectFooter({ name, avatar, likes = 0, views = 0, comm
                                                     ×
                                                 </button>
                                             )}
-                                            <button className="pf-reply-btn">· Responder</button>
+
                                         </div>
                                         <div className="pf-comment-text">{comment.comment}</div>
                                     </div>

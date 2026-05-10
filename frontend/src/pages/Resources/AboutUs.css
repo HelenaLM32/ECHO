@@ -1,0 +1,137 @@
+.about-page {
+    min-height: 100vh;
+    background: var(--white);
+    color: var(--black);
+}
+
+/* ── Hero ── */
+.about-hero {
+    background: var(--black);
+    padding: 90px 30px 80px;
+    display: flex;
+    justify-content: center;
+}
+
+.about-hero-inner {
+    max-width: 720px;
+    text-align: center;
+}
+
+.about-hero-tag {
+    display: inline-block;
+    background: var(--orange);
+    color: var(--true-white);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 4px 14px;
+    border-radius: 100px;
+    margin-bottom: 22px;
+}
+
+.about-hero-title {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    color: var(--true-white);
+    line-height: 1.15;
+    margin: 0 0 18px;
+}
+
+.about-hero-accent {
+    color: var(--orange);
+}
+
+.about-hero-sub {
+    font-size: 1.05rem;
+    color: var(--gray-dark-secondary);
+    line-height: 1.6;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+/* ── Rows ── */
+.about-sections {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 70px 30px 90px;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+}
+
+.about-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.about-row--reverse {
+    direction: rtl;
+}
+
+.about-row--reverse > * {
+    direction: ltr;
+}
+
+.about-row-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--black);
+    margin: 0 0 16px;
+    position: relative;
+    padding-bottom: 14px;
+}
+
+.about-row-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: var(--orange);
+    border-radius: 2px;
+}
+
+.about-row-body {
+    font-size: 1rem;
+    color: var(--black-secondary);
+    line-height: 1.75;
+    margin: 0;
+}
+
+.about-row-media {
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: var(--gray-dark);
+}
+
+.about-row-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.about-row-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-stroke);
+    font-size: 4rem;
+}
+
+@media (max-width: 700px) {
+    .about-row {
+        grid-template-columns: 1fr;
+    }
+
+    .about-row--reverse {
+        direction: ltr;
+    }
+}

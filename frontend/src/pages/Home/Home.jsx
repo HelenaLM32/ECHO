@@ -7,28 +7,36 @@ import { useNavigate, useParams } from "react-router-dom";
 import { fetchSections } from "../../services/sections";
 
 export default function Home() {
-  const [filtro, setFiltro] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("recent");
+  const [sections, setSections] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [animateIn, setAnimateIn] = useState(false);
   const navigate = useNavigate();
   const params = useParams();
 
-  // When route contains a category slug, load categories and set the selected one
   useEffect(() => {
-    const slug = params.slug;
-    if (!slug) return;
     let mounted = true;
     (async () => {
       try {
         const data = await fetchSections();
-        const found = data.find((c) => c.slug === slug || String(c.id) === slug || c.id === slug);
-        if (mounted) setSelectedCategory(found || null);
+        if (mounted) setSections(data || []);
       } catch (e) {
-        console.error("Error fetching categories for slug", slug, e);
+        // Error silenciado
       }
     })();
     return () => (mounted = false);
-  }, [params.slug]);
+  }, []);
+
+  useEffect(() => {
+    const slug = params.slug;
+    if (!slug) {
+      setSelectedCategory(null);
+      return;
+    }
+    const found = sections.find((c) => c.slug === slug || String(c.id) === slug);
+    setSelectedCategory(found || null);
+  }, [params.slug, sections]);
 
   //Animacion de entrada del texto
   useEffect(() => {
@@ -38,13 +46,20 @@ export default function Home() {
 
   // Handler de las categorias
   const handleSelect = (section) => {
+    if (!section) {
+      setSelectedCategory(null);
+      navigate("/");
+      return;
+    }
     setSelectedCategory(section);
-
-    /* Esto es para mas adelante cuando exista el enrutador de paginas por categoria.
-    if (section && section.slug) {
+    if (section.slug) {
       navigate(`/category/${section.slug}`);
     }
-    */
+  };
+
+  const clearCategoryFilter = () => {
+    setSelectedCategory(null);
+    navigate("/");
   };
 
 
@@ -72,7 +87,9 @@ export default function Home() {
             <div className="button-top" onClick={() => navigate('/proyect')}>
               Crear un proyecto
             </div>
-            <div className="button-top">Subir un servicio</div>
+            <div className="button-top" onClick={() => navigate('/profile/services/new')}>
+              Subir un servicio
+            </div>
           </div>
         </div>
       )}
@@ -82,22 +99,37 @@ export default function Home() {
           type="text"
           placeholder="Buscar en Echo..."
           className="search-bar"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
-        <div className="filter-button">
-            <span id="filter-button-text">Filtro</span>
-        </div>
+        <select
+          className="filter-button"
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          aria-label="Ordenar proyectos"
+        >
+          <option value="recent">Mas recientes</option>
+          <option value="popular">Mas populares</option>
+          <option value="views">Mas vistos</option>
+        </select>
       </div>
       <div className="home-container-sections">
-        <SectionsList onSelect={handleSelect} />
+        <SectionsList onSelect={handleSelect} selectedCategoryId={selectedCategory?.id ?? null} />
       </div>
       {selectedCategory && (
         <div className="home-category-title-container">
           <h1 id="top-h1-text-category">{selectedCategory.name}</h1>
-          <div className="button-selected-category">Seguir {selectedCategory.name}</div>
+          <button type="button" className="button-selected-category" onClick={clearCategoryFilter}>
+            Quitar filtro
+          </button>
         </div>
       )}
       <div className="home-container-item-section">
-        <ItemsList />
+        <ItemsList
+          searchQuery={searchQuery}
+          selectedCategoryId={selectedCategory?.id ?? null}
+          sortBy={sortBy}
+        />
 
       </div>
 

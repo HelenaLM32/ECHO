@@ -27,6 +27,12 @@ import ProjectView from './pages/ItemProyect/ProjectView.jsx';
 import PrivacyPolicy from './pages/Legal/PrivacyPolicy';
 import TermsAndConditions from './pages/Legal/TermsAndConditions';
 import CookiesPolicy from './pages/Legal/CookiesPolicy';
+import Introduction from './pages/Resources/Introduction';
+import AboutUs from './pages/Resources/AboutUs';
+
+// Rutas de servicios
+import ServiceCreate from './pages/Services/ServiceCreate';
+import ServiceEdit from './pages/Services/ServiceEdit';
 
 export default function App() {
   return (
@@ -34,12 +40,15 @@ export default function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/category/:slug" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile/:userId" element={<Profile />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/cookies" element={<CookiesPolicy />} />
+        <Route path="/introduccion" element={<Introduction />} />
+        <Route path="/sobre-nosotros" element={<AboutUs />} />
 
         <Route path="/profile" element={
           <ProtectedRoute>
@@ -98,6 +107,18 @@ export default function App() {
         <Route path="/project/:id" element={
           <ProtectedRoute>
             <ProjectView />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/profile/services/new" element={
+          <ProtectedRoute>
+            <ServiceCreate />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/profile/services/:id/edit" element={
+          <ProtectedRoute>
+            <ServiceEdit />
           </ProtectedRoute>
         } />
 

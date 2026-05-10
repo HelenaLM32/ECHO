@@ -156,7 +156,6 @@ export default function Editor() {
                             const url = await uploadFile(file, 'video')
                             addBlockWithData('VIDEO', { url })
                           } catch (e) {
-                            console.error('video upload failed', e)
                             addBlockWithData('VIDEO', { url: '' })
                           }
                         }

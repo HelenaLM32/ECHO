@@ -2,24 +2,35 @@ package com.example.echo.core.entity.items.model;
 
 import com.example.echo.core.entity.domainservices.validations.Check;
 import com.example.echo.core.entity.sharedkernel.exceptions.BuildException;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "items")
 public class Item {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "creator_id", nullable = false)
     private Integer creatorId;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "base_price", nullable = false)
     private Double basePrice;
 
     /**
      * Item type (e.g. "PRODUCT", "SERVICE").
      */
+    @Column(name = "item_type", nullable = false)
     private String itemType;
 
+    @Column(name = "category_id")
     private Integer categoryId;
 
     protected Item() {

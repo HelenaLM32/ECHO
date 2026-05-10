@@ -44,3 +44,13 @@
     margin: 8px 0;
     color: var(--gray-dark-secondary);
 }
+
+.section-card.is-active {
+    background-color: var(--orange-secondary);
+    border-color: var(--orange-secondary);
+    opacity: 1;
+}
+
+.section-card.is-active .section-title {
+    color: var(--black);
+}

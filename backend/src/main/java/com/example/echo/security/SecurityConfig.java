@@ -1,7 +1,10 @@
 package com.example.echo.security;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +25,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
     private final RateLimitingFilter rateLimitingFilter;
     private final JwtFilter jwtFilter;
@@ -94,6 +99,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/proyect/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/proyect").authenticated()
 
+                        .requestMatchers(HttpMethod.GET, "/item-projects/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/item-projects/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/item-projects/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/item-projects/**").authenticated()
+
                         .anyRequest().permitAll())
         .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -111,9 +121,17 @@ public class SecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addResourceHandlers(ResourceHandlerRegistry registry) {
-                String uploadLocation = Paths.get(uploadDir).toAbsolutePath().normalize().toUri().toString();
+                Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
+                String uploadLocation = "file:" + uploadPath.toString().replace("\\", "/") + "/";
+                
+                logger.info("Configuring upload resource handler:");
+                logger.info("  - Handler pattern: /uploads/**");
+                logger.info("  - Upload directory: {}", uploadPath);
+                logger.info("  - Resource location: {}", uploadLocation);
+                
                 registry.addResourceHandler("/uploads/**")
-                        .addResourceLocations(uploadLocation);
+                        .addResourceLocations(uploadLocation)
+                        .setCachePeriod(3600);
             }
         };
     }

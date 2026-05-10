@@ -2,18 +2,18 @@ import React, { useState, useEffect } from "react";
 import "./SectionsList.css";
 import { fetchSections } from "../../services/sections";
 
-function SectionsList({ onSelect }) {
+function SectionsList({ onSelect, selectedCategoryId = null }) {
 	const [sections, setSections] = useState([]);
 	const [loading, setLoading] = useState(true);
 
-	useEffect(() => {
+  useEffect(() => {
 		let mounted = true;
 		const load = async () => {
 			try {
 				const data = await fetchSections();
 				if (mounted) setSections(data);
 			} catch (e) {
-				console.error("Error cargando secciones", e);
+				// Error silenciado
 			} finally {
 				if (mounted) setLoading(false);
 			}
@@ -25,9 +25,8 @@ function SectionsList({ onSelect }) {
 	if (loading) return <div className="sections-loading">Cargando secciones...</div>;
 	if (!sections.length) return null;
 
-	const handleSelect = (section) => {
+  const handleSelect = (section) => {
 		if (onSelect) onSelect(section);
-		else console.log("Sección seleccionada:", section);
 	};
 
 	return (
@@ -36,8 +35,9 @@ function SectionsList({ onSelect }) {
 				<div key={s.id} className="section-item">
 					<button
 						type="button"
-						className="section-card"
+						className={`section-card ${selectedCategoryId === s.id ? "is-active" : ""}`}
 						aria-label={`Ir a sección ${s.name}`}
+						aria-pressed={selectedCategoryId === s.id}
 						onClick={() => handleSelect(s)}
 					>
 						<span className="section-title">{s.name}</span>

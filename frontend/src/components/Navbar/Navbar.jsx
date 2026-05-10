@@ -7,6 +7,7 @@ export default function Navbar() {
   const location = useLocation();
 
   const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
+  const isExploreActive = location.pathname === "/" || location.pathname.startsWith("/category/");
   const isAdmin = user?.roles?.includes("ADMIN");
 
 
@@ -16,20 +17,21 @@ export default function Navbar() {
 
     <nav className={`nav-bar ${isAuthPage ? "nav-absolute" : "nav-sticky"}`}>
       <div className="nav-left">
-        <Link to="/"><img className="logo" src="logo.svg" alt="" /></Link>
+        <Link to="/"><img className="logo" src="/logo.svg" alt="Echo" /></Link>
       </div>
 
       {/* botones desplegables visuales (sin funcionalidad aun) */}
       {!isAuthPage && (
         <div className="nav-links">
-          <div className="nav-item">
+          <Link to="/" className={`nav-item nav-link ${isExploreActive ? "active" : ""}`}>
             <span className="nav-item-label">Explorar</span>
-          </div>
-          <div className="nav-item">
+          </Link>
+          <div className="nav-item nav-dropdown">
             <span className="nav-item-label">Recursos</span>
-          </div>
-          <div className="nav-item">
-            <span className="nav-item-label">Contratar</span>
+            <div className="nav-dropdown-menu">
+              <Link to="/introduccion" className="nav-dropdown-link">Introduccion</Link>
+              <Link to="/sobre-nosotros" className="nav-dropdown-link">Sobre nosotros</Link>
+            </div>
           </div>
         </div>
       )}
@@ -37,12 +39,22 @@ export default function Navbar() {
       {!isAuthPage && (
         <div className="nav-right">
           {user ? (
-            <>
-              {isAdmin && <Link to="/admin" className="btn btn-primary">Admin</Link>}
-              <Link to="/orders" className="btn btn-secondary">Mis encargos</Link>
-              <Link to="/profile" className="btn btn-secondary">Perfil</Link>
-              <div className="btn btn-primary" onClick={logout}>Logout</div>
-            </>
+            <div className="nav-item nav-dropdown nav-user-dropdown">
+              <div className="nav-user-avatar">
+                {user.avatarUrl
+                  ? <img src={user.avatarUrl} alt={user.username} className="nav-avatar-img" />
+                  : <div className="nav-avatar-initials">{(user.username || "U").charAt(0).toUpperCase()}</div>
+                }
+              </div>
+              <div className="nav-dropdown-menu nav-user-menu">
+                {isAdmin && (
+                  <Link to="/admin" className="nav-dropdown-link">Admin</Link>
+                )}
+                <Link to="/orders" className="nav-dropdown-link">Encargos</Link>
+                <Link to="/profile" className="nav-dropdown-link">Perfil</Link>
+                <button className="nav-dropdown-link nav-logout-btn" onClick={logout}>Cerrar sesión</button>
+              </div>
+            </div>
           ) : (
             <>
               <Link to="/register" className="btn btn-secondary">Registrarse</Link>
