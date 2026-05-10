@@ -87,13 +87,13 @@ export default function Profile() {
 
   useEffect(() => {
     if (!targetId) return;
-    getFollowStats(targetId).then(setFollowStats).catch(() => {});
+    getFollowStats(targetId).then(setFollowStats).catch(() => { });
     getAverageByUser(targetId)
       .then((data) => setReviewStats({ average: data.average, count: data.count ?? 0 }))
-      .catch(() => {});
+      .catch(() => { });
 
     if (user && !isOwnProfile) {
-      checkIsFollowing(targetId).then((data) => setIsFollowing(data.following)).catch(() => {});
+      checkIsFollowing(targetId).then((data) => setIsFollowing(data.following)).catch(() => { });
     }
   }, [targetId, user, isOwnProfile]);
 
@@ -205,9 +205,9 @@ export default function Profile() {
             {items.map((item) => (
               <div key={item.id} className="item-card">
                 <div className="item-image-container">
-                 
-                    <img src={item.images[0]} alt={item.title} className="item-card-img" />
-                    
+
+                  <img src={item.images[0]} alt={item.title} className="item-card-img" />
+
                 </div>
                 <div className="item-info">
                   <h3 className="item-title">{item.title}</h3>
@@ -224,7 +224,7 @@ export default function Profile() {
   const renderVenues = () => {
     if (itemsLoading.venues) return <div className="empty-state">Cargando...</div>;
     return (
-      <div>
+      <div className="projects-section">
         {isOwnProfile && (
           <button className="create-tab-btn" onClick={() => navigate("/venues/venue-create")}>
             Crear un local
@@ -233,36 +233,30 @@ export default function Profile() {
         {venues.length === 0 ? (
           <div className="empty-state">Sin locales registrados</div>
         ) : (
-          <div className="items-grid">
+          /* Usamos projects-grid en lugar de items-grid */
+          <div className="projects-grid"> 
             {venues.map((v) => (
               <div
                 key={v.id}
-                className="item-card"
-                style={!isOwnProfile ? { cursor: "pointer" } : {}}
+                className="item-card" /* Mantiene la clase para hover effects */
+                style={{ cursor: "pointer", position: "relative" }}
                 onClick={!isOwnProfile ? () => openModal("venue", v) : undefined}
               >
                 <div className="item-image-container">
-                 
-                    ? <img src={v.img1} alt={v.name} className="item-card-img" />
-              
+                  <img src={v.img1} alt={v.name} className="item-card-img" />
                 </div>
                 <div className="item-info">
                   <h3 className="item-title">{v.name}</h3>
-                  <p className="item-address">{v.address}</p>
-                  {v.capacity && <p className="item-extra">Aforo: {v.capacity}</p>}
+                  <p className="item-address" style={{ fontSize: '0.8rem', color: 'var(--gray-dark-secondary)' }}>
+                    {v.address}
+                  </p>
                 </div>
                 {isOwnProfile && (
                   <div className="item-actions">
-                    <button
-                      className="btn-item-edit"
-                      onClick={() => navigate(`/venues/${v.id}/edit`)}
-                    >
+                    <button className="btn-item-edit" onClick={(e) => { e.stopPropagation(); navigate(`/venues/${v.id}/edit`); }}>
                       Editar
                     </button>
-                    <button
-                      className="btn-item-delete"
-                      onClick={() => handleDeleteVenue(v.id)}
-                    >
+                    <button className="btn-item-delete" onClick={(e) => { e.stopPropagation(); handleDeleteVenue(v.id); }}>
                       Eliminar
                     </button>
                   </div>
@@ -278,7 +272,7 @@ export default function Profile() {
   const renderEvents = () => {
     if (itemsLoading.events) return <div className="empty-state">Cargando...</div>;
     return (
-      <div>
+      <div className="projects-section">
         {isOwnProfile && (
           <button className="create-tab-btn" onClick={() => navigate("/events/event-create")}>
             Crear un evento
@@ -287,48 +281,34 @@ export default function Profile() {
         {events.length === 0 ? (
           <div className="empty-state">Sin eventos registrados</div>
         ) : (
-          <div className="items-grid">
+          <div className="projects-grid">
             {events.map((ev) => (
               <div
                 key={ev.id}
                 className="item-card"
-                style={!isOwnProfile ? { cursor: "pointer" } : {}}
+                style={{ cursor: "pointer", position: "relative" }}
                 onClick={!isOwnProfile ? () => openModal("event", ev) : undefined}
               >
                 <div className="item-image-container">
                   {ev.img
-                    ? <img src={ev.img} alt={ev.title || "Evento"} className="item-card-img" />
+                    ? <img src={ev.img} alt={ev.title} className="item-card-img" />
                     : <div className="item-image-placeholder"></div>}
                 </div>
                 <div className="item-info">
-                  <h3 className="item-title">{ev.title || "Evento sin título"}</h3>
-                  <p className="item-price">
-                    {ev.startDate
-                      ? new Date(ev.startDate).toLocaleDateString("es-ES")
-                      : "Fecha no definida"}
+                  <h3 className="item-title">{ev.title || "Evento"}</h3>
+                  <p className="item-price" style={{ fontSize: '0.9rem' }}>
+                    {ev.startDate ? new Date(ev.startDate).toLocaleDateString("es-ES") : ""}
                   </p>
-                  <p className="item-price">
+                  <p className="item-price" style={{ color: 'var(--orange)', fontWeight: '700' }}>
                     {ev.precio != null ? `${ev.precio} €` : "Gratuito"}
                   </p>
-                  {ev.categoria && <p className="item-extra">{ev.categoria}</p>}
-                  {ev.description && (
-                    <p className="item-extra">
-                      {ev.description.substring(0, 60)}...
-                    </p>
-                  )}
                 </div>
                 {isOwnProfile && (
                   <div className="item-actions">
-                    <button
-                      className="btn-item-edit"
-                      onClick={() => navigate(`/events/${ev.id}/edit`)}
-                    >
+                    <button className="btn-item-edit" onClick={(e) => { e.stopPropagation(); navigate(`/events/${ev.id}/edit`); }}>
                       Editar
                     </button>
-                    <button
-                      className="btn-item-delete"
-                      onClick={() => handleDeleteEvent(ev.id)}
-                    >
+                    <button className="btn-item-delete" onClick={(e) => { e.stopPropagation(); handleDeleteEvent(ev.id); }}>
                       Eliminar
                     </button>
                   </div>
@@ -350,7 +330,7 @@ export default function Profile() {
     "Locales",
     "Eventos",
     "Valoraciones",
-    ...(isOwnProfile ? ["Calendario"] : []),
+    "Calendario",
   ];
 
   return (

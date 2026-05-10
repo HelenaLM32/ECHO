@@ -24,5 +24,10 @@ public interface EventService {
                         BigDecimal precio, String categoria, String linkEntradas,
                         MultipartFile img) throws ServiceException;
 
+        String updateEvent(Integer id, Integer requesterId, String title,
+                        String description, String startDate, String endDate,
+                        BigDecimal precio, String categoria, String linkEntradas,
+                        MultipartFile img, boolean removeImg, boolean removePrice) throws ServiceException;
+
         void deleteById(Integer id, Integer requesterId) throws ServiceException;
 }

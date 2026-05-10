@@ -2,8 +2,7 @@
     background-color: #FFFFFF;
     display: grid;
     grid-template-columns: 70% 30%;
-    min-height: 100vh; 
-    
+    min-height: 100vh;
 }
 
 .login-cont {

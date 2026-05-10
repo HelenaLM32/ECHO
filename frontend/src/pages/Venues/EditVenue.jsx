@@ -80,35 +80,38 @@ export default function EditVenue() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.name || !formData.address) {
-      setError("Nombre y dirección son obligatorios");
-      return;
-    }
-    setLoading(true);
-    setError("");
-    setSuccess("");
+  e.preventDefault();
 
-    const data = new FormData();
-    data.append("name",    formData.name);
-    data.append("address", formData.address);
-    if (formData.capacity) data.append("capacity", formData.capacity);
-    data.append("telefono", formData.telefono);
-    data.append("email",    formData.email);
-    data.append("sitioWeb", formData.sitioWeb);
-    data.append("horario",  formData.horario);
-    newImages.forEach((img) => { if (img) data.append("images", img); });
+  if (!formData.name || !formData.address) {
+    setError("Nombre y dirección son obligatorios");
+    return;
+  }
 
-    try {
-      await updateVenue(venueId, data);
-      setSuccess("Local actualizado correctamente");
-      setTimeout(() => navigate("/profile"), 1200);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+
+  setLoading(true);
+  setError("");
+  setSuccess("");
+
+  const data = new FormData();
+  data.append("name",    formData.name);
+  data.append("address", formData.address);
+  if (formData.capacity) data.append("capacity", formData.capacity);
+  if (formData.telefono) data.append("telefono", formData.telefono);
+  if (formData.email)    data.append("email",    formData.email);
+  if (formData.sitioWeb) data.append("sitioWeb", formData.sitioWeb);
+  if (formData.horario)  data.append("horario",  formData.horario);
+  newImages.forEach((img) => { if (img) data.append("images", img); });
+
+  try {
+    await updateVenue(venueId, data);
+    setSuccess("Local actualizado correctamente");
+    setTimeout(() => navigate("/profile"), 1200);
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   if (fetchLoading) return <div className="profile-page-loading">Cargando local...</div>;
 
@@ -165,7 +168,8 @@ export default function EditVenue() {
           </div>
 
           <div className="event-card">
-            <h2 className="event-section-title">Información de contacto</h2>
+            <h2 className="event-section-title">Información de contacto </h2>
+
 
             <div className="field-group">
               <label>Teléfono de contacto</label>

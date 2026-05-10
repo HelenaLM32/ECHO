@@ -87,47 +87,50 @@ export default function EditEvent() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!form.title || !form.venueId || !form.startDate || !form.endDate) {
-      setError("Título, local y fechas son obligatorios");
-      return;
-    }
-    if (new Date(form.startDate) >= new Date(form.endDate)) {
-      setError("La fecha de inicio debe ser anterior a la fecha de fin");
-      return;
-    }
-    if (form.precio !== "" && (isNaN(parseFloat(form.precio)) || parseFloat(form.precio) < 0)) {
-      setError("El precio debe ser un número positivo");
-      return;
-    }
+  e.preventDefault();
+  if (!form.title || !form.venueId || !form.startDate || !form.endDate) {
+    setError("Título, local y fechas son obligatorios");
+    return;
+  }
+  if (new Date(form.startDate) >= new Date(form.endDate)) {
+    setError("La fecha de inicio debe ser anterior a la fecha de fin");
+    return;
+  }
+  if (form.precio !== "" && (isNaN(parseFloat(form.precio)) || parseFloat(form.precio) < 0)) {
+    setError("El precio debe ser un número positivo");
+    return;
+  }
 
-    setLoading(true);
-    setError("");
-    setSuccess("");
+  setLoading(true);
+  setError("");
+  setSuccess("");
 
-    try {
-      await updateEvent(
-        eventId,
-        {
-          title:        form.title,
-          description:  form.description,
-          venueId:      parseInt(form.venueId),
-          startDate:    form.startDate,
-          endDate:      form.endDate,
-          precio:       form.precio       !== "" ? parseFloat(form.precio) : undefined,
-          categoria:    form.categoria    || undefined,
-          linkEntradas: form.linkEntradas || undefined,
-        },
-        imgFile
-      );
-      setSuccess("Evento actualizado correctamente");
-      setTimeout(() => navigate("/profile"), 1200);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const imageWasRemoved = existingImg === null && imgFile === null;
+
+  try {
+    await updateEvent(
+      eventId,
+      {
+        title:        form.title,
+        description:  form.description,  
+        venueId:      parseInt(form.venueId),
+        startDate:    form.startDate,
+        endDate:      form.endDate,
+        precio:       form.precio !== "" ? parseFloat(form.precio) : null,
+        categoria:    form.categoria    || undefined,
+        linkEntradas: form.linkEntradas || undefined,
+      },
+      imgFile,
+      imageWasRemoved 
+    );
+    setSuccess("Evento actualizado correctamente");
+    setTimeout(() => navigate("/profile"), 1200);
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   if (fetchLoading) return <div className="profile-page-loading">Cargando evento...</div>;
 

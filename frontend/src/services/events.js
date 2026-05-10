@@ -30,16 +30,28 @@ export const createEvent = async (data, imgFile) => {
   return res.json();
 };
 
-export const updateEvent = async (eventId, data, imgFile) => {
+export const updateEvent = async (eventId, data, imgFile, removeImg = false) => {
   const formData = new FormData();
-  if (data.title)                        formData.append("title",        data.title);
-  if (data.description !== undefined)    formData.append("description",  data.description);
-  if (data.startDate)                    formData.append("startDate",    data.startDate);
-  if (data.endDate)                      formData.append("endDate",      data.endDate);
-  if (data.precio      !== undefined)    formData.append("precio",        data.precio);
-  if (data.categoria)                    formData.append("categoria",    data.categoria);
-  if (data.linkEntradas)                 formData.append("linkEntradas", data.linkEntradas);
-  if (imgFile)                           formData.append("img",          imgFile);
+
+  if (data.title)       formData.append("title",       data.title);
+  formData.append("description", data.description ?? "");
+  if (data.startDate)   formData.append("startDate",   data.startDate);
+  if (data.endDate)     formData.append("endDate",      data.endDate);
+
+  if (data.precio !== undefined && data.precio !== null) {
+    formData.append("precio", data.precio);
+  } else {
+    formData.append("removePrice", "true"); 
+  }
+
+  if (data.categoria)    formData.append("categoria",    data.categoria);
+  if (data.linkEntradas) formData.append("linkEntradas", data.linkEntradas);
+
+  if (imgFile) {
+    formData.append("img", imgFile);
+  } else if (removeImg) {
+    formData.append("removeImg", "true");
+  }
 
   const res = await fetchWithToken(`/events/${eventId}`, {
     method: "PUT",

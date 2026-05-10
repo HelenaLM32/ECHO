@@ -123,7 +123,7 @@ public class EventServiceImpl implements EventService {
     public String updateEvent(Integer id, Integer requesterId, String title,
             String description, String startDate, String endDate,
             BigDecimal precio, String categoria, String linkEntradas,
-            MultipartFile img) throws ServiceException {
+            MultipartFile img, boolean removeImg, boolean removePrice) throws ServiceException {
         try {
             EventDTO dto = eventRepository.findById(id)
                     .orElseThrow(() -> new ServiceException("Evento " + id + " no encontrado"));
@@ -137,9 +137,13 @@ public class EventServiceImpl implements EventService {
             if (title != null && !title.isBlank())
                 if (event.setTitle(title) != 0)
                     errors.append("title inválido; ");
-            if (description != null)
-                if (event.setDescription(description) != 0)
+
+            if (description != null) {
+                String descToSet = description.trim().isEmpty() ? null : description;
+                if (event.setDescription(descToSet) != 0)
                     errors.append("description demasiado larga; ");
+            }
+
             if (startDate != null && !startDate.isBlank()) {
                 try {
                     if (event.setStartDate(LocalDateTime.parse(startDate.trim(), FLEXIBLE_DT)) != 0)
@@ -156,8 +160,14 @@ public class EventServiceImpl implements EventService {
                     errors.append("formato endDate inválido; ");
                 }
             }
-            if (precio != null && event.setPrecio(precio) != 0)
-                errors.append("precio inválido; ");
+
+            if (removePrice) {
+                event.setPrecio(null);
+            } else if (precio != null) {
+                if (event.setPrecio(precio) != 0)
+                    errors.append("precio inválido; ");
+            }
+
             if (categoria != null && event.setCategoria(categoria) != 0)
                 errors.append("categoria inválida; ");
             if (linkEntradas != null && event.setLinkEntradas(linkEntradas) != 0)
@@ -174,8 +184,11 @@ public class EventServiceImpl implements EventService {
             dto.setCategoria(event.getCategoria());
             dto.setLinkEntradas(event.getLinkEntradas());
 
-            if (img != null && !img.isEmpty())
+            if (removeImg) {
+                dto.setImg(null);
+            } else if (img != null && !img.isEmpty()) {
                 dto.setImg(fileStorageService.store(img, "events"));
+            }
 
             return mapper.writeValueAsString(eventRepository.save(dto));
 
@@ -186,6 +199,15 @@ public class EventServiceImpl implements EventService {
         } catch (Exception e) {
             throw new ServiceException("Error al actualizar evento: " + e.getMessage());
         }
+    }
+
+    @Override
+    public String updateEvent(Integer id, Integer requesterId, String title,
+            String description, String startDate, String endDate,
+            BigDecimal precio, String categoria, String linkEntradas,
+            MultipartFile img) throws ServiceException {
+        return updateEvent(id, requesterId, title, description, startDate, endDate,
+                precio, categoria, linkEntradas, img, false, false);
     }
 
     @Override
