@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getProjectById, deleteProject, deleteProjectComment } from '../../services/projects'
 import './ProjectEditor.css'
@@ -54,8 +54,9 @@ export default function ProjectView({ projectId, onClose }) {
   const [error, setError] = useState(null)
   const [profile, setProfile] = useState(null)
   const [commentsList, setCommentsList] = useState([])
-  const { user } = useAuth()
+  const { user, loadingContext } = useAuth()
   const { confirmState, showConfirm, handleConfirm, handleCancel } = useConfirmPopup()
+  const hasIncrementedView = useRef(false)
 
   const isProjectOwner = !!project?.item?.creatorId && user?.id === project.item.creatorId
   const isAdmin = !!user?.roles?.includes('ADMIN')
@@ -85,13 +86,44 @@ export default function ProjectView({ projectId, onClose }) {
       .catch(() => setCommentsList([]))
   }, [project?.id])
 
-  // increment views once when project is loaded in the preview
+  // increment views once when project is loaded in the preview (only for logged users)
   useEffect(() => {
-    if (!project) return
-    fetch(`${API_URL}/item-projects/${project.id}/views`, { method: 'POST' })
+    if (loadingContext || !project?.id || hasIncrementedView.current) return
+    // Only count views for authenticated users
+    if (!user?.id) {
+      hasIncrementedView.current = true
+      return
+    }
+    hasIncrementedView.current = true
+    const token = sessionStorage.getItem('token')
+    fetch(`${API_URL}/item-projects/${project.id}/views`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
       .then((r) => r.ok ? r.json() : null)
       .then((data) => { if (data) setProject(data) })
       .catch(() => { })
+  }, [project?.id, user?.id, loadingContext])
+
+  // Poll for updated views count every 30 seconds to show real-time updates
+  useEffect(() => {
+    if (!project?.id) return
+    
+    const pollViews = () => {
+      fetch(`${API_URL}/item-projects/${project.id}`)
+        .then((r) => r.ok ? r.json() : null)
+        .then((data) => {
+          if (data && data.views !== undefined) {
+            setProject(prev => prev ? { ...prev, views: data.views } : prev)
+          }
+        })
+        .catch(() => { })
+    }
+
+    // Poll every 30 seconds
+    const interval = setInterval(pollViews, 30000)
+    
+    return () => clearInterval(interval)
   }, [project?.id])
 
   const [isLiked, setIsLiked] = useState(false)

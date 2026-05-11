@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useServices } from "../../hooks/useServices";
+import { createService } from "../../services/servicesApi";
 import { getCategories } from "../../services/projects";
+import { uploadFile } from "../../services/uploads";
 import ServiceProjectPicker from "../../components/ServiceProjectPicker/ServiceProjectPicker";
 import Footer from "../../components/Footer/Footer";
 import "./Services.css";
 
 export default function ServiceCreate() {
   const navigate = useNavigate();
-  const { addService } = useServices();
+  const token = sessionStorage.getItem('token');
   
   const [form, setForm] = useState({
     name: "",
@@ -74,6 +75,13 @@ export default function ServiceCreate() {
     setError("");
     
     try {
+      // Subir imagen primero si existe
+      let coverImageUrl = null;
+      if (imgFile) {
+        coverImageUrl = await uploadFile(imgFile, 'images');
+      }
+      
+      // Preparar datos para enviar
       const submitData = {
         name: form.name,
         description: form.description,
@@ -81,10 +89,16 @@ export default function ServiceCreate() {
         categoryId: parseInt(form.categoryId),
         price: parseFloat(form.price),
         projectIds: form.projectIds.map(id => Number(id)),
-        coverImageFile: imgFile
+        coverImageUrl: coverImageUrl
       };
       
-      await addService(submitData);
+      const response = await createService(submitData, token);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Error al crear el servicio");
+      }
+      
       navigate("/profile");
     } catch (err) {
       setError(err.message || "Error al crear el servicio");

@@ -2,7 +2,7 @@ import { fetchApi, fetchWithToken } from "./config";
 import { uploadFile } from './uploads'
 
 async function createItem(itemPayload) {
-  const res = await fetchApi('/items/register', {
+  const res = await fetchWithToken('/items/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(itemPayload),
@@ -30,7 +30,7 @@ async function createProject(projectPayload) {
   if (payload.background && typeof payload.background !== 'string') payload.background = JSON.stringify(payload.background)
 
   const body = JSON.stringify(payload)
-  const res = await fetchApi('/item-projects/register', {
+  const res = await fetchWithToken('/item-projects/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body,

@@ -9,8 +9,10 @@ export const BLOCK_TYPES = {
   AUDIO: 'AUDIO',
 }
 
+let blockIdCounter = 0
+
 export function createBlock(type) {
-  const base = { id: crypto.randomUUID(), type }
+  const base = { id: ++blockIdCounter, type }
   switch (type) {
     case BLOCK_TYPES.TEXT: return { ...base, content: '' }
     case BLOCK_TYPES.IMAGE: return { ...base, src: '', caption: '' }

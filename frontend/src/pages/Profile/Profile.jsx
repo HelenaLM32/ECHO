@@ -142,6 +142,26 @@ export default function Profile() {
     loadTabContent();
   }, [activeTab, targetId, profile]);
 
+  // Poll for updated projects every 30 seconds to refresh views/likes in real-time
+  useEffect(() => {
+    if (activeTab !== "Proyectos" || !targetId) return;
+
+    const pollProjects = async () => {
+      try {
+        const updatedProjects = await getProjectsByUserId(targetId);
+        if (updatedProjects && Array.isArray(updatedProjects)) {
+          setProjects((prev) => {
+            const updatedMap = new Map(updatedProjects.map((p) => [p.id, p]));
+            return prev.map((p) => updatedMap.get(p.id) || p);
+          });
+        }
+      } catch { }
+    };
+
+    const interval = setInterval(pollProjects, 30000);
+    return () => clearInterval(interval);
+  }, [activeTab, targetId]);
+
   const handleBannerChange = async (e) => {
     const file = e.target.files[0];
     if (!file || !isOwnProfile) return;
