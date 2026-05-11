@@ -135,7 +135,7 @@ export default function Editor() {
             <div className="emptyProjectCard">
               <div className="emptyProjectTitle">
                 <span>CONSTRUYE</span>
-                <strong>TU PROYECTO</strong>
+                <strong>TU <b>PROYECTO</b></strong>
               </div>
               <div className="emptyProjectActions">
                 {emptyActions.map((action) => (

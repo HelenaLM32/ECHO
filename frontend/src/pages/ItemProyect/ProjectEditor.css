@@ -2,7 +2,12 @@
 
 .layoutPage {
   display: flex;
-  min-height: 100vh;
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
   background: var(--white, #ffffff);
   color: var(--black, #282828);
   gap: 0;
@@ -13,6 +18,14 @@
   min-width: 0;
   padding: 28px;
   background: transparent;
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.editorArea::-webkit-scrollbar {
+  display: none;
 }
 
 .sidebarPanel {
@@ -21,10 +34,15 @@
   background: var(--white, #ffffff);
   border-left: 1px solid var(--gray-stroke, #e0e0e0);
   padding: 28px 24px;
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  height: 100%;
   box-sizing: border-box;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.sidebarPanel::-webkit-scrollbar {
+  display: none;
 }
 
 .sidebarContent {
@@ -99,7 +117,28 @@
   text-align: left;
   cursor: pointer;
   color: var(--black, #282828);
+  background: var(--true-white, #ffffff);
   border: 1px solid var(--gray-stroke, #e0e0e0);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.sidebarButton:hover {
+  background: var(--white, #f8f8f8);
+  border-color: var(--gray-dark, #dbdbdb);
+}
+
+.sidebarButtonIcon {
+  font-size: 16px;
+  color: var(--orange, #E95E23);
+  transition: color 0.2s ease;
+}
+
+.sidebarButton:hover .sidebarButtonIcon {
+  color: var(--orange-secondary, #EB7C4D);
+}
+
+.sidebarButtonText {
+  color: var(--black, #282828);
 }
 
 .sidebarButtonIcon {
@@ -397,14 +436,24 @@
 .modalButton {
   padding: 10px 18px;
   border-radius: 20px;
-  border: 1px solid var(--gray-stroke, #e0e0e0);
-  background: var(--white, #fff);
+  font-size: 0.95rem;
   cursor: pointer;
-  font-weight: 600;
 }
 
 .modalSave {
   background: var(--orange, #E95E23);
+  color: var(--true-white, #ffffff);
+  border: 1px solid var(--orange, #E95E23);
+}
+
+.modalCancel {
+  background: transparent;
+  color: var(--black, #282828);
+  border: 1px solid var(--gray-stroke, #e0e0e0);
+}
+
+.modalSave:hover {
+  background: var(--black-secondary);
   color: var(--true-white, #ffffff);
   border-color: transparent;
 }
@@ -460,51 +509,58 @@
   background: #b91c1c;
 }
 
-.previewContentList {
+.previewImageWrapper {
   display: flex;
-  flex-direction: column;
-  gap: 18px;
-  margin: 0 auto;
+  justify-content: center;
   align-items: center;
 }
 
-.previewEmptyMessage {
-  text-align: center;
-  color: var(--black-secondary, #353535);
-  padding: 48px 20px;
-  font-size: 1rem;
+.previewImageContent {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border-radius: 14px;
 }
 
-.previewTextContent,
-.previewGalleryGrid,
-.previewVideoWrapper,
-.previewEmbedContainer {
+.previewVideoWrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.previewVideoWrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-}
-
-.previewImageWrapper {
-  width: fit-content;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  height: 100%;
+  border: none;
+  border-radius: 14px;
 }
 
 .previewGalleryGrid {
   display: grid;
   gap: 12px;
-  width: 100%;
 }
 
-.previewGalleryImage {
+.previewGalleryGrid img {
   width: 100%;
-  aspect-ratio: 1;
+  height: auto;
   object-fit: cover;
+  border-radius: 14px;
 }
 
-.previewVideoWrapper iframe {
-  width: 100%;
-  min-height: 240px;
-  border: 1px solid var(--gray-stroke, #e0e0e0);
+.previewTextContent {
+  text-align: left;
+}
+
+.previewVideo {
+  max-width: 100%;
+  height: auto;
+  border-radius: 14px;
 }
 
 .previewAudioPlayer {
@@ -515,13 +571,30 @@
 @media (max-width: 1080px) {
   .layoutPage {
     flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .editorArea {
+    height: auto;
+    min-height: 50vh;
+    overflow-y: visible;
   }
 
   .sidebarPanel {
     position: relative;
     width: 100%;
     height: auto;
+    max-height: 40vh;
     border-left: none;
     border-top: 1px solid var(--gray-stroke, #e0e0e0);
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .sidebarPanel::-webkit-scrollbar {
+    display: none;
   }
 }

@@ -23,6 +23,7 @@ function ProjectSidebar({ onPreview }) {
   const setBlockGap = useProjectStore((s) => s.setBlockGap)
   const blockBorderRadius = useProjectStore((s) => s.blockBorderRadius)
   const setBlockBorderRadius = useProjectStore((s) => s.setBlockBorderRadius)
+  const [showAddContent, setShowAddContent] = useState(false)
   const [showEditProject, setShowEditProject] = useState(false)
   const [showCustomizeStyles, setShowCustomizeStyles] = useState(false)
   const colorInputRef = useRef(null)
@@ -118,17 +119,26 @@ function ProjectSidebar({ onPreview }) {
 
   return (
     <div className="sidebarContent">
-      <h3 className="sidebarHeading">Añadir contenido</h3>
-      <div className="sidebarButtonGrid">
-        {Object.values(BLOCK_TYPES).map((type) => {
-          const meta = BLOCK_META[type]
-          return (
-            <button key={type} className="sidebarButton" onClick={() => handleClick(type)}>
-              <img src={`/project/${meta.icon}`} className="sidebarButtonIcon" alt={meta.label} />
-              <span className="sidebarButtonText">{meta.label}</span>
-            </button>
-          )
-        })}
+      {/* ── Add Content Dropdown ─────────────── */}
+      <div className="editSection">
+        <button className="editProjectButton" onClick={() => setShowAddContent(!showAddContent)}>
+          Añadir contenido {showAddContent ? '▲' : '▼'}
+        </button>
+        {showAddContent && (
+          <div className="backgroundPanel">
+            <div className="sidebarButtonGrid">
+              {Object.values(BLOCK_TYPES).map((type) => {
+                const meta = BLOCK_META[type]
+                return (
+                  <button key={type} className="sidebarButton" onClick={() => handleClick(type)}>
+                    <img src={`/project/${meta.icon}`} className="sidebarButtonIcon" alt={meta.label} />
+                    <span className="sidebarButtonText">{meta.label}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ── Edit Project Button ─────────────── */}
