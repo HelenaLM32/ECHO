@@ -53,6 +53,43 @@ function ServiceDetail({ service, onClose }) {
     loadCreatorData();
   }, [service?.creatorId, service?.projects]);
 
+  // Poll for updated projects every 30 seconds to refresh views/likes in real-time
+  useEffect(() => {
+    if (!service?.creatorId) return;
+
+    const pollProjects = async () => {
+      try {
+        const projects = await getProjectsByUserId(service.creatorId);
+        if (projects && Array.isArray(projects)) {
+          setCreatorProjects((prev) => {
+            const updatedMap = new Map(projects.map((p) => [p.id, p]));
+            return prev.map((p) => updatedMap.get(p.id) || p);
+          });
+        }
+        
+        // Also refresh full service projects if they exist
+        if (service?.projects?.length > 0) {
+          const fullProjects = [];
+          for (const projectSummary of service.projects) {
+            try {
+              const fullProject = await getProjectById(projectSummary.id);
+              fullProjects.push(fullProject);
+            } catch {
+              // Silently skip failed project loads
+            }
+          }
+          setFullServiceProjects((prev) => {
+            const updatedMap = new Map(fullProjects.map((p) => [p.id, p]));
+            return prev.map((p) => updatedMap.get(p.id) || p);
+          });
+        }
+      } catch { }
+    };
+
+    const interval = setInterval(pollProjects, 30000);
+    return () => clearInterval(interval);
+  }, [service?.creatorId, service?.projects]);
+
   if (!service) return null;
 
   const price = parsePrice(service.price ?? service.basePrice);

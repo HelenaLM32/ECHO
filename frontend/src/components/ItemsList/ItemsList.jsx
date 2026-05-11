@@ -39,6 +39,26 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
       .finally(() => setLoading(false));
   }, [contentType]);
 
+  // Poll for updated projects every 30 seconds to refresh views/likes in real-time
+  useEffect(() => {
+    const pollProjects = () => {
+      getAllProjects()
+        .then((list) => {
+          if (list && Array.isArray(list)) {
+            setProjects((prev) => {
+              // Merge new data while preserving order
+              const updatedMap = new Map(list.map((p) => [p.id, p]));
+              return prev.map((p) => updatedMap.get(p.id) || p);
+            });
+          }
+        })
+        .catch(() => { });
+    };
+
+    const interval = setInterval(pollProjects, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   const normalizedSearch = searchQuery.trim().toLowerCase();
 
   const filteredItems = items
