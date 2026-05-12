@@ -24,11 +24,13 @@ export default function ProjectCard({ project, onOpen, small = false }) {
   const initials = creatorName.charAt(0).toUpperCase()
   const likes = project?.likes || 0
   const views = project?.views || 0
+  const price = project?.item?.basePrice
 
   return (
     <button type="button" className={`pc-card-wrapper pc-card-button ${small ? 'pc-card--small' : ''}`} onClick={() => onOpen(project.id)}>
       <article className="pc-card">
         <div className="pc-cover">
+          {price ? <div className="pc-price-top">{price.toFixed(2)}€</div> : <div className="pc-price-top">Gratis</div>}
           {cover ? <img src={cover} alt={title} className="pc-cover-img" /> : <div className="pc-cover-fallback">{title?.charAt(0)?.toUpperCase() || 'P'}</div>}
         </div>
         <div className="pc-footer">

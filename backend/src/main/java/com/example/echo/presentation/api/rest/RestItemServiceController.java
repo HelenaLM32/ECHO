@@ -15,12 +15,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/services")
-public class ItemServiceController {
+public class RestItemServiceController {
 
     private final ItemServiceService itemServiceService;
     private final UserRepository userRepository;
 
-    public ItemServiceController(ItemServiceService itemServiceService, UserRepository userRepository) {
+    public RestItemServiceController(ItemServiceService itemServiceService, UserRepository userRepository) {
         this.itemServiceService = itemServiceService;
         this.userRepository = userRepository;
     }
@@ -74,6 +74,12 @@ public class ItemServiceController {
         // Since it's public, but to get services by user, need to add method in service
         // For now, assume we add a method getByCreatorId
         List<ItemServiceResponse> responses = itemServiceService.getByCreatorId(userId);
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ItemServiceResponse>> getAll() {
+        List<ItemServiceResponse> responses = itemServiceService.getAllServices();
         return ResponseEntity.ok(responses);
     }
 }

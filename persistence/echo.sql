@@ -266,3 +266,12 @@ CREATE TABLE venue_event_reviews (
     created_at  TIMESTAMP   DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uq_author_target (author_id, target_id, target_type)
 );
+
+-- Migration: Make base_price nullable to allow free items
+ALTER TABLE items MODIFY COLUMN base_price DOUBLE NULL;
+
+-- Migration: Remove price column from item_services (use item.base_price instead)
+ALTER TABLE item_services DROP COLUMN price;
+
+-- Migration: Remove block_border_radius column (feature removed)
+ALTER TABLE item_projects DROP COLUMN block_border_radius;

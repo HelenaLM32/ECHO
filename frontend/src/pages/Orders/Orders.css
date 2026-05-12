@@ -30,7 +30,7 @@
 }
 
 .orders-error {
-  color: #ff6b6b;
+  color: var(--error);
 }
 
 .orders-list {
@@ -101,10 +101,10 @@
   margin-bottom: 0.25rem;
 }
 
-.order-card__status--pending     { background: rgba(255, 200, 0, 0.15);  color: #ffc800; }
-.order-card__status--in_progress { background: rgba(0, 180, 255, 0.15);  color: #00b4ff; }
-.order-card__status--completed   { background: rgba(0, 200, 100, 0.15);  color: #00c864; }
-.order-card__status--cancelled   { background: rgba(255, 80, 80, 0.15);  color: #ff5050; }
+.order-card__status--pending     { background: var(--status-pending-bg);  color: var(--status-pending); }
+.order-card__status--in_progress { background: var(--status-in-progress-bg);  color: var(--status-in-progress); }
+.order-card__status--completed   { background: var(--status-completed-bg);  color: var(--status-completed); }
+.order-card__status--cancelled   { background: var(--status-cancelled-bg);  color: var(--status-cancelled); }
 
 
 .order-card__link {
@@ -132,8 +132,8 @@
 .order-card__dispute-btn {
   flex-shrink: 0;
   padding: 0.5rem 1rem;
-  background: #dc3545;
-  color: var(--white);
+  background: var(--orange);
+  color: var(--true-white);
   border: none;
   border-radius: 6px;
   font-size: 0.825rem;
@@ -143,5 +143,5 @@
 }
 
 .order-card__dispute-btn:hover {
-  background: #c82333;
+  background: var(--orange-secondary);
 }

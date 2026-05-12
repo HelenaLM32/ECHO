@@ -27,17 +27,17 @@
 }
 
 .status-badge.open {
-  background-color: #ffc107;
-  color: #000;
+  background-color: var(--status-pending);
+  color: var(--black-new);
 }
 
 .status-badge.closed {
-  background-color: #28a745;
-  color: #fff;
+  background-color: var(--success);
+  color: var(--true-white);
 }
 
 .dispute-reason {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: var(--white);
   padding: 15px;
   border-radius: 4px;
   margin: 15px 0;
@@ -50,11 +50,11 @@
 }
 
 .dispute-resolution {
-  background-color: rgba(40, 167, 69, 0.1);
+  background-color: var(--success-light);
   padding: 15px;
   border-radius: 4px;
   margin: 15px 0;
-  border-left: 4px solid #28a745;
+  border-left: 4px solid var(--success);
 }
 
 .dispute-messages {
@@ -62,7 +62,7 @@
 }
 
 .messages-list {
-  background-color: #f0f0f0;
+  background-color: var(--gray);
   border-radius: 4px;
   max-height: 400px;
   overflow-y: auto;
@@ -70,11 +70,11 @@
 }
 
 .message-item {
-  background-color: white;
+  background-color: var(--true-white);
   padding: 12px;
   margin: 8px 0;
   border-radius: 4px;
-  border-left: 3px solid var(--primary-color);
+  border-left: 3px solid var(--orange);
 }
 
 .message-header {
@@ -85,7 +85,7 @@
 }
 
 .message-date {
-  color: #666;
+  color: var(--black-secondary);
   font-size: 0.85em;
 }
 
@@ -98,7 +98,7 @@
 .close-form {
   margin-top: 20px;
   padding: 15px;
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: var(--white);
   border-radius: 4px;
 }
 
@@ -117,7 +117,7 @@
   margin-top: 10px;
   padding: 10px 20px;
   background-color: var(--orange);
-  color: white;
+  color: var(--true-white);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -132,14 +132,14 @@
 .close-dispute-section {
   margin-top: 20px;
   padding: 15px;
-  background-color: rgba(220, 53, 69, 0.05);
+  background-color: var(--error-light);
   border-radius: 4px;
 }
 
 .btn-close-dispute {
   padding: 10px 20px;
-  background-color: #dc3545;
-  color: white;
+  background-color: var(--orange);
+  color: var(--true-white);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -147,7 +147,7 @@
 }
 
 .btn-close-dispute:hover {
-  background-color: #c82333;
+  background-color: var(--orange-secondary);
 }
 
 .form-actions {
@@ -166,13 +166,13 @@
 }
 
 .form-actions button[type="submit"] {
-  background-color: #28a745;
-  color: white;
+  background-color: var(--success);
+  color: var(--true-white);
 }
 
 .form-actions button[type="button"] {
-  background-color: #6c757d;
-  color: white;
+  background-color: var(--gray-dark-secondary);
+  color: var(--true-white);
 }
 
 .form-actions button:hover {
@@ -194,7 +194,7 @@
 }
 
 .modal-content {
-  background-color: white;
+  background-color: var(--true-white);
   border-radius: 8px;
   padding: 30px;
   max-width: 500px;
@@ -222,7 +222,7 @@
   font-size: 28px;
   cursor: pointer;
   background-color: var(--orange);
-  color: var(--black);
+  color: var(--true-white);
   padding: 0;
   width: 30px;
   height: 30px;
@@ -232,7 +232,7 @@
 }
 
 .close-btn:hover {
-  color: #000;
+  color: var(--true-white);
 }
 
 .form-group {
@@ -264,12 +264,12 @@
 }
 
 .error-message {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: var(--error-light);
+  color: var(--error);
   padding: 12px;
   border-radius: 4px;
   margin-bottom: 15px;
-  border: 1px solid #f5c6cb;
+  border: 1px solid var(--error-medium);
 }
 
 .modal-actions {
@@ -290,8 +290,8 @@
 }
 
 .btn-primary {
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--orange);
+  color: var(--true-white);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -304,12 +304,12 @@
 }
 
 .btn-secondary {
-  background-color: #e9ecef;
-  color: #495057;
+  background-color: var(--gray);
+  color: var(--black);
 }
 
 .btn-secondary:hover {
-  background-color: #dee2e6;
+  background-color: var(--gray-stroke);
 }
 
 .loading {
@@ -319,8 +319,8 @@
 }
 
 .error {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: var(--error-light);
+  color: var(--error);
   padding: 15px;
   border-radius: 4px;
   margin: 15px 0;

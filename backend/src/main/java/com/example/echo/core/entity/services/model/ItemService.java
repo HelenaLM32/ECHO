@@ -30,9 +30,6 @@ public class ItemService {
     @Column(nullable = false, length = 100)
     private String category;
 
-    @Column(nullable = false)
-    private Double price;
-
     @Column(name = "cover_image_url", length = 500)
     private String coverImageUrl;
 
@@ -95,14 +92,6 @@ public class ItemService {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
     }
 
     public String getCoverImageUrl() {

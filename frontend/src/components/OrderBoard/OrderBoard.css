@@ -95,7 +95,7 @@
 
 .ob-error {
   font-size: 0.82rem;
-  color: #ff6b6b;
+  color: var(--error);
   margin: 0;
 }
 

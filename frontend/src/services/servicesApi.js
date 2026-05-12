@@ -32,3 +32,11 @@ export const getMyServices = (token) => {
 export const getServiceById = (id) => {
   return fetchApi(`/services/${id}`);
 };
+
+export const getAllServices = async () => {
+  const res = await fetchApi('/services');
+  if (!res.ok) throw new Error(await res.text());
+  const data = await res.json();
+  // Ensure we always return an array
+  return Array.isArray(data) ? data : [];
+};

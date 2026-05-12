@@ -21,7 +21,7 @@ public class Item {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "base_price", nullable = false)
+    @Column(name = "base_price")
     private Double basePrice;
 
     /**
@@ -114,7 +114,12 @@ public class Item {
     }
 
     protected int setBasePrice(Double basePrice) {
-        if (basePrice != null && Check.isPositive(basePrice)) {
+        // Price is optional - null or >= 0 is valid
+        if (basePrice == null) {
+            this.basePrice = null;
+            return 0;
+        }
+        if (basePrice >= 0) {
             this.basePrice = basePrice;
             return 0;
         }

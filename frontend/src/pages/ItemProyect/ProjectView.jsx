@@ -268,6 +268,7 @@ export default function ProjectView({ projectId, onClose }) {
               likes={project?.likes || 0}
               views={project?.views || 0}
               comments={project?.comments || 0}
+              price={project?.item?.basePrice}
               commentItems={commentsList}
               onLike={handleToggleLike}
               onSubmitComment={handleAddComment}

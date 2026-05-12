@@ -1,4 +1,4 @@
-package com.example.echo.infrastructure.api;
+package com.example.echo.presentation.api.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ import com.example.echo.core.entity.user.persistence.UserRepository;
 
 @RestController
 @RequestMapping("/disputes")
-public class DisputeController {
+public class RestDisputeController {
 
     @Autowired
     private DisputeService disputeService;
