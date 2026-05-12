@@ -153,6 +153,28 @@
   margin: 0;
 }
 
+/* ── Botón de encargo ── */
+.service-detail-order-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 12px 26px;
+  background: var(--orange);
+  color: var(--true-white);
+  border: none;
+  border-radius: 100px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  font-family: inherit;
+}
+
+.service-detail-order-btn:hover {
+  opacity: 0.88;
+}
+
 .service-detail-creator {
   border-top: 1px solid var(--gray-stroke);
   padding-top: 24px;

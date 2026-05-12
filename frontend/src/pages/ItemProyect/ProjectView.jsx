@@ -4,6 +4,7 @@ import { getProjectById, deleteProject, deleteProjectComment } from '../../servi
 import './ProjectEditor.css'
 import { BLOCK_TYPES, toEmbedUrl, parseJsonSafe } from './store/useProjectStore'
 import ProjectFooter from '../../components/ProjectFooter/ProjectFooter'
+import OrderModal from '../../components/OrderModal/OrderModal'
 import { API_URL } from '../../services/config'
 import { useAuth } from '../../context/AuthContext'
 import { PopupConfirm, useConfirmPopup } from '../../components/PopupConfirm/PopupConfirm'
@@ -60,6 +61,9 @@ export default function ProjectView({ projectId, onClose }) {
   const isProjectOwner = !!project?.item?.creatorId && user?.id === project.item.creatorId
   const isAdmin = !!user?.roles?.includes('ADMIN')
   const canDeleteProject = isAdmin || isProjectOwner
+  const canOrder = !!user && !isProjectOwner
+
+  const [showOrderModal, setShowOrderModal] = useState(false)
 
   useEffect(() => {
     let mounted = true
@@ -246,6 +250,16 @@ export default function ProjectView({ projectId, onClose }) {
               isLiked={isLiked}
             />
           </div>
+          {canOrder && (
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 24px 28px' }}>
+              <button
+                className="pv-order-btn"
+                onClick={(e) => { e.stopPropagation(); setShowOrderModal(true); }}
+              >
+                Encargar proyecto
+              </button>
+            </div>
+          )}
         </div>
       </div>
       <PopupConfirm
@@ -255,6 +269,14 @@ export default function ProjectView({ projectId, onClose }) {
         message={confirmState.message}
         title={confirmState.title}
       />
+      {showOrderModal && (
+        <OrderModal
+          itemId={project.item?.id}
+          itemTitle={project.item?.title || 'Proyecto'}
+          basePrice={project.item?.basePrice ?? null}
+          onClose={() => setShowOrderModal(false)}
+        />
+      )}
     </>
   )
 }

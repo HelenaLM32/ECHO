@@ -454,6 +454,26 @@
   background: #b91c1c;
 }
 
+/* ── Botón encargar (ProjectView) ── */
+.pv-order-btn {
+  padding: 12px 32px;
+  background: var(--orange);
+  color: var(--true-white);
+  border: none;
+  border-radius: 100px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 6px 20px rgba(233, 94, 35, 0.35);
+}
+
+.pv-order-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
 .previewContentList {
   display: flex;
   flex-direction: column;

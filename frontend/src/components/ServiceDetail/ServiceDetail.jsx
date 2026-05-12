@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { getProfileByUserId } from '../../services/profile';
 import { getProjectsByUserId, getProjectById } from '../../services/projects';
 import ProjectCard from '../ProjectCard/ProjectCard';
+import OrderModal from '../OrderModal/OrderModal';
+import { useAuth } from '../../context/AuthContext';
 import './ServiceDetail.css';
 
 const parsePrice = (value) => {
@@ -11,10 +13,12 @@ const parsePrice = (value) => {
 };
 
 function ServiceDetail({ service, onClose }) {
+  const { user } = useAuth();
   const [creatorProfile, setCreatorProfile] = useState(null);
   const [creatorProjects, setCreatorProjects] = useState([]);
   const [fullServiceProjects, setFullServiceProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showOrderModal, setShowOrderModal] = useState(false);
 
   useEffect(() => {
     const loadCreatorData = async () => {
@@ -52,10 +56,12 @@ function ServiceDetail({ service, onClose }) {
   if (!service) return null;
 
   const price = parsePrice(service.price ?? service.basePrice);
+  const canOrder = user && user.id !== service.creatorId;
 
   return (
-    <div className="service-detail-overlay" onClick={onClose}>
-      <div className="service-detail-window" onClick={(e) => e.stopPropagation()}>
+    <>
+      <div className="service-detail-overlay" onClick={onClose}>
+        <div className="service-detail-window" onClick={(e) => e.stopPropagation()}>
         <button className="service-detail-close" onClick={onClose}>✕</button>
 
         <div className="service-detail-content">
@@ -86,6 +92,15 @@ function ServiceDetail({ service, onClose }) {
 
             {service.description && (
               <p className="service-detail-description">{service.description}</p>
+            )}
+
+            {canOrder && (
+              <button
+                className="service-detail-order-btn"
+                onClick={() => setShowOrderModal(true)}
+              >
+                Encargar servicio
+              </button>
             )}
 
             {creatorProfile && (
@@ -131,8 +146,18 @@ function ServiceDetail({ service, onClose }) {
             )}
           </div>
         </div>
+        </div>
       </div>
-    </div>
+
+      {showOrderModal && (
+        <OrderModal
+          itemId={service.id}
+          itemTitle={service.name || 'Servicio'}
+          basePrice={price > 0 ? price : null}
+          onClose={() => setShowOrderModal(false)}
+        />
+      )}
+    </>
   );
 }
 
