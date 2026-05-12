@@ -46,8 +46,28 @@
     font-size: 1.05rem;
     color: var(--gray-dark-secondary);
     line-height: 1.6;
-    max-width: 520px;
-    margin: 0 auto;
+    max-width: 700px;
+    margin: 0 auto 22px;
+}
+
+.about-hero-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.about-hero-pill {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: var(--true-white);
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 100px;
+    padding: 7px 12px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
 }
 
 /* ── Rows ── */
@@ -122,13 +142,39 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--gray-stroke);
-    font-size: 4rem;
+    border: 1px dashed var(--gray-dark-secondary);
+    background:
+        linear-gradient(135deg, rgba(233, 94, 35, 0.14), rgba(233, 94, 35, 0.03)),
+        repeating-linear-gradient(
+            -45deg,
+            transparent,
+            transparent 11px,
+            rgba(0, 0, 0, 0.04) 11px,
+            rgba(0, 0, 0, 0.04) 22px
+        );
+}
+
+.about-row-placeholder span {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--black-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
 }
 
 @media (max-width: 700px) {
+    .about-hero {
+        padding: 72px 20px 60px;
+    }
+
+    .about-sections {
+        padding: 54px 20px 72px;
+        gap: 58px;
+    }
+
     .about-row {
         grid-template-columns: 1fr;
+        gap: 28px;
     }
 
     .about-row--reverse {
