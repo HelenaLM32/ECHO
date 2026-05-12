@@ -1,5 +1,5 @@
 .login-container {
-    background-color: #FFFFFF;
+    background-color: var(--true-white);
     display: grid;
     grid-template-columns: 70% 30%;
     height: 100vh;
@@ -22,28 +22,28 @@
 }
 
 .login-cont input {
-    background-color: #F3F3F3;       
-    border: 1px solid #F3F3F3;       
+    background-color: var(--gray);       
+    border: 1px solid var(--gray);       
     border-radius: 25px;             
     height: 50px;                    
     padding: 0 20px;                  
-    color: #979797;                   
+    color: var(--gray-dark-secondary);                   
     font-size: 16px;             
 }
 
 .login-cont input:focus {
     outline: none;                                
-    border-color: #F3F3F3;                        
+    border-color: var(--gray);                        
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);     
 }
 
 .login-cont2 {
-    background-color: #282828;
+    background-color: var(--black);
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    color: #E95E23;
+    color: var(--orange);
 }
 
 .login-cont2 h1 {
@@ -52,7 +52,7 @@
     margin: 0;
     margin-bottom: -60px;    
     line-height: 1;
-    color: #E95E23;
+    color: var(--orange);
 }
 
 
@@ -66,27 +66,27 @@
 
 .btn-iniciar{
     margin-top: 60px;
-    background-color: #282828;       
-    border: 1px solid #282828;       
+    background-color: var(--black);       
+    border: 1px solid var(--black);       
     border-radius: 25px;             
     height: 50px;                    
     padding: 0 20px;                  
-    color: #FFFFFF;                   
+    color: var(--true-white);                   
     font-size: 16px;  
     transition: 0.3s ease;     
 
 }
 
 .btn-iniciar:hover:not(:disabled) {
-    background-color: #E95E23;
-    border-color: #E95E23;
+    background-color: var(--orange);
+    border-color: var(--orange);
     cursor: pointer;
 }
 
 
 .div-linia{
     height: 1px;
-    background-color: #282828;
+    background-color: var(--black);
     margin-top: 20px;
 }
 
@@ -101,14 +101,14 @@
 .circulo{
     width: 54px;
     height: 54px;
-    background-color: #282828;
+    background-color: var(--black);
     border-radius: 100%;
 }
 
 
 
 .register-text {
-    color: #282828;          
+    color: var(--black);          
     font-size: 16px;          
     font-family: Arial, sans-serif;
     margin-top: 50px;
@@ -117,14 +117,13 @@
 }
 
 .register-link {
-  color: #E95E23;           
+  color: var(--orange);           
   cursor: pointer;          
   font-weight: bold;  
   transition: 0.3s ease;      
 }
 
 .register-link:hover:not(:disabled) {
- color: #282828;
+ color: var(--black);
     cursor: pointer;    
 }
-

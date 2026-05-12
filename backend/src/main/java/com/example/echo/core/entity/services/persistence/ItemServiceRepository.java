@@ -6,10 +6,9 @@ import java.util.List;
 
 public interface ItemServiceRepository {
 
-    List<ItemService> findByCreatorId(Integer creatorId);
-
     List<ItemService> findAll();
 
+    List<ItemService> findByCreatorId(Integer creatorId);
 
     boolean existsByIdAndCreatorId(Long id, Integer creatorId);
 

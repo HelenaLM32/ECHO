@@ -37,7 +37,7 @@ public class ItemDTO {
     @JacksonXmlProperty(localName = "description")
     private String description;
 
-    @Column(name = "base_price", nullable = false)
+    @Column(name = "base_price")
     @JsonProperty("basePrice")
     @JacksonXmlProperty(localName = "base_price")
     private Double basePrice;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getProjectsByUserId } from '../../services/projects';
-import { BLOCK_TYPES, parseJsonSafe } from '../../pages/ItemProyect/store/useProjectStore';
+import { BLOCK_TYPES, parseJsonSafe } from '../../pages/ItemProject/store/useProjectStore';
 import './ServiceProjectPicker.css';
 
 function getCover(project) {

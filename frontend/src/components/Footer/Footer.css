@@ -6,6 +6,33 @@
 	overflow: hidden;
 }
 
+/* Dark mode footer override - gris medio con texto blanco */
+[data-theme="dark"] .app-footer {
+	background: #3a3a3a;
+	color: #f5f5f5;
+}
+
+[data-theme="dark"] .footer-left,
+[data-theme="dark"] .footer-tagline,
+[data-theme="dark"] .footer-contacts,
+[data-theme="dark"] .footer-bottom-left,
+[data-theme="dark"] .footer-links-small,
+[data-theme="dark"] .footer-links-small a,
+[data-theme="dark"] .footer-socials,
+[data-theme="dark"] .footer-socials a,
+[data-theme="dark"] .footer-watermark {
+	color: #f5f5f5;
+}
+
+[data-theme="dark"] .footer-wave {
+	background-color: #2a2a2a;
+}
+
+/* SVG de la ola en dark mode - mismo color que el footer */
+[data-theme="dark"] .footer-wave-path {
+	fill: #3a3a3a;
+}
+
 .footer-wave {
 	background-color: var(--white);
 	position: absolute;
@@ -15,6 +42,11 @@
 	height: 220px;
 	z-index: 2;
 	pointer-events: none;
+}
+
+/* Color de la ola en modo claro */
+.footer-wave-path {
+	fill: var(--black);
 }
 
 

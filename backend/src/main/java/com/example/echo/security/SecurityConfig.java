@@ -93,9 +93,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/events/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/events/**").authenticated()
 
-                        .requestMatchers(HttpMethod.GET, "/proyect").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/proyect/**").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/proyect").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/project").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/project/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/project").authenticated()
 
                         .requestMatchers(HttpMethod.GET, "/item-projects/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/item-projects/**").authenticated()
@@ -106,6 +106,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/venue-event-reviews").permitAll()
                         .requestMatchers(HttpMethod.POST, "/venue-event-reviews").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/venue-event-reviews/**").authenticated()
+
+                        .requestMatchers(HttpMethod.GET, "/services").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/services/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/services").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/services/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/services/**").authenticated()
 
                         .anyRequest().permitAll())
                 .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)

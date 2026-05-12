@@ -1,11 +1,9 @@
 import { useState } from 'react'
 import { uploadFile } from '../../services/uploads'
 
-import useProjectStore, { BLOCK_TYPES, BLOCK_META, reorder } from '../../pages/ItemProyect/store/useProjectStore'
+import useProjectStore, { BLOCK_TYPES, BLOCK_META, reorder } from '../../pages/ItemProject/store/useProjectStore'
 import { TextBlock, ImageBlock, GalleryBlock, VideoBlock, AudioBlock } from './Blocks'
-import './ItemProyect.css'
-
-/* ── Block renderer (edit / preview) ─────────── */
+import './ItemProject.css'
 
 function BlockRenderer({ block, onChange, preview }) {
   switch (block.type) {
@@ -32,8 +30,6 @@ function BlockRenderer({ block, onChange, preview }) {
   }
 }
 
-/* ── Block wrapper ───────────────────────────── */
-
 function EditorBlockCard({ block }) {
   const updateBlock = useProjectStore((s) => s.updateBlock)
   const removeBlock = useProjectStore((s) => s.removeBlock)
@@ -50,8 +46,6 @@ function EditorBlockCard({ block }) {
     </div>
   )
 }
-
-/* ── Reorder Overlay ─────────────────────────── */
 
 function BlockReorderDialog({ onClose }) {
   const blocks = useProjectStore((s) => s.blocks)
@@ -104,8 +98,6 @@ function BlockReorderDialog({ onClose }) {
   )
 }
 
-/* ── Main editor canvas ──────────────────────── */
-
 export default function Editor() {
   const blocks = useProjectStore((s) => s.blocks)
   const addBlock = useProjectStore((s) => s.addBlock)
@@ -135,7 +127,7 @@ export default function Editor() {
             <div className="emptyProjectCard">
               <div className="emptyProjectTitle">
                 <span>CONSTRUYE</span>
-                <strong>TU PROYECTO</strong>
+                <strong>TU <b>PROYECTO</b></strong>
               </div>
               <div className="emptyProjectActions">
                 {emptyActions.map((action) => (

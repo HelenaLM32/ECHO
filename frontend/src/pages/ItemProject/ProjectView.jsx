@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getProjectById, deleteProject, deleteProjectComment } from '../../services/projects'
 import './ProjectEditor.css'
 import { BLOCK_TYPES, toEmbedUrl, parseJsonSafe } from './store/useProjectStore'
 import ProjectFooter from '../../components/ProjectFooter/ProjectFooter'
 import OrderModal from '../../components/OrderModal/OrderModal'
-import { API_URL } from '../../services/config'
+import { API_URL, fetchApi, fetchWithToken } from '../../services/config'
+import { getAuthToken } from '../../services/session'
 import { useAuth } from '../../context/AuthContext'
+import { usePolling } from '../../hooks/usePolling'
 import { PopupConfirm, useConfirmPopup } from '../../components/PopupConfirm/PopupConfirm'
 
 function RenderBlock({ block }) {
@@ -55,8 +57,9 @@ export default function ProjectView({ projectId, onClose }) {
   const [error, setError] = useState(null)
   const [profile, setProfile] = useState(null)
   const [commentsList, setCommentsList] = useState([])
-  const { user } = useAuth()
+  const { user, loadingContext } = useAuth()
   const { confirmState, showConfirm, handleConfirm, handleCancel } = useConfirmPopup()
+  const hasIncrementedView = useRef(false)
 
   const isProjectOwner = !!project?.item?.creatorId && user?.id === project.item.creatorId
   const isAdmin = !!user?.roles?.includes('ADMIN')
@@ -83,39 +86,63 @@ export default function ProjectView({ projectId, onClose }) {
 
   useEffect(() => {
     if (!project?.id) return
-    fetch(`${API_URL}/item-projects/${project.id}/comments`)
+    fetchApi(`/item-projects/${project.id}/comments`)
       .then((r) => r.ok ? r.json() : [])
       .then((data) => setCommentsList(Array.isArray(data) ? data : []))
       .catch(() => setCommentsList([]))
   }, [project?.id])
 
-  // increment views once when project is loaded in the preview
+  // increment views once when project is loaded in the preview (only for logged users)
   useEffect(() => {
-    if (!project) return
-    fetch(`${API_URL}/item-projects/${project.id}/views`, { method: 'POST' })
+    if (loadingContext || !project?.id || hasIncrementedView.current) return
+    // Only count views for authenticated users
+    if (!user?.id) {
+      hasIncrementedView.current = true
+      return
+    }
+    hasIncrementedView.current = true
+    fetchWithToken(`/item-projects/${project.id}/views`, {
+      method: 'POST'
+    })
       .then((r) => r.ok ? r.json() : null)
       .then((data) => { if (data) setProject(data) })
       .catch(() => { })
-  }, [project?.id])
+  }, [project?.id, user?.id, loadingContext])
+
+  // Poll for updated views count every 30 seconds to show real-time updates
+  usePolling(
+    () => {
+      fetchWithToken(`/item-projects/${project.id}`)
+        .then((r) => r.ok ? r.json() : null)
+        .then((data) => {
+          if (data && data.views !== undefined) {
+            setProject(prev => prev ? { ...prev, views: data.views } : prev)
+          }
+        })
+        .catch(() => { })
+    },
+    30000,
+    !!project?.id
+  )
 
   const [isLiked, setIsLiked] = useState(false)
 
   useEffect(() => {
-    const token = sessionStorage.getItem('token')
+    const token = getAuthToken()
     if (!token || !project) return
-    fetch(`${API_URL}/item-projects/${project.id}/likes/status`, { headers: { Authorization: `Bearer ${token}` } })
+    fetchWithToken(`/item-projects/${project.id}/likes/status`)
       .then((r) => r.ok ? r.json() : { liked: false })
       .then((data) => { setIsLiked(Boolean(data.liked)) })
       .catch(() => setIsLiked(false))
   }, [project?.id])
 
   function handleToggleLike() {
-    const token = sessionStorage.getItem('token')
+    const token = getAuthToken()
     if (!token) {
       alert('Debes iniciar sesión para dar like')
       return
     }
-    fetch(`${API_URL}/item-projects/${project.id}/likes`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } })
+    fetchWithToken(`/item-projects/${project.id}/likes`, { method: 'POST' })
       .then((r) => { if (!r.ok) throw new Error('Error like'); return r.json() })
       .then((data) => {
         // response includes updated project fields and `liked` flag
@@ -129,7 +156,7 @@ export default function ProjectView({ projectId, onClose }) {
 
   function loadComments() {
     if (!project?.id) return
-    fetch(`${API_URL}/item-projects/${project.id}/comments`)
+    fetchApi(`/item-projects/${project.id}/comments`)
       .then((r) => r.ok ? r.json() : [])
       .then((data) => setCommentsList(Array.isArray(data) ? data : []))
       .catch(() => setCommentsList([]))
@@ -174,18 +201,14 @@ export default function ProjectView({ projectId, onClose }) {
   }
 
   function handleAddComment(commentText) {
-    const token = sessionStorage.getItem('token')
+    const token = getAuthToken()
     if (!token) {
       alert('Debes iniciar sesión para comentar')
       return
     }
     if (!commentText || !commentText.trim()) return
-    fetch(`${API_URL}/item-projects/${project.id}/comments`, {
+    fetchWithToken(`/item-projects/${project.id}/comments`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
       body: JSON.stringify({ comment: commentText.trim() }),
     })
       .then((r) => { if (!r.ok) throw new Error('Error al enviar comentario'); return r.json() })
@@ -240,6 +263,7 @@ export default function ProjectView({ projectId, onClose }) {
               likes={project?.likes || 0}
               views={project?.views || 0}
               comments={project?.comments || 0}
+              price={project?.item?.basePrice}
               commentItems={commentsList}
               onLike={handleToggleLike}
               onSubmitComment={handleAddComment}

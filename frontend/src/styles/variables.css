@@ -1,4 +1,10 @@
+/* Smooth transition for theme changes */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
 :root {
+    /* Light mode (default) - Original colors */
     --black: #282828;
     --black-secondary: #353535;
     --black-new: #000000;
@@ -17,4 +23,84 @@
     --complementary-blue: #2A5F79;
     --complementary-blue-secondary: #3587b1;
 
+    /* Border colors */
+    --border-orange: #f9d4c4;
+    --border-orange-light: #fce8de;
+
+    /* Shadow colors */
+    --shadow-light: rgba(0, 0, 0, 0.06);
+    --shadow-medium: rgba(0, 0, 0, 0.08);
+    --overlay-dark: rgba(0, 0, 0, 0.7);
+
+    /* Status colors */
+    --error: #dc3545;
+    --error-light: #f8d7da;
+    --error-medium: #f5c6cb;
+    --error-dark: #efa2a9;
+
+    --success: #28a745;
+    --success-light: #d4edda;
+    --success-medium: #c3e6cb;
+    --success-dark: #b1dfbb;
+
+    /* Order status colors */
+    --status-pending: #ffc800;
+    --status-pending-bg: #fff8e1;
+    --status-in-progress: #00b4ff;
+    --status-in-progress-bg: #e6f7ff;
+    --status-completed: #00c864;
+    --status-completed-bg: #e6f9ef;
+    --status-cancelled: #ff5050;
+    --status-cancelled-bg: #ffebee;
+}
+
+[data-theme="dark"] {
+    /* Dark mode - Inverted colors using same variable names */
+    --black: #ebebeb;
+    --black-secondary: #b0b0b0;
+    --black-new: #ffffff;
+
+    --true-white: #1a1a1a;
+    --white: #242424;
+
+    --orange: #ff7c3f;
+    --orange-secondary: #ff9c71;
+
+    --gray: #404040;
+    --gray-dark: #505050;
+    --gray-dark-secondary: #606060;
+    --gray-stroke: #505050;
+
+    --complementary-blue: #4a8fa9;
+    --complementary-blue-secondary: #5aafd1;
+
+    /* Border colors - dark mode */
+    --border-orange: #5a3a2a;
+    --border-orange-light: #4a3020;
+
+    /* Shadow colors - dark mode */
+    --shadow-light: rgba(0, 0, 0, 0.15);
+    --shadow-medium: rgba(0, 0, 0, 0.25);
+    --overlay-dark: rgba(0, 0, 0, 0.7);
+
+    /* Status colors - adjusted for dark mode */
+    --error: #ff6b7a;
+    --error-light: #5c2a2a;
+    --error-medium: #7a3a3a;
+    --error-dark: #994a4a;
+
+    --success: #5dd879;
+    --success-light: #2a5c3a;
+    --success-medium: #3a7a4a;
+    --success-dark: #4a9a5a;
+
+    /* Order status colors - adjusted for dark mode */
+    --status-pending: #ffd54f;
+    --status-pending-bg: #5c4a1a;
+    --status-in-progress: #4fc3f7;
+    --status-in-progress-bg: #1a4a5c;
+    --status-completed: #69f0ae;
+    --status-completed-bg: #1a5c3a;
+    --status-cancelled: #ff8a80;
+    --status-cancelled-bg: #5c2a2a;
 }
