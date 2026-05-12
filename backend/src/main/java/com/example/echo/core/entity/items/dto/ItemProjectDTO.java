@@ -59,11 +59,11 @@ public class ItemProjectDTO {
     }
 
     public ItemProjectDTO(ItemDTO item,
-                          String blocks,
-                          String background,
-                          Integer blockGap,
-                          Boolean published,
-                          String slug) {
+            String blocks,
+            String background,
+            Integer blockGap,
+            Boolean published,
+            String slug) {
         this.item = item;
         this.blocks = blocks;
         this.background = background;

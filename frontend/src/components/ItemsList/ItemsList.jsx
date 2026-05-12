@@ -70,6 +70,34 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
     return () => clearInterval(interval);
   }, []);
 
+  // Poll for updated projects and services every 30 seconds to refresh views/likes in real-time
+  useEffect(() => {
+    const pollItems = () => {
+      Promise.all([
+        getAllProjects(),
+        getAllServices()
+      ])
+        .then(([projectsList, servicesList]) => {
+          if (projectsList && Array.isArray(projectsList)) {
+            setProjects((prev) => {
+              const updatedMap = new Map(projectsList.map((p) => [p.id, p]));
+              return prev.map((p) => updatedMap.get(p.id) || p);
+            });
+          }
+          if (servicesList && Array.isArray(servicesList)) {
+            setServices((prev) => {
+              const updatedMap = new Map(servicesList.map((s) => [s.id, s]));
+              return prev.map((s) => updatedMap.get(s.id) || s);
+            });
+          }
+        })
+        .catch(() => { });
+    };
+
+    const interval = setInterval(pollItems, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   const normalizedSearch = searchQuery.trim().toLowerCase();
 
   const filteredItems = items
