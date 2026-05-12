@@ -1,4 +1,10 @@
-import { API_URL, fetchWithToken } from "./config";
+import { API_URL, fetchApi, fetchWithToken } from "./config";
+
+export const getAllVenues = async () => {
+  const res = await fetchApi('/venues');
+  if (!res.ok) throw new Error('Error al obtener los locales');
+  return res.json();
+};
 
 export const createVenue = async (formData) => {
   const res = await fetchWithToken(`/venues`, {

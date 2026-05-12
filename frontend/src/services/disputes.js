@@ -15,6 +15,12 @@ export async function getDisputeById(disputeId) {
   return res.json();
 }
 
+export async function getDisputeByOrderId(orderId) {
+  const res = await fetchWithToken(`/disputes/order/${orderId}`);
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
 export async function getUserDisputes() {
   const res = await fetchWithToken("/disputes/user/my-disputes");
   if (!res.ok) throw new Error(await res.text());
@@ -22,7 +28,7 @@ export async function getUserDisputes() {
 }
 
 export async function getOpenDisputes() {
-  const res = await fetchWithToken("/disputes/user/my-disputes");
+  const res = await fetchWithToken("/disputes/open");
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 }

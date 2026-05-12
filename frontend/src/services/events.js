@@ -1,4 +1,10 @@
-import { API_URL, fetchWithToken } from "./config";
+import { API_URL, fetchApi, fetchWithToken } from "./config";
+
+export const getAllEvents = async () => {
+  const res = await fetchApi('/events');
+  if (!res.ok) throw new Error('Error al obtener los eventos');
+  return res.json();
+};
 
 export const getEventsByUser = async (userId) => {
   const res = await fetch(`${API_URL}/events/user/${userId}`);

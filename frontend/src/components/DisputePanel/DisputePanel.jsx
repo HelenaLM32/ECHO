@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   getDisputeById,
   addMessageToDispute,
@@ -7,14 +6,15 @@ import {
 } from "../../services/disputes";
 import "../../styles/globals.css";
 
-const DisputePanel = ({ disputeId, currentUserId, isAdmin }) => {
+const DisputePanel = ({ disputeId, isAdmin }) => {
   const [dispute, setDispute] = useState(null);
   const [message, setMessage] = useState("");
   const [resolution, setResolution] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [submittingMessage, setSubmittingMessage] = useState(false);
+  const [submittingClose, setSubmittingClose] = useState(false);
   const [showCloseForm, setShowCloseForm] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     loadDispute();
@@ -35,33 +35,41 @@ const DisputePanel = ({ disputeId, currentUserId, isAdmin }) => {
   const handleAddMessage = async (e) => {
     e.preventDefault();
     if (!message.trim()) {
-      alert("El mensaje no puede estar vacío");
+      setError("El mensaje no puede estar vacío");
       return;
     }
 
     try {
+      setSubmittingMessage(true);
       await addMessageToDispute(disputeId, message);
       setMessage("");
+      setError(null);
       await loadDispute();
     } catch (err) {
       setError(err.message);
+    } finally {
+      setSubmittingMessage(false);
     }
   };
 
   const handleCloseDispute = async (e) => {
     e.preventDefault();
     if (!resolution.trim()) {
-      alert("La resolución no puede estar vacía");
+      setError("La resolución no puede estar vacía");
       return;
     }
 
     try {
+      setSubmittingClose(true);
       await closeDispute(disputeId, resolution);
       setResolution("");
       setShowCloseForm(false);
+      setError(null);
       await loadDispute();
     } catch (err) {
       setError(err.message);
+    } finally {
+      setSubmittingClose(false);
     }
   };
 
@@ -140,8 +148,11 @@ const DisputePanel = ({ disputeId, currentUserId, isAdmin }) => {
             placeholder="Escribe tu mensaje..."
             rows="4"
             required
+            maxLength={2000}
           />
-          <button type="submit">Enviar mensaje</button>
+          <button type="submit" disabled={submittingMessage}>
+            {submittingMessage ? "Enviando..." : "Enviar mensaje"}
+          </button>
         </form>
       )}
 
@@ -163,11 +174,15 @@ const DisputePanel = ({ disputeId, currentUserId, isAdmin }) => {
                 placeholder="Escribe la resolución..."
                 rows="4"
                 required
+                maxLength={2000}
               />
               <div className="form-actions">
-                <button type="submit">Confirmar cierre</button>
+                <button type="submit" disabled={submittingClose}>
+                  {submittingClose ? "Cerrando..." : "Confirmar cierre"}
+                </button>
                 <button
                   type="button"
+                  disabled={submittingClose}
                   onClick={() => setShowCloseForm(false)}
                 >
                   Cancelar

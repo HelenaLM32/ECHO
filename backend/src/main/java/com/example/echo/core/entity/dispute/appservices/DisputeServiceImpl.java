@@ -14,10 +14,15 @@ import com.example.echo.core.entity.dispute.model.Dispute;
 import com.example.echo.core.entity.dispute.model.DisputeMessage;
 import com.example.echo.core.entity.dispute.persistence.DisputeRepository;
 import com.example.echo.core.entity.dispute.persistence.DisputeMessageRepository;
+import com.example.echo.core.entity.orders.dto.OrderDTO;
 import com.example.echo.core.entity.orders.persistence.OrderRepository;
 import com.example.echo.core.entity.user.persistence.UserRepository;
 import com.example.echo.core.entity.user.dto.UserDTO;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class DisputeServiceImpl implements DisputeService {
@@ -63,6 +68,40 @@ public class DisputeServiceImpl implements DisputeService {
         }
     }
 
+    private OrderDTO resolveOrder(Integer orderId) throws ServiceException {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new ServiceException("Order not found: " + orderId));
+    }
+
+    private void assertParticipantOrAdmin(Integer orderId, Integer userId, boolean isAdmin) throws ServiceException {
+        if (isAdmin) {
+            return;
+        }
+        OrderDTO order = resolveOrder(orderId);
+        boolean isParticipant = userId != null
+                && (userId.equals(order.getBuyerId()) || userId.equals(order.getCreatorId()));
+        if (!isParticipant) {
+            throw new ServiceException("No tienes acceso a esta disputa");
+        }
+    }
+
+    private DisputeDTO resolveDispute(Integer disputeId) throws ServiceException {
+        return disputeRepository.findById(disputeId)
+                .orElseThrow(() -> new ServiceException("Dispute not found"));
+    }
+
+    private List<DisputeDTO> getDisputesForUser(Integer userId) throws ServiceException {
+        Set<Integer> orderIds = new HashSet<>();
+        orderRepository.findByBuyerId(userId).forEach(o -> orderIds.add(o.getId()));
+        orderRepository.findByCreatorId(userId).forEach(o -> orderIds.add(o.getId()));
+
+        List<DisputeDTO> disputes = new ArrayList<>();
+        for (Integer orderId : orderIds) {
+            disputes.addAll(disputeRepository.findByOrderId(orderId));
+        }
+        return disputes;
+    }
+
     private void validateUserExists(Integer userId) throws ServiceException {
         if (!userRepository.findById(userId).isPresent()) {
             throw new ServiceException("User not found: " + userId);
@@ -80,6 +119,7 @@ public class DisputeServiceImpl implements DisputeService {
             }
 
             validateOrderExists(createDTO.getOrderId());
+            assertParticipantOrAdmin(createDTO.getOrderId(), userId, false);
 
             if (disputeRepository.findByOrderIdAndStatus(createDTO.getOrderId(), "OPEN").isPresent()) {
                 throw new ServiceException("There is already an open dispute for this order");
@@ -109,9 +149,9 @@ public class DisputeServiceImpl implements DisputeService {
     }
 
     @Override
-    public String getDisputeByIdToJson(Integer disputeId) throws ServiceException {
-        DisputeDTO dispute = disputeRepository.findById(disputeId)
-                .orElseThrow(() -> new ServiceException("Dispute not found"));
+    public String getDisputeByIdToJson(Integer disputeId, Integer userId, boolean isAdmin) throws ServiceException {
+        DisputeDTO dispute = resolveDispute(disputeId);
+        assertParticipantOrAdmin(dispute.getOrderId(), userId, isAdmin);
 
         List<DisputeMessageDTO> messages = messageRepository.findByDisputeIdOrderByCreatedAtAsc(disputeId);
         dispute.setMessages(messages);
@@ -120,26 +160,48 @@ public class DisputeServiceImpl implements DisputeService {
     }
 
     @Override
+    public String getDisputeByOrderIdToJson(Integer orderId, Integer userId, boolean isAdmin) throws ServiceException {
+        assertParticipantOrAdmin(orderId, userId, isAdmin);
+
+        List<DisputeDTO> disputes = disputeRepository.findByOrderId(orderId);
+        if (disputes == null || disputes.isEmpty()) {
+            throw new ServiceException("Dispute not found");
+        }
+
+        DisputeDTO selected = disputes.stream()
+                .filter(d -> "OPEN".equalsIgnoreCase(d.getStatus()))
+                .findFirst()
+                .orElseGet(() -> disputes.stream().max(Comparator.comparing(DisputeDTO::getId)).orElse(disputes.get(0)));
+
+        List<DisputeMessageDTO> messages = messageRepository.findByDisputeIdOrderByCreatedAtAsc(selected.getId());
+        selected.setMessages(messages);
+        return disputeSerializer().serialize(selected);
+    }
+
+    @Override
     public String getUserDisputesToJson(Integer userId) throws ServiceException {
         validateUserExists(userId);
-        List<DisputeDTO> disputes = disputeRepository.findByCreatedByUserId(userId);
+        List<DisputeDTO> disputes = getDisputesForUser(userId);
         return disputeSerializer().serializeList(disputes);
     }
 
     @Override
-    public String getOpenDisputesToJson() throws ServiceException {
+    public String getOpenDisputesToJson(boolean isAdmin) throws ServiceException {
+        if (!isAdmin) {
+            throw new ServiceException("No autorizado");
+        }
         List<DisputeDTO> disputes = disputeRepository.findByStatus("OPEN");
         return disputeSerializer().serializeList(disputes);
     }
 
     @Override
-    public String addMessageToDisputeFromJson(Integer disputeId, String messageJson, Integer userId)
+    public String addMessageToDisputeFromJson(Integer disputeId, String messageJson, Integer userId, boolean isAdmin)
             throws ServiceException {
         try {
             validateUserExists(userId);
 
-            DisputeDTO dispute = disputeRepository.findById(disputeId)
-                    .orElseThrow(() -> new ServiceException("Dispute not found"));
+            DisputeDTO dispute = resolveDispute(disputeId);
+            assertParticipantOrAdmin(dispute.getOrderId(), userId, isAdmin);
 
             if ("CLOSED".equals(dispute.getStatus())) {
                 throw new ServiceException("Cannot add messages to a closed dispute");
@@ -173,10 +235,14 @@ public class DisputeServiceImpl implements DisputeService {
     }
 
     @Override
-    public String closeDisputeFromJson(Integer disputeId, String resolutionJson) throws ServiceException {
+    public String closeDisputeFromJson(Integer disputeId, String resolutionJson, Integer userId, boolean isAdmin)
+            throws ServiceException {
         try {
-            DisputeDTO dispute = disputeRepository.findById(disputeId)
-                    .orElseThrow(() -> new ServiceException("Dispute not found"));
+            DisputeDTO dispute = resolveDispute(disputeId);
+
+            if (!isAdmin) {
+                throw new ServiceException("No autorizado");
+            }
 
             if ("CLOSED".equals(dispute.getStatus())) {
                 throw new ServiceException("Dispute is already closed");
@@ -201,8 +267,11 @@ public class DisputeServiceImpl implements DisputeService {
     }
 
     @Override
-    public String getAllDisputesToJson() throws ServiceException {
+    public String getAllDisputesToJson(boolean isAdmin) throws ServiceException {
         try {
+            if (!isAdmin) {
+                throw new ServiceException("No autorizado");
+            }
             List<DisputeDTO> disputes = disputeRepository.findAll();
             return disputeSerializer().serializeList(disputes);
         } catch (Exception e) {

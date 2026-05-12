@@ -82,6 +82,21 @@
   justify-content: flex-end;
 }
 
+.od-dispute-link {
+  padding: 0.4rem 0.9rem;
+  border: none;
+  border-radius: 6px;
+  background: #dc3545;
+  color: var(--white);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.od-dispute-link:hover {
+  background: #c82333;
+}
+
 .od-status-btn {
   padding: 0.35rem 0.875rem;
   border: none;

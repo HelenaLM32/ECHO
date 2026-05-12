@@ -117,6 +117,12 @@ export default function OrderDetail() {
             {STATUS_LABELS[order.status] ?? order.status}
           </span>
 
+          {(isBuyer || isCreator) && (
+            <button className="od-dispute-link" onClick={() => navigate(`/orders/${order.id}/dispute`)}>
+              Ver disputa
+            </button>
+          )}
+
           {isCreator && NEXT_STATUSES[order.status]?.length > 0 && (
             <div className="od-status-actions">
               {NEXT_STATUSES[order.status].map((s) => (

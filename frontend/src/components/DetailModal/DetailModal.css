@@ -46,6 +46,7 @@
 /* ── Botón cerrar ── */
 .modal-close-btn {
   position: absolute;
+  border-radius: 40%;
   top: 16px;
   left: 16px;
   background: rgba(0, 0, 0, 0.5);

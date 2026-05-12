@@ -40,6 +40,15 @@ public class RestEventController {
         }
     }
 
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getAll() {
+        try {
+            return ResponseEntity.ok(eventService.getAllToJson());
+        } catch (ServiceException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
     @GetMapping(value = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getByUser(@PathVariable Integer userId) {
         try {

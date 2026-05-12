@@ -217,6 +217,7 @@
 }
 
 .close-btn {
+  border-radius: 19px;
   background: none;
   border: none;
   font-size: 28px;

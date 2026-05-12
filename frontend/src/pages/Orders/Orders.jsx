@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { getMyOrders } from "../../services/orders";
-import CreateDisputeModal from "../../components/CreateDisputeModal";
 import "./Orders.css";
 
 const STATUS_LABELS = {
@@ -18,7 +17,6 @@ export default function Orders() {
   const [orders, setOrders]  = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError]    = useState("");
-  const [selectedOrderForDispute, setSelectedOrderForDispute] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -33,11 +31,6 @@ export default function Orders() {
 
   const asClient  = orders.filter((o) => o.buyerId  === user?.id);
   const asCreator = orders.filter((o) => o.creatorId === user?.id);
-
-  const handleDisputeCreated = (dispute) => {
-    alert("Disputa creada exitosamente");
-    setSelectedOrderForDispute(null);
-  };
 
   return (
     <div className="orders-page">
@@ -54,7 +47,6 @@ export default function Orders() {
                 key={o.id} 
                 order={o} 
                 role="buyer"
-                onOpenDispute={() => setSelectedOrderForDispute(o.id)}
               />
             ))}
           </ul>
@@ -72,25 +64,16 @@ export default function Orders() {
                 key={o.id} 
                 order={o} 
                 role="creator"
-                onOpenDispute={() => setSelectedOrderForDispute(o.id)}
               />
             ))}
           </ul>
         )}
       </section>
-
-      {selectedOrderForDispute && (
-        <CreateDisputeModal
-          orderId={selectedOrderForDispute}
-          onClose={() => setSelectedOrderForDispute(null)}
-          onSuccess={handleDisputeCreated}
-        />
-      )}
     </div>
   );
 }
 
-function OrderCard({ order, role, onOpenDispute }) {
+function OrderCard({ order, role }) {
   return (
     <li className="order-card">
       <div className="order-card__info">
@@ -109,9 +92,9 @@ function OrderCard({ order, role, onOpenDispute }) {
         <Link className="order-card__link" to={`/orders/${order.id}`}>
           Ver tablón →
         </Link>
-        <button className="order-card__dispute-btn" onClick={onOpenDispute}>
-          Abrir disputa
-        </button>
+        <Link className="order-card__dispute-btn" to={`/orders/${order.id}/dispute`}>
+          Ver disputa
+        </Link>
       </div>
     </li>
   );

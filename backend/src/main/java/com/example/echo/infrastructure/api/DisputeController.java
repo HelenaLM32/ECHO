@@ -28,21 +28,24 @@ public class DisputeController {
     @Autowired
     private UserRepository userRepository;
 
-    private Integer getCurrentUserId() throws ServiceException {
+    private UserDTO getCurrentUser() throws ServiceException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !(auth.getPrincipal() instanceof String)) {
             throw new ServiceException("Usuario no autenticado");
         }
         String email = (String) auth.getPrincipal();
-        UserDTO user = userRepository.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ServiceException("Usuario no encontrado"));
-        return user.getId();
+    }
+
+    private boolean isAdmin(UserDTO user) {
+        return user.getRoles() != null && user.getRoles().stream().anyMatch(r -> "ADMIN".equals(r.getName()));
     }
 
     @PostMapping
     public ResponseEntity<String> createDispute(@RequestBody String json) {
         try {
-            Integer userId = getCurrentUserId();
+            Integer userId = getCurrentUser().getId();
             String result = disputeService.createDisputeFromJson(json, userId);
             return ResponseEntity.status(HttpStatus.CREATED).body(result);
         } catch (ServiceException e) {
@@ -53,7 +56,19 @@ public class DisputeController {
     @GetMapping("/{disputeId}")
     public ResponseEntity<String> getDispute(@PathVariable Integer disputeId) {
         try {
-            String result = disputeService.getDisputeByIdToJson(disputeId);
+            UserDTO user = getCurrentUser();
+            String result = disputeService.getDisputeByIdToJson(disputeId, user.getId(), isAdmin(user));
+            return ResponseEntity.ok(result);
+        } catch (ServiceException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\":\"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @GetMapping("/order/{orderId}")
+    public ResponseEntity<String> getDisputeByOrder(@PathVariable Integer orderId) {
+        try {
+            UserDTO user = getCurrentUser();
+            String result = disputeService.getDisputeByOrderIdToJson(orderId, user.getId(), isAdmin(user));
             return ResponseEntity.ok(result);
         } catch (ServiceException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\":\"" + e.getMessage() + "\"}");
@@ -63,7 +78,7 @@ public class DisputeController {
     @GetMapping("/user/my-disputes")
     public ResponseEntity<String> getUserDisputes() {
         try {
-            Integer userId = getCurrentUserId();
+            Integer userId = getCurrentUser().getId();
             String result = disputeService.getUserDisputesToJson(userId);
             return ResponseEntity.ok(result);
         } catch (ServiceException e) {
@@ -74,7 +89,8 @@ public class DisputeController {
     @GetMapping("/open")
     public ResponseEntity<String> getOpenDisputes() {
         try {
-            String result = disputeService.getOpenDisputesToJson();
+            UserDTO user = getCurrentUser();
+            String result = disputeService.getOpenDisputesToJson(isAdmin(user));
             return ResponseEntity.ok(result);
         } catch (ServiceException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -85,7 +101,8 @@ public class DisputeController {
     @GetMapping
     public ResponseEntity<String> getAllDisputes() {
         try {
-            String result = disputeService.getAllDisputesToJson();
+            UserDTO user = getCurrentUser();
+            String result = disputeService.getAllDisputesToJson(isAdmin(user));
             return ResponseEntity.ok(result);
         } catch (ServiceException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -97,8 +114,8 @@ public class DisputeController {
     public ResponseEntity<String> addMessage(@PathVariable Integer disputeId,
             @RequestBody String json) {
         try {
-            Integer userId = getCurrentUserId();
-            String result = disputeService.addMessageToDisputeFromJson(disputeId, json, userId);
+            UserDTO user = getCurrentUser();
+            String result = disputeService.addMessageToDisputeFromJson(disputeId, json, user.getId(), isAdmin(user));
             return ResponseEntity.status(HttpStatus.CREATED).body(result);
         } catch (ServiceException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
@@ -109,7 +126,8 @@ public class DisputeController {
     public ResponseEntity<String> closeDispute(@PathVariable Integer disputeId,
             @RequestBody String json) {
         try {
-            String result = disputeService.closeDisputeFromJson(disputeId, json);
+            UserDTO user = getCurrentUser();
+            String result = disputeService.closeDisputeFromJson(disputeId, json, user.getId(), isAdmin(user));
             return ResponseEntity.ok(result);
         } catch (ServiceException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");

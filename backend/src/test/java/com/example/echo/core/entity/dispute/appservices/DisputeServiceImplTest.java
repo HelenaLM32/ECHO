@@ -80,13 +80,15 @@ class DisputeServiceImplTest {
     @Test
     void addMessageToDisputeFromJsonThrowsWhenClosed() {
         DisputeDTO closed = new DisputeDTO();
+        closed.setOrderId(9);
         closed.setStatus("CLOSED");
 
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(disputeRepository.findById(5)).thenReturn(Optional.of(closed));
+        when(orderRepository.findById(9)).thenReturn(Optional.of(new OrderDTO(9, 1, 2, 10.0, "PENDING")));
 
         assertThrows(ServiceException.class,
-                () -> service.addMessageToDisputeFromJson(5, "{\"message\":\"hola\"}", 1));
+            () -> service.addMessageToDisputeFromJson(5, "{\"message\":\"hola\"}", 1, false));
     }
 
     @Test
@@ -98,7 +100,7 @@ class DisputeServiceImplTest {
         when(disputeRepository.findById(4)).thenReturn(Optional.of(open));
         when(disputeRepository.save(any(DisputeDTO.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        String result = service.closeDisputeFromJson(4, "{\"resolution\":\"Resuelto\"}");
+        String result = service.closeDisputeFromJson(4, "{\"resolution\":\"Resuelto\"}", 1, true);
 
         assertTrue(result.contains("\"status\":\"CLOSED\""));
         assertTrue(result.contains("Resuelto"));
@@ -108,14 +110,16 @@ class DisputeServiceImplTest {
     void getDisputeByIdToJsonIncludesMessages() throws Exception {
         DisputeDTO dispute = new DisputeDTO();
         dispute.setId(2);
+        dispute.setOrderId(9);
         dispute.setStatus("OPEN");
         DisputeMessageDTO message = new DisputeMessageDTO();
         message.setMessage("detalle");
 
         when(disputeRepository.findById(2)).thenReturn(Optional.of(dispute));
+        when(orderRepository.findById(9)).thenReturn(Optional.of(new OrderDTO(9, 1, 2, 10.0, "PENDING")));
         when(messageRepository.findByDisputeIdOrderByCreatedAtAsc(2)).thenReturn(List.of(message));
 
-        String result = service.getDisputeByIdToJson(2);
+        String result = service.getDisputeByIdToJson(2, 1, false);
 
         assertTrue(result.contains("detalle"));
     }

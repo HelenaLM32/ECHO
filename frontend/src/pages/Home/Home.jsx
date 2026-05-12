@@ -12,6 +12,7 @@ export default function Home() {
   const [sections, setSections] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [animateIn, setAnimateIn] = useState(false);
+  const [contentType, setContentType] = useState("proyectos");
   const navigate = useNavigate();
   const params = useParams();
 
@@ -60,6 +61,15 @@ export default function Home() {
   const clearCategoryFilter = () => {
     setSelectedCategory(null);
     navigate("/");
+  };
+
+  const handleContentType = (type) => {
+    setContentType(type);
+    setSearchQuery("");
+    if (type === "locales" || type === "eventos") {
+      setSelectedCategory(null);
+      navigate("/");
+    }
   };
 
 
@@ -113,10 +123,29 @@ export default function Home() {
           <option value="views">Mas vistos</option>
         </select>
       </div>
-      <div className="home-container-sections">
-        <SectionsList onSelect={handleSelect} selectedCategoryId={selectedCategory?.id ?? null} />
-      </div>
-      {selectedCategory && (
+      <nav className="home-content-type-nav" aria-label="Tipo de contenido">
+        {[
+          { key: "proyectos", label: "Proyectos" },
+          { key: "servicios", label: "Servicios" },
+          { key: "locales", label: "Locales" },
+          { key: "eventos", label: "Eventos" },
+        ].map(({ key, label }) => (
+          <button
+            key={key}
+            type="button"
+            className={`home-content-type-btn${contentType === key ? " active" : ""}`}
+            onClick={() => handleContentType(key)}
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
+      {(contentType === "proyectos" || contentType === "servicios") && (
+        <div className="home-container-sections">
+          <SectionsList onSelect={handleSelect} selectedCategoryId={selectedCategory?.id ?? null} />
+        </div>
+      )}
+      {selectedCategory && (contentType === "proyectos" || contentType === "servicios") && (
         <div className="home-category-title-container">
           <h1 id="top-h1-text-category">{selectedCategory.name}</h1>
           <button type="button" className="button-selected-category" onClick={clearCategoryFilter}>
@@ -129,6 +158,7 @@ export default function Home() {
           searchQuery={searchQuery}
           selectedCategoryId={selectedCategory?.id ?? null}
           sortBy={sortBy}
+          contentType={contentType}
         />
 
       </div>

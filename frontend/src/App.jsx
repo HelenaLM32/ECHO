@@ -14,6 +14,7 @@ import Admin from './pages/Admin/Admin';
 import AdminRoute from './components/AdminRoute/AdminRoute';
 import Orders from './pages/Orders/Orders';
 import OrderDetail from './pages/OrderDetail/OrderDetail';
+import OrderDispute from './pages/OrderDetail/OrderDispute';
 
 // Rutas de HEAD (Eventos y Locales)
 import CreateEvent from './pages/Events/CreateEvent';
@@ -71,6 +72,12 @@ export default function App() {
         <Route path="/orders/:orderId" element={
           <ProtectedRoute>
             <OrderDetail />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/orders/:orderId/dispute" element={
+          <ProtectedRoute>
+            <OrderDispute />
           </ProtectedRoute>
         } />
 

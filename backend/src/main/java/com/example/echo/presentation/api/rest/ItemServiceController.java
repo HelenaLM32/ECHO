@@ -69,10 +69,13 @@ public class ItemServiceController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping
+    public ResponseEntity<List<ItemServiceResponse>> getAll() {
+        return ResponseEntity.ok(itemServiceService.getAll());
+    }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ItemServiceResponse>> getByUserId(@PathVariable Integer userId) {
-        // Since it's public, but to get services by user, need to add method in service
-        // For now, assume we add a method getByCreatorId
         List<ItemServiceResponse> responses = itemServiceService.getByCreatorId(userId);
         return ResponseEntity.ok(responses);
     }

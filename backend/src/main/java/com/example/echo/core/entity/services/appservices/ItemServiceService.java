@@ -5,6 +5,7 @@ import com.example.echo.core.entity.categories.persistence.CategoryRepository;
 import com.example.echo.core.entity.items.dto.ItemDTO;
 import com.example.echo.core.entity.items.dto.ItemProjectDTO;
 import com.example.echo.core.entity.items.persistence.ItemRepository;
+import com.example.echo.core.entity.profile.persistence.ProfileRepository;
 import com.example.echo.core.entity.services.model.ItemService;
 import com.example.echo.core.entity.services.persistence.ItemServiceRepository;
 import com.example.echo.core.entity.user.dto.UserDTO;
@@ -24,15 +25,18 @@ public class ItemServiceService {
     private final ItemRepository itemRepository;
     private final com.example.echo.core.entity.items.persistence.ItemProjectRepository projectRepository;
     private final CategoryRepository categoryRepository;
+    private final ProfileRepository profileRepository;
 
     public ItemServiceService(ItemServiceRepository itemServiceRepository,
                               ItemRepository itemRepository,
                               com.example.echo.core.entity.items.persistence.ItemProjectRepository projectRepository,
-                              CategoryRepository categoryRepository) {
+                              CategoryRepository categoryRepository,
+                              ProfileRepository profileRepository) {
         this.itemServiceRepository = itemServiceRepository;
         this.itemRepository = itemRepository;
         this.projectRepository = projectRepository;
         this.categoryRepository = categoryRepository;
+        this.profileRepository = profileRepository;
     }
 
     @Transactional
@@ -185,6 +189,10 @@ public class ItemServiceService {
         return services.stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
+    public List<ItemServiceResponse> getAll() {
+        return itemServiceRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
+    }
+
     private ItemServiceResponse mapToResponse(ItemService itemService) {
         ItemServiceResponse response = new ItemServiceResponse();
         response.setId(itemService.getId());
@@ -197,6 +205,11 @@ public class ItemServiceService {
         response.setPrice(itemService.getPrice());
         response.setCoverImageUrl(itemService.getCoverImageUrl());
         response.setCreatorId(itemService.getCreator().getId().longValue());
+
+        profileRepository.findByUserId(itemService.getCreator().getId()).ifPresent(p -> {
+            response.setCreatorName(p.getPublicName() != null ? p.getPublicName() : itemService.getCreator().getUsername());
+            response.setCreatorAvatarUrl(p.getAvatarUrl());
+        });
 
         if (itemService.getProjects() != null) {
             List<ItemServiceResponse.ProjectSummary> projects = itemService.getProjects().stream()

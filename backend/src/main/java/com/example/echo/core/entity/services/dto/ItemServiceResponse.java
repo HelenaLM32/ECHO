@@ -14,6 +14,8 @@ public class ItemServiceResponse {
     private Double price;
     private String coverImageUrl;
     private Long creatorId;
+    private String creatorName;
+    private String creatorAvatarUrl;
     private List<ProjectSummary> projects;
 
     public static class ProjectSummary {
@@ -121,6 +123,22 @@ public class ItemServiceResponse {
 
     public void setCreatorId(Long creatorId) {
         this.creatorId = creatorId;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
+    public String getCreatorAvatarUrl() {
+        return creatorAvatarUrl;
+    }
+
+    public void setCreatorAvatarUrl(String creatorAvatarUrl) {
+        this.creatorAvatarUrl = creatorAvatarUrl;
     }
 
     public List<ProjectSummary> getProjects() {
