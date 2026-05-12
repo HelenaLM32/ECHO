@@ -195,6 +195,12 @@
 .pf-comment-author {
     font-weight: 600;
     color: var(--black);
+    cursor: pointer;
+}
+
+.pf-comment-author:hover {
+    color: var(--black);
+    text-decoration: underline;
 }
 
 .pf-comment-time {

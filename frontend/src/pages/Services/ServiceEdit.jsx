@@ -3,12 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getServiceById, updateService } from '../../services/servicesApi';
 import { uploadFile } from '../../services/uploads';
 import ServiceForm from '../../components/ServiceForm/ServiceForm';
+import { getAuthToken } from '../../services/session';
 import './Services.css';
 
 function ServiceEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const token = sessionStorage.getItem('token');
+  const token = getAuthToken();
   
   const [service, setService] = useState(null);
   const [loading, setLoading] = useState(true);

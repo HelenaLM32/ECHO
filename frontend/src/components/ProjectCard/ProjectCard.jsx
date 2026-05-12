@@ -1,6 +1,7 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import './ProjectCard.css'
-import { BLOCK_TYPES, parseJsonSafe } from '../../pages/ItemProyect/store/useProjectStore'
+import { BLOCK_TYPES, parseJsonSafe } from '../../pages/ItemProject/store/useProjectStore'
 
 function getCover(project) {
   const blocks = parseJsonSafe(project.blocks) || []
@@ -15,6 +16,7 @@ function getCover(project) {
 }
 
 export default function ProjectCard({ project, onOpen, small = false }) {
+  const navigate = useNavigate()
   const cover = getCover(project)
   const title = project?.item?.title || `Proyecto #${project.id}`
   const creatorId = project?.item?.creatorId
@@ -25,6 +27,13 @@ export default function ProjectCard({ project, onOpen, small = false }) {
   const likes = project?.likes || 0
   const views = project?.views || 0
   const price = project?.item?.basePrice
+
+  const handleCreatorClick = (e) => {
+    e.stopPropagation()
+    if (creatorId) {
+      navigate(`/profile/${creatorId}`)
+    }
+  }
 
   return (
     <button type="button" className={`pc-card-wrapper pc-card-button ${small ? 'pc-card--small' : ''}`} onClick={() => onOpen(project.id)}>
@@ -42,7 +51,9 @@ export default function ProjectCard({ project, onOpen, small = false }) {
             )}
             <div className="pc-meta">
               <h3 className="pc-title">{title}</h3>
-              <p className="pc-author">por {creatorName}</p>
+              <p className="pc-author">
+                por <span className="pc-author-link" onClick={handleCreatorClick}>{creatorName}</span>
+              </p>
             </div>
           </div>
           <div className="pc-stats">

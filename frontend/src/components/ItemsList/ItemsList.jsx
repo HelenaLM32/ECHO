@@ -3,7 +3,7 @@ import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import ServiceCard from "../../components/ServiceCard/ServiceCard";
 import VenueCard from "../../components/VenueCard/VenueCard";
 import EventCard from "../../components/EventCard/EventCard";
-import ProjectView from "../../pages/ItemProyect/ProjectView";
+import ProjectView from "../../pages/ItemProject/ProjectView";
 import ServiceDetail from "../../components/ServiceDetail/ServiceDetail";
 import { getAllProjects } from "../../services/projects";
 import { getAllServices } from "../../services/servicesApi";
@@ -17,6 +17,7 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
   const [error, setError] = useState("");
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [selectedServiceId, setSelectedServiceId] = useState(null);
+  const [selectedService, setSelectedService] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -144,7 +145,7 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
               username: item.creatorName,
               avatarUrl: item.creatorAvatarUrl,
             };
-            return <ServiceCard key={item.id} service={item} profile={profile} small={true} />;
+            return <ServiceCard key={item.id} service={item} profile={profile} onOpen={() => setSelectedService(item)} />;
           }
           if (contentType === "locales") {
             return <VenueCard key={item.id} venue={item} />;
@@ -159,7 +160,7 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
         <ProjectView projectId={selectedProjectId} onClose={() => setSelectedProjectId(null)} />
       )}
       {selectedService && (
-        <ServiceDetail service={selectedService} onClose={() => setSelectedServiceId(null)} />
+        <ServiceDetail service={selectedService} onClose={() => setSelectedService(null)} />
       )}
     </div>
   );

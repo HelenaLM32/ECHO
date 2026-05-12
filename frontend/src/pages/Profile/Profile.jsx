@@ -12,6 +12,7 @@ import { getVenuesByUser, deleteVenue } from "../../services/venues";
 import { getEventsByUser, deleteEvent } from "../../services/events";
 import { deleteService } from "../../services/servicesApi";
 import { getProjectsByUserId } from "../../services/projects";
+import { getAuthToken } from "../../services/session";
 import { getAverageByUser, getReviewsByUser } from "../../services/reviews";
 import {
   getFollowStats,
@@ -21,11 +22,12 @@ import {
 } from "../../services/follows";
 
 import ProjectCard from "../../components/ProjectCard/ProjectCard";
-import ProjectView from "../../pages/ItemProyect/ProjectView";
+import ProjectView from "../../pages/ItemProject/ProjectView";
 import Footer from "../../components/Footer/Footer";
 import DetailModal from "../../components/DetailModal/DetailModal";
 import ReviewsModal from "../../components/ReviewsModal/ReviewsModal";
 import ServiceCard from "../../components/ServiceCard/ServiceCard";
+import ServiceDetail from "../../components/ServiceDetail/ServiceDetail";
 import { PopupConfirm, useConfirmPopup } from "../../components/PopupConfirm/PopupConfirm";
 
 import linkedinIcon from "../../assets/icons8-linkedin-24.png";
@@ -71,6 +73,7 @@ export default function Profile() {
 
   const [modal, setModal] = useState({ open: false, type: null, data: null });
   const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [selectedService, setSelectedService] = useState(null);
 
   const openModal = (type, data) => setModal({ open: true, type, data });
   const closeModal = () => setModal({ open: false, type: null, data: null });
@@ -227,7 +230,7 @@ export default function Profile() {
       "Confirmar eliminación",
       async () => {
         try {
-          const token = sessionStorage.getItem('token');
+          const token = getAuthToken();
           await deleteService(id, token);
           setServices((prev) => prev.filter((s) => s.id !== id));
         } catch (err) {
@@ -394,8 +397,7 @@ export default function Profile() {
                 key={service.id}
                 service={service}
                 profile={profile}
-                onEdit={isOwnProfile ? (id) => navigate(`/profile/services/${id}/edit`) : null}
-                onDelete={isOwnProfile ? (id) => handleDeleteService(id) : null}
+                onOpen={() => setSelectedService(service)}
                 small={true}
               />
             ))}
@@ -627,6 +629,9 @@ export default function Profile() {
       )}
       {selectedProjectId && (
         <ProjectView projectId={selectedProjectId} onClose={() => setSelectedProjectId(null)} />
+      )}
+      {selectedService && (
+        <ServiceDetail service={selectedService} onClose={() => setSelectedService(null)} />
       )}
       {modal.open && (
         <DetailModal type={modal.type} data={modal.data} onClose={closeModal} />

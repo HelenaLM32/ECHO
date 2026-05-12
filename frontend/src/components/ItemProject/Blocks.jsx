@@ -1,9 +1,7 @@
 import { useRef, useCallback, useEffect } from 'react'
-import { toEmbedUrl } from '../../pages/ItemProyect/store/useProjectStore'
+import { toEmbedUrl } from '../../pages/ItemProject/store/useProjectStore'
 import { uploadFile } from '../../services/uploads'
-import './ItemProyect.css'
-
-/* ── Text Block (rich editor) ────────────────── */
+import './ItemProject.css'
 
 const TEXT_EDITOR_FORMATS = [
   { cmd: 'bold', icon: 'B', title: 'Negrita' },
@@ -129,8 +127,6 @@ export function TextBlock({ block, onChange }) {
   )
 }
 
-/* ── Image Block ─────────────────────────────── */
-
 export function ImageBlock({ block, onChange }) {
   async function handleImageFileChange(e) {
     const file = e.target.files?.[0]
@@ -154,8 +150,6 @@ export function ImageBlock({ block, onChange }) {
     </div>
   )
 }
-
-/* ── Gallery Block ───────────────────────────── */
 
 const ASPECT_OPTIONS = [
   { label: 'Cuadrado', value: 'square' },
@@ -224,8 +218,6 @@ export function GalleryBlock({ block, onChange }) {
   )
 }
 
-/* ── Video Block ─────────────────────────────── */
-
 export function VideoBlock({ block, onChange }) {
   function isDirectVideoUrl(url) {
     if (!url || typeof url !== 'string') return false
@@ -260,8 +252,6 @@ export function VideoBlock({ block, onChange }) {
     </div>
   )
 }
-
-/* ── Audio Block ─────────────────────────────── */
 
 export function AudioBlock({ block, onChange }) {
   async function handleFile(e) {

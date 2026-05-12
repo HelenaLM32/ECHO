@@ -1,14 +1,24 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import '../ProjectCard/ProjectCard.css'
 
 export default function ServiceCard({ service, onOpen, small = false }) {
+  const navigate = useNavigate()
   const cover = service?.coverImageUrl
   const title = service?.name || `Servicio #${service.id}`
   const creator = service?.creator
+  const creatorId = creator?.id
   const creatorName = creator?.publicName || creator?.username || 'Creator'
   const avatarUrl = creator?.avatarUrl
   const initials = creatorName.charAt(0).toUpperCase()
   const price = service?.price || 0
+
+  const handleCreatorClick = (e) => {
+    e.stopPropagation()
+    if (creatorId) {
+      navigate(`/profile/${creatorId}`)
+    }
+  }
 
   return (
     <button type="button" className={`pc-card-wrapper pc-card-button ${small ? 'pc-card--small' : ''}`} onClick={() => onOpen(service.id)}>
@@ -26,7 +36,9 @@ export default function ServiceCard({ service, onOpen, small = false }) {
             )}
             <div className="pc-meta">
               <h3 className="pc-title">{title}</h3>
-              <p className="pc-author">por {creatorName}</p>
+              <p className="pc-author">
+                por <span className="pc-author-link" onClick={handleCreatorClick}>{creatorName}</span>
+              </p>
             </div>
           </div>
 

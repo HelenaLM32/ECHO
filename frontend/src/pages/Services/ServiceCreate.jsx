@@ -5,11 +5,12 @@ import { getCategories } from "../../services/projects";
 import { uploadFile } from "../../services/uploads";
 import ServiceProjectPicker from "../../components/ServiceProjectPicker/ServiceProjectPicker";
 import Footer from "../../components/Footer/Footer";
+import { getAuthToken } from "../../services/session";
 import "./Services.css";
 
 export default function ServiceCreate() {
   const navigate = useNavigate();
-  const token = sessionStorage.getItem('token');
+  const token = getAuthToken();
   
   const [form, setForm] = useState({
     name: "",

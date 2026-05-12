@@ -23,13 +23,11 @@
   flex-direction: column;
   align-items: stretch;
   width: 100%;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+  transition: transform 0.25s ease;
 }
 
 .project-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 20px 44px rgba(15, 23, 42, 0.14);
 }
 
 .pc-cover {
@@ -124,7 +122,6 @@
   object-fit: cover;
   flex-shrink: 0;
   background: var(--orange);
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
 }
 
 .pc-creator-fallback {
@@ -159,6 +156,16 @@
   color: var(--black-secondary);
   line-height: 1.35;
   font-weight: 500;
+}
+
+.pc-author-link {
+  color: var(--black);
+  cursor: pointer;
+}
+
+.pc-author-link:hover {
+  color: var(--black);
+  text-decoration: underline;
 }
 
 .pc-stats {

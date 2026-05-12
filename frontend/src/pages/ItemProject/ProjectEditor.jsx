@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './ProjectEditor.css'
-import Editor from '../../components/ItemProyect/Editor'
+import Editor from '../../components/ItemProject/Editor'
 import useProjectStore, {
   BLOCK_TYPES,
   BLOCK_META,
@@ -11,8 +11,6 @@ import { useAuth } from '../../context/AuthContext'
 import { createItem, createProject, getCategories } from '../../services/projects'
 import { PopupConfirm, useConfirmPopup } from '../../components/PopupConfirm/PopupConfirm'
 import { PopupSuccess, useSuccessPopup } from '../../components/PopupSuccess/PopupSuccess'
-
-/* ── Sidebar (inline) ────────────────────────── */
 
 function ProjectSidebar({ onPreview }) {
   const addBlock = useProjectStore((s) => s.addBlock)
@@ -117,7 +115,6 @@ function ProjectSidebar({ onPreview }) {
 
   return (
     <div className="sidebarContent">
-      {/* ── Add Content Dropdown ─────────────── */}
       <div className="editSection">
         <button className="editProjectButton" onClick={() => setShowAddContent(!showAddContent)}>
           Añadir contenido {showAddContent ? '▲' : '▼'}

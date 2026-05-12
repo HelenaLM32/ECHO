@@ -10,9 +10,6 @@ public interface ItemServiceRepository {
 
     List<ItemService> findByCreatorId(Integer creatorId);
 
-    List<ItemService> findAll();
-
-
     boolean existsByIdAndCreatorId(Long id, Integer creatorId);
 
     ItemService save(ItemService itemService);

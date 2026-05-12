@@ -241,7 +241,6 @@ CREATE TABLE item_services (
     description      TEXT,
     delivery_duration INT NOT NULL,
     category         VARCHAR(100) NOT NULL,
-    price            DOUBLE NOT NULL,
     cover_image_url  VARCHAR(500),
     creator_id       INT NOT NULL,
     FOREIGN KEY (item_id)    REFERENCES items(id)   ON DELETE CASCADE,
@@ -270,8 +269,7 @@ CREATE TABLE venue_event_reviews (
 -- Migration: Make base_price nullable to allow free items
 ALTER TABLE items MODIFY COLUMN base_price DOUBLE NULL;
 
--- Migration: Remove price column from item_services (use item.base_price instead)
-ALTER TABLE item_services DROP COLUMN price;
-
 -- Migration: Remove block_border_radius column (feature removed)
 ALTER TABLE item_projects DROP COLUMN block_border_radius;
+ALTER TABLE item_services DROP COLUMN price;
+

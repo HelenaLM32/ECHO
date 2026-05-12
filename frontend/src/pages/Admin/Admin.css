@@ -92,7 +92,7 @@
 
 .dev-card h2 {
   margin: 0 0 12px;
-  color: var(--white);
+  color: var(--black);
   font-size: 1rem;
 }
 
@@ -155,7 +155,7 @@
 
 .dev-order-item h3 {
   margin: 0 0 8px;
-  color: var(--white);
+  color: var(--black);
   font-size: 0.94rem;
 }
 
@@ -182,7 +182,7 @@
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  color: var(--white);
+  color: var(--black);
   margin-bottom: 4px;
 }
 

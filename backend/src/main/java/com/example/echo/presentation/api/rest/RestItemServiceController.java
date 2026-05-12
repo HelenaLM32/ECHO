@@ -71,18 +71,13 @@ public class RestItemServiceController {
 
     @GetMapping
     public ResponseEntity<List<ItemServiceResponse>> getAll() {
-        return ResponseEntity.ok(itemServiceService.getAll());
+        List<ItemServiceResponse> responses = itemServiceService.getAllServices();
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ItemServiceResponse>> getByUserId(@PathVariable Integer userId) {
         List<ItemServiceResponse> responses = itemServiceService.getByCreatorId(userId);
-        return ResponseEntity.ok(responses);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<ItemServiceResponse>> getAll() {
-        List<ItemServiceResponse> responses = itemServiceService.getAllServices();
         return ResponseEntity.ok(responses);
     }
 }

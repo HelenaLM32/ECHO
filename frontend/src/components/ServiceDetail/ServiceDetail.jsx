@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'
 import { getProfileByUserId } from '../../services/profile';
 import { getProjectById } from '../../services/projects';
 import ProjectCard from '../ProjectCard/ProjectCard';
+import ProjectView from '../../pages/ItemProject/ProjectView';
 import OrderModal from '../OrderModal/OrderModal';
 import { useAuth } from '../../context/AuthContext';
+import { usePolling } from '../../hooks/usePolling';
 import './ServiceDetail.css';
 
 const parsePrice = (value) => {
@@ -13,11 +16,17 @@ const parsePrice = (value) => {
 };
 
 function ServiceDetail({ service, onClose }) {
+  const navigate = useNavigate()
   const { user } = useAuth();
   const [creatorProfile, setCreatorProfile] = useState(null);
   const [fullServiceProjects, setFullServiceProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showOrderModal, setShowOrderModal] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
+
+  const handleOpenProject = (projectId) => {
+    setSelectedProjectId(projectId);
+  };
 
   useEffect(() => {
     const loadCreatorData = async () => {
@@ -50,10 +59,9 @@ function ServiceDetail({ service, onClose }) {
   }, [service?.creatorId, service?.projects]);
 
   // Poll for updated projects every 30 seconds to refresh views/likes in real-time
-  useEffect(() => {
-    if (!service?.projects?.length) return;
-
-    const pollProjects = async () => {
+  usePolling(
+    async () => {
+      if (!service?.projects?.length) return;
       try {
         const fullProjects = [];
         for (const projectSummary of service.projects) {
@@ -69,11 +77,10 @@ function ServiceDetail({ service, onClose }) {
           return prev.map((p) => updatedMap.get(p.id) || p);
         });
       } catch { }
-    };
-
-    const interval = setInterval(pollProjects, 30000);
-    return () => clearInterval(interval);
-  }, [service?.projects]);
+    },
+    30000,
+    !!service?.projects?.length
+  );
 
   if (!service) return null;
 
@@ -137,8 +144,8 @@ function ServiceDetail({ service, onClose }) {
                     </div>
                   )}
                   <div className="service-detail-creator-info">
-                    <h3>{creatorProfile.publicName || creatorProfile.username}</h3>
-                    <p className="service-detail-creator-username">@{creatorProfile.username}</p>
+                    <h3 onClick={() => navigate(`/profile/${service.creatorId}`)} style={{ cursor: 'pointer' }}>{creatorProfile.publicName || creatorProfile.username}</h3>
+                    <p className="service-detail-creator-username" onClick={() => navigate(`/profile/${service.creatorId}`)} style={{ cursor: 'pointer' }}>@{creatorProfile.username}</p>
                     {creatorProfile.bio && (
                       <p className="service-detail-creator-bio">{creatorProfile.bio}</p>
                     )}
@@ -169,6 +176,10 @@ function ServiceDetail({ service, onClose }) {
           basePrice={price > 0 ? price : null}
           onClose={() => setShowOrderModal(false)}
         />
+      )}
+      
+      {selectedProjectId && (
+        <ProjectView projectId={selectedProjectId} onClose={() => setSelectedProjectId(null)} />
       )}
     </>
   );
