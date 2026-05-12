@@ -29,10 +29,6 @@ public class ItemProjectDTO {
     @JsonProperty("blockGap")
     private Integer blockGap;
 
-    @Column(name = "block_border_radius")
-    @JsonProperty("blockBorderRadius")
-    private Integer blockBorderRadius;
-
     @Column(name = "published")
     @JsonProperty("published")
     private Boolean published = false;
@@ -66,14 +62,12 @@ public class ItemProjectDTO {
             String blocks,
             String background,
             Integer blockGap,
-            Integer blockBorderRadius,
             Boolean published,
             String slug) {
         this.item = item;
         this.blocks = blocks;
         this.background = background;
         this.blockGap = blockGap;
-        this.blockBorderRadius = blockBorderRadius;
         this.published = published;
         this.slug = slug;
         this.likes = 0;
@@ -100,10 +94,6 @@ public class ItemProjectDTO {
     public Integer getBlockGap() { return blockGap; }
 
     public void setBlockGap(Integer blockGap) { this.blockGap = blockGap; }
-
-    public Integer getBlockBorderRadius() { return blockBorderRadius; }
-
-    public void setBlockBorderRadius(Integer blockBorderRadius) { this.blockBorderRadius = blockBorderRadius; }
 
     public Boolean getPublished() { return published; }
 

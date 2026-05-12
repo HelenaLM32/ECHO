@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface ItemServiceRepository {
 
+    List<ItemService> findAll();
+
     List<ItemService> findByCreatorId(Integer creatorId);
 
     List<ItemService> findAll();

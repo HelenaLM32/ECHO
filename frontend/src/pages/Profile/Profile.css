@@ -391,8 +391,8 @@
 
 .btn-item-edit { background: var(--gray-light); color: var(--black); }
 .btn-item-edit:hover { background: var(--gray-stroke); }
-.btn-item-delete { background: #ffebee; color: #c62828; }
-.btn-item-delete:hover { background: #c62828; color: white; }
+.btn-item-delete { background: var(--error-light); color: var(--error); }
+.btn-item-delete:hover { background: var(--error); color: var(--true-white); }
 
 /* --- Empty State --- */
 .empty-state {

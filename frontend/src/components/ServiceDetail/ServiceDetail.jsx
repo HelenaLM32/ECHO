@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getProfileByUserId } from '../../services/profile';
-import { getProjectsByUserId, getProjectById } from '../../services/projects';
+import { getProjectById } from '../../services/projects';
 import ProjectCard from '../ProjectCard/ProjectCard';
 import OrderModal from '../OrderModal/OrderModal';
 import { useAuth } from '../../context/AuthContext';
@@ -15,7 +15,6 @@ const parsePrice = (value) => {
 function ServiceDetail({ service, onClose }) {
   const { user } = useAuth();
   const [creatorProfile, setCreatorProfile] = useState(null);
-  const [creatorProjects, setCreatorProjects] = useState([]);
   const [fullServiceProjects, setFullServiceProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showOrderModal, setShowOrderModal] = useState(false);
@@ -26,9 +25,6 @@ function ServiceDetail({ service, onClose }) {
         if (service?.creatorId) {
           const profile = await getProfileByUserId(service.creatorId);
           setCreatorProfile(profile);
-
-          const projects = await getProjectsByUserId(service.creatorId);
-          setCreatorProjects(projects || []);
         }
 
         if (service?.projects?.length > 0) {
@@ -55,40 +51,29 @@ function ServiceDetail({ service, onClose }) {
 
   // Poll for updated projects every 30 seconds to refresh views/likes in real-time
   useEffect(() => {
-    if (!service?.creatorId) return;
+    if (!service?.projects?.length) return;
 
     const pollProjects = async () => {
       try {
-        const projects = await getProjectsByUserId(service.creatorId);
-        if (projects && Array.isArray(projects)) {
-          setCreatorProjects((prev) => {
-            const updatedMap = new Map(projects.map((p) => [p.id, p]));
-            return prev.map((p) => updatedMap.get(p.id) || p);
-          });
-        }
-        
-        // Also refresh full service projects if they exist
-        if (service?.projects?.length > 0) {
-          const fullProjects = [];
-          for (const projectSummary of service.projects) {
-            try {
-              const fullProject = await getProjectById(projectSummary.id);
-              fullProjects.push(fullProject);
-            } catch {
-              // Silently skip failed project loads
-            }
+        const fullProjects = [];
+        for (const projectSummary of service.projects) {
+          try {
+            const fullProject = await getProjectById(projectSummary.id);
+            fullProjects.push(fullProject);
+          } catch {
+            // Silently skip failed project loads
           }
-          setFullServiceProjects((prev) => {
-            const updatedMap = new Map(fullProjects.map((p) => [p.id, p]));
-            return prev.map((p) => updatedMap.get(p.id) || p);
-          });
         }
+        setFullServiceProjects((prev) => {
+          const updatedMap = new Map(fullProjects.map((p) => [p.id, p]));
+          return prev.map((p) => updatedMap.get(p.id) || p);
+        });
       } catch { }
     };
 
     const interval = setInterval(pollProjects, 30000);
     return () => clearInterval(interval);
-  }, [service?.creatorId, service?.projects]);
+  }, [service?.projects]);
 
   if (!service) return null;
 
@@ -162,21 +147,12 @@ function ServiceDetail({ service, onClose }) {
               </div>
             )}
 
-            {fullServiceProjects.length > 0 ? (
+            {fullServiceProjects.length > 0 && (
               <div className="service-detail-projects">
                 <h2>Proyectos asociados</h2>
                 <div className="service-detail-projects-grid">
                   {fullServiceProjects.map((project) => (
-                    <ProjectCard key={project.id} project={project} onOpen={() => {}} small />
-                  ))}
-                </div>
-              </div>
-            ) : creatorProjects.length > 0 && (
-              <div className="service-detail-projects">
-                <h2>Proyectos del creador</h2>
-                <div className="service-detail-projects-grid">
-                  {creatorProjects.slice(0, 3).map((project) => (
-                    <ProjectCard key={project.id} project={project} onOpen={() => {}} small />
+                    <ProjectCard key={project.id} project={project} onOpen={handleOpenProject} small />
                   ))}
                 </div>
               </div>

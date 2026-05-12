@@ -104,7 +104,9 @@ async function getCategories() {
 async function getAllProjects() {
   const res = await fetchApi('/item-projects');
   if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  const data = await res.json();
+  // Ensure we always return an array
+  return Array.isArray(data) ? data : [];
 }
 
 async function getProjectsByUserId(userId) {

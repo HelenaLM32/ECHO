@@ -104,8 +104,8 @@
   flex-wrap: wrap;
 }
 
-.ver-error   { font-size: 12px; color: #f07070; }
-.ver-success { font-size: 12px; color: #6bdf8e; }
+.ver-error   { font-size: 12px; color: var(--error); }
+.ver-success { font-size: 12px; color: var(--success); }
 
 .ver-submit-btn {
   padding: 9px 22px;
@@ -247,8 +247,8 @@
 .ver-delete-btn {
   margin-top: 10px;
   background: transparent;
-  border: 1px solid rgba(220, 80, 80, 0.3);
-  color: rgba(220, 80, 80, 0.65);
+  border: 1px solid var(--error-dark);
+  color: var(--error);
   padding: 4px 12px;
   border-radius: 7px;
   font-size: 11px;
@@ -259,9 +259,9 @@
 }
 
 .ver-delete-btn:hover {
-  background: rgba(220, 80, 80, 0.12);
-  border-color: rgba(220, 80, 80, 0.55);
-  color: #f07070;
+  background: var(--error-light);
+  border-color: var(--error);
+  color: var(--error);
 }
 
 /* ── Responsive ── */

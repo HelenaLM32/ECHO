@@ -5,10 +5,12 @@ import com.example.echo.core.entity.categories.persistence.CategoryRepository;
 import com.example.echo.core.entity.items.dto.ItemDTO;
 import com.example.echo.core.entity.items.dto.ItemProjectDTO;
 import com.example.echo.core.entity.items.persistence.ItemRepository;
+import com.example.echo.core.entity.profile.dto.ProfileDTO;
 import com.example.echo.core.entity.profile.persistence.ProfileRepository;
 import com.example.echo.core.entity.services.model.ItemService;
 import com.example.echo.core.entity.services.persistence.ItemServiceRepository;
 import com.example.echo.core.entity.user.dto.UserDTO;
+import com.example.echo.core.entity.user.persistence.UserRepository;
 import com.example.echo.core.entity.services.dto.ItemServiceRequest;
 import com.example.echo.core.entity.services.dto.ItemServiceResponse;
 import org.springframework.stereotype.Service;
@@ -26,17 +28,20 @@ public class ItemServiceService {
     private final com.example.echo.core.entity.items.persistence.ItemProjectRepository projectRepository;
     private final CategoryRepository categoryRepository;
     private final ProfileRepository profileRepository;
+    private final UserRepository userRepository;
 
     public ItemServiceService(ItemServiceRepository itemServiceRepository,
                               ItemRepository itemRepository,
                               com.example.echo.core.entity.items.persistence.ItemProjectRepository projectRepository,
                               CategoryRepository categoryRepository,
-                              ProfileRepository profileRepository) {
+                              ProfileRepository profileRepository,
+                              UserRepository userRepository) {
         this.itemServiceRepository = itemServiceRepository;
         this.itemRepository = itemRepository;
         this.projectRepository = projectRepository;
         this.categoryRepository = categoryRepository;
         this.profileRepository = profileRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -79,7 +84,6 @@ public class ItemServiceService {
         itemService.setDescription(request.getDescription());
         itemService.setDeliveryDuration(request.getDeliveryDuration());
         itemService.setCategory(category.getName());
-        itemService.setPrice(request.getPrice());
         itemService.setCoverImageUrl(request.getCoverImageUrl());
         itemService.setCreator(creator);
 
@@ -130,7 +134,6 @@ public class ItemServiceService {
         itemService.setDescription(request.getDescription());
         itemService.setDeliveryDuration(request.getDeliveryDuration());
         itemService.setCategory(category.getName());
-        itemService.setPrice(request.getPrice());
         itemService.setCoverImageUrl(request.getCoverImageUrl());
 
         // Update associated Item in cascade (shared fields)
@@ -189,8 +192,9 @@ public class ItemServiceService {
         return services.stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
-    public List<ItemServiceResponse> getAll() {
-        return itemServiceRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
+    public List<ItemServiceResponse> getAllServices() {
+        List<ItemService> services = itemServiceRepository.findAll();
+        return services.stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     private ItemServiceResponse mapToResponse(ItemService itemService) {
@@ -202,14 +206,26 @@ public class ItemServiceService {
         response.setDeliveryDuration(itemService.getDeliveryDuration());
         response.setCategory(itemService.getCategory());
         response.setCategoryId(itemService.getItem().getCategoryId());
-        response.setPrice(itemService.getPrice());
+        // Price comes from the associated Item (basePrice)
+        response.setPrice(itemService.getItem().getBasePrice());
         response.setCoverImageUrl(itemService.getCoverImageUrl());
         response.setCreatorId(itemService.getCreator().getId().longValue());
 
-        profileRepository.findByUserId(itemService.getCreator().getId()).ifPresent(p -> {
-            response.setCreatorName(p.getPublicName() != null ? p.getPublicName() : itemService.getCreator().getUsername());
-            response.setCreatorAvatarUrl(p.getAvatarUrl());
-        });
+        // Add creator info with profile data
+        UserDTO creator = itemService.getCreator();
+        if (creator != null) {
+            ProfileDTO profile = profileRepository.findByUserId(creator.getId()).orElse(null);
+            String publicName = profile != null && profile.getPublicName() != null ? profile.getPublicName() : creator.getUsername();
+            String avatarUrl = profile != null ? profile.getAvatarUrl() : null;
+            
+            ItemServiceResponse.CreatorInfo creatorInfo = new ItemServiceResponse.CreatorInfo(
+                creator.getId().longValue(),
+                creator.getUsername(),
+                publicName,
+                avatarUrl
+            );
+            response.setCreator(creatorInfo);
+        }
 
         if (itemService.getProjects() != null) {
             List<ItemServiceResponse.ProjectSummary> projects = itemService.getProjects().stream()

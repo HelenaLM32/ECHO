@@ -19,8 +19,6 @@ public class ItemServiceRequest {
     @NotNull
     private Integer categoryId;
 
-    @NotNull
-    @DecimalMin(value = "0.01", inclusive = false)
     private Double price;
 
     private String coverImageUrl;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './ProjectFooter.css'
 
-export default function ProjectFooter({ name, avatar, likes = 0, views = 0, comments = 0, commentItems = [], onLike, onSubmitComment, onDeleteComment, currentUserId, projectOwnerId, isAdmin = false, isLiked = false }) {
+export default function ProjectFooter({ name, avatar, likes = 0, views = 0, comments = 0, price = null, commentItems = [], onLike, onSubmitComment, onDeleteComment, currentUserId, projectOwnerId, isAdmin = false, isLiked = false }) {
     const [draft, setDraft] = useState('')
     const initials = (name || 'U').charAt(0).toUpperCase()
     const authorName = name || 'Anónimo'
@@ -48,6 +48,7 @@ export default function ProjectFooter({ name, avatar, likes = 0, views = 0, comm
                 </div>
                 <div className="pf-divider"></div>
                 <div className="pf-stats-row">
+                    {price && <button className="pf-price-btn">{price.toFixed(2)}€</button>}
                     <button className="pf-like-btn" onClick={onLike} aria-pressed={isLiked}>
                         {isLiked ? '❤️' : '🤍'} {likes}
                     </button>

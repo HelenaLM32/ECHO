@@ -4,6 +4,7 @@ import ServiceCard from "../../components/ServiceCard/ServiceCard";
 import VenueCard from "../../components/VenueCard/VenueCard";
 import EventCard from "../../components/EventCard/EventCard";
 import ProjectView from "../../pages/ItemProyect/ProjectView";
+import ServiceDetail from "../../components/ServiceDetail/ServiceDetail";
 import { getAllProjects } from "../../services/projects";
 import { getAllServices } from "../../services/servicesApi";
 import { getAllVenues } from "../../services/venues";
@@ -15,6 +16,7 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [selectedServiceId, setSelectedServiceId] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -39,23 +41,31 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
       .finally(() => setLoading(false));
   }, [contentType]);
 
-  // Poll for updated projects every 30 seconds to refresh views/likes in real-time
+  // Poll for updated projects and services every 30 seconds to refresh views/likes in real-time
   useEffect(() => {
-    const pollProjects = () => {
-      getAllProjects()
-        .then((list) => {
-          if (list && Array.isArray(list)) {
+    const pollItems = () => {
+      Promise.all([
+        getAllProjects(),
+        getAllServices()
+      ])
+        .then(([projectsList, servicesList]) => {
+          if (projectsList && Array.isArray(projectsList)) {
             setProjects((prev) => {
-              // Merge new data while preserving order
-              const updatedMap = new Map(list.map((p) => [p.id, p]));
+              const updatedMap = new Map(projectsList.map((p) => [p.id, p]));
               return prev.map((p) => updatedMap.get(p.id) || p);
+            });
+          }
+          if (servicesList && Array.isArray(servicesList)) {
+            setServices((prev) => {
+              const updatedMap = new Map(servicesList.map((s) => [s.id, s]));
+              return prev.map((s) => updatedMap.get(s.id) || s);
             });
           }
         })
         .catch(() => { });
     };
 
-    const interval = setInterval(pollProjects, 30000);
+    const interval = setInterval(pollItems, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -147,6 +157,9 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
       )}
       {selectedProjectId && (
         <ProjectView projectId={selectedProjectId} onClose={() => setSelectedProjectId(null)} />
+      )}
+      {selectedService && (
+        <ServiceDetail service={selectedService} onClose={() => setSelectedServiceId(null)} />
       )}
     </div>
   );

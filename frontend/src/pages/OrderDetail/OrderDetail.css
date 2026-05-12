@@ -70,10 +70,10 @@
   border-radius: 20px;
 }
 
-.od-status--pending     { background: rgba(255, 200, 0, 0.15);  color: #ffc800; }
-.od-status--in_progress { background: rgba(0, 180, 255, 0.15);  color: #00b4ff; }
-.od-status--completed   { background: rgba(0, 200, 100, 0.15);  color: #00c864; }
-.od-status--cancelled   { background: rgba(255, 80, 80, 0.15);  color: #ff5050; }
+.od-status--pending     { background: var(--status-pending-bg);  color: var(--status-pending); }
+.od-status--in_progress { background: var(--status-in-progress-bg);  color: var(--status-in-progress); }
+.od-status--completed   { background: var(--status-completed-bg);  color: var(--status-completed); }
+.od-status--cancelled   { background: var(--status-cancelled-bg);  color: var(--status-cancelled); }
 
 .od-status-actions {
   display: flex;
@@ -109,15 +109,15 @@
 
 .od-status-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-.od-status-btn--in_progress { background: rgba(0, 180, 255, 0.2);  color: #00b4ff; }
-.od-status-btn--completed   { background: rgba(0, 200, 100, 0.2);  color: #00c864; }
-.od-status-btn--cancelled   { background: rgba(255, 80, 80, 0.15); color: #ff5050; }
+.od-status-btn--in_progress { background: var(--status-in-progress-bg);  color: var(--status-in-progress); }
+.od-status-btn--completed   { background: var(--status-completed-bg);  color: var(--status-completed); }
+.od-status-btn--cancelled   { background: var(--status-cancelled-bg); color: var(--status-cancelled); }
 
 .od-status-btn:hover:not(:disabled) { opacity: 0.8; }
 
 .od-error {
   font-size: 0.875rem;
-  color: #ff6b6b;
+  color: var(--error);
   margin: 0;
 }
 
@@ -199,7 +199,7 @@
 }
 
 .od-review-error {
-  color: #ff6b6b;
+  color: var(--error);
   font-size: 0.85rem;
   margin: 0;
 }

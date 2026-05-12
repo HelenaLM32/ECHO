@@ -216,15 +216,15 @@
     text-align: left;
     cursor: pointer;
     font-family: inherit;
-    color: #c62828;
+    color: var(--orange);
 }
 
 .nav-logout-btn::before {
-    background: #c62828;
+    background: var(--orange);
 }
 
 .nav-logout-btn:hover {
-    color: #c62828;
+    color: var(--orange-secondary);
 }
 
 

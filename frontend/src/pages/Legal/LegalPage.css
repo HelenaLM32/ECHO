@@ -3,7 +3,7 @@
   background:
     radial-gradient(circle at 12% 18%, rgba(233, 94, 35, 0.14), transparent 32%),
     radial-gradient(circle at 88% 8%, rgba(42, 95, 121, 0.16), transparent 30%),
-    linear-gradient(180deg, #f4f2ef 0%, #ffffff 60%);
+    linear-gradient(180deg, var(--white) 0%, var(--true-white) 60%);
 }
 
 .legal-hero {
@@ -15,8 +15,8 @@
   margin: 0 auto;
   padding: 40px 34px;
   border-radius: 24px;
-  background: linear-gradient(120deg, var(--black) 0%, var(--black-secondary) 65%, #4f4f4f 100%);
-  color: var(--true-white);
+  background: linear-gradient(120deg, #282828 0%, #353535 65%, #4f4f4f 100%);
+  color: #ffffff;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
 }
 
@@ -57,13 +57,13 @@
   margin: 0 0 24px;
   font-size: 1.03rem;
   line-height: 1.72;
-  color: #1e1e1e;
+  color: var(--black);
 }
 
 .legal-section {
   margin-top: 24px;
   padding-top: 24px;
-  border-top: 1px solid #ece7e2;
+  border-top: 1px solid var(--gray-stroke);
 }
 
 .legal-section h2 {
@@ -74,7 +74,7 @@
 
 .legal-section p {
   margin: 0 0 12px;
-  color: #2f2f2f;
+  color: var(--black);
   line-height: 1.72;
 }
 
@@ -85,7 +85,7 @@
 
 .legal-section li {
   margin: 0 0 10px;
-  color: #2f2f2f;
+  color: var(--black);
   line-height: 1.68;
 }
 
