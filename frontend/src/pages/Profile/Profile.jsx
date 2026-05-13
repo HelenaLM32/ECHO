@@ -26,7 +26,7 @@ import ProjectView from "../../pages/ItemProject/ProjectView";
 import Footer from "../../components/Footer/Footer";
 import DetailModal from "../../components/DetailModal/DetailModal";
 import ReviewsModal from "../../components/ReviewsModal/ReviewsModal";
-import ServiceCard from "../../components/ServiceCard/ServiceCard";
+import ServiceCard from "../../components/ServiceCard/ServiceCard"; 
 import ServiceDetail from "../../components/ServiceDetail/ServiceDetail";
 import { PopupConfirm, useConfirmPopup } from "../../components/PopupConfirm/PopupConfirm";
 
@@ -34,6 +34,7 @@ import linkedinIcon from "../../assets/icons8-linkedin-24.png";
 import twitterIcon from "../../assets/icons8-x-24.png";
 import instagramIcon from "../../assets/icons8-instagram-24.png";
 import "./Profile.css";
+
 
 export default function Profile() {
   const { user, loadingContext } = useAuth();
@@ -279,110 +280,116 @@ export default function Profile() {
     );
   };
 
- const renderVenues = () => {
-    if (itemsLoading.venues) return <div className="empty-state">Cargando locales...</div>;
-    return (
-      <div className="projects-section">
-        {isOwnProfile && (
-          <button className="create-tab-btn" onClick={() => navigate("/venues/venue-create")}>
-            Crear un local
-          </button>
-        )}
-        {venues.length === 0 ? (
-          <div className="empty-state">Sin locales registrados</div>
-        ) : (
-          <div className="projects-grid">
-            {venues.map((v) => (
-              <div key={v.id} className="sc-card-wrapper sc-card--small" onClick={() => openModal("venue", v)}>
-                <article className="sc-card">
-                  <div className="sc-cover">
-                    {v.img1 ? (
-                      <img src={v.img1} alt={v.name} className="sc-cover-img" />
-                    ) : (
-                      <div className="sc-cover-fallback">{v.name?.charAt(0).toUpperCase()}</div>
-                    )}
-                    {isOwnProfile && (
-                      <div className="sc-actions">
-                        <button className="sc-action-btn sc-edit-btn" onClick={(e) => { e.stopPropagation(); navigate(`/venues/${v.id}/edit`); }} title="Editar">✎</button>
-                        <button className="sc-action-btn sc-delete-btn" onClick={(e) => { e.stopPropagation(); handleDeleteVenue(v.id); }} title="Eliminar">🗑</button>
-                      </div>
-                    )}
-                  </div>
-                  <div className="sc-footer">
-                    <div className="sc-footer-left">
-                      {profile?.avatarUrl ? (
-                        <img src={profile.avatarUrl} alt="Avatar" className="sc-creator-avatar" />
-                      ) : (
-                        <div className="sc-creator-avatar sc-creator-fallback">{(profile?.publicName || profile?.username || 'U').charAt(0).toUpperCase()}</div>
-                      )}
-                      <div className="sc-meta">
-                        <h3 className="sc-title">{v.name}</h3>
-                        <p className="sc-author">{v.address || "Local"}</p>
-                      </div>
-                    </div>
-                  </div>
-                </article>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  };
+const renderVenues = () => {
+  if (itemsLoading.venues) return <div className="empty-state">Cargando locales...</div>;
 
-  const renderEvents = () => {
-    if (itemsLoading.events) return <div className="empty-state">Cargando eventos...</div>;
-    return (
-      <div className="projects-section">
-        {isOwnProfile && (
-          <button className="create-tab-btn" onClick={() => navigate("/events/event-create")}>
-            Crear un evento
-          </button>
-        )}
-        {events.length === 0 ? (
-          <div className="empty-state">Sin eventos registrados</div>
-        ) : (
-          <div className="projects-grid">
-            {events.map((ev) => (
-              <div key={ev.id} className="sc-card-wrapper sc-card--small" onClick={() => openModal("event", ev)}>
-                <article className="sc-card">
-                  <div className="sc-cover">
-                    {ev.img ? (
-                      <img src={ev.img} alt={ev.title} className="sc-cover-img" />
+  return (
+    <div className="projects-section">
+      {isOwnProfile && (
+        <button className="create-tab-btn" onClick={() => navigate("/venues/venue-create")}>
+          Crear un local
+        </button>
+      )}
+      {venues.length === 0 ? (
+        <div className="empty-state">Sin locales registrados</div>
+      ) : (
+        <div className="projects-grid">
+          {venues.map((v) => (
+            <div key={v.id} className="pc-card-container">
+              <button type="button" className="pc-card-wrapper pc-card-button pc-card--small" onClick={() => openModal("venue", v)}>
+                <article className="pc-card">
+                  <div className="pc-cover">
+                    {v.img1 ? (
+                      <img src={v.img1} alt={v.name} className="pc-cover-img" />
                     ) : (
-                      <div className="sc-cover-fallback">{ev.title?.charAt(0).toUpperCase()}</div>
-                    )}
-                    {isOwnProfile && (
-                      <div className="sc-actions">
-                        <button className="sc-action-btn sc-edit-btn" onClick={(e) => { e.stopPropagation(); navigate(`/events/${ev.id}/edit`); }} title="Editar">✎</button>
-                        <button className="sc-action-btn sc-delete-btn" onClick={(e) => { e.stopPropagation(); handleDeleteEvent(ev.id); }} title="Eliminar">🗑</button>
-                      </div>
+                      <div className="pc-cover-fallback">{v.name?.charAt(0).toUpperCase()}</div>
                     )}
                   </div>
-                  <div className="sc-footer">
-                    <div className="sc-footer-left">
-                      {profile?.avatarUrl ? (
-                        <img src={profile.avatarUrl} alt="Avatar" className="sc-creator-avatar" />
+                  <div className="pc-footer">
+                    <div className="pc-footer-left">
+                      {profile.avatarUrl ? (
+                        <img src={profile.avatarUrl} alt="Avatar" className="pc-creator-avatar" />
                       ) : (
-                        <div className="sc-creator-avatar sc-creator-fallback">{(profile?.publicName || profile?.username || 'U').charAt(0).toUpperCase()}</div>
+                        <div className="pc-creator-avatar pc-creator-fallback">
+                          {(profile.publicName || profile.username)?.charAt(0).toUpperCase()}
+                        </div>
                       )}
-                      <div className="sc-meta">
-                        <h3 className="sc-title">{ev.title}</h3>
-                        <p className="sc-author">{ev.startDate ? new Date(ev.startDate).toLocaleDateString() : "Evento"}</p>
+                      <div className="pc-meta">
+                        <h3 className="pc-title">{v.name}</h3>
+                        <p className="pc-author">por <span className="pc-author-link">{profile.publicName || profile.username}</span></p>
                       </div>
-                    </div>
-                    <div className="sc-stats">
-                      <span className="sc-price">{ev.precio ? `${ev.precio}€` : "Gratis"}</span>
                     </div>
                   </div>
                 </article>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  };
+              </button>
+
+              {isOwnProfile && (
+                <div className="pc-admin-actions">
+                  <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/events/edit/${ev.id}`); }}>✎</button>
+                  <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteEvent(ev.id); }}>✕</button>
+                </div>
+              )}
+
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const renderEvents = () => {
+  if (itemsLoading.events) return <div className="empty-state">Cargando eventos...</div>;
+
+  return (
+    <div className="projects-section">
+      {isOwnProfile && (
+        <button className="create-tab-btn" onClick={() => navigate("/events/event-create")}>
+          Crear un evento
+        </button>
+      )}
+      {events.length === 0 ? (
+        <div className="empty-state">Sin eventos registrados</div>
+      ) : (
+        <div className="projects-grid">
+          {events.map((ev) => (
+            <div key={ev.id} className="pc-card-container">
+              <button type="button" className="pc-card-wrapper pc-card-button pc-card--small" onClick={() => openModal("event", ev)}>
+                <article className="pc-card">
+                  <div className="pc-cover">
+                    <div className="pc-price-top">
+                      {ev.precio && parseFloat(ev.precio) > 0 ? `${ev.precio}€` : "Gratis"}
+                    </div>
+                    {ev.img ? (
+                      <img src={ev.img} alt={ev.title} className="pc-cover-img" />
+                    ) : (
+                      <div className="pc-cover-fallback">{ev.title?.charAt(0).toUpperCase()}</div>
+                    )}
+                  </div>
+                  <div className="pc-footer">
+                    <div className="pc-footer-left">
+                      <img src={profile.avatarUrl} className="pc-creator-avatar" alt="Avatar" />
+                      <div className="pc-meta">
+                        <h3 className="pc-title">{ev.title}</h3>
+                        <p className="pc-author">por <span className="pc-author-link">{profile.publicName || profile.username}</span></p>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </button>
+              {isOwnProfile && (
+                <div className="pc-admin-actions">
+                  <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/events/edit/${ev.id}`); }}>✎</button>
+                  <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteEvent(ev.id); }}>✕</button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
   const renderServices = () => {
     if (itemsLoading.services) return <div className="empty-state">Cargando...</div>;

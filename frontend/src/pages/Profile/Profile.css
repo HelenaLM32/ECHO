@@ -425,3 +425,50 @@
 .stat-item {
     color: var(--black-secondary);
 }
+
+/* Contenedor relativo para posicionar botones sobre la tarjeta */
+.pc-card-container {
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.pc-card-container:hover {
+  transform: translateY(-4px);
+}
+
+/* Contenedor de botones de administración */
+.pc-admin-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 8px;
+  z-index: 20; 
+}
+
+.pc-btn-edit, .pc-btn-delete {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  transition: all 0.2s ease;
+}
+
+.pc-btn-edit {
+  background-color: var(--white);
+  color: var(--black);
+}
+
+.pc-btn-delete {
+  background-color: var(--orange);
+  color: white;
+}
+
+.pc-btn-edit:hover { background-color: var(--black); transform: scale(1.1); color: var(--white);}
+.pc-btn-delete:hover { background-color: var(--black); transform: scale(1.1); }
