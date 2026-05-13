@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { fetchWithToken } from "../../services/config";
+import { useAuth } from "../../context/AuthContext";
 import {
   createDevUser,
   createDevItem,
@@ -8,12 +9,13 @@ import {
   getDevOrderMessages,
   createDevOrderMessage,
 } from "../../services/adminDev";
-import { getAllDisputes, closeDispute } from "../../services/disputes";
+import { getAllDisputes } from "../../services/disputes";
 import { getAllReviews, deleteReview } from "../../services/reviews";
 import DisputePanel from "../../components/DisputePanel";
 import "./Admin.css";
 
 export default function Admin() {
+  const { user } = useAuth();
   const [view, setView] = useState("users");
   const [data, setData] = useState([]);
   const [disputes, setDisputes] = useState([]);
@@ -24,6 +26,11 @@ export default function Admin() {
   const [usersCatalog, setUsersCatalog] = useState([]);
   const [itemsCatalog, setItemsCatalog] = useState([]);
   const [ordersCatalog, setOrdersCatalog] = useState([]);
+  const [categoriesCatalog, setCategoriesCatalog] = useState([]);
+  const [projectsCatalog, setProjectsCatalog] = useState([]);
+  const [servicesCatalog, setServicesCatalog] = useState([]);
+  const [venuesCatalog, setVenuesCatalog] = useState([]);
+  const [eventsCatalog, setEventsCatalog] = useState([]);
   const [messages, setMessages] = useState([]);
   const [selectedOrderId, setSelectedOrderId] = useState("");
   const [devError, setDevError] = useState("");
@@ -52,13 +59,47 @@ export default function Admin() {
     password: "",
   });
 
-  const [createItemForm, setCreateItemForm] = useState({
-    creatorId: "",
+  const [createProjectForm, setCreateProjectForm] = useState({
     title: "",
     description: "",
     basePrice: "",
-    itemType: "SERVICE",
     categoryId: "",
+  });
+
+  const [createServiceForm, setCreateServiceForm] = useState({
+    name: "",
+    description: "",
+    deliveryDuration: "1",
+    categoryId: "",
+    price: "",
+    coverImageUrl: "",
+    projectIds: [],
+  });
+
+  const [createVenueForm, setCreateVenueForm] = useState({
+    name: "",
+    address: "",
+    capacity: "",
+    telefono: "",
+    email: "",
+    sitioWeb: "",
+    horario: "",
+  });
+
+  const [createEventForm, setCreateEventForm] = useState({
+    title: "",
+    description: "",
+    venueId: "",
+    startDate: "",
+    endDate: "",
+    precio: "",
+    categoria: "",
+    linkEntradas: "",
+  });
+
+  const [assignServiceForm, setAssignServiceForm] = useState({
+    serviceId: "",
+    projectIds: [],
   });
 
   useEffect(() => {
@@ -191,38 +232,68 @@ export default function Admin() {
     setDevError("");
     setDevOk("");
     try {
-      const [usersRes, itemsRes, ordersRes] = await Promise.all([
+      const [usersRes, itemsRes, ordersRes, categoriesRes, projectsRes, servicesRes, venuesRes, eventsRes] = await Promise.all([
         fetchWithToken("/users"),
         fetchWithToken("/items"),
         fetchWithToken("/admin/dev/orders"),
+        fetchWithToken("/categories"),
+        fetchWithToken("/item-projects"),
+        fetchWithToken("/services"),
+        fetchWithToken("/venues"),
+        fetchWithToken("/events"),
       ]);
 
-      const [users, items, orders] = await Promise.all([
+      const [users, items, orders, categories, projects, services, venues, events] = await Promise.all([
         parseListResponse(usersRes, "users"),
         parseListResponse(itemsRes, "items"),
         parseListResponse(ordersRes, "orders"),
+        parseListResponse(categoriesRes, "categories"),
+        parseListResponse(projectsRes, "projects"),
+        parseListResponse(servicesRes, "services"),
+        parseListResponse(venuesRes, "venues"),
+        parseListResponse(eventsRes, "events"),
       ]);
 
       setUsersCatalog(users);
       setItemsCatalog(items);
       setOrdersCatalog(orders);
+      setCategoriesCatalog(categories);
+      setProjectsCatalog(projects);
+      setServicesCatalog(services);
+      setVenuesCatalog(venues);
+      setEventsCatalog(events);
 
       const firstBuyer = users[0]?.id ? String(users[0].id) : "";
       const firstItem = items[0]?.id ? String(items[0].id) : "";
       const firstOrder = orders[0]?.id ? String(orders[0].id) : "";
+      const firstCategory = categories[0]?.id ? String(categories[0].id) : "";
+      const firstVenue = venues[0]?.id ? String(venues[0].id) : "";
+      const firstService = services[0]?.id ? String(services[0].id) : "";
 
       setCreateOrderForm((prev) => ({
         ...prev,
         buyerId: prev.buyerId || firstBuyer,
         itemId: prev.itemId || firstItem,
       }));
-      setCreateItemForm((prev) => ({
-        ...prev,
-        creatorId: prev.creatorId || firstBuyer,
-      }));
       setStatusForm((prev) => ({
         ...prev,
         orderId: prev.orderId || firstOrder,
+      }));
+      setCreateProjectForm((prev) => ({
+        ...prev,
+        categoryId: prev.categoryId || firstCategory,
+      }));
+      setCreateServiceForm((prev) => ({
+        ...prev,
+        categoryId: prev.categoryId || firstCategory,
+      }));
+      setCreateEventForm((prev) => ({
+        ...prev,
+        venueId: prev.venueId || firstVenue,
+      }));
+      setAssignServiceForm((prev) => ({
+        ...prev,
+        serviceId: prev.serviceId || firstService,
       }));
       setSelectedOrderId((prev) => prev || firstOrder);
     } catch (e) {
@@ -232,10 +303,30 @@ export default function Admin() {
       setUsersCatalog([]);
       setItemsCatalog([]);
       setOrdersCatalog([]);
+      setCategoriesCatalog([]);
+      setProjectsCatalog([]);
+      setServicesCatalog([]);
+      setVenuesCatalog([]);
+      setEventsCatalog([]);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!assignServiceForm.serviceId) return;
+    const current = servicesCatalog.find(
+      (service) => String(service.id) === String(assignServiceForm.serviceId)
+    );
+    if (!current) return;
+    const currentIds = Array.isArray(current.projects)
+      ? current.projects.map((project) => Number(project.id))
+      : [];
+    setAssignServiceForm((prev) => ({
+      ...prev,
+      projectIds: currentIds,
+    }));
+  }, [assignServiceForm.serviceId, servicesCatalog]);
 
   const handleDelete = async (id) => {
     if (!window.confirm("¿Seguro que quieres borrar este registro?")) return;
@@ -310,31 +401,242 @@ export default function Admin() {
     }
   };
 
-  const handleCreateItem = async (e) => {
+  const handleCreateProject = async (e) => {
     e.preventDefault();
     setDevError("");
     setDevOk("");
+    if (!user?.id) {
+      setDevError("No se pudo identificar el usuario autenticado");
+      return;
+    }
+    if (!createProjectForm.categoryId) {
+      setDevError("Selecciona una categoría para el proyecto");
+      return;
+    }
     try {
-      const payload = {
-        creatorId: Number(createItemForm.creatorId),
-        title: createItemForm.title.trim(),
-        description: createItemForm.description.trim(),
-        basePrice: Number(createItemForm.basePrice),
-        itemType: createItemForm.itemType,
-        categoryId: createItemForm.categoryId === "" ? null : Number(createItemForm.categoryId),
+      const basePriceValue =
+        createProjectForm.basePrice === "" ? null : Number(createProjectForm.basePrice);
+      const itemPayload = {
+        creatorId: Number(user.id),
+        title: createProjectForm.title.trim(),
+        description: createProjectForm.description.trim() || null,
+        basePrice: basePriceValue,
+        itemType: "PROJECT",
+        categoryId: Number(createProjectForm.categoryId),
       };
-      await createDevItem(payload);
-      setCreateItemForm((prev) => ({
+      const createdItem = await createDevItem(itemPayload);
+      const itemId = Number(createdItem?.id);
+      if (!itemId) throw new Error("No se pudo obtener el ID del item de proyecto");
+
+      const slugBase = createProjectForm.title
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+
+      const projectPayload = {
+        id: itemId,
+        item: { id: itemId },
+        blocks: "[]",
+        background: JSON.stringify({ mode: "color", value: "#ffffff" }),
+        blockGap: 0,
+        published: false,
+        slug: slugBase || `project-${itemId}`,
+      };
+
+      const projectRes = await fetchWithToken("/item-projects/register", {
+        method: "POST",
+        body: JSON.stringify(projectPayload),
+      });
+      if (!projectRes.ok) {
+        throw new Error((await projectRes.text()) || "No se pudo crear el proyecto");
+      }
+
+      setCreateProjectForm((prev) => ({
         ...prev,
         title: "",
         description: "",
         basePrice: "",
-        categoryId: "",
       }));
-      setDevOk("Item creado correctamente.");
+      setDevOk("Proyecto creado correctamente.");
       await loadDevelopData();
     } catch (e2) {
-      setDevError(e2.message || "No se pudo crear el item");
+      setDevError(e2.message || "No se pudo crear el proyecto");
+    }
+  };
+
+  const handleCreateService = async (e) => {
+    e.preventDefault();
+    setDevError("");
+    setDevOk("");
+    if (!createServiceForm.categoryId) {
+      setDevError("Selecciona una categoría para el servicio");
+      return;
+    }
+    try {
+      const payload = {
+        name: createServiceForm.name.trim(),
+        description: createServiceForm.description.trim(),
+        deliveryDuration: Number(createServiceForm.deliveryDuration || 1),
+        categoryId: Number(createServiceForm.categoryId),
+        price: createServiceForm.price === "" ? null : Number(createServiceForm.price),
+        coverImageUrl: createServiceForm.coverImageUrl.trim() || null,
+        projectIds: createServiceForm.projectIds.map((id) => Number(id)),
+      };
+      const res = await fetchWithToken("/services", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        throw new Error((await res.text()) || "No se pudo crear el servicio");
+      }
+      setCreateServiceForm((prev) => ({
+        ...prev,
+        name: "",
+        description: "",
+        deliveryDuration: "1",
+        price: "",
+        coverImageUrl: "",
+        projectIds: [],
+      }));
+      setDevOk("Servicio creado correctamente.");
+      await loadDevelopData();
+    } catch (e2) {
+      setDevError(e2.message || "No se pudo crear el servicio");
+    }
+  };
+
+  const handleCreateVenue = async (e) => {
+    e.preventDefault();
+    setDevError("");
+    setDevOk("");
+    try {
+      const formData = new FormData();
+      formData.append("name", createVenueForm.name.trim());
+      formData.append("address", createVenueForm.address.trim());
+      if (createVenueForm.capacity !== "") formData.append("capacity", createVenueForm.capacity);
+      if (createVenueForm.telefono.trim()) formData.append("telefono", createVenueForm.telefono.trim());
+      if (createVenueForm.email.trim()) formData.append("email", createVenueForm.email.trim());
+      if (createVenueForm.sitioWeb.trim()) formData.append("sitioWeb", createVenueForm.sitioWeb.trim());
+      if (createVenueForm.horario.trim()) formData.append("horario", createVenueForm.horario.trim());
+
+      const res = await fetchWithToken("/venues", {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) {
+        throw new Error((await res.text()) || "No se pudo crear el local");
+      }
+      setCreateVenueForm({
+        name: "",
+        address: "",
+        capacity: "",
+        telefono: "",
+        email: "",
+        sitioWeb: "",
+        horario: "",
+      });
+      setDevOk("Local creado correctamente.");
+      await loadDevelopData();
+    } catch (e2) {
+      setDevError(e2.message || "No se pudo crear el local");
+    }
+  };
+
+  const handleCreateEvent = async (e) => {
+    e.preventDefault();
+    setDevError("");
+    setDevOk("");
+    if (!createEventForm.venueId) {
+      setDevError("Selecciona un local para el evento");
+      return;
+    }
+    if (!createEventForm.startDate || !createEventForm.endDate) {
+      setDevError("Debes indicar fecha de inicio y fin");
+      return;
+    }
+    if (new Date(createEventForm.startDate) >= new Date(createEventForm.endDate)) {
+      setDevError("La fecha de inicio debe ser anterior a la fecha de fin");
+      return;
+    }
+    try {
+      const formData = new FormData();
+      formData.append("venueId", createEventForm.venueId);
+      formData.append("startDate", createEventForm.startDate);
+      formData.append("endDate", createEventForm.endDate);
+      if (createEventForm.title.trim()) formData.append("title", createEventForm.title.trim());
+      if (createEventForm.description.trim()) formData.append("description", createEventForm.description.trim());
+      if (createEventForm.precio !== "") formData.append("precio", createEventForm.precio);
+      if (createEventForm.categoria.trim()) formData.append("categoria", createEventForm.categoria.trim());
+      if (createEventForm.linkEntradas.trim()) {
+        formData.append("linkEntradas", createEventForm.linkEntradas.trim());
+      }
+
+      const res = await fetchWithToken("/events", {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) {
+        throw new Error((await res.text()) || "No se pudo crear el evento");
+      }
+      setCreateEventForm((prev) => ({
+        ...prev,
+        title: "",
+        description: "",
+        startDate: "",
+        endDate: "",
+        precio: "",
+        categoria: "",
+        linkEntradas: "",
+      }));
+      setDevOk("Evento creado correctamente.");
+      await loadDevelopData();
+    } catch (e2) {
+      setDevError(e2.message || "No se pudo crear el evento");
+    }
+  };
+
+  const handleAssignProjectsToService = async (e) => {
+    e.preventDefault();
+    setDevError("");
+    setDevOk("");
+    const selectedService = servicesCatalog.find(
+      (service) => String(service.id) === String(assignServiceForm.serviceId)
+    );
+    if (!selectedService) {
+      setDevError("Selecciona un servicio válido");
+      return;
+    }
+    const resolvedCategoryId = selectedService.categoryId
+      || categoriesCatalog.find((category) => category.name === selectedService.category)?.id;
+
+    if (!resolvedCategoryId) {
+      setDevError("No se pudo resolver la categoría del servicio seleccionado");
+      return;
+    }
+
+    try {
+      const payload = {
+        name: selectedService.name,
+        description: selectedService.description || "",
+        deliveryDuration: Number(selectedService.deliveryDuration || 1),
+        categoryId: Number(resolvedCategoryId),
+        price: selectedService.price ?? null,
+        coverImageUrl: selectedService.coverImageUrl || null,
+        projectIds: assignServiceForm.projectIds.map((id) => Number(id)),
+      };
+
+      const res = await fetchWithToken(`/services/${selectedService.id}`, {
+        method: "PUT",
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        throw new Error((await res.text()) || "No se pudo actualizar el servicio");
+      }
+      setDevOk("Servicio actualizado y proyectos asignados.");
+      await loadDevelopData();
+    } catch (e2) {
+      setDevError(e2.message || "No se pudo asignar proyectos al servicio");
     }
   };
 
@@ -486,6 +788,28 @@ export default function Admin() {
 
   const renderDevelopPanel = () => (
     <div className="dev-layout">
+      <section className="dev-card dev-card-wide">
+        <h2>Resumen de Contenido</h2>
+        <div className="dev-orders-grid">
+          <article className="dev-order-item">
+            <h3>Servicios</h3>
+            <p>{servicesCatalog.length} registrados</p>
+          </article>
+          <article className="dev-order-item">
+            <h3>Proyectos</h3>
+            <p>{projectsCatalog.length} registrados</p>
+          </article>
+          <article className="dev-order-item">
+            <h3>Locales</h3>
+            <p>{venuesCatalog.length} registrados</p>
+          </article>
+          <article className="dev-order-item">
+            <h3>Eventos</h3>
+            <p>{eventsCatalog.length} registrados</p>
+          </article>
+        </div>
+      </section>
+
       <section className="dev-card">
         <h2>Crear Usuario</h2>
         <form className="dev-form" onSubmit={handleCreateUser}>
@@ -525,28 +849,15 @@ export default function Admin() {
       </section>
 
       <section className="dev-card">
-        <h2>Crear Item</h2>
-        <form className="dev-form" onSubmit={handleCreateItem}>
-          <label>
-            Creator
-            <select
-              value={createItemForm.creatorId}
-              onChange={(e) => setCreateItemForm((p) => ({ ...p, creatorId: e.target.value }))}
-              required
-            >
-              {usersCatalog.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.id} · {u.username}
-                </option>
-              ))}
-            </select>
-          </label>
-
+        <h2>Crear Proyecto (seguro)</h2>
+        <p className="admin-empty">El creador se toma del usuario autenticado.</p>
+        <form className="dev-form" onSubmit={handleCreateProject}>
           <label>
             Título
             <input
-              value={createItemForm.title}
-              onChange={(e) => setCreateItemForm((p) => ({ ...p, title: e.target.value }))}
+              value={createProjectForm.title}
+              onChange={(e) => setCreateProjectForm((p) => ({ ...p, title: e.target.value }))}
+              minLength={3}
               required
             />
           </label>
@@ -555,8 +866,8 @@ export default function Admin() {
             Descripción
             <textarea
               rows={2}
-              value={createItemForm.description}
-              onChange={(e) => setCreateItemForm((p) => ({ ...p, description: e.target.value }))}
+              value={createProjectForm.description}
+              onChange={(e) => setCreateProjectForm((p) => ({ ...p, description: e.target.value }))}
             />
           </label>
 
@@ -566,35 +877,271 @@ export default function Admin() {
               type="number"
               min="0"
               step="0.01"
-              value={createItemForm.basePrice}
-              onChange={(e) => setCreateItemForm((p) => ({ ...p, basePrice: e.target.value }))}
+              value={createProjectForm.basePrice}
+              onChange={(e) => setCreateProjectForm((p) => ({ ...p, basePrice: e.target.value }))}
+            />
+          </label>
+
+          <label>
+            Categoría
+            <select
+              value={createProjectForm.categoryId}
+              onChange={(e) => setCreateProjectForm((p) => ({ ...p, categoryId: e.target.value }))}
+              required
+            >
+              {categoriesCatalog.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.id} · {category.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <button className="btn-primary" type="submit">Crear proyecto</button>
+        </form>
+      </section>
+
+      <section className="dev-card">
+        <h2>Crear Servicio</h2>
+        <form className="dev-form" onSubmit={handleCreateService}>
+          <label>
+            Nombre
+            <input
+              value={createServiceForm.name}
+              onChange={(e) => setCreateServiceForm((p) => ({ ...p, name: e.target.value }))}
               required
             />
           </label>
 
           <label>
-            Tipo
+            Descripción
+            <textarea
+              rows={2}
+              value={createServiceForm.description}
+              onChange={(e) => setCreateServiceForm((p) => ({ ...p, description: e.target.value }))}
+            />
+          </label>
+
+          <label>
+            Categoría
             <select
-              value={createItemForm.itemType}
-              onChange={(e) => setCreateItemForm((p) => ({ ...p, itemType: e.target.value }))}
+              value={createServiceForm.categoryId}
+              onChange={(e) => setCreateServiceForm((p) => ({ ...p, categoryId: e.target.value }))}
+              required
             >
-              <option value="SERVICE">SERVICE</option>
-              <option value="PRODUCT">PRODUCT</option>
+              {categoriesCatalog.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.id} · {category.name}
+                </option>
+              ))}
             </select>
           </label>
 
           <label>
-            Category ID
+            Entrega (días)
             <input
               type="number"
               min="1"
-              value={createItemForm.categoryId}
-              onChange={(e) => setCreateItemForm((p) => ({ ...p, categoryId: e.target.value }))}
+              value={createServiceForm.deliveryDuration}
+              onChange={(e) => setCreateServiceForm((p) => ({ ...p, deliveryDuration: e.target.value }))}
+              required
+            />
+          </label>
+
+          <label>
+            Precio
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={createServiceForm.price}
+              onChange={(e) => setCreateServiceForm((p) => ({ ...p, price: e.target.value }))}
               placeholder="Opcional"
             />
           </label>
 
-          <button className="btn-primary" type="submit">Crear item</button>
+          <label>
+            URL portada
+            <input
+              value={createServiceForm.coverImageUrl}
+              onChange={(e) => setCreateServiceForm((p) => ({ ...p, coverImageUrl: e.target.value }))}
+              placeholder="https://..."
+            />
+          </label>
+
+          <label>
+            Proyectos vinculados
+            <select
+              multiple
+              value={createServiceForm.projectIds.map(String)}
+              onChange={(e) => {
+                const selected = Array.from(e.target.selectedOptions).map((option) => Number(option.value));
+                setCreateServiceForm((p) => ({ ...p, projectIds: selected }));
+              }}
+            >
+              {projectsCatalog.map((project) => (
+                <option key={project.id} value={project.id}>
+                  #{project.id} · {project.item?.title ?? "Proyecto"}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <button className="btn-primary" type="submit">Crear servicio</button>
+        </form>
+      </section>
+
+      <section className="dev-card">
+        <h2>Crear Local</h2>
+        <form className="dev-form" onSubmit={handleCreateVenue}>
+          <label>
+            Nombre
+            <input
+              value={createVenueForm.name}
+              onChange={(e) => setCreateVenueForm((p) => ({ ...p, name: e.target.value }))}
+              required
+            />
+          </label>
+
+          <label>
+            Dirección
+            <input
+              value={createVenueForm.address}
+              onChange={(e) => setCreateVenueForm((p) => ({ ...p, address: e.target.value }))}
+              required
+            />
+          </label>
+
+          <label>
+            Aforo
+            <input
+              type="number"
+              min="1"
+              value={createVenueForm.capacity}
+              onChange={(e) => setCreateVenueForm((p) => ({ ...p, capacity: e.target.value }))}
+            />
+          </label>
+
+          <label>
+            Teléfono
+            <input
+              value={createVenueForm.telefono}
+              onChange={(e) => setCreateVenueForm((p) => ({ ...p, telefono: e.target.value }))}
+            />
+          </label>
+
+          <label>
+            Email
+            <input
+              type="email"
+              value={createVenueForm.email}
+              onChange={(e) => setCreateVenueForm((p) => ({ ...p, email: e.target.value }))}
+            />
+          </label>
+
+          <button className="btn-primary" type="submit">Crear local</button>
+        </form>
+      </section>
+
+      <section className="dev-card">
+        <h2>Crear Evento</h2>
+        <form className="dev-form" onSubmit={handleCreateEvent}>
+          <label>
+            Título
+            <input
+              value={createEventForm.title}
+              onChange={(e) => setCreateEventForm((p) => ({ ...p, title: e.target.value }))}
+              required
+            />
+          </label>
+
+          <label>
+            Local
+            <select
+              value={createEventForm.venueId}
+              onChange={(e) => setCreateEventForm((p) => ({ ...p, venueId: e.target.value }))}
+              required
+            >
+              {venuesCatalog.map((venue) => (
+                <option key={venue.id} value={venue.id}>
+                  #{venue.id} · {venue.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label>
+            Inicio
+            <input
+              type="datetime-local"
+              value={createEventForm.startDate}
+              onChange={(e) => setCreateEventForm((p) => ({ ...p, startDate: e.target.value }))}
+              required
+            />
+          </label>
+
+          <label>
+            Fin
+            <input
+              type="datetime-local"
+              value={createEventForm.endDate}
+              onChange={(e) => setCreateEventForm((p) => ({ ...p, endDate: e.target.value }))}
+              required
+            />
+          </label>
+
+          <label>
+            Precio
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={createEventForm.precio}
+              onChange={(e) => setCreateEventForm((p) => ({ ...p, precio: e.target.value }))}
+            />
+          </label>
+
+          <button className="btn-primary" type="submit">Crear evento</button>
+        </form>
+      </section>
+
+      <section className="dev-card dev-card-wide">
+        <h2>Asignar Proyectos a Servicio</h2>
+        <form className="dev-form" onSubmit={handleAssignProjectsToService}>
+          <label>
+            Servicio
+            <select
+              value={assignServiceForm.serviceId}
+              onChange={(e) => setAssignServiceForm((p) => ({ ...p, serviceId: e.target.value }))}
+              required
+            >
+              {servicesCatalog.map((service) => (
+                <option key={service.id} value={service.id}>
+                  #{service.id} · {service.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label>
+            Proyectos
+            <select
+              multiple
+              value={assignServiceForm.projectIds.map(String)}
+              onChange={(e) => {
+                const selected = Array.from(e.target.selectedOptions).map((option) => Number(option.value));
+                setAssignServiceForm((p) => ({ ...p, projectIds: selected }));
+              }}
+            >
+              {projectsCatalog.map((project) => (
+                <option key={project.id} value={project.id}>
+                  #{project.id} · {project.item?.title ?? "Proyecto"}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <button className="btn-primary" type="submit">Guardar asignación</button>
         </form>
       </section>
 

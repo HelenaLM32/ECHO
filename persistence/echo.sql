@@ -192,16 +192,15 @@ ALTER TABLE items
 
 
 INSERT INTO categories (name, slug, description, icon_url, is_active) VALUES
-    ('Para ti',          'for-you',       'Contenido personalizado para ti',              NULL,  TRUE),
-    ('Siguiendo',        'following',     'Contenido de los creadores que sigues',         NULL,  TRUE),
-    ('Lo mejor de ECHO', 'best-of-echo',  'Lo más destacado de la plataforma',            NULL,  TRUE),
     ('Diseño Gráfico',   'graphic-design','Identidad visual, branding y diseño editorial', NULL, TRUE),
     ('Fotografía',       'photography',   'Fotografía artística, retrato y documental',    NULL, TRUE),
     ('Ilustración',      'illustration',  'Ilustración digital y tradicional',             NULL, TRUE),
     ('Arte 3D',          '3d-art',        'Modelado, escultura y render 3D',               NULL, TRUE),
     ('Arquitectura',     'architecture',  'Proyectos arquitectónicos y visualización',     NULL, TRUE),
     ('Moda',             'fashion',       'Diseño de moda, textil e indumentaria',         NULL, TRUE),
-    ('Comic',             'comic',       'Historietas, novelas gráficas y cómics',         NULL, TRUE);
+    ('Comic',            'comic',         'Historietas, novelas gráficas y cómics',        NULL, TRUE),
+    ('Producción Musical','music-production','Composición, mezcla, mastering y diseño sonoro', NULL, TRUE),
+    ('Video y Edición',  'video-editing', 'Grabación, montaje y postproducción audiovisual', NULL, TRUE);
 
 INSERT INTO roles (name) VALUES
     ('ADMIN'),
