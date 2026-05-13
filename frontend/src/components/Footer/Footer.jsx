@@ -16,7 +16,7 @@ export default function Footer() {
 					<p className="footer-tagline">Donde el arte encuentra su público y los creadores encuentran su oportunidad.</p>
 
 					<div className="footer-contacts">
-						<span>hello@echo.com</span>
+						<a href="mailto:echo.info.contact@gmail.com">echo.info.contact@gmail.com</a>
 						<span className="dot">·</span>
 						<span>(34) 900334455</span>
 					</div>

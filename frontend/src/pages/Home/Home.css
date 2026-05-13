@@ -295,6 +295,7 @@
 .home-sort-dropdown {
   position: relative;
   flex-shrink: 0;
+  height: 58px;
 }
 
 .home-sort-trigger {
