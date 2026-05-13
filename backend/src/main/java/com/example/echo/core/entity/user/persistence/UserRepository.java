@@ -18,4 +18,8 @@ public interface UserRepository {
     void deleteById(Integer id);
 
     List<UserDTO> findAll();
+
+    Optional<UserDTO> findByProviderAndProviderId(String provider, String providerId);
+
+    UserDTO saveOAuthUser(String email, String username, String provider, String providerId);
 }

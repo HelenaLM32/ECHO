@@ -35,6 +35,8 @@ import AboutUs from './pages/Resources/AboutUs';
 import ServiceCreate from './pages/Services/ServiceCreate';
 import ServiceEdit from './pages/Services/ServiceEdit';
 
+import OAuthCallback from './pages/OAuthCallback/OAuthCallback';
+
 export default function App() {
   return (
     <AuthProvider>
@@ -44,6 +46,7 @@ export default function App() {
         <Route path="/category/:slug" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/oauth/callback" element={<OAuthCallback />} />
         <Route path="/profile/:userId" element={<Profile />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsAndConditions />} />

@@ -26,12 +26,11 @@ public class LoginResponseDTO {
         this.email = user.getEmail();
         this.username = user.getUsername();
         this.isActive = user.getIsActive();
-        
-        // Convert RoleDTO objects to role name strings
+
         this.roles = user.getRoles() != null
-            ? user.getRoles().stream()
-                .map(RoleDTO::getName)
-                .collect(Collectors.toList())
-            : new java.util.ArrayList<>();
+                ? user.getRoles().stream()
+                        .map(RoleDTO::getName)
+                        .collect(Collectors.toList())
+                : new java.util.ArrayList<>();
     }
 }

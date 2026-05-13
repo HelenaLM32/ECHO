@@ -29,4 +29,17 @@ public interface JpaUserRepository extends JpaRepository<UserDTO, Integer>, User
 
     @Transactional
     void deleteByEmail(String email);
+
+    Optional<UserDTO> findByProviderAndProviderId(String provider, String providerId);
+
+    @Transactional
+    default UserDTO saveOAuthUser(String email, String username, String provider, String providerId) {
+        UserDTO user = new UserDTO();
+        user.setEmail(email);
+        user.setUsername(username);
+        user.setProvider(provider);
+        user.setProviderId(providerId);
+        user.setIsActive(true);
+        return save(user);
+    }
 }

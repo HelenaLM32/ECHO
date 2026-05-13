@@ -36,9 +36,15 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     setUser(null);
   };
+  
+  const oauthLogin = (data) => {
+  setAuthSession({ token: data.token, user: data });
+  setToken(data.token);
+  setUser(data);
+};
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, logout, loadingContext }}>
+    <AuthContext.Provider value={{ user, token, login, register, logout, loadingContext, oauthLogin }}>
       {children}
     </AuthContext.Provider>
   );
