@@ -449,7 +449,6 @@ const renderEvents = () => {
     "Servicios",
     "Locales",
     "Eventos",
-    "Valoraciones",
     "Calendario",
   ];
 
@@ -617,11 +616,6 @@ const renderEvents = () => {
 
             {/* Eventos */}
             {activeTab === "Eventos" && renderEvents()}
-
-            {/* Valoraciones */}
-            {activeTab === "Valoraciones" && (
-              <div className="empty-state">Sin valoraciones aún</div>
-            )}
 
             {/* Calendario */}
             {activeTab === "Calendario" && (

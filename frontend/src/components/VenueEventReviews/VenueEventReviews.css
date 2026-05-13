@@ -5,9 +5,8 @@
 /* ── Contenedor ── */
 .ver-section {
   margin-top: 28px;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  border-top: 1px solid var(--gray-stroke);
   padding-top: 24px;
-  font-family: Arial, sans-serif;
 }
 
 /* ── Cabecera: título + badge media ── */
@@ -23,7 +22,7 @@
 .ver-title {
   font-size: 15px;
   font-weight: 800;
-  color: var(--true-white);
+  color: var(--black);
   letter-spacing: 0.2px;
 }
 
@@ -31,15 +30,15 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(233, 94, 35, 0.1);
-  border: 1px solid rgba(233, 94, 35, 0.28);
+  background: var(--white);
+  border: 1px solid var(--border-orange);
   border-radius: 100px;
   padding: 4px 14px;
 }
 
 .ver-avg-star  { color: var(--orange); font-size: 14px; }
-.ver-avg-num   { font-size: 14px; font-weight: 800; color: var(--true-white); }
-.ver-avg-count { font-size: 12px; color: var(--gray-dark-secondary); }
+.ver-avg-num   { font-size: 14px; font-weight: 800; color: var(--black); }
+.ver-avg-count { font-size: 12px; color: var(--black-secondary); }
 
 /* ── Formulario ── */
 .ver-form {
@@ -48,8 +47,8 @@
   gap: 10px;
   margin-bottom: 24px;
   padding: 16px;
-  background: rgba(0, 0, 0, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--white);
+  border: 1px solid var(--gray-stroke);
   border-radius: 14px;
 }
 
@@ -61,7 +60,7 @@
 
 .ver-star-input {
   font-size: 24px;
-  color: rgba(255, 255, 255, 0.15);
+  color: var(--gray-dark);
   cursor: pointer;
   transition: color 0.12s, transform 0.1s;
   user-select: none;
@@ -83,18 +82,18 @@
   resize: vertical;
   padding: 10px 13px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.22);
-  color: var(--gray-dark);
+  border: 1px solid var(--gray-stroke);
+  background: var(--true-white);
+  color: var(--black);
   font-size: 13px;
-  font-family: Arial, sans-serif;
   line-height: 1.5;
   outline: none;
   transition: border-color 0.2s;
+  box-sizing: border-box;
 }
 
-.ver-textarea::placeholder { color: var(--gray-dark-secondary); }
-.ver-textarea:focus        { border-color: rgba(233, 94, 35, 0.45); }
+.ver-textarea::placeholder { color: var(--black-secondary); }
+.ver-textarea:focus        { border-color: var(--orange-secondary); }
 
 .ver-form-footer {
   display: flex;
@@ -112,11 +111,10 @@
   background: var(--orange);
   color: var(--true-white);
   border: none;
-  border-radius: 10px;
+  border-radius: 999px;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  font-family: Arial, sans-serif;
   transition: background 0.2s, transform 0.15s;
   white-space: nowrap;
 }
@@ -132,11 +130,11 @@
 /* ── Ya dejaste review ── */
 .ver-already {
   font-size: 13px;
-  color: var(--gray-dark-secondary);
+  color: var(--black-secondary);
   margin-bottom: 16px;
   padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--white);
+  border: 1px solid var(--gray-stroke);
   border-radius: 10px;
   display: inline-block;
 }
@@ -145,7 +143,7 @@
 .ver-empty,
 .ver-loading {
   font-size: 13px;
-  color: var(--gray-dark-secondary);
+  color: var(--black-secondary);
   padding: 20px 0 4px;
   text-align: center;
 }
@@ -158,15 +156,15 @@
 }
 
 .ver-item {
-  background: rgba(0, 0, 0, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--white);
+  border: 1px solid var(--gray-stroke);
   border-radius: 12px;
   padding: 13px 15px;
   transition: border-color 0.2s;
 }
 
 .ver-item:hover {
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--gray-dark);
 }
 
 /* Fila superior: autor + estrellas */
@@ -192,7 +190,7 @@
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
-  border: 2px solid rgba(255, 255, 255, 0.08);
+  border: 2px solid var(--gray-stroke);
 }
 
 .ver-item-avatar--placeholder {
@@ -208,7 +206,7 @@
 .ver-item-name {
   font-size: 13px;
   font-weight: 700;
-  color: var(--true-white);
+  color: var(--black);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -216,7 +214,7 @@
 }
 
 .ver-item-author:hover .ver-item-name {
-  color: var(--orange-secondary);
+  color: var(--orange);
 }
 
 /* Stars de solo lectura */
@@ -232,13 +230,13 @@
 }
 
 .ver-item-star.off {
-  color: rgba(255, 255, 255, 0.14);
+  color: var(--gray-dark);
 }
 
 /* Comentario */
 .ver-item-comment {
   font-size: 13px;
-  color: var(--gray-dark-secondary);
+  color: var(--black-secondary);
   line-height: 1.6;
   word-break: break-word;
 }
@@ -254,7 +252,6 @@
   font-size: 11px;
   font-weight: 700;
   cursor: pointer;
-  font-family: Arial, sans-serif;
   transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 
