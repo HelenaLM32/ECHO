@@ -21,7 +21,7 @@ function ProjectSidebar({ onPreview }) {
   const setBlockGap = useProjectStore((s) => s.setBlockGap)
   const [showAddContent, setShowAddContent] = useState(false)
   const [showEditProject, setShowEditProject] = useState(false)
-  const [showCustomizeStyles, setShowCustomizeStyles] = useState(false)
+  const [showSpacing, setShowSpacing] = useState(false)
   const colorInputRef = useRef(null)
 
   function handleClick(type) {
@@ -115,10 +115,12 @@ function ProjectSidebar({ onPreview }) {
 
   return (
     <div className="sidebarContent">
-      <div className="editSection">
-        <button className="editProjectButton" onClick={() => setShowAddContent(!showAddContent)}>
-          Añadir contenido {showAddContent ? '▲' : '▼'}
-        </button>
+      {/* ── Isla 1: Configuración del proyecto ─────────────── */}
+      <div className="sidebarIsland">
+        <div className="editSection">
+          <button className="editProjectButton" onClick={() => setShowAddContent(!showAddContent)}>
+            Añadir contenido {showAddContent ? '▲' : '▼'}
+          </button>
         {showAddContent && (
           <div className="backgroundPanel">
             <div className="sidebarButtonGrid">
@@ -144,24 +146,31 @@ function ProjectSidebar({ onPreview }) {
         {showEditProject && (
           <div className="backgroundPanel">
             <div className="backgroundModeRow">
-              {[
-                { mode: 'color', label: 'Color' },
-                { mode: 'image', label: 'Imagen' },
-              ].map(({ mode, label }) => (
-                <button
-                  key={mode}
-                  className={`backgroundModeButton${background.mode === mode ? ' active' : ''}`}
-                  onClick={() => {
-                    if (mode === 'image') return pickBgImage()
-                    if (mode === 'color') {
-                      setBackground('color', background.value || '#ffffff')
-                      colorInputRef.current?.click()
-                    }
-                  }}
-                >
-                  {label}
-                </button>
-              ))}
+              <button
+                className={`backgroundModeButton${!showSpacing && background.mode === 'color' ? ' active' : ''}`}
+                onClick={() => {
+                  setShowSpacing(false)
+                  setBackground('color', background.value || '#ffffff')
+                  colorInputRef.current?.click()
+                }}
+              >
+                Color
+              </button>
+              <button
+                className={`backgroundModeButton${!showSpacing && background.mode === 'image' ? ' active' : ''}`}
+                onClick={() => {
+                  setShowSpacing(false)
+                  pickBgImage()
+                }}
+              >
+                Imagen
+              </button>
+              <button
+                className={`backgroundModeButton${showSpacing ? ' active' : ''}`}
+                onClick={() => setShowSpacing(true)}
+              >
+                Espaciado
+              </button>
             </div>
 
             {/* Hidden color input */}
@@ -173,53 +182,58 @@ function ProjectSidebar({ onPreview }) {
               style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}
             />
 
-            {background.mode === 'image' && background.value && (
-              <div className="backgroundImagePreview">
-                <img src={background.value} alt="bg" className="backgroundImageThumbnail" />
-                <button className="backgroundImageChangeButton" onClick={pickBgImage}>Cambiar</button>
-              </div>
+            {!showSpacing && (
+              <>
+                {background.mode === 'image' && background.value && (
+                  <div className="backgroundImagePreview">
+                    <img src={background.value} alt="bg" className="backgroundImageThumbnail" />
+                    <button className="backgroundImageChangeButton" onClick={pickBgImage}>Cambiar</button>
+                  </div>
+                )}
+
+                <div
+                  className="backgroundPreviewSwatch"
+                  style={
+                    background.mode === 'image'
+                      ? { backgroundImage: `url(${background.value})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+                      : background.mode === 'gradient'
+                        ? { background: background.value }
+                        : { background: background.value }
+                  }
+                />
+              </>
             )}
 
-            <div
-              className="backgroundPreviewSwatch"
-              style={
-                background.mode === 'image'
-                  ? { backgroundImage: `url(${background.value})`, backgroundSize: 'cover', backgroundPosition: 'center' }
-                  : background.mode === 'gradient'
-                    ? { background: background.value }
-                    : { background: background.value }
-            }
-            />
+            {showSpacing && (
+              <div className="spacingPanel" style={{ marginTop: 12 }}>
+                <h3 className="customizeHeading">Espaciado entre bloques</h3>
+                <div className="blockSpacingControl">
+                  <input
+                    type="range"
+                    min="0"
+                    max="60"
+                    step="2"
+                    value={blockGap}
+                    onChange={(e) => setBlockGap(Number(e.target.value))}
+                    className="blockSpacingSlider"
+                  />
+                  <span className="blockSpacingValue">{blockGap}px</span>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
+    </div>
 
-      {/* ── Customize Styles Button ─────────────── */}
-      <div className="editSection">
-        <button className="editProjectButton" onClick={() => setShowCustomizeStyles(!showCustomizeStyles)}>
-          Personalizar estilos {showCustomizeStyles ? '▲' : '▼'}
+    {/* ── Isla 2: Acciones ─────────────── */}
+      <div className="sidebarIsland actionsIsland">
+        <button className="actionButton previewActionButton" onClick={onPreview}>
+          <span className="actionButtonIcon"></span>
+          Vista previa
         </button>
-        {showCustomizeStyles && (
-          <div className="backgroundPanel">
-            <h3 className="customizeHeading">Espaciado entre bloques</h3>
-            <div className="blockSpacingControl">
-              <input
-                type="range"
-                min="0"
-                max="60"
-                step="2"
-                value={blockGap}
-                onChange={(e) => setBlockGap(Number(e.target.value))}
-                className="blockSpacingSlider"
-              />
-              <span className="blockSpacingValue">{blockGap}px</span>
-            </div>
-          </div>
-        )}
+        <SaveProjectButton />
       </div>
-
-      <button className="previewButton" onClick={onPreview}>Vista previa</button>
-      <SaveProjectButton />
     </div>
   )
 }
@@ -231,7 +245,8 @@ function SaveProjectButton() {
 
   return (
     <>
-      <button className="saveProjectButton" onClick={() => setShowModal(true)} style={{ marginTop: 12 }}>
+      <button className="actionButton saveActionButton" onClick={() => setShowModal(true)}>
+        <span className="actionButtonIcon"></span>
         Guardar cambios
       </button>
       {showModal && (

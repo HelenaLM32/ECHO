@@ -140,6 +140,7 @@ export default function Home() {
               { key: "servicios", label: "Servicios" },
               { key: "locales", label: "Locales" },
               { key: "eventos", label: "Eventos" },
+              { key: "perfiles", label: "Perfiles" },
             ].map(({ key, label }) => (
               <button
                 key={key}
@@ -164,7 +165,9 @@ export default function Home() {
             aria-label="Ordenar resultados"
             onClick={() => setIsSortOpen((prev) => !prev)}
           >
-            <img src="/filters.svg" alt="" aria-hidden="true" className="home-sort-icon" />
+            <svg className="home-sort-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M9 13.829A3.004 3.004 0 0 0 11 11a3.003 3.003 0 0 0-2-2.829V0H7v8.171A3.004 3.004 0 0 0 5 11c0 1.306.836 2.417 2 2.829V16h2v-2.171zm-5-6A3.004 3.004 0 0 0 6 5a3.003 3.003 0 0 0-2-2.829V0H2v2.171A3.004 3.004 0 0 0 0 5c0 1.306.836 2.417 2 2.829V16h2V7.829zm10 0A3.004 3.004 0 0 0 16 5a3.003 3.003 0 0 0-2-2.829V0h-2v2.171A3.004 3.004 0 0 0 10 5c0 1.306.836 2.417 2 2.829V16h2V7.829zM12 6V4h2v2h-2zM2 6V4h2v2H2zm5 6v-2h2v2H7z" fillRule="evenodd"/>
+            </svg>
             <span className="home-sort-label">{currentSortLabel}</span>
           </button>
           <div className="home-sort-menu" role="menu" aria-label="Opciones de orden">
