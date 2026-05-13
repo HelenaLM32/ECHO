@@ -4,6 +4,7 @@
 	padding: 120px 48px 80px 24px;
 	position: relative;
 	overflow: hidden;
+	color: var(--white);
 }
 
 /* Dark mode footer override - gris medio con texto blanco */
@@ -82,9 +83,17 @@
 	align-items: center;
 }
 
+.footer-contacts span{
+	color: var(--white);
+}
+
 .footer-bottom-left {
 	color: var(--white);
 	margin-top: 8px;
+}
+
+.footer-bottom-left span{
+	color: var(--white);
 }
 
 .footer-right {

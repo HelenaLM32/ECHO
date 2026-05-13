@@ -87,9 +87,6 @@
     color: var(--black-secondary);
 }
 
-.nav-dropdown {
-    padding-bottom: 10px;
-}
 
 .nav-dropdown-menu {
     position: absolute;

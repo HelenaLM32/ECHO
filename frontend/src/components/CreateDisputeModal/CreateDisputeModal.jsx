@@ -28,17 +28,17 @@ const CreateDisputeModal = ({ orderId, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <div className="modal-header">
+    <div className="create-dispute-modal-overlay">
+      <div className="create-dispute-modal-content">
+        <div className="create-dispute-modal-header">
           <h2>Abrir disputa</h2>
-          <button className="close-btn" onClick={onClose}>
+          <button className="create-dispute-close-btn" onClick={onClose}>
             ×
           </button>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
+          <div className="create-dispute-form-group">
             <label htmlFor="reason">Motivo de la disputa</label>
             <textarea
               id="reason"
@@ -51,17 +51,17 @@ const CreateDisputeModal = ({ orderId, onClose, onSuccess }) => {
             <small>Mínimo 10 caracteres</small>
           </div>
 
-          {error && <div className="error-message">{error}</div>}
+          {error && <div className="create-dispute-error-message">{error}</div>}
 
-          <div className="modal-actions">
+          <div className="create-dispute-modal-actions">
             <button
               type="button"
               onClick={onClose}
-              className="btn-secondary"
+              className="create-dispute-btn-secondary"
             >
               Cancelar
             </button>
-            <button type="submit" disabled={loading} className="btn-primary">
+            <button type="submit" disabled={loading} className="create-dispute-btn-primary">
               {loading ? "Creando..." : "Crear disputa"}
             </button>
           </div>

@@ -7,7 +7,8 @@ const TUTORIALS = [
     id: 1,
     title: "Cómo crear tu primer proyecto",
     description: "Prepara tu ficha, sube imágenes y publica tu proyecto paso a paso.",
-    imagePlaceholder: "Foto tutorial 01",
+    img: "/images/project.jpg",
+    imgAlt: "Tutorial para crear tu primer proyecto en ECHO",
     content: (
       <>
         <p>
@@ -32,7 +33,8 @@ const TUTORIALS = [
     id: 2,
     title: "Cómo trabajar en local",
     description: "Organiza tu proyecto en local para editar, revisar y mantener versiones.",
-    imagePlaceholder: "Foto tutorial 02",
+    img: "/images/venue.jpg",
+    imgAlt: "Tutorial sobre espacios y trabajo en local en ECHO",
     content: (
       <>
         <p>
@@ -56,7 +58,8 @@ const TUTORIALS = [
     id: 3,
     title: "Publicar un servicio",
     description: "Define alcance, plazos y precio para que te contacten clientes adecuados.",
-    imagePlaceholder: "Foto tutorial 03",
+    img: "/images/service.jpg",
+    imgAlt: "Tutorial para publicar un servicio en ECHO",
     content: (
       <>
         <p>
@@ -80,7 +83,8 @@ const TUTORIALS = [
     id: 4,
     title: "Gestionar encargos y entregas",
     description: "Responde mensajes, confirma hitos y entrega de forma profesional.",
-    imagePlaceholder: "Foto tutorial 04",
+    img: "/images/orders.jpg",
+    imgAlt: "Tutorial para gestionar encargos y entregas en ECHO",
     content: (
       <>
         <p>
@@ -129,8 +133,8 @@ export default function Introduction() {
           <div className="intro-grid">
             {TUTORIALS.map((t) => (
               <button key={t.id} className="intro-card" onClick={() => open(t)}>
-                <div className="intro-card-image" aria-hidden="true">
-                  <span>{t.imagePlaceholder}</span>
+                <div className="intro-card-media" aria-hidden="true">
+                  <img src={t.img} alt={t.imgAlt} className="intro-card-image" />
                 </div>
                 <h3 className="intro-card-title">{t.title}</h3>
                 <p className="intro-card-desc">{t.description}</p>
@@ -147,8 +151,8 @@ export default function Introduction() {
         <div className="intro-modal-backdrop" onClick={close}>
           <div className="intro-modal" onClick={(e) => e.stopPropagation()}>
             <button className="intro-modal-close" onClick={close} aria-label="Cerrar">✕</button>
-            <div className="intro-modal-image" aria-hidden="true">
-              <span>{active.imagePlaceholder}</span>
+            <div className="intro-modal-media" aria-hidden="true">
+              <img src={active.img} alt={active.imgAlt} className="intro-modal-image" />
             </div>
             <h2 className="intro-modal-title">{active.title}</h2>
             <div className="intro-modal-body">

@@ -73,12 +73,12 @@ const DisputePanel = ({ disputeId, isAdmin }) => {
     }
   };
 
-  if (loading) return <div className="loading">Cargando disputa...</div>;
+  if (loading) return <div className="dispute-loading">Cargando disputa...</div>;
 
   if (error)
-    return <div className="error">Error: {error}</div>;
+    return <div className="dispute-error">Error: {error}</div>;
 
-  if (!dispute) return <div>Disputa no encontrada</div>;
+  if (!dispute) return <div className="dispute-empty">Disputa no encontrada</div>;
 
   const canClose = isAdmin && dispute.status === "OPEN";
   const canMessage = dispute.status === "OPEN";

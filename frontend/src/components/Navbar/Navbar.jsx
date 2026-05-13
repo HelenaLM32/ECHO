@@ -1,15 +1,18 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import "./Navbar.css";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const { theme } = useTheme();
   const location = useLocation();
 
   const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
   const isExploreActive = location.pathname === "/" || location.pathname.startsWith("/category/");
   const isAdmin = user?.roles?.includes("ADMIN");
+  const logoSrc = theme === "dark" ? "/logo-white.svg" : "/logo.svg";
 
 
 
@@ -18,7 +21,7 @@ export default function Navbar() {
 
     <nav className={`nav-bar ${isAuthPage ? "nav-absolute" : "nav-sticky"}`}>
       <div className="nav-left">
-        <Link to="/"><img className="logo" src="/logo.svg" alt="Echo" /></Link>
+        <Link to="/"><img className="logo" src={logoSrc} alt="Echo" /></Link>
       </div>
 
       {/* botones desplegables visuales (sin funcionalidad aun) */}

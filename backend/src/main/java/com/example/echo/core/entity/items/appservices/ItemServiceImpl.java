@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import com.example.echo.core.entity.items.persistence.ItemRepository;
 import com.example.echo.core.entity.items.dto.ItemDTO;
 import com.example.echo.core.entity.items.mappers.ItemMapper;
+import com.example.echo.core.entity.user.persistence.UserRepository;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.Serializer;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.Serializers;
 import com.example.echo.core.entity.sharedkernel.appservices.serializers.SerializersCatalog;
@@ -20,6 +21,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Autowired
     private ItemRepository itemRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     private Serializer<ItemDTO> serializer;
 
@@ -50,14 +54,25 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
+    protected void validateCreatorExists(Integer creatorId) throws ServiceException {
+        if (creatorId == null) {
+            throw new ServiceException("creatorId cannot be null");
+        }
+        if (!userRepository.findById(creatorId).isPresent()) {
+            throw new ServiceException("Creator with id " + creatorId + " does not exist");
+        }
+    }
+
     protected ItemDTO newItem(String itemJson) throws ServiceException {
         ItemDTO dto = this.checkInputData(itemJson);
+        validateCreatorExists(dto.getCreatorId());
         return itemRepository.save(dto);
     }
 
     protected ItemDTO updateItem(String itemJson) throws ServiceException {
         ItemDTO dto = this.checkInputData(itemJson);
         this.getById(dto.getId());
+        validateCreatorExists(dto.getCreatorId());
         return itemRepository.save(dto);
     }
 
