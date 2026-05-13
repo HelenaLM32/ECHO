@@ -116,7 +116,8 @@
     pointer-events: auto;
 }
 
-.nav-user-dropdown:not(:hover) .nav-dropdown-menu {
+.nav-user-dropdown:not(:hover) .nav-dropdown-menu,
+.nav-resources-dropdown:not(:hover) .nav-dropdown-menu {
     opacity: 0;
     visibility: hidden;
     transform: translateY(-8px);

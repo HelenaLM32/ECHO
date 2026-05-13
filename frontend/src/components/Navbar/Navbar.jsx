@@ -30,7 +30,7 @@ export default function Navbar() {
           <Link to="/" className={`nav-item nav-link ${isExploreActive ? "active" : ""}`}>
             <span className="nav-item-label">Explorar</span>
           </Link>
-          <div className="nav-item nav-dropdown">
+          <div className="nav-item nav-dropdown nav-resources-dropdown">
             <span className="nav-item-label">Recursos</span>
             <div className="nav-dropdown-menu">
               <Link to="/introduccion" className="nav-dropdown-link">Introduccion</Link>

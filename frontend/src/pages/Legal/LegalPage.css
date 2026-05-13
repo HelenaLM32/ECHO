@@ -1,9 +1,28 @@
 .legal-page {
   min-height: 100vh;
+  background: var(--white);
+  color: var(--black);
+}
+
+/* Background gradient with theme support */
+.legal-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background:
-    radial-gradient(circle at 12% 18%, rgba(233, 94, 35, 0.14), transparent 32%),
-    radial-gradient(circle at 88% 8%, rgba(42, 95, 121, 0.16), transparent 30%),
-    linear-gradient(180deg, var(--white) 0%, var(--true-white) 60%);
+    radial-gradient(circle at 12% 18%, rgba(233, 94, 35, 0.08), transparent 32%),
+    radial-gradient(circle at 88% 8%, rgba(42, 95, 121, 0.10), transparent 30%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+[data-theme="dark"] .legal-page::before {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 124, 63, 0.06), transparent 32%),
+    radial-gradient(circle at 88% 8%, rgba(74, 143, 169, 0.08), transparent 30%);
 }
 
 .legal-hero {
@@ -15,9 +34,9 @@
   margin: 0 auto;
   padding: 40px 34px;
   border-radius: 24px;
-  background: linear-gradient(120deg, #282828 0%, #353535 65%, #4f4f4f 100%);
-  color: #ffffff;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(120deg, var(--black) 0%, var(--black-secondary) 65%, var(--gray-dark) 100%);
+  color: var(--true-white);
+  box-shadow: 0 16px 36px var(--shadow-medium);
 }
 
 .legal-eyebrow {
@@ -25,22 +44,28 @@
   font-size: 0.85rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.82);
+  color: var(--gray-dark-secondary);
+  opacity: 0.9;
 }
 
 .legal-hero h1 {
   margin: 0;
   font-size: clamp(1.9rem, 3.7vw, 3rem);
   line-height: 1.12;
+  color: var(--true-white);
+  font-weight: 800;
 }
 
 .legal-updated {
   margin: 16px 0 0;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--gray-dark-secondary);
+  font-size: 0.95rem;
 }
 
 .legal-main {
   padding: 0 20px 34px;
+  position: relative;
+  z-index: 1;
 }
 
 .legal-article {
@@ -48,9 +73,9 @@
   margin: 0 auto;
   border-radius: 24px;
   padding: 34px 34px 38px;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+  background: var(--true-white);
+  border: 1px solid var(--gray-stroke);
+  box-shadow: 0 12px 24px var(--shadow-light);
 }
 
 .legal-intro {
@@ -58,6 +83,7 @@
   font-size: 1.03rem;
   line-height: 1.72;
   color: var(--black);
+  font-weight: 500;
 }
 
 .legal-section {
@@ -66,35 +92,77 @@
   border-top: 1px solid var(--gray-stroke);
 }
 
+.legal-section:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
 .legal-section h2 {
   margin: 0 0 12px;
   font-size: clamp(1.2rem, 2vw, 1.5rem);
   color: var(--black);
+  font-weight: 700;
 }
 
 .legal-section p {
   margin: 0 0 12px;
-  color: var(--black);
+  color: var(--black-secondary);
   line-height: 1.72;
+}
+
+.legal-section p:last-child {
+  margin-bottom: 0;
 }
 
 .legal-section ul {
   margin: 0;
   padding-left: 22px;
+  list-style-position: outside;
 }
 
 .legal-section li {
   margin: 0 0 10px;
-  color: var(--black);
+  color: var(--black-secondary);
   line-height: 1.68;
 }
 
-.legal-contact a {
-  color: var(--complementary-blue);
-  text-decoration: underline;
-  text-underline-offset: 2px;
+.legal-section li:last-child {
+  margin-bottom: 0;
 }
 
+.legal-contact {
+  background: linear-gradient(135deg, rgba(233, 94, 35, 0.04), rgba(42, 95, 121, 0.04));
+  border: 1px solid var(--border-orange);
+  border-radius: 16px;
+  padding: 20px 22px;
+  margin-top: 32px !important;
+  padding-top: 20px !important;
+  border-top: none !important;
+}
+
+.legal-contact h2 {
+  color: var(--orange);
+  margin-bottom: 14px;
+}
+
+.legal-contact p {
+  margin: 0 0 12px;
+}
+
+.legal-contact a {
+  color: var(--orange);
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.2s ease;
+}
+
+.legal-contact a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .legal-hero {
     padding: 78px 16px 24px;
@@ -112,5 +180,19 @@
   .legal-article {
     padding: 24px 20px 28px;
     border-radius: 18px;
+  }
+
+  .legal-section {
+    margin-top: 18px;
+    padding-top: 18px;
+  }
+
+  .legal-section h2 {
+    font-size: 1.1rem;
+  }
+
+  .legal-contact {
+    padding: 16px 18px !important;
+    margin-top: 24px !important;
   }
 }
