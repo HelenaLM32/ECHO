@@ -47,7 +47,7 @@ export default function ProjectFooter({ name, avatar, likes = 0, views = 0, comm
                     <form className="pf-input-section" onSubmit={handleSubmit}>
                         <textarea
                             className="pf-input"
-                            placeholder="¿Qué te arece este proyecto?"
+                            placeholder="¿Qué te parece este proyecto?"
                             value={draft}
                             onChange={(e) => setDraft(e.target.value)}
                         />
@@ -58,10 +58,28 @@ export default function ProjectFooter({ name, avatar, likes = 0, views = 0, comm
                 <div className="pf-stats-row">
                     {price && <button className="pf-price-btn">{price.toFixed(2)}€</button>}
                     <button className="pf-like-btn" onClick={onLike} aria-pressed={isLiked}>
-                        {isLiked ? '❤️' : '🤍'} {likes}
+                        {isLiked ? (
+                            <svg className="pf-stat-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 16H0V6h4V0h6v4h6v12H4zM6 2v12h8v-1h-2v-2h2v-1h-2V8h2V6H8V2H6zM2 8v6h2V8H2z" fillRule="evenodd"/>
+                            </svg>
+                        ) : (
+                            <svg className="pf-stat-icon pf-icon-inactive" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 16H0V6h4V0h6v4h6v12H4zM6 2v12h8v-1h-2v-2h2v-1h-2V8h2V6H8V2H6zM2 8v6h2V8H2z" fillRule="evenodd"/>
+                            </svg>
+                        )} {likes}
                     </button>
-                    <span className="pf-counter">💬 {comments}</span>
-                    <span className="pf-views">👁️ {views}</span>
+                    <span className="pf-counter">
+                        <svg className="pf-stat-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 12v4l-5-4H0V0h16v12zm-2-2V2H2v8h12zm-2.5 0l2.5 2v-2h-2.5zM4 4h8v2H4V4z" fillRule="evenodd"/>
+                        </svg>
+                        {comments}
+                    </span>
+                    <span className="pf-views">
+                        <svg className="pf-stat-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0 16h16V0H0v16zm2-4V2h12v10H2zm2-2h2V8H4v2zm6 0h2V8h-2v2z" fillRule="evenodd"/>
+                        </svg>
+                        {views}
+                    </span>
                 </div>
                 <div className="pf-divider"></div>
                 <div className="pf-comments-section">
