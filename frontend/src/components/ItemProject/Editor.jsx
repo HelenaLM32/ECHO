@@ -122,7 +122,7 @@ export default function Editor() {
   return (
     <>
       <div className="editorBlockList" style={{ ...bgStyle, gap: `${blockGap}px` }}>
-        {blocks.length === 0 && (
+        {blocks.length === 0 && (background.mode !== 'color' || background.value === '#ffffff') && (
           <div className="emptyBlockState">
             <div className="emptyProjectCard">
               <div className="emptyProjectTitle">

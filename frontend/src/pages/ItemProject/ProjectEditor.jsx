@@ -21,7 +21,7 @@ function ProjectSidebar({ onPreview }) {
   const setBlockGap = useProjectStore((s) => s.setBlockGap)
   const [showAddContent, setShowAddContent] = useState(false)
   const [showEditProject, setShowEditProject] = useState(false)
-  const [showCustomizeStyles, setShowCustomizeStyles] = useState(false)
+  const [showSpacing, setShowSpacing] = useState(false)
   const colorInputRef = useRef(null)
 
   function handleClick(type) {
@@ -115,111 +115,125 @@ function ProjectSidebar({ onPreview }) {
 
   return (
     <div className="sidebarContent">
-      <div className="editSection">
-        <button className="editProjectButton" onClick={() => setShowAddContent(!showAddContent)}>
-          Añadir contenido {showAddContent ? '▲' : '▼'}
-        </button>
-        {showAddContent && (
-          <div className="backgroundPanel">
-            <div className="sidebarButtonGrid">
-              {Object.values(BLOCK_TYPES).map((type) => {
-                const meta = BLOCK_META[type]
-                return (
-                  <button key={type} className="sidebarButton" onClick={() => handleClick(type)}>
-                    <img src={`/project/${meta.icon}`} className="sidebarButtonIcon" alt={meta.label} />
-                    <span className="sidebarButtonText">{meta.label}</span>
-                  </button>
-                )
-              })}
+      {/* ── Isla 1: Configuración del proyecto ─────────────── */}
+      <div className="sidebarIsland">
+        <div className="editSection">
+          <button className="editProjectButton" onClick={() => setShowAddContent(!showAddContent)}>
+            Añadir contenido {showAddContent ? '▲' : '▼'}
+          </button>
+          {showAddContent && (
+            <div className="backgroundPanel">
+              <div className="sidebarButtonGrid">
+                {Object.values(BLOCK_TYPES).map((type) => {
+                  const meta = BLOCK_META[type]
+                  return (
+                    <button key={type} className="sidebarButton" onClick={() => handleClick(type)}>
+                      <img src={`/project/${meta.icon}`} className="sidebarButtonIcon" alt={meta.label} />
+                      <span className="sidebarButtonText">{meta.label}</span>
+                    </button>
+                  )
+                })}
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
 
-      {/* ── Edit Project Button ─────────────── */}
-      <div className="editSection">
-        <button className="editProjectButton" onClick={() => setShowEditProject(!showEditProject)}>
-          Editar proyecto {showEditProject ? '▲' : '▼'}
-        </button>
-        {showEditProject && (
-          <div className="backgroundPanel">
-            <div className="backgroundModeRow">
-              {[
-                { mode: 'color', label: 'Color' },
-                { mode: 'image', label: 'Imagen' },
-              ].map(({ mode, label }) => (
+        {/* ── Edit Project Button ─────────────── */}
+        <div className="editSection">
+          <button className="editProjectButton" onClick={() => setShowEditProject(!showEditProject)}>
+            Editar proyecto {showEditProject ? '▲' : '▼'}
+          </button>
+          {showEditProject && (
+            <div className="backgroundPanel">
+              <div className="backgroundModeRow">
                 <button
-                  key={mode}
-                  className={`backgroundModeButton${background.mode === mode ? ' active' : ''}`}
+                  className={`backgroundModeButton${!showSpacing && background.mode === 'color' ? ' active' : ''}`}
                   onClick={() => {
-                    if (mode === 'image') return pickBgImage()
-                    if (mode === 'color') {
-                      setBackground('color', background.value || '#ffffff')
-                      colorInputRef.current?.click()
-                    }
+                    setShowSpacing(false)
+                    setBackground('color', background.value || '#ffffff')
+                    colorInputRef.current?.click()
                   }}
                 >
-                  {label}
+                  Color
                 </button>
-              ))}
-            </div>
-
-            {/* Hidden color input */}
-            <input
-              ref={colorInputRef}
-              type="color"
-              value={background.value}
-              onChange={(e) => setBackground('color', e.target.value)}
-              style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}
-            />
-
-            {background.mode === 'image' && background.value && (
-              <div className="backgroundImagePreview">
-                <img src={background.value} alt="bg" className="backgroundImageThumbnail" />
-                <button className="backgroundImageChangeButton" onClick={pickBgImage}>Cambiar</button>
+                <button
+                  className={`backgroundModeButton${!showSpacing && background.mode === 'image' ? ' active' : ''}`}
+                  onClick={() => {
+                    setShowSpacing(false)
+                    pickBgImage()
+                  }}
+                >
+                  Imagen
+                </button>
+                <button
+                  className={`backgroundModeButton${showSpacing ? ' active' : ''}`}
+                  onClick={() => setShowSpacing(true)}
+                >
+                  Espaciado
+                </button>
               </div>
-            )}
 
-            <div
-              className="backgroundPreviewSwatch"
-              style={
-                background.mode === 'image'
-                  ? { backgroundImage: `url(${background.value})`, backgroundSize: 'cover', backgroundPosition: 'center' }
-                  : background.mode === 'gradient'
-                    ? { background: background.value }
-                    : { background: background.value }
-            }
-            />
-          </div>
-        )}
-      </div>
-
-      {/* ── Customize Styles Button ─────────────── */}
-      <div className="editSection">
-        <button className="editProjectButton" onClick={() => setShowCustomizeStyles(!showCustomizeStyles)}>
-          Personalizar estilos {showCustomizeStyles ? '▲' : '▼'}
-        </button>
-        {showCustomizeStyles && (
-          <div className="backgroundPanel">
-            <h3 className="customizeHeading">Espaciado entre bloques</h3>
-            <div className="blockSpacingControl">
+              {/* Hidden color input */}
               <input
-                type="range"
-                min="0"
-                max="60"
-                step="2"
-                value={blockGap}
-                onChange={(e) => setBlockGap(Number(e.target.value))}
-                className="blockSpacingSlider"
+                ref={colorInputRef}
+                type="color"
+                value={background.value}
+                onChange={(e) => setBackground('color', e.target.value)}
+                style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}
               />
-              <span className="blockSpacingValue">{blockGap}px</span>
+
+              {!showSpacing && (
+                <>
+                  {background.mode === 'image' && background.value && (
+                    <div className="backgroundImagePreview">
+                      <img src={background.value} alt="bg" className="backgroundImageThumbnail" />
+                      <button className="backgroundImageChangeButton" onClick={pickBgImage}>Cambiar</button>
+                    </div>
+                  )}
+
+                  <div
+                    className="backgroundPreviewSwatch"
+                    style={
+                      background.mode === 'image'
+                        ? { backgroundImage: `url(${background.value})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+                        : background.mode === 'gradient'
+                          ? { background: background.value }
+                          : { background: background.value }
+                    }
+                  />
+                </>
+              )}
+
+              {showSpacing && (
+                <div className="spacingPanel" style={{ marginTop: 12 }}>
+                  <h3 className="customizeHeading">Espaciado entre bloques</h3>
+                  <div className="blockSpacingControl">
+                    <input
+                      type="range"
+                      min="0"
+                      max="60"
+                      step="2"
+                      value={blockGap}
+                      onChange={(e) => setBlockGap(Number(e.target.value))}
+                      className="blockSpacingSlider"
+                    />
+                    <span className="blockSpacingValue">{blockGap}px</span>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
-      <button className="previewButton" onClick={onPreview}>Vista previa</button>
-      <SaveProjectButton />
+      {/* ── Isla 2: Acciones ─────────────── */}
+      <div className="sidebarIsland actionsIsland">
+        <button className="actionButton previewActionButton" onClick={onPreview}>
+          <span className="actionButtonIcon">👁</span>
+          Vista previa
+        </button>
+        <SaveProjectButton />
+      </div>
     </div>
   )
 }
@@ -231,7 +245,8 @@ function SaveProjectButton() {
 
   return (
     <>
-      <button className="saveProjectButton" onClick={() => setShowModal(true)} style={{ marginTop: 12 }}>
+      <button className="actionButton saveActionButton" onClick={() => setShowModal(true)}>
+        <span className="actionButtonIcon">💾</span>
         Guardar proyecto
       </button>
       {showModal && (

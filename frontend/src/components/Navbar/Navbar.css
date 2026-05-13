@@ -230,7 +230,6 @@
 .btn {
     padding-left: 30px;
     padding-right: 30px;
-    height: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -248,7 +247,7 @@
 
 .btn-secondary:hover {
     background-color: var(--black-secondary);
-    color: var(--white);
+    color: var(--black);
 }
 
 .btn-primary {

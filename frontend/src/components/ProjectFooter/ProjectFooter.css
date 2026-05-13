@@ -130,6 +130,10 @@
     font-weight: 600;
 }
 
+.pf-like-btn .pf-stat-icon {
+    color: var(--true-white);
+}
+
 .pf-counter,
 .pf-views {
     background: transparent;
@@ -144,8 +148,12 @@
     color: inherit;
 }
 
+.pf-like-btn.liked .pf-stat-icon {
+    color: var(--orange);
+}
+
 .pf-like-btn .pf-stat-icon {
-    color: var(--true-white);
+    color: var(--black);
 }
 
 .pf-icon-inactive {
