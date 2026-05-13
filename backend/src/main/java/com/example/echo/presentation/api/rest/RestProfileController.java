@@ -24,6 +24,17 @@ public class RestProfileController {
     @Autowired
     ItemService itemService;
 
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getAllProfiles() {
+        try {
+            return ResponseEntity.ok(profileService.getAllToJson());
+        } catch (ServiceException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
+
     @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getProfile(@PathVariable Integer userId) {
         try {

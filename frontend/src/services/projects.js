@@ -142,4 +142,22 @@ async function deleteProjectComment(projectId, commentId) {
   return res.json()
 }
 
-export { createItem, createProject, getCategories, getAllProjects, getProjectsByUserId, getProjectById, deleteProject, deleteProjectComment }
+async function updateProject(id, projectPayload) {
+  // Ensure any embedded base64 media are uploaded first and replaced with URLs.
+  const payload = await replaceEmbeddedMedia(projectPayload)
+
+  // Backend expects blocks and background as JSON strings
+  if (payload.blocks && typeof payload.blocks !== 'string') payload.blocks = JSON.stringify(payload.blocks)
+  if (payload.background && typeof payload.background !== 'string') payload.background = JSON.stringify(payload.background)
+
+  const res = await fetchWithToken(`/item-projects/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  const text = await res.text()
+  if (!res.ok) throw new Error(text)
+  try { return JSON.parse(text) } catch { return text }
+}
+
+export { createItem, createProject, getCategories, getAllProjects, getProjectsByUserId, getProjectById, deleteProject, deleteProjectComment, updateProject }

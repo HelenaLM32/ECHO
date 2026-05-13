@@ -1,4 +1,10 @@
-import { API_URL, fetchWithToken } from "./config";
+import { API_URL, fetchWithToken, fetchApi } from "./config";
+
+export const getAllProfiles = async () => {
+  const response = await fetchApi('/profiles');
+  if (!response.ok) throw new Error("Error al obtener los perfiles");
+  return response.json();
+};
 
 export const getProfileByUserId = async (userId) => {
   const response = await fetch(`${API_URL}/profiles/${userId}`);
