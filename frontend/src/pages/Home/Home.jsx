@@ -66,7 +66,7 @@ export default function Home() {
   const handleContentType = (type) => {
     setContentType(type);
     setSearchQuery("");
-    if (type === "locales" || type === "eventos") {
+    if (type === "locales" || type === "eventos" || type === "perfiles") {
       setSelectedCategory(null);
       navigate("/");
     }
@@ -129,6 +129,7 @@ export default function Home() {
           { key: "servicios", label: "Servicios" },
           { key: "locales", label: "Locales" },
           { key: "eventos", label: "Eventos" },
+          { key: "perfiles", label: "Perfiles" },
         ].map(({ key, label }) => (
           <button
             key={key}

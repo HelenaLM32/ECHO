@@ -45,6 +45,25 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public String getAllToJson() throws ServiceException {
+        try {
+            java.util.List<ProfileDTO> profiles = ((com.example.echo.infrastructure.persistence.jpa.JpaProfileRepository) profileRepository).findAll();
+            java.util.List<com.fasterxml.jackson.databind.node.ObjectNode> responseList = new java.util.ArrayList<>();
+
+            for (ProfileDTO profile : profiles) {
+                UserDTO user = userRepository.findById(profile.getUserId()).orElse(null);
+                if (user != null) {
+                    responseList.add(ProfileMapper.toResponseNode(profile, user, mapper));
+                }
+            }
+
+            return mapper.writeValueAsString(responseList);
+        } catch (Exception e) {
+            throw new ServiceException("Error al obtener perfiles: " + e.getMessage());
+        }
+    }
+
+    @Override
     public String updateFromJson(Integer userId, String profileJson) throws ServiceException {
         try {
             JsonNode node = mapper.readTree(profileJson);

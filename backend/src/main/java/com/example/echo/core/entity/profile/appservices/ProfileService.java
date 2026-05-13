@@ -7,6 +7,8 @@ import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 public interface ProfileService {
     String getByUserIdToJson(Integer userId) throws ServiceException;
 
+    String getAllToJson() throws ServiceException;
+
     String updateFromJson(Integer userId, String profileJson) throws ServiceException;
 
     String updateAvatar(Integer userId, MultipartFile file) throws ServiceException;

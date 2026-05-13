@@ -11,7 +11,7 @@ import {
 import { getVenuesByUser, deleteVenue } from "../../services/venues";
 import { getEventsByUser, deleteEvent } from "../../services/events";
 import { deleteService } from "../../services/servicesApi";
-import { getProjectsByUserId } from "../../services/projects";
+import { getProjectsByUserId, deleteProject } from "../../services/projects";
 import { getAuthToken } from "../../services/session";
 import { getAverageByUser, getReviewsByUser } from "../../services/reviews";
 import {
@@ -241,6 +241,21 @@ export default function Profile() {
     );
   };
 
+  const handleDeleteProject = (id) => {
+    showConfirm(
+      "¿Eliminar este proyecto?",
+      "Confirmar eliminación",
+      async () => {
+        try {
+          await deleteProject(id);
+          setProjects((prev) => prev.filter((p) => p.id !== id));
+        } catch (err) {
+          alert("Error al eliminar el proyecto: " + err.message);
+        }
+      }
+    );
+  };
+
   const handleOpenReviews = () => {
     getReviewsByUser(targetId)
       .then((data) => { setReviews(data); setShowReviews(true); })
@@ -394,7 +409,7 @@ const renderEvents = () => {
   const renderServices = () => {
     if (itemsLoading.services) return <div className="empty-state">Cargando...</div>;
     return (
-      <div>
+      <div className="projects-section">
         {isOwnProfile && (
           <button className="create-tab-btn" onClick={() => navigate("/profile/services/new")}>
             Crear servicio
@@ -405,13 +420,20 @@ const renderEvents = () => {
         ) : (
           <div className="projects-grid">
             {services.map((service) => (
-              <ServiceCard
-                key={service.id}
-                service={service}
-                profile={profile}
-                onOpen={() => setSelectedService(service)}
-                small={true}
-              />
+              <div key={service.id} className="pc-card-container">
+                <ServiceCard
+                  service={service}
+                  profile={profile}
+                  onOpen={() => setSelectedService(service)}
+                  small={true}
+                />
+                {isOwnProfile && (
+                  <div className="pc-admin-actions">
+                    <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/profile/services/${service.id}/edit`); }}>✎</button>
+                    <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteService(service.id); }}>✕</button>
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         )}
@@ -569,7 +591,15 @@ const renderEvents = () => {
                 ) : (
                   <div className="projects-grid">
                     {projects.map((p) => (
-                      <ProjectCard key={p.id} project={p} onOpen={setSelectedProjectId} small={true} />
+                      <div key={p.id} className="pc-card-container">
+                        <ProjectCard project={p} onOpen={setSelectedProjectId} small={true} />
+                        {isOwnProfile && (
+                          <div className="pc-admin-actions">
+                            <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/proyect/${p.id}/edit`); }}>✎</button>
+                            <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteProject(p.id); }}>✕</button>
+                          </div>
+                        )}
+                      </div>
                     ))}
                   </div>
                 )}

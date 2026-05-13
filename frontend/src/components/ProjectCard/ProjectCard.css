@@ -47,14 +47,14 @@
 
 .pc-price-top {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 8px;
+  left: 8px;
   background: var(--orange);
   color: var(--true-white);
   border: none;
-  border-radius: 16px;
-  padding: 6px 12px;
-  font-size: 0.85rem;
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
   font-weight: 600;
   z-index: 10;
 }

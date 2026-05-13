@@ -3,12 +3,14 @@ import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import ServiceCard from "../../components/ServiceCard/ServiceCard";
 import VenueCard from "../../components/VenueCard/VenueCard";
 import EventCard from "../../components/EventCard/EventCard";
+import ProfileCard from "../../components/ProfileCard/ProfileCard";
 import ProjectView from "../../pages/ItemProject/ProjectView";
 import ServiceDetail from "../../components/ServiceDetail/ServiceDetail";
 import { getAllProjects } from "../../services/projects";
 import { getAllServices } from "../../services/servicesApi";
 import { getAllVenues } from "../../services/venues";
 import { getAllEvents } from "../../services/events";
+import { getAllProfiles } from "../../services/profile";
 import "./ItemsList.css";
 
 function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "recent", contentType = "proyectos" }) {
@@ -29,6 +31,7 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
       servicios: getAllServices,
       locales: getAllVenues,
       eventos: getAllEvents,
+      perfiles: getAllProfiles,
     };
 
     const fetcher = fetchers[contentType] || getAllProjects;
@@ -112,7 +115,7 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
       }
       return true;
     })
-    .filter((item) => {
+      .filter((item) => {
       if (!normalizedSearch) return true;
       if (contentType === "proyectos") {
         const title = (item?.item?.title || "").toLowerCase();
@@ -136,6 +139,13 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
         const desc = (item?.description || "").toLowerCase();
         return title.includes(normalizedSearch) || desc.includes(normalizedSearch);
       }
+      if (contentType === "perfiles") {
+        const name = (item?.publicName || "").toLowerCase();
+        const username = (item?.username || "").toLowerCase();
+        const bio = (item?.bio || "").toLowerCase();
+        const location = (item?.location || "").toLowerCase();
+        return name.includes(normalizedSearch) || username.includes(normalizedSearch) || bio.includes(normalizedSearch) || location.includes(normalizedSearch);
+      }
       return true;
     })
     .sort((a, b) => {
@@ -150,6 +160,7 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
     servicios: "servicios",
     locales: "locales",
     eventos: "eventos",
+    perfiles: "perfiles",
   };
 
   const emptyLabel = typeLabels[contentType] || "resultados";
@@ -180,6 +191,9 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
           }
           if (contentType === "eventos") {
             return <EventCard key={item.id} event={item} />;
+          }
+          if (contentType === "perfiles") {
+            return <ProfileCard key={item.userId || item.id} profile={item} />;
           }
           return null;
         })

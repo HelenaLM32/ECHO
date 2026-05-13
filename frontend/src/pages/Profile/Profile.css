@@ -429,11 +429,6 @@
 /* Contenedor relativo para posicionar botones sobre la tarjeta */
 .pc-card-container {
   position: relative;
-  transition: transform 0.2s ease;
-}
-
-.pc-card-container:hover {
-  transform: translateY(-4px);
 }
 
 /* Contenedor de botones de administración */
@@ -447,16 +442,17 @@
 }
 
 .pc-btn-edit, .pc-btn-delete {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  font-size: 12px;
   font-weight: bold;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   transition: all 0.2s ease;
 }
 
