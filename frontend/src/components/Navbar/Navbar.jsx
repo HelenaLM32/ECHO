@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import "./Navbar.css";
 
 export default function Navbar() {
@@ -38,6 +39,7 @@ export default function Navbar() {
 
       {!isAuthPage && (
         <div className="nav-right">
+          <ThemeToggle />
           {user ? (
             <div className="nav-item nav-dropdown nav-user-dropdown">
               <div className="nav-user-avatar">

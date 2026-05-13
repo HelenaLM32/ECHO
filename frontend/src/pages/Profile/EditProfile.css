@@ -172,8 +172,8 @@
   margin: 15px 0;
 }
 
-.msg.error { background: #ffebee; color: #c62828; border-left: 4px solid #c62828; }
-.msg.success { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #2e7d32; }
+.msg.error { background: var(--error-light); color: var(--error); border-left: 4px solid var(--error); }
+.msg.success { background: var(--success-light); color: var(--success); border-left: 4px solid var(--success); }
 
 /* Calendario */
 .calendar-preview {

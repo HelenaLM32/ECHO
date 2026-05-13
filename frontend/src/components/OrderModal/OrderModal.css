@@ -1,0 +1,186 @@
+/* =========================================
+   ORDER MODAL — ECHO design system
+   ========================================= */
+
+.om-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(5px);
+  z-index: 200000; /* por encima de ServiceDetail y ProjectView */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: omBackdropIn 0.2s ease;
+}
+
+@keyframes omBackdropIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.om-box {
+  background: var(--true-white);
+  border-radius: 20px;
+  padding: 36px 32px 28px;
+  max-width: 460px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.28);
+  animation: omBoxIn 0.25s ease;
+}
+
+@keyframes omBoxIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)   scale(1); }
+}
+
+/* ── Botón cerrar ── */
+.om-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--gray-stroke);
+  background: transparent;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+  color: var(--black);
+}
+
+.om-close:hover {
+  background: var(--gray-stroke);
+}
+
+/* ── Tag ── */
+.om-tag {
+  display: inline-block;
+  background: rgba(233, 94, 35, 0.1);
+  color: var(--orange);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  border-radius: 100px;
+  margin-bottom: 10px;
+}
+
+/* ── Title ── */
+.om-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--black);
+  margin: 0 0 14px;
+  line-height: 1.25;
+}
+
+/* ── Price ── */
+.om-price {
+  font-size: 0.95rem;
+  color: var(--black-secondary);
+  margin: 0 0 16px;
+}
+
+.om-price strong {
+  color: var(--orange);
+  font-size: 1.1rem;
+}
+
+/* ── Hint ── */
+.om-hint {
+  font-size: 0.88rem;
+  color: var(--black-secondary);
+  line-height: 1.6;
+  margin: 0 0 22px;
+}
+
+/* ── Error ── */
+.om-error {
+  font-size: 0.85rem;
+  color: #d94040;
+  background: rgba(217, 64, 64, 0.08);
+  border: 1px solid rgba(217, 64, 64, 0.2);
+  border-radius: 8px;
+  padding: 9px 12px;
+  margin: 0 0 16px;
+}
+
+/* ── Icono éxito ── */
+.om-success-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: rgba(233, 94, 35, 0.12);
+  color: var(--orange);
+  font-size: 1.6rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 16px;
+}
+
+/* ── Actions ── */
+.om-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.om-btn {
+  padding: 10px 20px;
+  border-radius: 100px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s, background 0.15s;
+  font-family: inherit;
+}
+
+.om-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.om-btn--cancel {
+  background: var(--gray-stroke);
+  color: var(--black);
+}
+
+.om-btn--cancel:hover:not(:disabled) {
+  background: var(--gray-dark);
+}
+
+.om-btn--confirm {
+  background: var(--orange);
+  color: var(--true-white);
+}
+
+.om-btn--confirm:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+@media (max-width: 480px) {
+  .om-box {
+    padding: 28px 20px 22px;
+  }
+
+  .om-actions {
+    flex-direction: column-reverse;
+  }
+
+  .om-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

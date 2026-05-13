@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import ServiceProjectPicker from '../ServiceProjectPicker/ServiceProjectPicker';
-import { fetchWithToken } from '../../services/config.js';
 import { getCategories } from '../../services/projects';
 import './ServiceForm.css';
 
-function ServiceForm({ initialData = {}, onSubmit, onCancel }) {
+function ServiceForm({ initialData = {}, onSubmit, onCancel, saving = false }) {
   const [formData, setFormData] = useState({
     name: initialData.name || '',
     description: initialData.description || '',
@@ -45,43 +44,9 @@ function ServiceForm({ initialData = {}, onSubmit, onCancel }) {
     setFormData(prev => ({ ...prev, projectIds }));
   };
 
-  const uploadCoverFile = async () => {
-    if (!formData.coverImageFile) return formData.coverImageUrl;
-
-    const uploadData = new FormData();
-    uploadData.append('file', formData.coverImageFile);
-    uploadData.append('subDir', 'images');
-
-    const response = await fetchWithToken('/uploads', {
-      method: 'POST',
-      body: uploadData,
-    });
-
-    if (!response.ok) {
-      throw new Error('Error subiendo imagen');
-    }
-
-    return await response.text();
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    try {
-      const coverImageUrl = await uploadCoverFile();
-      const submitData = {
-        name: formData.name,
-        description: formData.description,
-        deliveryDuration: Number(formData.deliveryDuration),
-        categoryId: Number(formData.categoryId),
-        price: Number(formData.price),
-        coverImageUrl: coverImageUrl || null,
-        projectIds: formData.projectIds.map(id => Number(id))
-      };
-      onSubmit(submitData);
-    } catch (error) {
-      alert(error.message);
-    }
+    onSubmit(formData);
   };
 
   return (
@@ -190,8 +155,10 @@ function ServiceForm({ initialData = {}, onSubmit, onCancel }) {
       />
 
       <div className="form-actions">
-        <button type="button" onClick={onCancel}>Cancelar</button>
-        <button type="submit">Guardar</button>
+        <button type="button" onClick={onCancel} disabled={saving}>Cancelar</button>
+        <button type="submit" disabled={saving}>
+          {saving ? 'Guardando...' : 'Guardar'}
+        </button>
       </div>
     </form>
   </>

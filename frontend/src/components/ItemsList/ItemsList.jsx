@@ -3,7 +3,8 @@ import ProjectCard from "../../components/ProjectCard/ProjectCard";
 import ServiceCard from "../../components/ServiceCard/ServiceCard";
 import VenueCard from "../../components/VenueCard/VenueCard";
 import EventCard from "../../components/EventCard/EventCard";
-import ProjectView from "../../pages/ItemProyect/ProjectView";
+import ProjectView from "../../pages/ItemProject/ProjectView";
+import ServiceDetail from "../../components/ServiceDetail/ServiceDetail";
 import { getAllProjects } from "../../services/projects";
 import { getAllServices } from "../../services/servicesApi";
 import { getAllVenues } from "../../services/venues";
@@ -15,6 +16,8 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [selectedServiceId, setSelectedServiceId] = useState(null);
+  const [selectedService, setSelectedService] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -38,6 +41,62 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
       })
       .finally(() => setLoading(false));
   }, [contentType]);
+
+  // Poll for updated projects and services every 30 seconds to refresh views/likes in real-time
+  useEffect(() => {
+    const pollItems = () => {
+      Promise.all([
+        getAllProjects(),
+        getAllServices()
+      ])
+        .then(([projectsList, servicesList]) => {
+          if (projectsList && Array.isArray(projectsList)) {
+            setProjects((prev) => {
+              const updatedMap = new Map(projectsList.map((p) => [p.id, p]));
+              return prev.map((p) => updatedMap.get(p.id) || p);
+            });
+          }
+          if (servicesList && Array.isArray(servicesList)) {
+            setServices((prev) => {
+              const updatedMap = new Map(servicesList.map((s) => [s.id, s]));
+              return prev.map((s) => updatedMap.get(s.id) || s);
+            });
+          }
+        })
+        .catch(() => { });
+    };
+
+    const interval = setInterval(pollItems, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Poll for updated projects and services every 30 seconds to refresh views/likes in real-time
+  useEffect(() => {
+    const pollItems = () => {
+      Promise.all([
+        getAllProjects(),
+        getAllServices()
+      ])
+        .then(([projectsList, servicesList]) => {
+          if (projectsList && Array.isArray(projectsList)) {
+            setProjects((prev) => {
+              const updatedMap = new Map(projectsList.map((p) => [p.id, p]));
+              return prev.map((p) => updatedMap.get(p.id) || p);
+            });
+          }
+          if (servicesList && Array.isArray(servicesList)) {
+            setServices((prev) => {
+              const updatedMap = new Map(servicesList.map((s) => [s.id, s]));
+              return prev.map((s) => updatedMap.get(s.id) || s);
+            });
+          }
+        })
+        .catch(() => { });
+    };
+
+    const interval = setInterval(pollItems, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const normalizedSearch = searchQuery.trim().toLowerCase();
 
@@ -114,7 +173,7 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
               username: item.creatorName,
               avatarUrl: item.creatorAvatarUrl,
             };
-            return <ServiceCard key={item.id} service={item} profile={profile} small={true} />;
+            return <ServiceCard key={item.id} service={item} profile={profile} onOpen={() => setSelectedService(item)} />;
           }
           if (contentType === "locales") {
             return <VenueCard key={item.id} venue={item} />;
@@ -127,6 +186,9 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
       )}
       {selectedProjectId && (
         <ProjectView projectId={selectedProjectId} onClose={() => setSelectedProjectId(null)} />
+      )}
+      {selectedService && (
+        <ServiceDetail service={selectedService} onClose={() => setSelectedService(null)} />
       )}
     </div>
   );

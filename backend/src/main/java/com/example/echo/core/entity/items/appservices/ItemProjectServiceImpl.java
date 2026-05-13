@@ -110,7 +110,6 @@ public class ItemProjectServiceImpl implements ItemProjectService {
                     dto.getBlocks(),
                     dto.getBackground(),
                     dto.getBlockGap(),
-                    dto.getBlockBorderRadius(),
                     dto.getPublished(),
                     dto.getSlug());
 
@@ -142,7 +141,6 @@ public class ItemProjectServiceImpl implements ItemProjectService {
             existing.setBlocks(dto.getBlocks());
             existing.setBackground(dto.getBackground());
             existing.setBlockGap(dto.getBlockGap());
-            existing.setBlockBorderRadius(dto.getBlockBorderRadius());
             existing.setPublished(dto.getPublished());
             existing.setSlug(dto.getSlug());
             if (dto.getLikes() != null) existing.setLikes(dto.getLikes());

@@ -1,15 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { getServiceById, updateService } from '../../services/servicesApi';
+import { uploadFile } from '../../services/uploads';
 import ServiceForm from '../../components/ServiceForm/ServiceForm';
-import { useServices } from '../../hooks/useServices';
+import { getAuthToken } from '../../services/session';
 import './Services.css';
 
 function ServiceEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { editService, fetchServiceById } = useServices();
+  const token = getAuthToken();
+  
   const [service, setService] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     loadService();
@@ -17,7 +21,11 @@ function ServiceEdit() {
 
   const loadService = async () => {
     try {
-      const data = await fetchServiceById(id);
+      const response = await getServiceById(id);
+      if (!response.ok) {
+        throw new Error('Error al cargar el servicio');
+      }
+      const data = await response.json();
       setService({
         ...data,
         projectIds: data.projects?.map(p => p.id) || []
@@ -30,11 +38,35 @@ function ServiceEdit() {
   };
 
   const handleSubmit = async (data) => {
+    setSaving(true);
     try {
-      await editService(id, data);
+      // Subir imagen primero si hay archivo nuevo
+      let coverImageUrl = data.coverImageUrl || null;
+      if (data.coverImageFile) {
+        coverImageUrl = await uploadFile(data.coverImageFile, 'images');
+      }
+      
+      // Preparar datos para enviar
+      const dataToSend = {
+        name: data.name,
+        description: data.description,
+        deliveryDuration: data.deliveryDuration,
+        categoryId: data.categoryId,
+        price: data.price,
+        coverImageUrl: coverImageUrl,
+        projectIds: data.projectIds
+      };
+
+      const response = await updateService(id, dataToSend, token);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Error al actualizar el servicio');
+      }
       navigate('/profile');
-    } catch {
-      alert('Error al actualizar el servicio');
+    } catch (err) {
+      alert(err.message || 'Error al actualizar el servicio');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -53,7 +85,12 @@ function ServiceEdit() {
     <div className="service-form-page">
       <h1>Editar Servicio</h1>
       <div className="service-form-container">
-        <ServiceForm initialData={service} onSubmit={handleSubmit} onCancel={() => navigate('/profile')} />
+        <ServiceForm 
+          initialData={service} 
+          onSubmit={handleSubmit} 
+          onCancel={() => navigate('/profile')}
+          saving={saving}
+        />
       </div>
     </div>
   );

@@ -5,6 +5,8 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  background: var(--white);
+  min-height: 100vh;
 }
 
 .od-back-btn {
@@ -26,8 +28,8 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 1.5rem;
-  background: var(--black-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--white);
+  border: 1px solid var(--gray-stroke);
   border-radius: 12px;
   padding: 1.25rem 1.5rem;
   flex-wrap: wrap;
@@ -36,13 +38,13 @@
 .od-header__title {
   font-size: 1.35rem;
   font-weight: 800;
-  color: var(--white);
+  color: var(--black);
   margin: 0 0 0.25rem;
 }
 
 .od-header__sub {
   font-size: 0.875rem;
-  color: var(--gray-dark-secondary);
+  color: var(--black-secondary);
   margin: 0 0 0.25rem;
 }
 
@@ -70,10 +72,10 @@
   border-radius: 20px;
 }
 
-.od-status--pending     { background: rgba(255, 200, 0, 0.15);  color: #ffc800; }
-.od-status--in_progress { background: rgba(0, 180, 255, 0.15);  color: #00b4ff; }
-.od-status--completed   { background: rgba(0, 200, 100, 0.15);  color: #00c864; }
-.od-status--cancelled   { background: rgba(255, 80, 80, 0.15);  color: #ff5050; }
+.od-status--pending     { background: var(--status-pending-bg);  color: var(--status-pending); }
+.od-status--in_progress { background: var(--status-in-progress-bg);  color: var(--status-in-progress); }
+.od-status--completed   { background: var(--status-completed-bg);  color: var(--status-completed); }
+.od-status--cancelled   { background: var(--status-cancelled-bg);  color: var(--status-cancelled); }
 
 .od-status-actions {
   display: flex;
@@ -86,15 +88,15 @@
   padding: 0.4rem 0.9rem;
   border: none;
   border-radius: 6px;
-  background: #dc3545;
-  color: var(--white);
+  background: var(--error);
+  color: var(--true-white);
   font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
 }
 
 .od-dispute-link:hover {
-  background: #c82333;
+  background: var(--error-dark);
 }
 
 .od-status-btn {
@@ -109,22 +111,22 @@
 
 .od-status-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-.od-status-btn--in_progress { background: rgba(0, 180, 255, 0.2);  color: #00b4ff; }
-.od-status-btn--completed   { background: rgba(0, 200, 100, 0.2);  color: #00c864; }
-.od-status-btn--cancelled   { background: rgba(255, 80, 80, 0.15); color: #ff5050; }
+.od-status-btn--in_progress { background: var(--status-in-progress-bg);  color: var(--status-in-progress); }
+.od-status-btn--completed   { background: var(--status-completed-bg);  color: var(--status-completed); }
+.od-status-btn--cancelled   { background: var(--status-cancelled-bg); color: var(--status-cancelled); }
 
 .od-status-btn:hover:not(:disabled) { opacity: 0.8; }
 
 .od-error {
   font-size: 0.875rem;
-  color: #ff6b6b;
+  color: var(--error);
   margin: 0;
 }
 
 /* ── Review section ──────────────────────────────────── */
 .od-review-section {
-  background: var(--black-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--white);
+  border: 1px solid var(--gray-stroke);
   border-radius: 12px;
   padding: 1.5rem;
   display: flex;
@@ -135,12 +137,12 @@
 .od-review-title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--white);
+  color: var(--black);
   margin: 0;
 }
 
 .od-review-loading {
-  color: var(--gray-dark-secondary);
+  color: var(--black-secondary);
   font-size: 0.875rem;
   margin: 0;
 }
@@ -152,7 +154,7 @@
 
 .od-star {
   font-size: 1.75rem;
-  color: var(--black);
+  color: var(--gray-stroke);
   transition: color 0.15s;
   line-height: 1;
 }
@@ -167,7 +169,7 @@
 }
 
 .od-stars--interactive:hover .od-star {
-  color: var(--black);
+  color: var(--gray-stroke);
 }
 
 .od-stars--interactive .od-star:hover,
@@ -182,10 +184,10 @@
 }
 
 .od-review-comment {
-  background: var(--black);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--true-white);
+  border: 1px solid var(--gray-stroke);
   border-radius: 8px;
-  color: var(--white);
+  color: var(--black);
   font-size: 0.9rem;
   padding: 0.75rem 1rem;
   resize: vertical;
@@ -199,7 +201,7 @@
 }
 
 .od-review-error {
-  color: #ff6b6b;
+  color: var(--error);
   font-size: 0.85rem;
   margin: 0;
 }
@@ -209,7 +211,7 @@
   background: var(--orange);
   border: none;
   border-radius: 8px;
-  color: var(--white);
+  color: var(--true-white);
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 700;
@@ -228,7 +230,7 @@
 
 .od-review-existing__label {
   font-size: 0.82rem;
-  color: var(--gray-dark-secondary);
+  color: var(--black-secondary);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -237,7 +239,7 @@
 
 .od-review-existing__comment {
   font-size: 0.9rem;
-  color: var(--gray-light);
+  color: var(--black);
   font-style: italic;
   margin: 0;
 }

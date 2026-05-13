@@ -12,7 +12,7 @@
 }
 
 .popup-success-container {
-  background: white;
+  background: var(--true-white);
   border-radius: 12px;
   padding: 24px 32px;
   max-width: 400px;
@@ -31,27 +31,27 @@
   font-size: 28px;
   font-weight: bold;
   margin: 0 auto 16px;
-  background-color: #d4edda;
-  color: #155724;
+  background-color: var(--success-medium);
+  color: var(--success);
 }
 
 .popup-success-title {
   font-size: 20px;
   font-weight: 600;
   margin: 0 0 12px 0;
-  color: #333;
+  color: var(--black);
 }
 
 .popup-success-message {
   font-size: 16px;
-  color: #666;
+  color: var(--black-secondary);
   margin: 0 0 24px 0;
   line-height: 1.5;
 }
 
 .popup-success-btn {
-  background-color: #28a745;
-  color: white;
+  background-color: var(--orange);
+  color: var(--true-white);
   border: none;
   border-radius: 6px;
   padding: 12px 32px;
@@ -62,5 +62,5 @@
 }
 
 .popup-success-btn:hover {
-  background-color: #218838;
+  background-color: var(--orange-secondary);
 }

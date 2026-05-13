@@ -1,10 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import './PopupConfirm.css';
 
 // Hook para manejar el popup de confirmación
 export const useConfirmPopup = () => {
-  const [confirmState, setConfirmState] = useState({
+  const [state, setState] = useState({
     isOpen: false,
     message: '',
     title: 'Confirmar',
@@ -12,8 +12,8 @@ export const useConfirmPopup = () => {
     onCancel: null,
   });
 
-  const showConfirm = useCallback((message, title = 'Confirmar', onConfirm, onCancel = null) => {
-    setConfirmState({
+  const show = useCallback((message, title = 'Confirmar', onConfirm, onCancel = null) => {
+    setState({
       isOpen: true,
       message,
       title,
@@ -22,8 +22,8 @@ export const useConfirmPopup = () => {
     });
   }, []);
 
-  const hideConfirm = useCallback(() => {
-    setConfirmState({
+  const hide = useCallback(() => {
+    setState({
       isOpen: false,
       message: '',
       title: 'Confirmar',
@@ -33,23 +33,23 @@ export const useConfirmPopup = () => {
   }, []);
 
   const handleConfirm = useCallback(() => {
-    if (confirmState.onConfirm) {
-      confirmState.onConfirm();
+    if (state.onConfirm) {
+      state.onConfirm();
     }
-    hideConfirm();
-  }, [confirmState.onConfirm, hideConfirm]);
+    hide();
+  }, [state.onConfirm, hide]);
 
   const handleCancel = useCallback(() => {
-    if (confirmState.onCancel) {
-      confirmState.onCancel();
+    if (state.onCancel) {
+      state.onCancel();
     }
-    hideConfirm();
-  }, [confirmState.onCancel, hideConfirm]);
+    hide();
+  }, [state.onCancel, hide]);
 
   return {
-    confirmState,
-    showConfirm,
-    hideConfirm,
+    confirmState: state,
+    showConfirm: show,
+    hideConfirm: hide,
     handleConfirm,
     handleCancel,
   };
@@ -59,90 +59,24 @@ export const useConfirmPopup = () => {
 export const PopupConfirm = ({ isOpen, onConfirm, onCancel, message, title = 'Confirmar' }) => {
   if (!isOpen) return null;
 
-  const popupContent = (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 99999,
-    }} onClick={onCancel}>
-      <div style={{
-        background: 'white',
-        borderRadius: '12px',
-        padding: '24px 32px',
-        maxWidth: '400px',
-        width: '90%',
-        textAlign: 'center',
-        boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)',
-      }} onClick={(e) => e.stopPropagation()}>
-        <div style={{
-          width: '60px',
-          height: '60px',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '28px',
-          fontWeight: 'bold',
-          margin: '0 auto 16px',
-          backgroundColor: '#fff3cd',
-          color: '#856404',
-        }}>
-          ⚠️
-        </div>
-        <h3 style={{
-          fontSize: '20px',
-          fontWeight: 600,
-          margin: '0 0 12px 0',
-          color: '#333',
-        }}>{title}</h3>
-        <p style={{
-          fontSize: '16px',
-          color: '#666',
-          margin: '0 0 24px 0',
-          lineHeight: 1.5,
-        }}>{message}</p>
-        <div style={{
-          display: 'flex',
-          gap: '12px',
-          justifyContent: 'center',
-        }}>
-          <button style={{
-            backgroundColor: '#6c757d',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            padding: '12px 24px',
-            fontSize: '16px',
-            fontWeight: 500,
-            cursor: 'pointer',
-          }} onClick={onCancel}>
+  return createPortal(
+    <div className="popup-confirm-overlay" onClick={onCancel}>
+      <div className="popup-confirm-container" onClick={(e) => e.stopPropagation()}>
+        <div className="popup-confirm-icon">⚠️</div>
+        <h3 className="popup-confirm-title">{title}</h3>
+        <p className="popup-confirm-message">{message}</p>
+        <div className="popup-confirm-buttons">
+          <button className="popup-confirm-btn-cancel" onClick={onCancel}>
             Cancelar
           </button>
-          <button style={{
-            backgroundColor: '#dc3545',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            padding: '12px 24px',
-            fontSize: '16px',
-            fontWeight: 500,
-            cursor: 'pointer',
-          }} onClick={onConfirm}>
+          <button className="popup-confirm-btn-confirm" onClick={onConfirm}>
             Eliminar
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
-
-  return createPortal(popupContent, document.body);
 };
 
 export default PopupConfirm;

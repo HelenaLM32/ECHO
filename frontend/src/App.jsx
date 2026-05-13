@@ -23,8 +23,8 @@ import EditVenue from './pages/Venues/EditVenue';
 import EditEvent from './pages/Events/EditEvent';
 
 // Rutas de main (Proyectos y Legal)
-import ProjectEditor from './pages/ItemProyect/ProjectEditor.jsx';
-import ProjectView from './pages/ItemProyect/ProjectView.jsx';
+import ProjectEditor from './pages/ItemProject/ProjectEditor.jsx';
+import ProjectView from './pages/ItemProject/ProjectView.jsx';
 import PrivacyPolicy from './pages/Legal/PrivacyPolicy';
 import TermsAndConditions from './pages/Legal/TermsAndConditions';
 import CookiesPolicy from './pages/Legal/CookiesPolicy';

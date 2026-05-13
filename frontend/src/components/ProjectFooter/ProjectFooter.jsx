@@ -1,10 +1,18 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 import './ProjectFooter.css'
 
-export default function ProjectFooter({ name, avatar, likes = 0, views = 0, comments = 0, commentItems = [], onLike, onSubmitComment, onDeleteComment, currentUserId, projectOwnerId, isAdmin = false, isLiked = false }) {
+export default function ProjectFooter({ name, avatar, likes = 0, views = 0, comments = 0, price = null, commentItems = [], onLike, onSubmitComment, onDeleteComment, currentUserId, projectOwnerId, isAdmin = false, isLiked = false }) {
     const [draft, setDraft] = useState('')
-    const initials = (name || 'U').charAt(0).toUpperCase()
-    const authorName = name || 'Anónimo'
+    const navigate = useNavigate()
+    const { user } = useAuth()
+    
+    // Use logged-in user's avatar for the comment input section
+    const loggedInUserAvatar = user?.avatarUrl || user?.profile?.avatarUrl
+    const loggedInUserName = user?.publicName || user?.username || user?.profile?.publicName || user?.profile?.username
+    const initials = (loggedInUserName || 'U').charAt(0).toUpperCase()
+    const authorName = loggedInUserName || 'Anónimo'
 
     function handleSubmit(event) {
         event.preventDefault()
@@ -30,8 +38,8 @@ export default function ProjectFooter({ name, avatar, likes = 0, views = 0, comm
             <div className="pf-card">
                 <div className="pf-header">
                     <div className="pf-user-info">
-                        {avatar ? (
-                            <img className="pf-creator-avatar" src={avatar} alt={authorName} />
+                        {loggedInUserAvatar ? (
+                            <img className="pf-creator-avatar" src={loggedInUserAvatar} alt={authorName} />
                         ) : (
                             <div className="pf-creator-avatar pf-creator-fallback">{initials}</div>
                         )}
@@ -48,6 +56,7 @@ export default function ProjectFooter({ name, avatar, likes = 0, views = 0, comm
                 </div>
                 <div className="pf-divider"></div>
                 <div className="pf-stats-row">
+                    {price && <button className="pf-price-btn">{price.toFixed(2)}€</button>}
                     <button className="pf-like-btn" onClick={onLike} aria-pressed={isLiked}>
                         {isLiked ? '❤️' : '🤍'} {likes}
                     </button>
@@ -74,7 +83,7 @@ export default function ProjectFooter({ name, avatar, likes = 0, views = 0, comm
                                     )}
                                     <div className="pf-comment-content">
                                         <div className="pf-comment-meta">
-                                            <span className="pf-comment-author">{displayName}</span>
+                                            <span className="pf-comment-author" onClick={() => author.id && navigate(`/profile/${author.id}`)} style={{ cursor: author.id ? 'pointer' : 'default' }}>{displayName}</span>
                                             <span className="pf-comment-time">· {timeAgo}</span>
                                             {onDeleteComment && (comment.author?.id === currentUserId || projectOwnerId === currentUserId || isAdmin) && (
                                                 <button

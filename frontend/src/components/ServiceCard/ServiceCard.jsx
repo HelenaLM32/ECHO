@@ -1,86 +1,49 @@
-import { useState } from 'react';
-import './ServiceCard.css';
-import ServiceDetail from '../ServiceDetail/ServiceDetail';
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import '../ProjectCard/ProjectCard.css'
 
-const parsePrice = (value) => {
-  if (value === null || value === undefined || value === '') return 0;
-  const parsed = parseFloat(value);
-  return isNaN(parsed) ? 0 : parsed;
-};
+export default function ServiceCard({ service, onOpen, small = false }) {
+  const navigate = useNavigate()
+  const cover = service?.coverImageUrl
+  const title = service?.name || `Servicio #${service.id}`
+  const creator = service?.creator
+  const creatorId = creator?.id
+  const creatorName = creator?.publicName || creator?.username || 'Creator'
+  const avatarUrl = creator?.avatarUrl
+  const initials = creatorName.charAt(0).toUpperCase()
+  const price = service?.price || 0
 
-function ServiceCard({ service, profile, onEdit, onDelete, small = true }) {
-  const [showDetail, setShowDetail] = useState(false);
-
-  const creatorName = profile?.publicName || profile?.username || 'Creador';
-  const avatarUrl = profile?.avatarUrl;
-  const initials = creatorName.charAt(0).toUpperCase();
-  const title = service.name || 'Sin titulo';
-  const price = parsePrice(service.price ?? service.basePrice);
-  const deliveryDays = service.deliveryDuration || 1;
-
-  const handleEdit = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    onEdit?.(service.id);
-  };
-
-  const handleDelete = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    onDelete?.(service.id);
-  };
-
-  const canEdit = typeof onEdit === 'function';
-  const canDelete = typeof onDelete === 'function';
+  const handleCreatorClick = (e) => {
+    e.stopPropagation()
+    if (creatorId) {
+      navigate(`/profile/${creatorId}`)
+    }
+  }
 
   return (
-    <>
-      <div
-        className={`sc-card-wrapper ${small ? 'sc-card--small' : ''}`}
-        onClick={() => setShowDetail(true)}
-      >
-        <article className="sc-card">
-          <div className="sc-cover">
-            {service.coverImageUrl ? (
-              <img src={service.coverImageUrl} alt={title} className="sc-cover-img" />
+    <button type="button" className={`pc-card-wrapper pc-card-button ${small ? 'pc-card--small' : ''}`} onClick={() => onOpen(service.id)}>
+      <article className="pc-card">
+        <div className="pc-cover">
+          {price > 0 ? <div className="pc-price-top">{price.toFixed(2)}€</div> : <div className="pc-price-top">Gratis</div>}
+          {cover ? <img src={cover} alt={title} className="pc-cover-img" /> : <div className="pc-cover-fallback">{title?.charAt(0)?.toUpperCase() || 'S'}</div>}
+        </div>
+        <div className="pc-footer">
+          <div className="pc-footer-left">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt={creatorName} className="pc-creator-avatar" />
             ) : (
-              <div className="sc-cover-fallback">{title.charAt(0).toUpperCase()}</div>
+              <div className="pc-creator-avatar pc-creator-fallback">{initials}</div>
             )}
-            {(canEdit || canDelete) && (
-              <div className="sc-actions">
-                {canEdit && (
-                  <button className="sc-action-btn sc-edit-btn" onClick={handleEdit} title="Editar">✎</button>
-                )}
-                {canDelete && (
-                  <button className="sc-action-btn sc-delete-btn" onClick={handleDelete} title="Eliminar">🗑</button>
-                )}
-              </div>
-            )}
-          </div>
-
-          <div className="sc-footer">
-            <div className="sc-footer-left">
-              {avatarUrl ? (
-                <img src={avatarUrl} alt={creatorName} className="sc-creator-avatar" />
-              ) : (
-                <div className="sc-creator-avatar sc-creator-fallback">{initials}</div>
-              )}
-              <div className="sc-meta">
-                <h3 className="sc-title">{title}</h3>
-                <p className="sc-author">por {creatorName}</p>
-              </div>
-            </div>
-            <div className="sc-stats">
-              <span className="sc-price">${price.toFixed(0)}</span>
-              <span className="sc-delivery">{deliveryDays}d</span>
+            <div className="pc-meta">
+              <h3 className="pc-title">{title}</h3>
+              <p className="pc-author">
+                por <span className="pc-author-link" onClick={handleCreatorClick}>{creatorName}</span>
+              </p>
             </div>
           </div>
-        </article>
-      </div>
 
-      {showDetail && <ServiceDetail service={service} onClose={() => setShowDetail(false)} />}
-    </>
-  );
+        </div>
+      </article>
+    </button>
+  )
 }
-
-export default ServiceCard;

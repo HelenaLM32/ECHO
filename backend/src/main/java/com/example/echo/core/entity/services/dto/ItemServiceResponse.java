@@ -14,8 +14,7 @@ public class ItemServiceResponse {
     private Double price;
     private String coverImageUrl;
     private Long creatorId;
-    private String creatorName;
-    private String creatorAvatarUrl;
+    private CreatorInfo creator;
     private List<ProjectSummary> projects;
 
     public static class ProjectSummary {
@@ -41,6 +40,52 @@ public class ItemServiceResponse {
 
         public void setTitle(String title) {
             this.title = title;
+        }
+    }
+
+    public static class CreatorInfo {
+        private Long id;
+        private String username;
+        private String publicName;
+        private String avatarUrl;
+
+        public CreatorInfo(Long id, String username, String publicName, String avatarUrl) {
+            this.id = id;
+            this.username = username;
+            this.publicName = publicName;
+            this.avatarUrl = avatarUrl;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPublicName() {
+            return publicName;
+        }
+
+        public void setPublicName(String publicName) {
+            this.publicName = publicName;
+        }
+
+        public String getAvatarUrl() {
+            return avatarUrl;
+        }
+
+        public void setAvatarUrl(String avatarUrl) {
+            this.avatarUrl = avatarUrl;
         }
     }
 
@@ -125,20 +170,12 @@ public class ItemServiceResponse {
         this.creatorId = creatorId;
     }
 
-    public String getCreatorName() {
-        return creatorName;
+    public CreatorInfo getCreator() {
+        return creator;
     }
 
-    public void setCreatorName(String creatorName) {
-        this.creatorName = creatorName;
-    }
-
-    public String getCreatorAvatarUrl() {
-        return creatorAvatarUrl;
-    }
-
-    public void setCreatorAvatarUrl(String creatorAvatarUrl) {
-        this.creatorAvatarUrl = creatorAvatarUrl;
+    public void setCreator(CreatorInfo creator) {
+        this.creator = creator;
     }
 
     public List<ProjectSummary> getProjects() {

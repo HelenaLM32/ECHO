@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './ProjectEditor.css'
-import Editor from '../../components/ItemProyect/Editor'
+import Editor from '../../components/ItemProject/Editor'
 import useProjectStore, {
   BLOCK_TYPES,
   BLOCK_META,
@@ -12,8 +12,6 @@ import { createItem, createProject, getCategories } from '../../services/project
 import { PopupConfirm, useConfirmPopup } from '../../components/PopupConfirm/PopupConfirm'
 import { PopupSuccess, useSuccessPopup } from '../../components/PopupSuccess/PopupSuccess'
 
-/* ── Sidebar (inline) ────────────────────────── */
-
 function ProjectSidebar({ onPreview }) {
   const addBlock = useProjectStore((s) => s.addBlock)
   const addBlockWithData = useProjectStore((s) => s.addBlockWithData)
@@ -21,8 +19,7 @@ function ProjectSidebar({ onPreview }) {
   const setBackground = useProjectStore((s) => s.setBackground)
   const blockGap = useProjectStore((s) => s.blockGap)
   const setBlockGap = useProjectStore((s) => s.setBlockGap)
-  const blockBorderRadius = useProjectStore((s) => s.blockBorderRadius)
-  const setBlockBorderRadius = useProjectStore((s) => s.setBlockBorderRadius)
+  const [showAddContent, setShowAddContent] = useState(false)
   const [showEditProject, setShowEditProject] = useState(false)
   const [showCustomizeStyles, setShowCustomizeStyles] = useState(false)
   const colorInputRef = useRef(null)
@@ -118,17 +115,25 @@ function ProjectSidebar({ onPreview }) {
 
   return (
     <div className="sidebarContent">
-      <h3 className="sidebarHeading">Añadir contenido</h3>
-      <div className="sidebarButtonGrid">
-        {Object.values(BLOCK_TYPES).map((type) => {
-          const meta = BLOCK_META[type]
-          return (
-            <button key={type} className="sidebarButton" onClick={() => handleClick(type)}>
-              <img src={`/project/${meta.icon}`} className="sidebarButtonIcon" alt={meta.label} />
-              <span className="sidebarButtonText">{meta.label}</span>
-            </button>
-          )
-        })}
+      <div className="editSection">
+        <button className="editProjectButton" onClick={() => setShowAddContent(!showAddContent)}>
+          Añadir contenido {showAddContent ? '▲' : '▼'}
+        </button>
+        {showAddContent && (
+          <div className="backgroundPanel">
+            <div className="sidebarButtonGrid">
+              {Object.values(BLOCK_TYPES).map((type) => {
+                const meta = BLOCK_META[type]
+                return (
+                  <button key={type} className="sidebarButton" onClick={() => handleClick(type)}>
+                    <img src={`/project/${meta.icon}`} className="sidebarButtonIcon" alt={meta.label} />
+                    <span className="sidebarButtonText">{meta.label}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ── Edit Project Button ─────────────── */}
@@ -209,20 +214,6 @@ function ProjectSidebar({ onPreview }) {
               />
               <span className="blockSpacingValue">{blockGap}px</span>
             </div>
-
-            <h3 className="customizeHeading">Borde de imágenes y videos</h3>
-            <div className="blockSpacingControl">
-              <input
-                type="range"
-                min="0"
-                max="50"
-                step="2"
-                value={blockBorderRadius}
-                onChange={(e) => setBlockBorderRadius(Number(e.target.value))}
-                className="blockSpacingSlider"
-              />
-              <span className="blockSpacingValue">{blockBorderRadius}px</span>
-            </div>
           </div>
         )}
       </div>
@@ -260,7 +251,6 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [basePrice, setBasePrice] = useState('')
-  const [itemType, setItemType] = useState('PROJECT')
   const [categoryId, setCategoryId] = useState('')
   const [categories, setCategories] = useState([])
 
@@ -279,14 +269,20 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
       alert('El título debe tener al menos 3 caracteres')
       return
     }
-    const price = Number(basePrice)
-    if (Number.isNaN(price) || price <= 0) {
-      alert('Base price debe ser un número mayor que 0')
+    if (!categoryId) {
+      alert('Debes seleccionar una categoría')
       return
     }
-    if (!itemType || itemType.trim().length < 3) {
-      alert('Item type inválido')
-      return
+    
+    // Precio es opcional, pero si se introduce debe ser válido
+    let price = null
+    if (basePrice && basePrice.trim() !== '') {
+      const parsedPrice = Number(basePrice)
+      if (Number.isNaN(parsedPrice) || parsedPrice < 0) {
+        alert('El precio debe ser un número válido mayor o igual a 0')
+        return
+      }
+      price = parsedPrice
     }
 
     setSaving(true)
@@ -298,8 +294,8 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
         title: title.trim(),
         description: description ? description.trim() : null,
         basePrice: price,
-        itemType: itemType.trim(),
-        categoryId: categoryId ? Number(categoryId) : null,
+        itemType: 'PROJECT',
+        categoryId: Number(categoryId),
       }
 
       const createdItem = await createItem(itemPayload)
@@ -308,7 +304,6 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
         blocks: JSON.stringify(data.blocks || []),
         background: JSON.stringify(data.background || {}),
         blockGap: data.blockGap || 0,
-        blockBorderRadius: data.blockBorderRadius || 18,
         published: false,
         slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
       }
@@ -341,21 +336,42 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
         <div className="modal" onClick={(e) => e.stopPropagation()}>
           <h3 className="modalTitle">Guardar proyecto</h3>
           <form onSubmit={handleSubmit} className="modalForm">
-            <label className="modalLabel">Título</label>
-            <input className="modalInput" value={title} onChange={(e) => setTitle(e.target.value)} required />
+            <label className="modalLabel">Título *</label>
+            <input 
+              className="modalInput" 
+              value={title} 
+              onChange={(e) => setTitle(e.target.value)} 
+              placeholder="Ej: Mi increíble proyecto artístico"
+              required 
+            />
 
             <label className="modalLabel">Descripción</label>
-            <textarea className="modalTextarea" value={description} onChange={(e) => setDescription(e.target.value)} />
+            <textarea 
+              className="modalTextarea" 
+              value={description} 
+              onChange={(e) => setDescription(e.target.value)} 
+              placeholder="Ej: Este proyecto muestra mi trabajo de ilustración digital con técnicas innovadoras..."
+            />
 
-            <label className="modalLabel">Base price</label>
-            <input className="modalInput" type="number" step="0.01" value={basePrice} onChange={(e) => setBasePrice(e.target.value)} required />
+            <label className="modalLabel">Precio base (opcional)</label>
+            <input 
+              className="modalInput" 
+              type="number" 
+              step="0.01" 
+              min="0"
+              value={basePrice} 
+              onChange={(e) => setBasePrice(e.target.value)} 
+              placeholder="Ej: 150.00"
+            />
 
-            <label className="modalLabel">Item type</label>
-            <input className="modalInput" value={itemType} onChange={(e) => setItemType(e.target.value)} required />
-
-            <label className="modalLabel">Categoría (opcional)</label>
-            <select className="modalSelect" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-              <option value="">-- Ninguna --</option>
+            <label className="modalLabel">Categoría *</label>
+            <select 
+              className="modalSelect" 
+              value={categoryId} 
+              onChange={(e) => setCategoryId(e.target.value)}
+              required
+            >
+              <option value="">-- Selecciona una categoría --</option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}

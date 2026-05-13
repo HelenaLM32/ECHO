@@ -9,8 +9,10 @@ export const BLOCK_TYPES = {
   AUDIO: 'AUDIO',
 }
 
+let blockIdCounter = 0
+
 export function createBlock(type) {
-  const base = { id: crypto.randomUUID(), type }
+  const base = { id: ++blockIdCounter, type }
   switch (type) {
     case BLOCK_TYPES.TEXT: return { ...base, content: '' }
     case BLOCK_TYPES.IMAGE: return { ...base, src: '', caption: '' }
@@ -85,7 +87,6 @@ function defaultState() {
     // background: { mode: 'color' | 'gradient' | 'image', value: string }
     background: { mode: 'color', value: '#ffffff' },
     blockGap: 0,
-    blockBorderRadius: 18, // new: border radius for images/videos
   }
 }
 
@@ -123,16 +124,14 @@ const useProjectStore = create((set, get) => ({
 
   setBlockGap: (gap) => set({ blockGap: gap }),
 
-  setBlockBorderRadius: (radius) => set({ blockBorderRadius: radius }),
-
   saveDraft: () => {
-    const { blocks, background, blockGap, blockBorderRadius } = get()
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ blocks, background, blockGap, blockBorderRadius }))
+    const { blocks, background, blockGap } = get()
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ blocks, background, blockGap }))
   },
 
   exportJSON: () => {
-    const { blocks, background, blockGap, blockBorderRadius } = get()
-    return { blocks, background, blockGap, blockBorderRadius }
+    const { blocks, background, blockGap } = get()
+    return { blocks, background, blockGap }
   },
 
   reset: () => {
