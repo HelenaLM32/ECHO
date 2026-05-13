@@ -59,7 +59,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         .requestMatchers("/users/login", "/users/register").permitAll()
-                        .requestMatchers("/auth/oauth/**").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/users").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/items").hasAuthority("ADMIN")
