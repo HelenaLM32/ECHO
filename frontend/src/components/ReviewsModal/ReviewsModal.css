@@ -1,7 +1,7 @@
 .rmodal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.65);
+  background: var(--overlay-dark);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,57 +10,70 @@
 }
 
 .rmodal {
-  background: var(--black-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 14px;
+  background: var(--true-white);
+  border: 1px solid var(--gray-stroke);
+  border-radius: 18px;
   padding: 1.75rem;
   width: 100%;
-  max-width: 480px;
-  max-height: 80vh;
+  max-width: 500px;
+  max-height: 82vh;
   overflow-y: auto;
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  box-shadow: 0 12px 40px var(--shadow-medium);
 }
 
 .rmodal-close {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: none;
+  background: var(--gray);
   border: none;
-  color: var(--gray-dark-secondary);
-  font-size: 1.1rem;
+  color: var(--black-secondary);
+  font-size: 1rem;
   cursor: pointer;
-  padding: 0.25rem;
-  transition: color 0.15s;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+  line-height: 1;
 }
 
-.rmodal-close:hover { color: var(--white); }
+.rmodal-close:hover {
+  background: var(--gray-dark);
+  color: var(--black);
+}
 
 .rmodal-title {
-  font-size: 1.15rem;
+  font-size: 1.3rem;
   font-weight: 800;
-  color: var(--white);
+  color: var(--black);
   margin: 0;
-  padding-right: 2rem;
+  padding-right: 2.5rem;
+  letter-spacing: -0.3px;
 }
 
 .rmodal-summary {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 10px;
-  padding: 0.875rem 1rem;
+  background: var(--white);
+  border: 1px solid var(--gray-stroke);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
 }
 
 .rmodal-avg {
-  font-size: 2.25rem;
+  font-size: 2.5rem;
   font-weight: 900;
   color: var(--orange);
   line-height: 1;
+  letter-spacing: -1px;
 }
 
 .rmodal-stars {
@@ -70,14 +83,17 @@
 
 .rmodal-star {
   font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.2);
+  color: var(--gray-dark);
 }
 
-.rmodal-star--filled { color: var(--orange); }
+.rmodal-star--filled {
+  color: var(--orange);
+}
 
 .rmodal-count {
   font-size: 0.82rem;
-  color: var(--gray-dark-secondary);
+  font-weight: 600;
+  color: var(--black-secondary);
   margin-left: auto;
 }
 
@@ -87,23 +103,29 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.65rem;
 }
 
 .rmodal-empty {
-  color: var(--gray-dark-secondary);
+  color: var(--black-secondary);
   font-size: 0.9rem;
   text-align: center;
   padding: 1rem 0;
 }
 
 .rmodal-item {
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 8px;
-  padding: 0.875rem 1rem;
+  background: var(--white);
+  border: 1px solid var(--gray-stroke);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.45rem;
+  transition: border-color 0.15s ease;
+}
+
+.rmodal-item:hover {
+  border-color: var(--gray-dark);
 }
 
 .rmodal-item__header {
@@ -116,7 +138,7 @@
 .rmodal-item__author {
   font-size: 0.875rem;
   font-weight: 700;
-  color: var(--white);
+  color: var(--black);
 }
 
 .rmodal-item__score {
@@ -124,12 +146,14 @@
   gap: 0.1rem;
 }
 
-.rmodal-item__score .rmodal-star { font-size: 1rem; }
+.rmodal-item__score .rmodal-star {
+  font-size: 1rem;
+}
 
 .rmodal-item__comment {
-    color: var(--white);
-    font-size: 0.875rem;
-    font-style: italic;
-    margin: 0;
-    line-height: 1.5;
+  color: var(--black-secondary);
+  font-size: 0.875rem;
+  font-style: italic;
+  margin: 0;
+  line-height: 1.55;
 }

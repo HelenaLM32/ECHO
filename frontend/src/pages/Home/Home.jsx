@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Home.css";
 import ItemsList from "../../components/ItemsList/ItemsList";
 import SectionsList from "../../components/SectionsList/SectionsList";
@@ -9,12 +9,22 @@ import { fetchSections } from "../../services/sections";
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("recent");
+  const [isSortOpen, setIsSortOpen] = useState(false);
   const [sections, setSections] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [animateIn, setAnimateIn] = useState(false);
   const [contentType, setContentType] = useState("proyectos");
+  const sortDropdownRef = useRef(null);
   const navigate = useNavigate();
   const params = useParams();
+
+  const sortOptions = [
+    { value: "recent", label: "Mas recientes" },
+    { value: "popular", label: "Mejor valorados" },
+    { value: "views", label: "Mas vistos" },
+  ];
+
+  const currentSortLabel = sortOptions.find((option) => option.value === sortBy)?.label || "Ordenar";
 
   useEffect(() => {
     let mounted = true;
@@ -43,6 +53,17 @@ export default function Home() {
   useEffect(() => {
     const t = setTimeout(() => setAnimateIn(true), 60);
     return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sortDropdownRef.current && !sortDropdownRef.current.contains(event.target)) {
+        setIsSortOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   // Handler de las categorias
@@ -105,41 +126,66 @@ export default function Home() {
       )}
 
       <div className="home-container-search-section">
-        <input
-          type="text"
-          placeholder="Buscar en Echo..."
-          className="search-bar"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <select
-          className="filter-button"
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          aria-label="Ordenar proyectos"
+        <div className="search-bar-integrated">
+          <input
+            type="text"
+            placeholder="Buscar en Echo..."
+            className="search-bar-input"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <nav className="search-type-filters" aria-label="Tipo de contenido">
+            {[
+              { key: "proyectos", label: "Proyectos" },
+              { key: "servicios", label: "Servicios" },
+              { key: "locales", label: "Locales" },
+              { key: "eventos", label: "Eventos" },
+            ].map(({ key, label }) => (
+              <button
+                key={key}
+                type="button"
+                className={`search-type-btn${contentType === key ? " active" : ""}`}
+                onClick={() => handleContentType(key)}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
+        </div>
+        <div
+          className={`home-sort-dropdown${isSortOpen ? " open" : ""}`}
+          ref={sortDropdownRef}
         >
-          <option value="recent">Mas recientes</option>
-          <option value="popular">Mas populares</option>
-          <option value="views">Mas vistos</option>
-        </select>
-      </div>
-      <nav className="home-content-type-nav" aria-label="Tipo de contenido">
-        {[
-          { key: "proyectos", label: "Proyectos" },
-          { key: "servicios", label: "Servicios" },
-          { key: "locales", label: "Locales" },
-          { key: "eventos", label: "Eventos" },
-        ].map(({ key, label }) => (
           <button
-            key={key}
             type="button"
-            className={`home-content-type-btn${contentType === key ? " active" : ""}`}
-            onClick={() => handleContentType(key)}
+            className="home-sort-trigger"
+            aria-haspopup="menu"
+            aria-expanded={isSortOpen}
+            aria-label="Ordenar resultados"
+            onClick={() => setIsSortOpen((prev) => !prev)}
           >
-            {label}
+            <img src="/filters.svg" alt="" aria-hidden="true" className="home-sort-icon" />
+            <span className="home-sort-label">{currentSortLabel}</span>
           </button>
-        ))}
-      </nav>
+          <div className="home-sort-menu" role="menu" aria-label="Opciones de orden">
+            {sortOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                role="menuitemradio"
+                aria-checked={sortBy === option.value}
+                className={`home-sort-option${sortBy === option.value ? " active" : ""}`}
+                onClick={() => {
+                  setSortBy(option.value);
+                  setIsSortOpen(false);
+                }}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
       {(contentType === "proyectos" || contentType === "servicios") && (
         <div className="home-container-sections">
           <SectionsList onSelect={handleSelect} selectedCategoryId={selectedCategory?.id ?? null} />
@@ -148,9 +194,6 @@ export default function Home() {
       {selectedCategory && (contentType === "proyectos" || contentType === "servicios") && (
         <div className="home-category-title-container">
           <h1 id="top-h1-text-category">{selectedCategory.name}</h1>
-          <button type="button" className="button-selected-category" onClick={clearCategoryFilter}>
-            Quitar filtro
-          </button>
         </div>
       )}
       <div className="home-container-item-section">
