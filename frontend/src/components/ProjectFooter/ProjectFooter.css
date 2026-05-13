@@ -1,3 +1,8 @@
+:root {
+    --pf-stat-icon-size: 16px;
+    --pf-stat-gap: 6px;
+}
+
 .project-footer {
     padding: 24px;
 }
@@ -130,6 +135,28 @@
     background: transparent;
     border: none;
     padding: 0;
+}
+
+.pf-stat-icon {
+    width: var(--pf-stat-icon-size);
+    height: var(--pf-stat-icon-size);
+    fill: currentColor;
+    color: inherit;
+}
+
+.pf-like-btn .pf-stat-icon {
+    color: var(--true-white);
+}
+
+.pf-icon-inactive {
+    opacity: 0.5;
+}
+
+.pf-like-btn,
+.pf-counter,
+.pf-views {
+    font-weight: 700;
+    gap: var(--pf-stat-gap);
 }
 
 .pf-price-btn {
