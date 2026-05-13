@@ -15,6 +15,8 @@ public class User {
     private String password;
     private Boolean isActive = true;
     private Set<Role> roles = new HashSet<>();
+    private String provider = "local";
+    private String providerId;
 
     protected User() {
     }
@@ -27,6 +29,20 @@ public class User {
             return u;
         }
         throw new BuildException(message);
+    }
+
+    public static User createOAuthUser(String email, String username,
+            String provider, String providerId) throws BuildException {
+        User u = new User();
+        if (!Check.isEmail(email))
+            throw new BuildException("Email inválido");
+        u.email = email.trim();
+        u.username = username != null ? username.trim() : email.split("@")[0];
+        u.password = null;
+        u.isActive = true;
+        u.provider = provider;
+        u.providerId = providerId;
+        return u;
     }
 
     protected String userDataValidation(String email, String username, String password,
@@ -93,6 +109,22 @@ public class User {
 
     public Set<Role> getRoles() {
         return roles;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 
     @Override

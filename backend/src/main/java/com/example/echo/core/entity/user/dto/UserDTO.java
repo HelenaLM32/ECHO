@@ -27,7 +27,7 @@ public class UserDTO {
     @JacksonXmlProperty(localName = "username")
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @JsonProperty("password")
     @JacksonXmlProperty(localName = "password")
     private String password;
@@ -37,12 +37,22 @@ public class UserDTO {
     @JacksonXmlProperty(localName = "is_active")
     private Boolean isActive = true;
 
+    @Column(name = "provider", nullable = false)
+    @JsonProperty("provider")
+    @JacksonXmlProperty(localName = "provider")
+    private String provider = "local";
+
+    @Column(name = "provider_id")
+    @JsonProperty("providerId")
+    @JacksonXmlProperty(localName = "provider_id")
+    private String providerId;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     @JsonProperty("roles")
     private Set<com.example.echo.core.entity.role.dto.RoleDTO> roles = new HashSet<>();
 
-    protected UserDTO() {
+    public UserDTO() {
     }
 
     public UserDTO(Integer id, String email, String username, String password,
@@ -101,6 +111,22 @@ public class UserDTO {
 
     public void setRoles(Set<com.example.echo.core.entity.role.dto.RoleDTO> roles) {
         this.roles = roles;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 
     @Override

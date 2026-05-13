@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import OAuthButtons from "../../components/OAuthButtons/OAuthButtons";
 import "./Login.css";
 
 export default function Login() {
@@ -55,13 +56,13 @@ export default function Login() {
             {loadingUsers ? "Verificando..." : "Iniciar sesión"}
           </button>
 
-          <div className="div-linia"></div>
-
-          <div className="div-circulos">
-            <div className="circulo"></div>
-            <div className="circulo"></div>
-            <div className="circulo"></div>
+          <div className="oauth-separator">
+            <span>o continúa con</span>
           </div>
+
+          <OAuthButtons />
+
+          <div className="div-linia"></div>
 
           <p className="register-text">
             ¿Aún no eres miembro?{" "}
@@ -71,7 +72,6 @@ export default function Login() {
           </p>
         </form>
 
-        {loadingUsers && <p className="status-text">Cargando...</p>}
         {errorUsers && <p className="error-text">{errorUsers}</p>}
       </div>
 
