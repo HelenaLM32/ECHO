@@ -256,8 +256,8 @@ export default function Profile() {
     );
   };
 
-  const renderVenues = () => {
-    if (itemsLoading.venues) return <div className="empty-state">Cargando...</div>;
+ const renderVenues = () => {
+    if (itemsLoading.venues) return <div className="empty-state">Cargando locales...</div>;
     return (
       <div className="projects-section">
         {isOwnProfile && (
@@ -268,34 +268,37 @@ export default function Profile() {
         {venues.length === 0 ? (
           <div className="empty-state">Sin locales registrados</div>
         ) : (
-          /* Usamos projects-grid en lugar de items-grid */
-          <div className="projects-grid"> 
+          <div className="projects-grid">
             {venues.map((v) => (
-              <div
-                key={v.id}
-                className="item-card" /* Mantiene la clase para hover effects */
-                style={{ cursor: "pointer", position: "relative" }}
-                onClick={!isOwnProfile ? () => openModal("venue", v) : undefined}
-              >
-                <div className="item-image-container">
-                  <img src={v.img1} alt={v.name} className="item-card-img" />
-                </div>
-                <div className="item-info">
-                  <h3 className="item-title">{v.name}</h3>
-                  <p className="item-address" style={{ fontSize: '0.8rem', color: 'var(--gray-dark-secondary)' }}>
-                    {v.address}
-                  </p>
-                </div>
-                {isOwnProfile && (
-                  <div className="item-actions">
-                    <button className="btn-item-edit" onClick={(e) => { e.stopPropagation(); navigate(`/venues/${v.id}/edit`); }}>
-                      Editar
-                    </button>
-                    <button className="btn-item-delete" onClick={(e) => { e.stopPropagation(); handleDeleteVenue(v.id); }}>
-                      Eliminar
-                    </button>
+              <div key={v.id} className="sc-card-wrapper sc-card--small" onClick={() => openModal("venue", v)}>
+                <article className="sc-card">
+                  <div className="sc-cover">
+                    {v.img1 ? (
+                      <img src={v.img1} alt={v.name} className="sc-cover-img" />
+                    ) : (
+                      <div className="sc-cover-fallback">{v.name?.charAt(0).toUpperCase()}</div>
+                    )}
+                    {isOwnProfile && (
+                      <div className="sc-actions">
+                        <button className="sc-action-btn sc-edit-btn" onClick={(e) => { e.stopPropagation(); navigate(`/venues/${v.id}/edit`); }} title="Editar">✎</button>
+                        <button className="sc-action-btn sc-delete-btn" onClick={(e) => { e.stopPropagation(); handleDeleteVenue(v.id); }} title="Eliminar">🗑</button>
+                      </div>
+                    )}
                   </div>
-                )}
+                  <div className="sc-footer">
+                    <div className="sc-footer-left">
+                      {profile?.avatarUrl ? (
+                        <img src={profile.avatarUrl} alt="Avatar" className="sc-creator-avatar" />
+                      ) : (
+                        <div className="sc-creator-avatar sc-creator-fallback">{(profile?.publicName || profile?.username || 'U').charAt(0).toUpperCase()}</div>
+                      )}
+                      <div className="sc-meta">
+                        <h3 className="sc-title">{v.name}</h3>
+                        <p className="sc-author">{v.address || "Local"}</p>
+                      </div>
+                    </div>
+                  </div>
+                </article>
               </div>
             ))}
           </div>
@@ -305,7 +308,7 @@ export default function Profile() {
   };
 
   const renderEvents = () => {
-    if (itemsLoading.events) return <div className="empty-state">Cargando...</div>;
+    if (itemsLoading.events) return <div className="empty-state">Cargando eventos...</div>;
     return (
       <div className="projects-section">
         {isOwnProfile && (
@@ -318,36 +321,38 @@ export default function Profile() {
         ) : (
           <div className="projects-grid">
             {events.map((ev) => (
-              <div
-                key={ev.id}
-                className="item-card"
-                style={{ cursor: "pointer", position: "relative" }}
-                onClick={!isOwnProfile ? () => openModal("event", ev) : undefined}
-              >
-                <div className="item-image-container">
-                  {ev.img
-                    ? <img src={ev.img} alt={ev.title} className="item-card-img" />
-                    : <div className="item-image-placeholder"></div>}
-                </div>
-                <div className="item-info">
-                  <h3 className="item-title">{ev.title || "Evento"}</h3>
-                  <p className="item-price" style={{ fontSize: '0.9rem' }}>
-                    {ev.startDate ? new Date(ev.startDate).toLocaleDateString("es-ES") : ""}
-                  </p>
-                  <p className="item-price" style={{ color: 'var(--orange)', fontWeight: '700' }}>
-                    {ev.precio != null ? `${ev.precio} €` : "Gratuito"}
-                  </p>
-                </div>
-                {isOwnProfile && (
-                  <div className="item-actions">
-                    <button className="btn-item-edit" onClick={(e) => { e.stopPropagation(); navigate(`/events/${ev.id}/edit`); }}>
-                      Editar
-                    </button>
-                    <button className="btn-item-delete" onClick={(e) => { e.stopPropagation(); handleDeleteEvent(ev.id); }}>
-                      Eliminar
-                    </button>
+              <div key={ev.id} className="sc-card-wrapper sc-card--small" onClick={() => openModal("event", ev)}>
+                <article className="sc-card">
+                  <div className="sc-cover">
+                    {ev.img ? (
+                      <img src={ev.img} alt={ev.title} className="sc-cover-img" />
+                    ) : (
+                      <div className="sc-cover-fallback">{ev.title?.charAt(0).toUpperCase()}</div>
+                    )}
+                    {isOwnProfile && (
+                      <div className="sc-actions">
+                        <button className="sc-action-btn sc-edit-btn" onClick={(e) => { e.stopPropagation(); navigate(`/events/${ev.id}/edit`); }} title="Editar">✎</button>
+                        <button className="sc-action-btn sc-delete-btn" onClick={(e) => { e.stopPropagation(); handleDeleteEvent(ev.id); }} title="Eliminar">🗑</button>
+                      </div>
+                    )}
                   </div>
-                )}
+                  <div className="sc-footer">
+                    <div className="sc-footer-left">
+                      {profile?.avatarUrl ? (
+                        <img src={profile.avatarUrl} alt="Avatar" className="sc-creator-avatar" />
+                      ) : (
+                        <div className="sc-creator-avatar sc-creator-fallback">{(profile?.publicName || profile?.username || 'U').charAt(0).toUpperCase()}</div>
+                      )}
+                      <div className="sc-meta">
+                        <h3 className="sc-title">{ev.title}</h3>
+                        <p className="sc-author">{ev.startDate ? new Date(ev.startDate).toLocaleDateString() : "Evento"}</p>
+                      </div>
+                    </div>
+                    <div className="sc-stats">
+                      <span className="sc-price">{ev.precio ? `${ev.precio}€` : "Gratis"}</span>
+                    </div>
+                  </div>
+                </article>
               </div>
             ))}
           </div>
