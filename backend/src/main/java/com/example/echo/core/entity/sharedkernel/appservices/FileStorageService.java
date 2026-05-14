@@ -1,18 +1,19 @@
 package com.example.echo.core.entity.sharedkernel.appservices;
 
-import jakarta.annotation.PostConstruct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class FileStorageService {
@@ -64,16 +65,20 @@ public class FileStorageService {
         
         logger.info("File stored successfully at: {}", destination);
 
-        return buildPublicBaseUrl() + "/uploads/" + subDir + "/" + filename;
+        // Return a proxy-friendly relative URL so it works across environments.
+        return buildPublicUploadPath(subDir, filename);
     }
 
     public void delete(String fileUrl) {
-        String publicBaseUrl = buildPublicBaseUrl();
-        if (fileUrl == null || !fileUrl.startsWith(publicBaseUrl))
+        if (fileUrl == null || fileUrl.isBlank()) {
             return;
-        String prefix = publicBaseUrl + "/uploads/";
-        if (!fileUrl.startsWith(prefix)) return;
-        String relativePath = fileUrl.replace(prefix, "");
+        }
+
+        String relativePath = extractRelativeUploadPath(fileUrl);
+        if (relativePath == null || relativePath.isBlank()) {
+            return;
+        }
+
         Path file = uploadPath.resolve(relativePath).normalize();
         if (!file.startsWith(uploadPath)) {
             logger.warn("Refusing to delete file outside upload directory: {}", file);
@@ -104,5 +109,33 @@ public class FileStorageService {
             return normalizedBase;
         }
         return normalizedBase + ctx;
+    }
+
+    private String buildPublicUploadPath(String subDir, String filename) {
+        String ctx = (contextPath == null) ? "" : contextPath.trim();
+        if (ctx.equals("/")) {
+            ctx = "";
+        }
+        if (!ctx.isEmpty() && !ctx.startsWith("/")) {
+            ctx = "/" + ctx;
+        }
+        return ctx + "/uploads/" + subDir + "/" + filename;
+    }
+
+    private String extractRelativeUploadPath(String fileUrl) {
+        String value = fileUrl.trim();
+        String[] acceptedPrefixes = {
+                "/uploads/",
+                "/api/uploads/",
+                buildPublicBaseUrl() + "/uploads/"
+        };
+
+        for (String prefix : acceptedPrefixes) {
+            if (value.startsWith(prefix)) {
+                return value.substring(prefix.length());
+            }
+        }
+
+        return null;
     }
 }
