@@ -340,8 +340,8 @@ const renderVenues = () => {
 
               {isOwnProfile && (
                 <div className="pc-admin-actions">
-                  <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/events/edit/${ev.id}`); }}>✎</button>
-                  <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteEvent(ev.id); }}>✕</button>
+                  <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/venues/${v.id}/edit`); }}>✎</button>
+                  <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteVenue(v.id); }}>✕</button>
                 </div>
               )}
 
@@ -394,7 +394,7 @@ const renderEvents = () => {
               </button>
               {isOwnProfile && (
                 <div className="pc-admin-actions">
-                  <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/events/edit/${ev.id}`); }}>✎</button>
+                  <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/events/${ev.id}/edit`); }}>✎</button>
                   <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteEvent(ev.id); }}>✕</button>
                 </div>
               )}
