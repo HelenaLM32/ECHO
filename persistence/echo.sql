@@ -8,7 +8,7 @@ CREATE TABLE users (
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     provider    VARCHAR(255) DEFAULT 'local',
-    provider_id VARCHAR(255) NULL,
+    provider_id VARCHAR(255) NULL
 );
 
 
@@ -153,7 +153,6 @@ CREATE TABLE IF NOT EXISTS item_projects (
   likes INT DEFAULT 0,
   views INT DEFAULT 0,
   comments INT DEFAULT 0,
-  block_border_radius INT,
   published BOOLEAN DEFAULT FALSE,
   slug VARCHAR(255) UNIQUE,
   created_at DATETIME NULL,
@@ -268,7 +267,4 @@ CREATE TABLE venue_event_reviews (
     UNIQUE KEY uq_author_target (author_id, target_id, target_type)
 );
 
--- Migration: Remove block_border_radius column (feature removed)
-ALTER TABLE item_projects DROP COLUMN block_border_radius;
-ALTER TABLE item_services DROP COLUMN price;
 
