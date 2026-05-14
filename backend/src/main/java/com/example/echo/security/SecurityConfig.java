@@ -73,6 +73,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/products/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/profiles/**").authenticated()
                         .requestMatchers("/users/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/uploads/**").authenticated()
+                        .requestMatchers(HttpMethod.HEAD, "/uploads/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/follows/stats/**").permitAll()
@@ -116,7 +118,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/services/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/services/**").authenticated()
 
-                        .anyRequest().permitAll())
+                        .anyRequest().authenticated())
                 .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

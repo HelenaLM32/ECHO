@@ -1,9 +1,8 @@
-package com.example.echo.presentation.api.rest;
+package com.example.echo.presentation.rest;
 
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.core.entity.venues.appservices.VenueService;
 import com.example.echo.security.AuthenticatedUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,12 +12,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/venues")
-public class RestVenueController {
+public class VenueController {
 
-    @Autowired
-    private VenueService venueService;
-    @Autowired
-    private AuthenticatedUserService authenticatedUserService;
+    private final VenueService venueService;
+    private final AuthenticatedUserService authenticatedUserService;
+
+    public VenueController(VenueService venueService, AuthenticatedUserService authenticatedUserService) {
+        this.venueService = venueService;
+        this.authenticatedUserService = authenticatedUserService;
+    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getAll() {

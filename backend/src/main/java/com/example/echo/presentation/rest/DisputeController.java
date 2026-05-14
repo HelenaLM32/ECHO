@@ -1,17 +1,10 @@
-package com.example.echo.presentation.api.rest;
+package com.example.echo.presentation.rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.echo.core.entity.dispute.appservices.DisputeService;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
@@ -20,13 +13,15 @@ import com.example.echo.core.entity.user.persistence.UserRepository;
 
 @RestController
 @RequestMapping("/disputes")
-public class RestDisputeController {
+public class DisputeController {
 
-    @Autowired
-    private DisputeService disputeService;
+    private final DisputeService disputeService;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    public DisputeController(DisputeService disputeService, UserRepository userRepository) {
+        this.disputeService = disputeService;
+        this.userRepository = userRepository;
+    }
 
     private UserDTO getCurrentUser() throws ServiceException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -117,18 +112,6 @@ public class RestDisputeController {
             UserDTO user = getCurrentUser();
             String result = disputeService.addMessageToDisputeFromJson(disputeId, json, user.getId(), isAdmin(user));
             return ResponseEntity.status(HttpStatus.CREATED).body(result);
-        } catch (ServiceException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
-        }
-    }
-
-    @PatchMapping("/{disputeId}/close")
-    public ResponseEntity<String> closeDispute(@PathVariable Integer disputeId,
-            @RequestBody String json) {
-        try {
-            UserDTO user = getCurrentUser();
-            String result = disputeService.closeDisputeFromJson(disputeId, json, user.getId(), isAdmin(user));
-            return ResponseEntity.ok(result);
         } catch (ServiceException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
         }

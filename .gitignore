@@ -22,8 +22,6 @@ target/
 .DS_Store
 Thumbs.db
 backend/src/main/resources/application.properties
-frontend/.env
-package-lock.json
-frontend/.env
+backend/src/main/resources/application-local.properties
 frontend/.env
 uploads/

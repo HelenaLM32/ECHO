@@ -3,6 +3,7 @@ package com.example.echo.core.entity.items.appservices;
 import com.example.echo.core.entity.items.dto.ItemDTO;
 import com.example.echo.core.entity.items.persistence.ItemRepository;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
+import com.example.echo.core.entity.user.persistence.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +24,9 @@ class ItemServiceImplTest {
     @Mock
     private ItemRepository itemRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
     @InjectMocks
     private ItemServiceImpl service;
 
@@ -31,6 +35,8 @@ class ItemServiceImplTest {
     @BeforeEach
     void setUp() {
         item = new ItemDTO(1, 1, "Servicio", "Desc", 10.0, "SERVICE", null);
+        lenient().when(userRepository.findById(anyInt()))
+                .thenReturn(Optional.of(mock(com.example.echo.core.entity.user.dto.UserDTO.class)));
     }
 
     @Test

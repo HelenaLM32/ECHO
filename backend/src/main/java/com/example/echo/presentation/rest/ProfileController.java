@@ -1,10 +1,9 @@
-package com.example.echo.presentation.api.rest;
+package com.example.echo.presentation.rest;
 
 import com.example.echo.core.entity.profile.appservices.ProfileService;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.core.entity.items.appservices.ItemService;
 import com.example.echo.security.AuthenticatedUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +12,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/profiles")
-public class RestProfileController {
+public class ProfileController {
 
-    @Autowired
-    ProfileService profileService;
+    private final ProfileService profileService;
+    private final AuthenticatedUserService authenticatedUserService;
+    private final ItemService itemService;
 
-    @Autowired
-    AuthenticatedUserService authenticatedUserService;
-
-    @Autowired
-    ItemService itemService;
+    public ProfileController(ProfileService profileService, AuthenticatedUserService authenticatedUserService, ItemService itemService) {
+        this.profileService = profileService;
+        this.authenticatedUserService = authenticatedUserService;
+        this.itemService = itemService;
+    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getAllProfiles() {
@@ -124,5 +124,4 @@ public class RestProfileController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno");
         }
     }
-
 }
