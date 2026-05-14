@@ -53,7 +53,7 @@ CREATE TABLE items (
     creator_id INT NOT NULL,
     title VARCHAR(150) NOT NULL,
     description TEXT,
-    base_price DOUBLE NOT NULL,
+    base_price DOUBLE NULL,
     item_type VARCHAR(50) NOT NULL,
     FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -264,9 +264,6 @@ CREATE TABLE venue_event_reviews (
     created_at  TIMESTAMP   DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uq_author_target (author_id, target_id, target_type)
 );
-
--- Migration: Make base_price nullable to allow free items
-ALTER TABLE items MODIFY COLUMN base_price DOUBLE NULL;
 
 -- Migration: Remove block_border_radius column (feature removed)
 ALTER TABLE item_projects DROP COLUMN block_border_radius;
