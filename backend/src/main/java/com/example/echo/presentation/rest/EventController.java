@@ -1,9 +1,8 @@
-package com.example.echo.presentation.api.rest;
+package com.example.echo.presentation.rest;
 
 import com.example.echo.core.entity.events.appservices.EventService;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.security.AuthenticatedUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +16,15 @@ import java.time.temporal.ChronoField;
 
 @RestController
 @RequestMapping("/events")
-public class RestEventController {
+public class EventController {
 
-    @Autowired
-    private EventService eventService;
-    @Autowired
-    private AuthenticatedUserService authenticatedUserService;
+    private final EventService eventService;
+    private final AuthenticatedUserService authenticatedUserService;
+
+    public EventController(EventService eventService, AuthenticatedUserService authenticatedUserService) {
+        this.eventService = eventService;
+        this.authenticatedUserService = authenticatedUserService;
+    }
 
     private static final DateTimeFormatter FLEXIBLE_DT = new DateTimeFormatterBuilder()
             .appendPattern("yyyy-MM-dd'T'HH:mm")
@@ -36,7 +38,7 @@ public class RestEventController {
         try {
             return LocalDateTime.parse(raw.trim(), FLEXIBLE_DT);
         } catch (Exception e) {
-            throw new ServiceException("Formato de " + fieldName + " inválido: " + raw);
+            throw new ServiceException("Formato de " + fieldName + " invalido: " + raw);
         }
     }
 
@@ -115,17 +117,6 @@ public class RestEventController {
             return ResponseEntity.ok(eventService.updateEvent(
                     id, userId, title, description, startDate, endDate,
                     precio, categoria, linkEntradas, img));
-        } catch (ServiceException e) {
-            return ResponseEntity.status(403).body(e.getMessage());
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Integer id) {
-        try {
-            Integer userId = authenticatedUserService.getRequiredUserId();
-            eventService.deleteById(id, userId);
-            return ResponseEntity.ok("{\"message\":\"Evento eliminado\"}");
         } catch (ServiceException e) {
             return ResponseEntity.status(403).body(e.getMessage());
         }

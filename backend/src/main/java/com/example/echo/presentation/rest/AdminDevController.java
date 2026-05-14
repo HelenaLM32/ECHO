@@ -1,17 +1,10 @@
-package com.example.echo.presentation.api.rest;
+package com.example.echo.presentation.rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.echo.core.entity.ordermessages.appservices.OrderMessageService;
 import com.example.echo.core.entity.orders.appservices.OrderService;
@@ -21,20 +14,25 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
+@Profile("dev")
 @RequestMapping("/admin/dev")
-public class RestAdminDevController {
+public class AdminDevController {
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
+    private final OrderMessageService orderMessageService;
+    private final UserService userService;
+    private final ObjectMapper objectMapper;
 
-    @Autowired
-    private OrderMessageService orderMessageService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    public AdminDevController(
+            OrderService orderService,
+            OrderMessageService orderMessageService,
+            UserService userService,
+            ObjectMapper objectMapper) {
+        this.orderService = orderService;
+        this.orderMessageService = orderMessageService;
+        this.userService = userService;
+        this.objectMapper = objectMapper;
+    }
 
     @GetMapping(value = "/orders", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getAllOrders() {
@@ -84,7 +82,7 @@ public class RestAdminDevController {
         } catch (ServiceException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payload inválido");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payload invalido");
         }
     }
 

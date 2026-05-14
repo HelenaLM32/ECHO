@@ -1,38 +1,28 @@
-package com.example.echo.presentation.api.rest;
+package com.example.echo.presentation.rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.core.entity.user.appservices.UserService;
-import com.example.echo.core.entity.user.dto.UserDTO;
 import com.example.echo.security.AuthenticatedUserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/users")
-public class RestUserController {
+public class UserController {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
+    private final ObjectMapper mapper;
+    private final AuthenticatedUserService authenticatedUserService;
 
-    @Autowired
-    ObjectMapper mapper;
-
-    @Autowired
-    AuthenticatedUserService authenticatedUserService;
+    public UserController(UserService userService, ObjectMapper mapper, AuthenticatedUserService authenticatedUserService) {
+        this.userService = userService;
+        this.mapper = mapper;
+        this.authenticatedUserService = authenticatedUserService;
+    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getAllUsers() {
@@ -112,7 +102,7 @@ public class RestUserController {
         } catch (com.example.echo.core.entity.sharedkernel.exceptions.ServiceException e) {
             return ResponseEntity.status(400).body(e.getMessage());
         } catch (JsonProcessingException e) {
-            return ResponseEntity.status(400).body("JSON inválido");
+            return ResponseEntity.status(400).body("JSON invalido");
         } catch (RuntimeException e) {
             return ResponseEntity.status(500).body("Error interno: " + e.getMessage());
         }

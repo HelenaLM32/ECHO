@@ -1,22 +1,23 @@
-package com.example.echo.presentation.api.rest;
+package com.example.echo.presentation.rest;
 
 import com.example.echo.core.entity.venuereviews.appservices.VenueEventReviewService;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.security.AuthenticatedUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/venue-event-reviews")
-public class RestVenueEventReviewController {
+public class VenueEventReviewController {
 
-    @Autowired
-    private VenueEventReviewService service;
+    private final VenueEventReviewService service;
+    private final AuthenticatedUserService authenticatedUserService;
 
-    @Autowired
-    private AuthenticatedUserService authenticatedUserService;
+    public VenueEventReviewController(VenueEventReviewService service, AuthenticatedUserService authenticatedUserService) {
+        this.service = service;
+        this.authenticatedUserService = authenticatedUserService;
+    }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> create(@RequestBody String json) {

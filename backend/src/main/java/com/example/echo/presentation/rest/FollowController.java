@@ -1,21 +1,22 @@
-package com.example.echo.presentation.api.rest;
+package com.example.echo.presentation.rest;
 
 import com.example.echo.core.entity.follows.appservices.FollowService;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.security.AuthenticatedUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/follows")
-public class RestFollowController {
+public class FollowController {
 
-    @Autowired
-    private FollowService followService;
+    private final FollowService followService;
+    private final AuthenticatedUserService authenticatedUserService;
 
-    @Autowired
-    private AuthenticatedUserService authenticatedUserService;
+    public FollowController(FollowService followService, AuthenticatedUserService authenticatedUserService) {
+        this.followService = followService;
+        this.authenticatedUserService = authenticatedUserService;
+    }
 
     @PostMapping("/{targetId}")
     public ResponseEntity<String> follow(@PathVariable Integer targetId) {

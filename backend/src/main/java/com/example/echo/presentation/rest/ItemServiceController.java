@@ -1,4 +1,4 @@
-package com.example.echo.presentation.api.rest;
+package com.example.echo.presentation.rest;
 
 import com.example.echo.core.entity.services.appservices.ItemServiceService;
 import com.example.echo.core.entity.user.dto.UserDTO;
@@ -15,12 +15,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/services")
-public class RestItemServiceController {
+public class ItemServiceController {
 
     private final ItemServiceService itemServiceService;
     private final UserRepository userRepository;
 
-    public RestItemServiceController(ItemServiceService itemServiceService, UserRepository userRepository) {
+    public ItemServiceController(ItemServiceService itemServiceService, UserRepository userRepository) {
         this.itemServiceService = itemServiceService;
         this.userRepository = userRepository;
     }

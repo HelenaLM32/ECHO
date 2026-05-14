@@ -1,8 +1,7 @@
-package com.example.echo.presentation.api.rest;
+package com.example.echo.presentation.rest;
 
 import com.example.echo.core.entity.ordermessages.appservices.OrderMessageService;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +10,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/orders/{orderId}/messages")
-public class RestOrderMessageController {
+public class OrderMessageController {
 
-    @Autowired
-    private OrderMessageService orderMessageService;
+    private final OrderMessageService orderMessageService;
+
+    public OrderMessageController(OrderMessageService orderMessageService) {
+        this.orderMessageService = orderMessageService;
+    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getMessages(

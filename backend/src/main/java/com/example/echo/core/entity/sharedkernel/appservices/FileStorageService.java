@@ -12,11 +12,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @Service
 public class FileStorageService {
 
     private static final Logger logger = LoggerFactory.getLogger(FileStorageService.class);
+    private static final Pattern SAFE_EXTENSION = Pattern.compile("\\.[a-zA-Z0-9]{1,10}");
 
     @Value("${app.upload.dir}")
     private String uploadDir;
@@ -45,10 +47,16 @@ public class FileStorageService {
         String ext = (originalName != null && originalName.contains("."))
                 ? originalName.substring(originalName.lastIndexOf("."))
                 : ".jpg";
+        if (!SAFE_EXTENSION.matcher(ext).matches()) {
+            ext = ".bin";
+        }
 
         String filename = UUID.randomUUID() + ext;
 
-        Path dir = uploadPath.resolve(subDir);
+        Path dir = uploadPath.resolve(subDir).normalize();
+        if (!dir.startsWith(uploadPath)) {
+            throw new IOException("Invalid upload directory");
+        }
         Files.createDirectories(dir);
 
         Path destination = dir.resolve(filename);
@@ -56,25 +64,45 @@ public class FileStorageService {
         
         logger.info("File stored successfully at: {}", destination);
 
-        String ctx = (contextPath == null) ? "" : contextPath.trim();
-        if (ctx.equals("/")) ctx = "";
-        return baseUrl + (ctx.isEmpty() ? "" : ctx) + "/uploads/" + subDir + "/" + filename;
+        return buildPublicBaseUrl() + "/uploads/" + subDir + "/" + filename;
     }
 
     public void delete(String fileUrl) {
-        if (fileUrl == null || !fileUrl.startsWith(baseUrl))
+        String publicBaseUrl = buildPublicBaseUrl();
+        if (fileUrl == null || !fileUrl.startsWith(publicBaseUrl))
             return;
-        String ctx = (contextPath == null) ? "" : contextPath.trim();
-        if (ctx.equals("/")) ctx = "";
-        String prefix = baseUrl + (ctx.isEmpty() ? "" : ctx) + "/uploads/";
+        String prefix = publicBaseUrl + "/uploads/";
         if (!fileUrl.startsWith(prefix)) return;
         String relativePath = fileUrl.replace(prefix, "");
-        Path file = uploadPath.resolve(relativePath);
+        Path file = uploadPath.resolve(relativePath).normalize();
+        if (!file.startsWith(uploadPath)) {
+            logger.warn("Refusing to delete file outside upload directory: {}", file);
+            return;
+        }
         try {
             Files.deleteIfExists(file);
             logger.info("File deleted: {}", file);
         } catch (IOException e) {
             logger.error("Failed to delete file: {}", e.getMessage());
         }
+    }
+
+    private String buildPublicBaseUrl() {
+        String normalizedBase = (baseUrl == null) ? "" : baseUrl.trim();
+        if (normalizedBase.endsWith("/")) {
+            normalizedBase = normalizedBase.substring(0, normalizedBase.length() - 1);
+        }
+
+        String ctx = (contextPath == null) ? "" : contextPath.trim();
+        if (ctx.equals("/") || ctx.isEmpty()) {
+            return normalizedBase;
+        }
+        if (!ctx.startsWith("/")) {
+            ctx = "/" + ctx;
+        }
+        if (normalizedBase.endsWith(ctx)) {
+            return normalizedBase;
+        }
+        return normalizedBase + ctx;
     }
 }
