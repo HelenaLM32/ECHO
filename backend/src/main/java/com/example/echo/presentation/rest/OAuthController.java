@@ -36,7 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/auth/oauth")
-public class RestOAuthController {
+public class OAuthController {
 
     @Autowired
     private UserRepository userRepository;
