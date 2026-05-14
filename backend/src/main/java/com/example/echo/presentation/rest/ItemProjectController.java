@@ -1,10 +1,17 @@
 package com.example.echo.presentation.rest;
 
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.echo.core.entity.items.appservices.ItemProjectService;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
@@ -121,6 +128,37 @@ public class ItemProjectController {
             return ResponseEntity.ok("{\"liked\":" + exists + "}");
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> createProject(@RequestBody String body) {
+        try {
+            return ResponseEntity.status(201).body(projectService.registerFromJson(body));
+        } catch (ServiceException e) {
+            log.error("Error in POST /item-projects/register", e);
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateProject(@PathVariable Integer id, @RequestBody String body) {
+        try {
+            return ResponseEntity.ok(projectService.updateFromJson(body));
+        } catch (ServiceException e) {
+            log.error("Error in PUT /item-projects/{}", id, e);
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> deleteProject(@PathVariable Integer id) {
+        try {
+            projectService.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } catch (ServiceException e) {
+            log.error("Error in DELETE /item-projects/{}", id, e);
+            return ResponseEntity.status(400).build();
         }
     }
 }
