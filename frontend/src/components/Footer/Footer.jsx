@@ -4,19 +4,18 @@ import "./Footer.css";
 export default function Footer() {
 	return (
 		<footer className="app-footer" role="contentinfo">
-				{/* svg de la ola */}
-				<div className="footer-wave" aria-hidden="true">
-					<svg viewBox="0 0 1440 220" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-						<path d="M0,160 C200,80 400,40 720,70 C1040,100 1200,140 1440,90 L1440,220 L0,220 Z" className="footer-wave-path" />
-					</svg>
-				</div>
-				
-				<div className="footer-inner">
+			{/* 4 círculos en las esquinas */}
+			<div className="footer-corner-circle top-left"></div>
+			<div className="footer-corner-circle top-right"></div>
+			<div className="footer-corner-circle bottom-left"></div>
+			<div className="footer-corner-circle bottom-right"></div>
+			
+			<div className="footer-inner">
 				<div className="footer-left">
 					<p className="footer-tagline">Donde el arte encuentra su público y los creadores encuentran su oportunidad.</p>
 
 					<div className="footer-contacts">
-						<span>hello@echo.com</span>
+						<a href="mailto:echo.info.contact@gmail.com">echo.info.contact@gmail.com</a>
 						<span className="dot">·</span>
 						<span>(34) 900334455</span>
 					</div>
@@ -36,9 +35,9 @@ export default function Footer() {
 					</div>
 
 					<div className="footer-socials">
-						<a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a>
-						<a href="https://linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a>
-						<a href="https://twitter.com" target="_blank" rel="noreferrer">Twitter</a>
+						<a href="https://www.instagram.com/echo.info.contact/" target="_blank" rel="noreferrer">Instagram</a>
+						<a href="https://www.linkedin.com/in/echo-info-9b6a0b40a/" target="_blank" rel="noreferrer">LinkedIn</a>
+						<a href="https://x.com/ECHOInfo_" target="_blank" rel="noreferrer">Twitter</a>
 					</div>
 				</div>
 			</div>
@@ -46,4 +45,3 @@ export default function Footer() {
 		</footer>
 	);
 }
-

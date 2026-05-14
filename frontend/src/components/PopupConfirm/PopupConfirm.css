@@ -28,11 +28,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
-  font-weight: bold;
   margin: 0 auto 16px;
-  background-color: rgba(255, 193, 7, 0.2);
-  color: #ffc107;
+  background-color: var(--gray);
+}
+
+.popup-skull-icon {
+  width: 28px;
+  height: 28px;
+  fill: var(--black);
 }
 
 .popup-confirm-title {

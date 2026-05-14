@@ -57,7 +57,18 @@ export default function ProjectCard({ project, onOpen, small = false }) {
             </div>
           </div>
           <div className="pc-stats">
-            ❤️ {likes}  👁️ {views}
+            <span className="pc-stat-item">
+              <svg className="pc-stat-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 16H0V6h4V0h6v4h6v12H4zM6 2v12h8v-1h-2v-2h2v-1h-2V8h2V6H8V2H6zM2 8v6h2V8H2z" fillRule="evenodd"/>
+              </svg>
+              {likes}
+            </span>
+            <span className="pc-stat-item">
+              <svg className="pc-stat-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 16h16V0H0v16zm2-4V2h12v10H2zm2-2h2V8H4v2zm6 0h2V8h-2v2z" fillRule="evenodd"/>
+              </svg>
+              {views}
+            </span>
           </div>
         </div>
       </article>

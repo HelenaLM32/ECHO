@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import './ProjectEditor.css'
 import Editor from '../../components/ItemProject/Editor'
 import useProjectStore, {
@@ -8,7 +8,7 @@ import useProjectStore, {
 } from './store/useProjectStore'
 import { uploadFile } from '../../services/uploads'
 import { useAuth } from '../../context/AuthContext'
-import { createItem, createProject, getCategories } from '../../services/projects'
+import { getProjectById, updateProject, getCategories } from '../../services/projects'
 import { PopupConfirm, useConfirmPopup } from '../../components/PopupConfirm/PopupConfirm'
 import { PopupSuccess, useSuccessPopup } from '../../components/PopupSuccess/PopupSuccess'
 
@@ -121,115 +121,115 @@ function ProjectSidebar({ onPreview }) {
           <button className="editProjectButton" onClick={() => setShowAddContent(!showAddContent)}>
             Añadir contenido {showAddContent ? '▲' : '▼'}
           </button>
-          {showAddContent && (
-            <div className="backgroundPanel">
-              <div className="sidebarButtonGrid">
-                {Object.values(BLOCK_TYPES).map((type) => {
-                  const meta = BLOCK_META[type]
-                  return (
-                    <button key={type} className="sidebarButton" onClick={() => handleClick(type)}>
-                      <img src={`/project/${meta.icon}`} className="sidebarButtonIcon" alt={meta.label} />
-                      <span className="sidebarButtonText">{meta.label}</span>
-                    </button>
-                  )
-                })}
-              </div>
+        {showAddContent && (
+          <div className="backgroundPanel">
+            <div className="sidebarButtonGrid">
+              {Object.values(BLOCK_TYPES).map((type) => {
+                const meta = BLOCK_META[type]
+                return (
+                  <button key={type} className="sidebarButton" onClick={() => handleClick(type)}>
+                    <img src={`/project/${meta.icon}`} className="sidebarButtonIcon" alt={meta.label} />
+                    <span className="sidebarButtonText">{meta.label}</span>
+                  </button>
+                )
+              })}
             </div>
-          )}
-        </div>
-
-        {/* ── Edit Project Button ─────────────── */}
-        <div className="editSection">
-          <button className="editProjectButton" onClick={() => setShowEditProject(!showEditProject)}>
-            Editar proyecto {showEditProject ? '▲' : '▼'}
-          </button>
-          {showEditProject && (
-            <div className="backgroundPanel">
-              <div className="backgroundModeRow">
-                <button
-                  className={`backgroundModeButton${!showSpacing && background.mode === 'color' ? ' active' : ''}`}
-                  onClick={() => {
-                    setShowSpacing(false)
-                    setBackground('color', background.value || '#ffffff')
-                    colorInputRef.current?.click()
-                  }}
-                >
-                  Color
-                </button>
-                <button
-                  className={`backgroundModeButton${!showSpacing && background.mode === 'image' ? ' active' : ''}`}
-                  onClick={() => {
-                    setShowSpacing(false)
-                    pickBgImage()
-                  }}
-                >
-                  Imagen
-                </button>
-                <button
-                  className={`backgroundModeButton${showSpacing ? ' active' : ''}`}
-                  onClick={() => setShowSpacing(true)}
-                >
-                  Espaciado
-                </button>
-              </div>
-
-              {/* Hidden color input */}
-              <input
-                ref={colorInputRef}
-                type="color"
-                value={background.value}
-                onChange={(e) => setBackground('color', e.target.value)}
-                style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}
-              />
-
-              {!showSpacing && (
-                <>
-                  {background.mode === 'image' && background.value && (
-                    <div className="backgroundImagePreview">
-                      <img src={background.value} alt="bg" className="backgroundImageThumbnail" />
-                      <button className="backgroundImageChangeButton" onClick={pickBgImage}>Cambiar</button>
-                    </div>
-                  )}
-
-                  <div
-                    className="backgroundPreviewSwatch"
-                    style={
-                      background.mode === 'image'
-                        ? { backgroundImage: `url(${background.value})`, backgroundSize: 'cover', backgroundPosition: 'center' }
-                        : background.mode === 'gradient'
-                          ? { background: background.value }
-                          : { background: background.value }
-                    }
-                  />
-                </>
-              )}
-
-              {showSpacing && (
-                <div className="spacingPanel" style={{ marginTop: 12 }}>
-                  <h3 className="customizeHeading">Espaciado entre bloques</h3>
-                  <div className="blockSpacingControl">
-                    <input
-                      type="range"
-                      min="0"
-                      max="60"
-                      step="2"
-                      value={blockGap}
-                      onChange={(e) => setBlockGap(Number(e.target.value))}
-                      className="blockSpacingSlider"
-                    />
-                    <span className="blockSpacingValue">{blockGap}px</span>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
-      {/* ── Isla 2: Acciones ─────────────── */}
+      {/* ── Edit Project Button ─────────────── */}
+      <div className="editSection">
+        <button className="editProjectButton" onClick={() => setShowEditProject(!showEditProject)}>
+          Editar proyecto {showEditProject ? '▲' : '▼'}
+        </button>
+        {showEditProject && (
+          <div className="backgroundPanel">
+            <div className="backgroundModeRow">
+              <button
+                className={`backgroundModeButton${!showSpacing && background.mode === 'color' ? ' active' : ''}`}
+                onClick={() => {
+                  setShowSpacing(false)
+                  setBackground('color', background.value || '#ffffff')
+                  colorInputRef.current?.click()
+                }}
+              >
+                Color
+              </button>
+              <button
+                className={`backgroundModeButton${!showSpacing && background.mode === 'image' ? ' active' : ''}`}
+                onClick={() => {
+                  setShowSpacing(false)
+                  pickBgImage()
+                }}
+              >
+                Imagen
+              </button>
+              <button
+                className={`backgroundModeButton${showSpacing ? ' active' : ''}`}
+                onClick={() => setShowSpacing(true)}
+              >
+                Espaciado
+              </button>
+            </div>
+
+            {/* Hidden color input */}
+            <input
+              ref={colorInputRef}
+              type="color"
+              value={background.value}
+              onChange={(e) => setBackground('color', e.target.value)}
+              style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}
+            />
+
+            {!showSpacing && (
+              <>
+                {background.mode === 'image' && background.value && (
+                  <div className="backgroundImagePreview">
+                    <img src={background.value} alt="bg" className="backgroundImageThumbnail" />
+                    <button className="backgroundImageChangeButton" onClick={pickBgImage}>Cambiar</button>
+                  </div>
+                )}
+
+                <div
+                  className="backgroundPreviewSwatch"
+                  style={
+                    background.mode === 'image'
+                      ? { backgroundImage: `url(${background.value})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+                      : background.mode === 'gradient'
+                        ? { background: background.value }
+                        : { background: background.value }
+                  }
+                />
+              </>
+            )}
+
+            {showSpacing && (
+              <div className="spacingPanel" style={{ marginTop: 12 }}>
+                <h3 className="customizeHeading">Espaciado entre bloques</h3>
+                <div className="blockSpacingControl">
+                  <input
+                    type="range"
+                    min="0"
+                    max="60"
+                    step="2"
+                    value={blockGap}
+                    onChange={(e) => setBlockGap(Number(e.target.value))}
+                    className="blockSpacingSlider"
+                  />
+                  <span className="blockSpacingValue">{blockGap}px</span>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+
+    {/* ── Isla 2: Acciones ─────────────── */}
       <div className="sidebarIsland actionsIsland">
         <button className="actionButton previewActionButton" onClick={onPreview}>
-          <span className="actionButtonIcon">👁</span>
+          <span className="actionButtonIcon"></span>
           Vista previa
         </button>
         <SaveProjectButton />
@@ -246,8 +246,8 @@ function SaveProjectButton() {
   return (
     <>
       <button className="actionButton saveActionButton" onClick={() => setShowModal(true)}>
-        <span className="actionButtonIcon">💾</span>
-        Guardar proyecto
+        <span className="actionButtonIcon"></span>
+        Guardar cambios
       </button>
       {showModal && (
         <SaveProjectModal
@@ -261,6 +261,7 @@ function SaveProjectButton() {
 }
 
 function SaveProjectModal({ onClose, exportJSON, user }) {
+  const { id } = useParams()
   const navigate = useNavigate()
   const { successState, showSuccess, hideSuccess } = useSuccessPopup()
   const [title, setTitle] = useState('')
@@ -268,6 +269,27 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
   const [basePrice, setBasePrice] = useState('')
   const [categoryId, setCategoryId] = useState('')
   const [categories, setCategories] = useState([])
+  const [loadingProject, setLoadingProject] = useState(true)
+
+  // Cargar datos del proyecto existente
+  useEffect(() => {
+    const loadProject = async () => {
+      try {
+        const project = await getProjectById(id)
+        if (project?.item) {
+          setTitle(project.item.title || '')
+          setDescription(project.item.description || '')
+          setBasePrice(project.item.basePrice ? String(project.item.basePrice) : '')
+          setCategoryId(project.item.categoryId ? String(project.item.categoryId) : '')
+        }
+      } catch (err) {
+        console.error('Error cargando proyecto:', err)
+      } finally {
+        setLoadingProject(false)
+      }
+    }
+    loadProject()
+  }, [id])
 
   useEffect(() => {
     let mounted = true
@@ -302,18 +324,7 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
 
     setSaving(true)
     try {
-    const data = exportJSON()
-
-      const itemPayload = {
-        creatorId: user?.id,
-        title: title.trim(),
-        description: description ? description.trim() : null,
-        basePrice: price,
-        itemType: 'PROJECT',
-        categoryId: Number(categoryId),
-      }
-
-      const createdItem = await createItem(itemPayload)
+      const data = exportJSON()
 
       const projectPayload = {
         blocks: JSON.stringify(data.blocks || []),
@@ -323,17 +334,19 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
         slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
       }
 
-      // ensure we pass the shared PK and item stub
-      const itemId = createdItem?.id || (typeof createdItem === 'number' ? createdItem : null)
-      if (!itemId) throw new Error('Created item has no id')
-      projectPayload.id = itemId
-      projectPayload.item = { id: itemId }
+      // Incluir datos del item para actualizar
+      projectPayload.item = {
+        id: Number(id),
+        title: title.trim(),
+        description: description ? description.trim() : null,
+        basePrice: price,
+        categoryId: Number(categoryId),
+      }
 
-      const createdProject = await createProject(projectPayload)
-      showSuccess('Proyecto guardado correctamente (id: ' + (createdProject.id || createdProject.item?.id) + ')', 'Éxito')
+      await updateProject(id, projectPayload)
+      showSuccess('Proyecto actualizado correctamente', 'Éxito')
       onClose()
       try {
-        // Redirect to the user's profile so they can see their projects immediately
         if (user?.id) navigate(`/profile/${user.id}`)
       } catch (e) {
         // Navigation error silenced
@@ -345,11 +358,21 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
     }
   }
 
+  if (loadingProject) {
+    return (
+      <div className="modalOverlay" onClick={onClose}>
+        <div className="modal" onClick={(e) => e.stopPropagation()}>
+          <p>Cargando proyecto...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <>
       <div className="modalOverlay" onClick={onClose}>
         <div className="modal" onClick={(e) => e.stopPropagation()}>
-          <h3 className="modalTitle">Guardar proyecto</h3>
+          <h3 className="modalTitle">Guardar cambios</h3>
           <form onSubmit={handleSubmit} className="modalForm">
             <label className="modalLabel">Título *</label>
             <input 
@@ -394,7 +417,7 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
 
             <div className="modalButtons">
               <button type="button" onClick={onClose} disabled={saving} className="modalButton modalCancel">Cancelar</button>
-              <button type="submit" disabled={saving} className="modalButton modalSave">{saving ? 'Guardando...' : 'Guardar'}</button>
+              <button type="submit" disabled={saving} className="modalButton modalSave">{saving ? 'Guardando...' : 'Guardar cambios'}</button>
             </div>
           </form>
         </div>
@@ -479,10 +502,73 @@ function PreviewDialog({ onClose }) {
   )
 }
 
+function toEmbedUrl(raw) {
+  try {
+    const url = new URL(raw)
+    if (url.hostname.includes('youtube.com') && url.searchParams.get('v'))
+      return `https://www.youtube.com/embed/${url.searchParams.get('v')}`
+    if (url.hostname === 'youtu.be')
+      return `https://www.youtube.com/embed${url.pathname}`
+    if (url.hostname.includes('vimeo.com')) {
+      const id = url.pathname.replace('/', '')
+      return `https://player.vimeo.com/video/${id}`
+    }
+  } catch { /* no-op */ }
+  return raw
+}
+
 /* ── App ─────────────────────────────────────── */
 
-function ProjectEditor() {
+function ProjectEdit() {
+  const { id } = useParams()
   const [showPreview, setShowPreview] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  // Cargar proyecto existente al iniciar
+  useEffect(() => {
+    const loadProject = async () => {
+      try {
+        const project = await getProjectById(id)
+        if (project) {
+          // Inicializar el store con los datos del proyecto
+          const blocks = typeof project.blocks === 'string' ? JSON.parse(project.blocks) : project.blocks
+          const background = typeof project.background === 'string' ? JSON.parse(project.background) : project.background
+          
+          useProjectStore.setState({
+            blocks: blocks || [],
+            background: background || { mode: 'color', value: '#ffffff' },
+            blockGap: project.blockGap || 0,
+          })
+        }
+        setLoading(false)
+      } catch (err) {
+        setError('Error al cargar el proyecto')
+        setLoading(false)
+      }
+    }
+    loadProject()
+  }, [id])
+
+  if (loading) {
+    return (
+      <div className="layoutPage">
+        <main className="editorArea">
+          <p>Cargando proyecto...</p>
+        </main>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="layoutPage">
+        <main className="editorArea">
+          <p>{error}</p>
+        </main>
+      </div>
+    )
+  }
 
   return (
     <>
@@ -499,4 +585,4 @@ function ProjectEditor() {
   )
 }
 
-export default ProjectEditor
+export default ProjectEdit

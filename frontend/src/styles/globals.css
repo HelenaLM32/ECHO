@@ -1,13 +1,27 @@
-body {
+html, body {
     font-family: Arial, sans-serif;
     font-weight: bold;
     background-color: var(--white);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
 }
 
 *{
     margin: 0;
     padding: 0;
     color: var(--black);
+}
+
+/* Asegurar que no haya espacio después del footer */
+#root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#root > footer:last-child {
+    margin-top: auto;
 }
 
 .logo {

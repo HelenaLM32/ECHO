@@ -24,6 +24,7 @@ import EditEvent from './pages/Events/EditEvent';
 
 // Rutas de main (Proyectos y Legal)
 import ProjectEditor from './pages/ItemProject/ProjectEditor.jsx';
+import ProjectEdit from './pages/ItemProject/ProjectEdit.jsx';
 import ProjectView from './pages/ItemProject/ProjectView.jsx';
 import PrivacyPolicy from './pages/Legal/PrivacyPolicy';
 import TermsAndConditions from './pages/Legal/TermsAndConditions';
@@ -113,7 +114,13 @@ export default function App() {
             <ProjectEditor />
           </ProtectedRoute>
         } />
-        
+
+        <Route path="/proyect/:id/edit" element={
+          <ProtectedRoute>
+            <ProjectEdit />
+          </ProtectedRoute>
+        } />
+
         <Route path="/project/:id" element={
           <ProtectedRoute>
             <ProjectView />

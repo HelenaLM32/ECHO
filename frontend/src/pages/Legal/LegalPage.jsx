@@ -38,7 +38,7 @@ export default function LegalPage({ title, lastUpdated, intro, sections }) {
             <p>
               Si tienes dudas sobre este documento o sobre el tratamiento de tus datos, puedes escribirnos a
               {" "}
-              <a href="mailto:hello@echo.com">hello@echo.com</a>.
+              <a href="mailto:echo.info.contact@gmail.com">echo.info.contact@gmail.com</a>.
             </p>
             <p>
               También puedes volver a la página principal desde

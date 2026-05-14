@@ -2,6 +2,9 @@
   display: flex;
   flex-direction: column;
   gap: 0;
+  --pc-stat-icon-size: 17px;
+  --pc-stat-gap: 5px;
+  --pc-stats-gap: 12px;
 }
 
 .pc-card-button {
@@ -17,22 +20,22 @@
 .pc-card {
   background: var(--white);
   border: 1px solid rgba(116, 122, 138, 0.14);
-  border-radius: 24px;
+  border-radius: 16px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   width: 100%;
-  transition: transform 0.25s ease;
+  position: relative;
 }
 
-.project-card:hover {
-  transform: translateY(-3px);
+.pc-card:hover {
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(0, 0, 0, 0.05) 100%);
 }
 
 .pc-cover {
   width: 100%;
-  height: 280px;
+  height: 240px;
   background: linear-gradient(180deg, rgba(235, 238, 244, 0.95), rgba(216, 221, 232, 0.98));
   display: flex;
   align-items: center;
@@ -44,14 +47,14 @@
 
 .pc-price-top {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 8px;
+  left: 8px;
   background: var(--orange);
   color: var(--true-white);
   border: none;
-  border-radius: 16px;
-  padding: 6px 12px;
-  font-size: 0.85rem;
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
   font-weight: 600;
   z-index: 10;
 }
@@ -170,11 +173,24 @@
 
 .pc-stats {
   display: flex;
-  gap: 12px;
+  gap: var(--pc-stats-gap);
   align-items: center;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--black);
-  font-weight: 500;
+  font-weight: 700;
+}
+
+.pc-stat-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pc-stat-gap);
+}
+
+.pc-stat-icon {
+  width: var(--pc-stat-icon-size);
+  height: var(--pc-stat-icon-size);
+  fill: currentColor;
+  color: inherit;
 }
 
 

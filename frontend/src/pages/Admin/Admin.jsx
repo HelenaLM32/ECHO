@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { fetchWithToken } from "../../services/config";
 import { useAuth } from "../../context/AuthContext";
 import {
@@ -12,10 +13,14 @@ import {
 import { getAllDisputes } from "../../services/disputes";
 import { getAllReviews, deleteReview } from "../../services/reviews";
 import DisputePanel from "../../components/DisputePanel";
+import DetailModal from "../../components/DetailModal/DetailModal";
+import ServiceDetail from "../../components/ServiceDetail/ServiceDetail";
+import ProjectView from "../ItemProject/ProjectView";
 import "./Admin.css";
 
 export default function Admin() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [view, setView] = useState("users");
   const [data, setData] = useState([]);
   const [disputes, setDisputes] = useState([]);
@@ -35,6 +40,14 @@ export default function Admin() {
   const [selectedOrderId, setSelectedOrderId] = useState("");
   const [devError, setDevError] = useState("");
   const [devOk, setDevOk] = useState("");
+  const [contentTypeFilter, setContentTypeFilter] = useState("all");
+  const [contentModal, setContentModal] = useState({ open: false, type: null, data: null });
+  const [selectedService, setSelectedService] = useState(null);
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [searchUsers, setSearchUsers] = useState("");
+  const [searchContent, setSearchContent] = useState("");
+  const [searchReviews, setSearchReviews] = useState("");
+  const [searchDisputes, setSearchDisputes] = useState("");
 
   const [createOrderForm, setCreateOrderForm] = useState({
     buyerId: "",
@@ -103,7 +116,7 @@ export default function Admin() {
   });
 
   useEffect(() => {
-    if (view === "develop") {
+    if (view === "develop" || view === "items") {
       loadDevelopData();
       return;
     }
@@ -117,6 +130,27 @@ export default function Admin() {
     }
     loadData(view);
   }, [view]);
+
+  const openContentDetail = (entry) => {
+    if (!entry) return;
+    if (entry.type === "project") {
+      setSelectedProjectId(entry.id);
+      return;
+    }
+    if (entry.type === "service") {
+      setSelectedService(entry.raw);
+      return;
+    }
+    setContentModal({
+      open: true,
+      type: entry.type === "venue" ? "venue" : "event",
+      data: entry.raw,
+    });
+  };
+
+  const closeContentModal = () => {
+    setContentModal({ open: false, type: null, data: null });
+  };
 
   const parseListResponse = async (res, label) => {
     const raw = await res.text();
@@ -187,8 +221,17 @@ export default function Admin() {
 
   const renderReviews = () => (
     <div className="admin-reviews">
-      <h2>Reviews ({reviews.length})</h2>
-      {reviews.length === 0 ? (
+      <div className="admin-section-toolbar">
+        <h2>Reviews ({filteredReviews.length})</h2>
+        <input
+          type="search"
+          className="admin-search-input"
+          placeholder="Buscar por autor, comentario o ID..."
+          value={searchReviews}
+          onChange={(e) => setSearchReviews(e.target.value)}
+        />
+      </div>
+      {filteredReviews.length === 0 ? (
         <p className="admin-empty">No hay reviews registradas.</p>
       ) : (
         <table className="admin-table">
@@ -203,11 +246,23 @@ export default function Admin() {
             </tr>
           </thead>
           <tbody>
-            {reviews.map((r) => (
+            {filteredReviews.map((r) => (
               <tr key={r.id}>
                 <td>#{r.id}</td>
                 <td>#{r.orderId}</td>
-                <td>@{r.authorUsername ?? r.authorId}</td>
+                <td>
+                  {r.authorId ? (
+                    <button
+                      type="button"
+                      className="admin-user-link"
+                      onClick={() => navigate(`/profile/${r.authorId}`)}
+                    >
+                      @{r.authorUsername ?? r.authorId}
+                    </button>
+                  ) : (
+                    <span>@{r.authorUsername ?? "usuario"}</span>
+                  )}
+                </td>
                 <td>{"★".repeat(r.score)}{"☆".repeat(5 - r.score)}</td>
                 <td className="admin-review-comment">{r.comment || "—"}</td>
                 <td>
@@ -344,6 +399,89 @@ export default function Admin() {
     () => ordersCatalog.find((o) => String(o.id) === String(selectedOrderId)) || null,
     [ordersCatalog, selectedOrderId]
   );
+
+  const contentEntries = useMemo(() => {
+    const typed = [
+      ...projectsCatalog.map((item) => ({
+        id: item.id,
+        type: "project",
+        typeLabel: "Proyecto",
+        title: item.item?.title || item.title || `Proyecto #${item.id}`,
+        subtitle: item.item?.description || "Sin descripción",
+        raw: item,
+      })),
+      ...servicesCatalog.map((item) => ({
+        id: item.id,
+        type: "service",
+        typeLabel: "Servicio",
+        title: item.name || `Servicio #${item.id}`,
+        subtitle: item.description || "Sin descripción",
+        raw: item,
+      })),
+      ...venuesCatalog.map((item) => ({
+        id: item.id,
+        type: "venue",
+        typeLabel: "Local",
+        title: item.name || `Local #${item.id}`,
+        subtitle: item.address || "Sin dirección",
+        raw: item,
+      })),
+      ...eventsCatalog.map((item) => ({
+        id: item.id,
+        type: "event",
+        typeLabel: "Evento",
+        title: item.title || `Evento #${item.id}`,
+        subtitle: item.description || "Sin descripción",
+        raw: item,
+      })),
+    ];
+
+    const filtered =
+      contentTypeFilter === "all"
+        ? typed
+        : typed.filter((entry) => entry.type === contentTypeFilter);
+
+    const normalizedSearch = searchContent.trim().toLowerCase();
+    const searchFiltered = !normalizedSearch
+      ? filtered
+      : filtered.filter((entry) =>
+          `${entry.title} ${entry.subtitle} ${entry.typeLabel} ${entry.id}`
+            .toLowerCase()
+            .includes(normalizedSearch)
+        );
+
+    return searchFiltered.sort((a, b) => Number(b.id || 0) - Number(a.id || 0));
+  }, [projectsCatalog, servicesCatalog, venuesCatalog, eventsCatalog, contentTypeFilter, searchContent]);
+
+  const filteredUsers = useMemo(() => {
+    const normalizedSearch = searchUsers.trim().toLowerCase();
+    if (!normalizedSearch) return data;
+    return data.filter((item) =>
+      `${item.id} ${item.email || ""} ${item.username || ""}`
+        .toLowerCase()
+        .includes(normalizedSearch)
+    );
+  }, [data, searchUsers]);
+
+  const filteredReviews = useMemo(() => {
+    const normalizedSearch = searchReviews.trim().toLowerCase();
+    if (!normalizedSearch) return reviews;
+    return reviews.filter((item) =>
+      `${item.id} ${item.orderId} ${item.authorId || ""} ${item.authorUsername || ""} ${item.comment || ""}`
+        .toLowerCase()
+        .includes(normalizedSearch)
+    );
+  }, [reviews, searchReviews]);
+
+  const filteredDisputes = useMemo(() => {
+    const normalizedSearch = searchDisputes.trim().toLowerCase();
+    if (!normalizedSearch) return disputes;
+    return disputes.filter((item) =>
+      `${item.id} ${item.orderId} ${item.createdByUsername || ""} ${item.reason || ""} ${item.status || ""}`
+        .toLowerCase()
+        .includes(normalizedSearch)
+    );
+  }, [disputes, searchDisputes]);
 
   const senderOptions = useMemo(() => {
     if (!selectedOrder) return [];
@@ -686,33 +824,129 @@ export default function Admin() {
   };
 
   const renderBasicTable = () => (
-    <table className="admin-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>{view === "users" ? "Email / Usuario" : "Título"}</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((item) => (
-          <tr key={item.id}>
-            <td>{item.id}</td>
-            <td>{view === "users" ? `${item.email} - ${item.username}` : item.title}</td>
-            <td>
-              <button className="btn-delete" onClick={() => handleDelete(item.id)}>
-                Borrar
-              </button>
-            </td>
-          </tr>
-        ))}
-        {data.length === 0 && (
+    <div>
+      {view === "users" && (
+        <div className="admin-section-toolbar">
+          <h2>Usuarios ({filteredUsers.length})</h2>
+          <input
+            type="search"
+            className="admin-search-input"
+            placeholder="Buscar por id, email o username..."
+            value={searchUsers}
+            onChange={(e) => setSearchUsers(e.target.value)}
+          />
+        </div>
+      )}
+      <table className="admin-table">
+        <thead>
           <tr>
-            <td colSpan="3">No hay registros.</td>
+            <th>ID</th>
+            <th>{view === "users" ? "Email / Usuario" : "Título"}</th>
+            <th>Acciones</th>
           </tr>
+        </thead>
+        <tbody>
+          {(view === "users" ? filteredUsers : data).map((item) => (
+            <tr key={item.id}>
+              <td>{item.id}</td>
+              <td>
+                {view === "users" ? (
+                  <button
+                    type="button"
+                    className="admin-user-link"
+                    onClick={() => navigate(`/profile/${item.id}`)}
+                  >
+                    {item.email} - @{item.username}
+                  </button>
+                ) : (
+                  item.title
+                )}
+              </td>
+              <td>
+                <button className="btn-delete" onClick={() => handleDelete(item.id)}>
+                  Borrar
+                </button>
+              </td>
+            </tr>
+          ))}
+          {(view === "users" ? filteredUsers.length === 0 : data.length === 0) && (
+            <tr>
+              <td colSpan="3">No hay registros.</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const renderContentPanel = () => (
+    <div className="admin-content-panel">
+      <div className="admin-content-toolbar">
+        <h2>Contenido completo</h2>
+        <input
+          type="search"
+          className="admin-search-input"
+          placeholder="Buscar por título, descripción o ID..."
+          value={searchContent}
+          onChange={(e) => setSearchContent(e.target.value)}
+        />
+        <div className="admin-content-filters" role="tablist" aria-label="Filtrar contenido">
+          {[
+            { key: "all", label: "Todos" },
+            { key: "project", label: "Proyectos" },
+            { key: "service", label: "Servicios" },
+            { key: "venue", label: "Locales" },
+            { key: "event", label: "Eventos" },
+          ].map((filter) => (
+            <button
+              key={filter.key}
+              type="button"
+              className={`admin-content-filter-btn${contentTypeFilter === filter.key ? " active" : ""}`}
+              onClick={() => setContentTypeFilter(filter.key)}
+            >
+              {filter.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="admin-content-list">
+        {contentEntries.map((entry) => (
+          <article
+            key={`${entry.type}-${entry.id}`}
+            className="admin-content-item"
+            role="button"
+            tabIndex={0}
+            onClick={() => openContentDetail(entry)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                openContentDetail(entry);
+              }
+            }}
+          >
+            <div>
+              <span className={`admin-type-badge ${entry.type}`}>{entry.typeLabel}</span>
+              <h3>{entry.title}</h3>
+              <p>{entry.subtitle}</p>
+            </div>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={(e) => {
+                e.stopPropagation();
+                openContentDetail(entry);
+              }}
+            >
+              Ver detalle
+            </button>
+          </article>
+        ))}
+        {contentEntries.length === 0 && (
+          <p className="admin-empty">No hay elementos para este filtro.</p>
         )}
-      </tbody>
-    </table>
+      </div>
+    </div>
   );
 
   const renderDisputes = () => {
@@ -737,13 +971,22 @@ export default function Admin() {
     return (
       <div>
         <div className="disputes-controls">
-          <h2>Disputas abiertas</h2>
-          <button className="btn-secondary" onClick={loadDisputes}>
-            Refrescar
-          </button>
+          <h2>Disputas abiertas ({filteredDisputes.length})</h2>
+          <div className="admin-disputes-actions">
+            <input
+              type="search"
+              className="admin-search-input"
+              placeholder="Buscar en disputas..."
+              value={searchDisputes}
+              onChange={(e) => setSearchDisputes(e.target.value)}
+            />
+            <button className="btn-secondary" onClick={loadDisputes}>
+              Refrescar
+            </button>
+          </div>
         </div>
         
-        {disputes.length === 0 ? (
+        {filteredDisputes.length === 0 ? (
           <p>No hay disputas.</p>
         ) : (
           <table className="admin-table">
@@ -758,12 +1001,26 @@ export default function Admin() {
               </tr>
             </thead>
             <tbody>
-              {disputes.map((dispute) => (
+              {filteredDisputes.map((dispute) => {
+                const creatorId = dispute.createdById ?? dispute.createdByUserId ?? dispute.createdBy ?? null;
+                return (
                 <tr key={dispute.id}>
                   <td>#{dispute.id}</td>
                   <td>#{dispute.orderId}</td>
-                  <td>{dispute.createdByUsername}</td>
-                  <td>{dispute.reason.substring(0, 50)}...</td>
+                  <td>
+                    {creatorId ? (
+                      <button
+                        type="button"
+                        className="admin-user-link"
+                        onClick={() => navigate(`/profile/${creatorId}`)}
+                      >
+                        @{dispute.createdByUsername}
+                      </button>
+                    ) : (
+                      dispute.createdByUsername
+                    )}
+                  </td>
+                  <td>{(dispute.reason || "").substring(0, 50)}...</td>
                   <td>
                     <span className={`status-badge ${dispute.status.toLowerCase()}`}>
                       {dispute.status}
@@ -778,7 +1035,7 @@ export default function Admin() {
                     </button>
                   </td>
                 </tr>
-              ))}
+              )})}
             </tbody>
           </table>
         )}
@@ -808,6 +1065,11 @@ export default function Admin() {
             <p>{eventsCatalog.length} registrados</p>
           </article>
         </div>
+      </section>
+
+      <section className="dev-card dev-card-wide dev-card-category">
+        <h2>Gestión de entidades</h2>
+        <p className="admin-empty">Usuarios, contenido y relaciones principales.</p>
       </section>
 
       <section className="dev-card">
@@ -1145,6 +1407,11 @@ export default function Admin() {
         </form>
       </section>
 
+      <section className="dev-card dev-card-wide dev-card-category">
+        <h2>Gestión de encargos</h2>
+        <p className="admin-empty">Órdenes, estado y mensajería entre participantes.</p>
+      </section>
+
       <section className="dev-card">
         <h2>Crear Order</h2>
         <form className="dev-form" onSubmit={handleCreateOrder}>
@@ -1375,6 +1642,8 @@ export default function Admin() {
 
       {loading ? (
         <p>Cargando datos...</p>
+      ) : view === "items" ? (
+        renderContentPanel()
       ) : view === "develop" ? (
         renderDevelopPanel()
       ) : view === "disputes" ? (
@@ -1383,6 +1652,28 @@ export default function Admin() {
         renderReviews()
       ) : (
         renderBasicTable()
+      )}
+
+      {contentModal.open && (
+        <DetailModal
+          type={contentModal.type}
+          data={contentModal.data}
+          onClose={closeContentModal}
+        />
+      )}
+
+      {selectedService && (
+        <ServiceDetail
+          service={selectedService}
+          onClose={() => setSelectedService(null)}
+        />
+      )}
+
+      {selectedProjectId && (
+        <ProjectView
+          projectId={selectedProjectId}
+          onClose={() => setSelectedProjectId(null)}
+        />
       )}
     </div>
   );

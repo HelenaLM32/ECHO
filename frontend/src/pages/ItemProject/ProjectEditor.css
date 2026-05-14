@@ -48,7 +48,69 @@
 .sidebarContent {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 24px;
+}
+
+/* Islas del sidebar */
+.sidebarIsland {
+  background: var(--white, #ffffff);
+  border: 1px solid var(--gray-stroke, #e0e0e0);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Isla de acciones - estilo destacado */
+.actionsIsland {
+  background: var(--white, #353535);
+  border-color: var(--gray-stroke, #353535);
+  gap: 12px;
+}
+
+/* Botones de acción */
+.actionButton {
+  border-color: var(--gray-stroke, #353535);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.actionButtonIcon {
+  font-size: 1.1rem;
+}
+
+/* Botón vista previa */
+.previewActionButton {
+  border-color: var(--gray-stroke, #353535);
+  background: var(--white, #ffffff);
+  color: var(--black, #282828);
+}
+
+.previewActionButton:hover {
+  background: var(--gray, #D9D9D9);
+  transform: translateY(-1px);
+}
+
+/* Botón guardar */
+.saveActionButton {
+  background: var(--orange, #E95E23);
+  color: var(--true-white, #ffffff);
+}
+
+.saveActionButton:hover {
+  background: var(--orange-secondary, #EB7C4D);
+  transform: translateY(-1px);
 }
 
 .sidebarHeading {
