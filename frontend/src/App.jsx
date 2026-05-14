@@ -1,7 +1,7 @@
 import './App.css'
 import './styles/globals.css';
 import './styles/variables.css';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
@@ -41,7 +41,18 @@ import OAuthCallback from './pages/OAuthCallback/OAuthCallback';
 export default function App() {
   return (
     <AuthProvider>
-      <Navbar />
+      <AppContent />
+    </AuthProvider>
+  );
+}
+
+function AppContent() {
+  const location = useLocation();
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+
+  return (
+    <>
+      {!isAuthPage && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/category/:slug" element={<Home />} />
@@ -148,6 +159,6 @@ export default function App() {
           }
         />
       </Routes>
-    </AuthProvider>
-  )
+    </>
+  );
 }

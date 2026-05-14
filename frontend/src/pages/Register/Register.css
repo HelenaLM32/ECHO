@@ -130,3 +130,14 @@
     line-height: 1;
     color: var(--true-white);
 }
+.auth-logo-link {
+    display: block;
+    margin-bottom: 32px;
+    align-self: flex-start;
+}
+
+.auth-logo {
+    height: 32px;
+    width: auto;
+}
+

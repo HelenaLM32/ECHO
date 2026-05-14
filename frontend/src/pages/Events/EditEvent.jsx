@@ -71,6 +71,12 @@ export default function EditEvent() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const getTodayMin = () => {
+    const now = new Date();
+    now.setSeconds(0, 0);
+    return now.toISOString().slice(0, 16);
+  };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -90,6 +96,10 @@ export default function EditEvent() {
   e.preventDefault();
   if (!form.title || !form.venueId || !form.startDate || !form.endDate) {
     setError("Título, local y fechas son obligatorios");
+    return;
+  }
+  if (new Date(form.startDate) < new Date()) {
+    setError("La fecha de inicio no puede ser anterior a la fecha actual");
     return;
   }
   if (new Date(form.startDate) >= new Date(form.endDate)) {
@@ -189,6 +199,7 @@ export default function EditEvent() {
                   name="startDate"
                   value={form.startDate}
                   onChange={handleChange}
+                  min={getTodayMin()}
                   className="input-field"
                 />
               </div>
@@ -199,6 +210,7 @@ export default function EditEvent() {
                   name="endDate"
                   value={form.endDate}
                   onChange={handleChange}
+                  min={form.startDate || getTodayMin()}
                   className="input-field"
                 />
               </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 import OAuthButtons from "../../components/OAuthButtons/OAuthButtons";
 import "./Login.css";
 
@@ -12,6 +13,8 @@ export default function Login() {
 
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { theme } = useTheme();
+  const logoSrc = theme === "dark" ? "/logo-white.svg" : "/logo.svg";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,6 +34,9 @@ export default function Login() {
   return (
     <div className="login-container">
       <div className="login-cont">
+        <Link to="/" className="auth-logo-link">
+          <img src={logoSrc} alt="Echo" className="auth-logo" />
+        </Link>
         <h1>Bienvenido de nuevo</h1>
 
         <form onSubmit={handleSubmit} className="login-form">

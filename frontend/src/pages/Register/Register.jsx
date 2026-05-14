@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 import "./Register.css";
 
 export default function Register() {
@@ -12,6 +13,8 @@ export default function Register() {
 
   const navigate = useNavigate();
   const { register } = useAuth();
+  const { theme } = useTheme();
+  const logoSrc = theme === "dark" ? "/logo-white.svg" : "/logo.svg";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,6 +34,9 @@ export default function Register() {
   return (
     <div className="register-container">
       <div className="register-cont">
+        <Link to="/" className="auth-logo-link">
+          <img src={logoSrc} alt="Echo" className="auth-logo" />
+        </Link>
         <h1>Crea una cuenta</h1>
 
         <form className="register-form" onSubmit={handleSubmit}>
