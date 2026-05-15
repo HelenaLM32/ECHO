@@ -1,6 +1,5 @@
 .orders-page {
-  max-width: 860px;
-  margin: 0 auto;
+  margin: 0 20%;
   padding: 2rem 1.5rem;
   background: var(--white);
   min-height: 100vh;
