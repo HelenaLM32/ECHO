@@ -160,4 +160,10 @@ async function updateProject(id, projectPayload) {
   try { return JSON.parse(text) } catch { return text }
 }
 
-export { createItem, createProject, getCategories, getAllProjects, getProjectsByUserId, getProjectById, deleteProject, deleteProjectComment, updateProject }
+async function checkUserLiked(projectId) {
+  const res = await fetchWithToken(`/item-projects/${projectId}/likes/status`)
+  if (!res.ok) return { liked: false }
+  return res.json()
+}
+
+export { createItem, createProject, getCategories, getAllProjects, getProjectsByUserId, getProjectById, deleteProject, deleteProjectComment, updateProject, checkUserLiked }

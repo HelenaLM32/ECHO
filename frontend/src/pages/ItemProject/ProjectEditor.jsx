@@ -1,17 +1,20 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './ProjectEditor.css'
-import Editor from '../../components/ItemProject/Editor'
+import Editor from '../../components/ItemProject/ItemProject/Editor'
 import useProjectStore, {
   BLOCK_TYPES,
   BLOCK_META,
-} from './store/useProjectStore'
-import { ActionButton } from '../../components/ActionButton/ActionButton'
+} from '../../store/useProjectStore'
+import { ActionButton } from '../../components/UI/ActionButton/ActionButton'
+import { AudioPlayer } from '../../components/ItemProject/ItemProject/Blocks'
 import { uploadFile } from '../../services/uploads'
 import { useAuth } from '../../context/AuthContext'
 import { createItem, createProject, getCategories } from '../../services/projects'
-import { PopupConfirm, useConfirmPopup } from '../../components/PopupConfirm/PopupConfirm'
-import { PopupSuccess, useSuccessPopup } from '../../components/PopupSuccess/PopupSuccess'
+import PopupConfirm from '../../components/Modals/PopupConfirm/PopupConfirm'
+import PopupSuccess from '../../components/Modals/PopupSuccess/PopupSuccess'
+import useConfirmPopup from '../../hooks/useConfirmPopup'
+import useSuccessPopup from '../../hooks/useSuccessPopup'
 
 function ProjectSidebar({ onPreview }) {
   const addBlock = useProjectStore((s) => s.addBlock)
@@ -228,7 +231,11 @@ function ProjectSidebar({ onPreview }) {
                   onClick={() => {
                     setShowSpacing(false)
                     setShowColorPicker(false)
-                    setShowImagePicker(!showImagePicker)
+                    setShowImagePicker(true)
+                    // Abrir selector de archivos directamente si no hay imagen
+                    if (background.mode !== 'image' || !background.value) {
+                      setTimeout(() => pickBgImage(), 100)
+                    }
                   }}
                 >
                   Imagen
@@ -259,19 +266,13 @@ function ProjectSidebar({ onPreview }) {
                 </div>
               )}
 
-              {/* Image picker panel */}
-              {showImagePicker && (
+              {/* Image picker panel - solo muestra vista previa si hay imagen */}
+              {showImagePicker && background.mode === 'image' && background.value && (
                 <div className="imagePickerPanel">
-                  {background.mode === 'image' && background.value ? (
-                    <div className="backgroundImagePreview">
-                      <img src={background.value} alt="bg" className="backgroundImageThumbnail" />
-                      <button className="backgroundImageChangeButton" onClick={pickBgImage}>Cambiar</button>
-                    </div>
-                  ) : (
-                    <button className="backgroundImageUploadButton" onClick={pickBgImage}>
-                      Seleccionar imagen
-                    </button>
-                  )}
+                  <div className="backgroundImagePreview">
+                    <img src={background.value} alt="bg" className="backgroundImageThumbnail" />
+                    <button className="backgroundImageChangeButton" onClick={pickBgImage}>Cambiar</button>
+                  </div>
                 </div>
               )}
 
@@ -541,7 +542,7 @@ function PreviewDialog({ onClose }) {
         }
         return null
       case BLOCK_TYPES.AUDIO:
-        return block.audioSrc ? <audio src={block.audioSrc} controls className="previewAudioPlayer" /> : null
+        return block.audioSrc ? <AudioPlayer src={block.audioSrc} preview /> : null
       default:
         return null
     }
@@ -566,6 +567,12 @@ function PreviewDialog({ onClose }) {
 
 function ProjectEditor() {
   const [showPreview, setShowPreview] = useState(false)
+  const reset = useProjectStore((s) => s.reset)
+
+  // Resetear el store al entrar para crear un proyecto nuevo
+  useEffect(() => {
+    reset()
+  }, [reset])
 
   return (
     <>

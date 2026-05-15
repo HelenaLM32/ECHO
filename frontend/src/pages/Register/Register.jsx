@@ -43,6 +43,7 @@ export default function Register() {
           <input
             type="email"
             placeholder="Correo electrónico..."
+            aria-label="Correo electrónico"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -52,6 +53,7 @@ export default function Register() {
           <input
             type="text"
             placeholder="Nombre de usuario..."
+            aria-label="Nombre de usuario"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -61,6 +63,7 @@ export default function Register() {
           <input
             type="password"
             placeholder="Contraseña..."
+            aria-label="Contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -88,7 +91,7 @@ export default function Register() {
         </form>
 
         {loadingUsers && <p className="status-text">Cargando...</p>}
-        {errorUsers && <p className="error-text">{errorUsers}</p>}
+        {errorUsers && <p className="error-text" role="alert" aria-live="assertive">{errorUsers}</p>}
       </div>
 
       <div className="register-cont2">

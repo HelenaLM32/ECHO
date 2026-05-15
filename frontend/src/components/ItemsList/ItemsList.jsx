@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import ProjectCard from "../../components/ProjectCard/ProjectCard";
-import ServiceCard from "../../components/ServiceCard/ServiceCard";
-import VenueCard from "../../components/VenueCard/VenueCard";
-import EventCard from "../../components/EventCard/EventCard";
-import ProfileCard from "../../components/ProfileCard/ProfileCard";
+import ProjectCardWithLike from "../../components/Cards/ProjectCard/ProjectCardWithLike";
+import ServiceCard from "../../components/Cards/ServiceCard/ServiceCard";
+import VenueCard from "../../components/Cards/VenueCard/VenueCard";
+import EventCard from "../../components/Cards/EventCard/EventCard";
+import ProfileCard from "../../components/Cards/ProfileCard/ProfileCard";
 import ProjectView from "../../pages/ItemProject/ProjectView";
-import ServiceDetail from "../../components/ServiceDetail/ServiceDetail";
+import ItemServiceDetail from "../../components/ItemService/ItemServiceDetail/ItemServiceDetail";
 import { getAllProjects } from "../../services/projects";
-import { getAllServices } from "../../services/servicesApi";
+import { getAllServices } from "../../services/services";
 import { getAllVenues } from "../../services/venues";
 import { getAllEvents } from "../../services/events";
 import { getAllProfiles } from "../../services/profile";
@@ -176,7 +176,7 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
       ) : (
         filteredItems.map((item) => {
           if (contentType === "proyectos") {
-            return <ProjectCard key={item.id} project={item} onOpen={setSelectedProjectId} />;
+            return <ProjectCardWithLike key={item.id} project={item} onOpen={setSelectedProjectId} />;
           }
           if (contentType === "servicios") {
             const profile = {
@@ -202,7 +202,7 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
         <ProjectView projectId={selectedProjectId} onClose={() => setSelectedProjectId(null)} />
       )}
       {selectedService && (
-        <ServiceDetail service={selectedService} onClose={() => setSelectedService(null)} />
+        <ItemServiceDetail service={selectedService} onClose={() => setSelectedService(null)} />
       )}
     </div>
   );

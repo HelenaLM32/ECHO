@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createEvent } from "../../services/events";
 import { getVenuesByUser } from "../../services/venues";
 import { useAuth } from "../../context/AuthContext";
-import Footer from "../../components/Footer/Footer";
+import Footer from "../../components/Navigation/Footer/Footer";
 import "./CreateEvent.css";
 
 export default function CreateEvent() {
@@ -105,7 +105,7 @@ export default function CreateEvent() {
           </p>
         </header>
 
-        {error && <div className="msg error">{error}</div>}
+        {error && <div className="msg error" role="alert" aria-live="assertive">{error}</div>}
 
         <form onSubmit={handleSubmit} className="event-form">
           <div className="event-card">
@@ -143,7 +143,7 @@ export default function CreateEvent() {
                   No tienes locales registrados.{" "}
                   <span
                     className="field-link"
-                    onClick={() => navigate("/venues/venue-create")}
+                    onClick={() => navigate("/venues/create")}
                   >
                     Crear uno ahora
                   </span>

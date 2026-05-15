@@ -34,7 +34,7 @@ public class UploadController {
             FileStorageService fileStorageService,
             @Value("${app.upload.allowed-content-types:image/jpeg,image/png,image/webp,image/gif,video/mp4,audio/mpeg,audio/wav,audio/webm,application/pdf}") String allowedContentTypes,
             @Value("${app.upload.allowed-subdirs:images,avatars,banners,events,venues,audio,video}") String allowedSubdirs,
-            @Value("${app.upload.max-file-size-bytes:26214400}") long maxFileSizeBytes) {
+            @Value("${app.upload.max-file-size-bytes:52428800}") long maxFileSizeBytes) {
         this.fileStorageService = fileStorageService;
         this.allowedContentTypes = parseCsv(allowedContentTypes);
         this.allowedSubdirs = parseCsv(allowedSubdirs);
@@ -56,8 +56,10 @@ public class UploadController {
         }
 
         if (file.getSize() > maxFileSizeBytes) {
+            long sizeMB = file.getSize() / (1024 * 1024);
+            long maxMB = maxFileSizeBytes / (1024 * 1024);
             return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-                    .body("File exceeds maximum allowed size.");
+                    .body("El archivo es demasiado grande (" + sizeMB + "MB). El tamaño máximo permitido es " + maxMB + "MB.");
         }
 
         String contentType = file.getContentType();

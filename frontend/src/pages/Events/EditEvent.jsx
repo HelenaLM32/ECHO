@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getEventById, updateEvent } from "../../services/events";
 import { getVenuesByUser } from "../../services/venues";
 import { useAuth } from "../../context/AuthContext";
-import Footer from "../../components/Footer/Footer";
+import Footer from "../../components/Navigation/Footer/Footer";
 import "./CreateEvent.css";
 
 export default function EditEvent() {
@@ -152,8 +152,8 @@ export default function EditEvent() {
           <p className="event-desc">Modifica los detalles de tu evento.</p>
         </header>
 
-        {error   && <div className="msg error">{error}</div>}
-        {success && <div className="msg success">{success}</div>}
+        {error   && <div className="msg error" role="alert" aria-live="assertive">{error}</div>}
+        {success && <div className="msg success" role="status" aria-live="polite">{success}</div>}
 
         <form onSubmit={handleSubmit} className="event-form">
           <div className="event-card">

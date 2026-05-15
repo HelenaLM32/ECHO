@@ -13,11 +13,12 @@ import {
 import { getAllDisputes } from "../../services/disputes";
 import { getAllReviews, deleteReview } from "../../services/reviews";
 import DisputePanel from "../../components/DisputePanel";
-import DetailModal from "../../components/DetailModal/DetailModal";
-import ServiceDetail from "../../components/ServiceDetail/ServiceDetail";
-import ProjectView from "../ItemProject/ProjectView";
-import { PopupConfirm, useConfirmPopup } from "../../components/PopupConfirm/PopupConfirm";
-import { PopupSuccess, useSuccessPopup } from "../../components/PopupSuccess/PopupSuccess";
+import DetailModal from "../../components/Modals/DetailModal/DetailModal";
+import ItemServiceDetail from "../../components/ItemService/ItemServiceDetail/ItemServiceDetail";
+import PopupConfirm from "../../components/Modals/PopupConfirm/PopupConfirm";
+import PopupSuccess from "../../components/Modals/PopupSuccess/PopupSuccess";
+import useConfirmPopup from "../../hooks/useConfirmPopup";
+import useSuccessPopup from "../../hooks/useSuccessPopup";
 import "./Admin.css";
 
 export default function Admin() {
@@ -1676,7 +1677,7 @@ export default function Admin() {
       )}
 
       {selectedService && (
-        <ServiceDetail
+        <ItemServiceDetail
           service={selectedService}
           onClose={() => setSelectedService(null)}
         />

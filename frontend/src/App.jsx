@@ -1,4 +1,3 @@
-import './App.css'
 import './styles/globals.css';
 import './styles/variables.css';
 import { Routes, Route, useLocation } from 'react-router-dom';
@@ -6,12 +5,12 @@ import { AuthProvider } from './context/AuthContext';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
-import Navbar from './components/Navbar/Navbar';
+import Navbar from './components/Navigation/Navbar/Navbar';
 import Profile from './pages/Profile/Profile';
 import EditProfile from './pages/Profile/EditProfile';
-import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import ProtectedRoute from './components/UI/ProtectedRoute/ProtectedRoute';
 import Admin from './pages/Admin/Admin';
-import AdminRoute from './components/AdminRoute/AdminRoute';
+import AdminRoute from './components/UI/AdminRoute/AdminRoute';
 import Orders from './pages/Orders/Orders';
 import OrderDetail from './pages/OrderDetail/OrderDetail';
 import OrderDispute from './pages/OrderDetail/OrderDispute';
@@ -96,13 +95,13 @@ function AppContent() {
           </ProtectedRoute>
         } />
 
-        <Route path="/events/event-create" element={
+        <Route path="/events/create" element={
           <ProtectedRoute>
             <CreateEvent />
           </ProtectedRoute>
         } />
 
-        <Route path="/venues/venue-create" element={
+        <Route path="/venues/create" element={
           <ProtectedRoute>
             <CreateVenue />
           </ProtectedRoute>
@@ -120,13 +119,13 @@ function AppContent() {
           </ProtectedRoute>
         } />
 
-        <Route path="/proyect" element={
+        <Route path="/projects/create" element={
           <ProtectedRoute>
             <ProjectEditor />
           </ProtectedRoute>
         } />
 
-        <Route path="/proyect/:id/edit" element={
+        <Route path="/projects/:id/edit" element={
           <ProtectedRoute>
             <ProjectEdit />
           </ProtectedRoute>
@@ -138,13 +137,13 @@ function AppContent() {
           </ProtectedRoute>
         } />
 
-        <Route path="/profile/services/new" element={
+        <Route path="/services/create" element={
           <ProtectedRoute>
             <ServiceCreate />
           </ProtectedRoute>
         } />
 
-        <Route path="/profile/services/:id/edit" element={
+        <Route path="/services/:id/edit" element={
           <ProtectedRoute>
             <ServiceEdit />
           </ProtectedRoute>

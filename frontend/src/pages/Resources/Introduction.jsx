@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Footer from "../../components/Footer/Footer";
+import Footer from "../../components/Navigation/Footer/Footer";
 import "./Introduction.css";
 
 const TUTORIALS = [

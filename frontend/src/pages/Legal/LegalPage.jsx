@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Footer from "../../components/Footer/Footer";
+import Footer from "../../components/Navigation/Footer/Footer";
 import "./LegalPage.css";
 
 export default function LegalPage({ title, lastUpdated, intro, sections }) {

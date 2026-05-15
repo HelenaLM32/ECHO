@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getVenueById, updateVenue } from "../../services/venues";
-import Footer from "../../components/Footer/Footer";
+import Footer from "../../components/Navigation/Footer/Footer";
 import "../Events/CreateEvent.css";
 
 export default function EditVenue() {
@@ -123,8 +123,8 @@ export default function EditVenue() {
           <p className="event-desc">Modifica los datos de tu espacio.</p>
         </header>
 
-        {error   && <div className="msg error">{error}</div>}
-        {success && <div className="msg success">{success}</div>}
+        {error   && <div className="msg error" role="alert" aria-live="assertive">{error}</div>}
+        {success && <div className="msg success" role="status" aria-live="polite">{success}</div>}
 
         <form onSubmit={handleSubmit} className="event-form">
           <div className="event-card">

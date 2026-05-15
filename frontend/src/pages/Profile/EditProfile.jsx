@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { getProfileByUserId, updateProfile, updateCredentials, deleteAccount } from "../../services/profile";
 import "./EditProfile.css";
-import Footer from "../../components/Footer/Footer";
-import { PopupConfirm, useConfirmPopup } from "../../components/PopupConfirm/PopupConfirm";
-import { PopupSuccess, useSuccessPopup } from "../../components/PopupSuccess/PopupSuccess";
+import Footer from "../../components/Navigation/Footer/Footer";
+import PopupConfirm from "../../components/Modals/PopupConfirm/PopupConfirm";
+import PopupSuccess from "../../components/Modals/PopupSuccess/PopupSuccess";
+import useConfirmPopup from "../../hooks/useConfirmPopup";
+import useSuccessPopup from "../../hooks/useSuccessPopup";
 
 export default function EditProfile() {
   const { user, loadingContext, logout } = useAuth();
@@ -323,8 +325,8 @@ export default function EditProfile() {
             </div>
           </div>
 
-          {credentialError && <div className="msg error">{credentialError}</div>}
-          {credentialSuccess && <div className="msg success">{credentialSuccess}</div>}
+          {credentialError && <div className="msg error" role="alert" aria-live="assertive">{credentialError}</div>}
+          {credentialSuccess && <div className="msg success" role="status" aria-live="polite">{credentialSuccess}</div>}
 
           <div className="edit-actions">
             <button className="btn-save" onClick={handleSaveCredentials} disabled={savingCredentials}>

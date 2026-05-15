@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getServiceById, updateService } from "../../services/servicesApi";
+import { getServiceById, updateService } from "../../services/services";
 import { getCategories } from "../../services/projects";
 import { uploadFile } from "../../services/uploads";
-import ServiceProjectPicker from "../../components/ServiceProjectPicker/ServiceProjectPicker";
-import Footer from "../../components/Footer/Footer";
+import ItemServiceProjectPicker from "../../components/ItemService/ItemServiceProjectPicker/ItemServiceProjectPicker";
+import Footer from "../../components/Navigation/Footer/Footer";
 import { getAuthToken } from "../../services/session";
 import "./Services.css";
 
@@ -171,7 +171,7 @@ export default function ServiceEdit() {
           </p>
         </header>
 
-        {error && <div className="msg error">{error}</div>}
+        {error && <div className="msg error" role="alert" aria-live="assertive">{error}</div>}
 
         <form onSubmit={handleSubmit} className="service-form">
           <div className="service-card">
@@ -299,7 +299,7 @@ export default function ServiceEdit() {
 
           <div className="service-card">
             <h2 className="service-section-title">Proyectos Relacionados</h2>
-            <ServiceProjectPicker
+            <ItemServiceProjectPicker
               selectedProjects={form.projectIds}
               onSelectionChange={handleProjectsChange}
             />

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { getOrderById } from "../../services/orders";
 import { getDisputeByOrderId } from "../../services/disputes";
-import CreateDisputeModal from "../../components/CreateDisputeModal";
+import CreateDisputeModal from "../../components/Modals/CreateDisputeModal/CreateDisputeModal";
 import DisputePanel from "../../components/DisputePanel";
 import "./OrderDispute.css";
 
