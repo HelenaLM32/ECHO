@@ -281,11 +281,11 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
   async function handleSubmit(e) {
     e.preventDefault()
     if (!title || title.trim().length < 3) {
-      alert('El título debe tener al menos 3 caracteres')
+      showSuccess('El titulo debe tener al menos 3 caracteres', 'Alto ahi!', 'warning')
       return
     }
     if (!categoryId) {
-      alert('Debes seleccionar una categoría')
+      showSuccess('Debes seleccionar una categoria', 'Alto ahi!', 'warning')
       return
     }
     
@@ -294,7 +294,7 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
     if (basePrice && basePrice.trim() !== '') {
       const parsedPrice = Number(basePrice)
       if (Number.isNaN(parsedPrice) || parsedPrice < 0) {
-        alert('El precio debe ser un número válido mayor o igual a 0')
+        showSuccess('El precio debe ser un numero valido mayor o igual a 0', 'Alto ahi!', 'warning')
         return
       }
       price = parsedPrice
@@ -339,7 +339,7 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
         // Navigation error silenced
       }
     } catch (err) {
-      alert('Error al guardar: ' + (err.message || err))
+      showSuccess('Error al guardar: ' + (err.message || err), 'Error')
     } finally {
       setSaving(false)
     }
@@ -404,6 +404,7 @@ function SaveProjectModal({ onClose, exportJSON, user }) {
         onClose={hideSuccess}
         message={successState.message}
         title={successState.title}
+        variant={successState.variant}
       />
     </>
   )

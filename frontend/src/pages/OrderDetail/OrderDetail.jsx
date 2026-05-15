@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { getOrderById, updateOrderStatus } from "../../services/orders";
 import { createReview, getReviewByOrder } from "../../services/reviews";
 import OrderBoard from "../../components/OrderBoard/OrderBoard";
+import { PopupConfirm, useConfirmPopup } from "../../components/PopupConfirm/PopupConfirm";
 import "./OrderDetail.css";
 
 const STATUS_LABELS = {
@@ -24,6 +25,7 @@ export default function OrderDetail() {
   const { orderId } = useParams();
   const { user }    = useAuth();
   const navigate    = useNavigate();
+  const { confirmState, showConfirm, handleConfirm, handleCancel: handleConfirmCancel } = useConfirmPopup();
 
   const [order, setOrder]       = useState(null);
   const [loading, setLoading]   = useState(true);
@@ -79,6 +81,27 @@ export default function OrderDetail() {
     }
   };
 
+  const handleCancel = async (orderId) => {
+    setUpdating(true);
+    setError("");
+    try {
+      const updated = await updateOrderStatus(Number(orderId), "CANCELLED");
+      setOrder(updated);
+    } catch (e) {
+      setError(e.message || "Error al cancelar el encargo");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleCancelRequest = (id) => {
+    showConfirm(
+      "¿Seguro que quieres cancelar este encargo?",
+      "Cancelar encargo",
+      () => handleCancel(id)
+    );
+  };
+
   if (loading) return <div className="od-page"><p>Cargando encargo…</p></div>;
   if (error && !order) return (
     <div className="od-page">
@@ -119,7 +142,17 @@ export default function OrderDetail() {
 
           {(isBuyer || isCreator) && (
             <button className="od-dispute-link" onClick={() => navigate(`/orders/${order.id}/dispute`)}>
-              Ver disputa
+              {order.hasDispute ? "Ver disputa" : "Abrir una disputa"}
+            </button>
+          )}
+
+          {isCreator && order?.status !== "CANCELLED" && (
+            <button
+              className="od-cancel-btn"
+              onClick={() => handleCancelRequest(order.id)}
+              disabled={updating}
+            >
+              {updating ? "Cancelando..." : "Cancelar encargo"}
             </button>
           )}
 
@@ -204,6 +237,16 @@ export default function OrderDetail() {
           )}
         </div>
       )}
+
+      <PopupConfirm
+        isOpen={confirmState.isOpen}
+        onConfirm={handleConfirm}
+        onCancel={handleConfirmCancel}
+        message={confirmState.message}
+        title={confirmState.title}
+        confirmText="Si, cancelar"
+        cancelText="Volver"
+      />
     </div>
   );
 }

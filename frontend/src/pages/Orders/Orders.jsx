@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { getMyOrders } from "../../services/orders";
+import { getMyOrders, updateOrderStatus } from "../../services/orders";
+import { PopupConfirm, useConfirmPopup } from "../../components/PopupConfirm/PopupConfirm";
+import { PopupSuccess, useSuccessPopup } from "../../components/PopupSuccess/PopupSuccess";
 import "./Orders.css";
 
 const STATUS_LABELS = {
@@ -13,10 +15,15 @@ const STATUS_LABELS = {
 
 export default function Orders() {
   const { user } = useAuth();
+  const { confirmState, showConfirm, handleConfirm, handleCancel } = useConfirmPopup();
+  const { successState, showSuccess, hideSuccess } = useSuccessPopup();
 
   const [orders, setOrders]  = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError]    = useState("");
+  const [cancellingOrderId, setCancellingOrderId] = useState(null);
+
+  const [activeTab, setActiveTab] = useState("client");
 
   useEffect(() => {
     setLoading(true);
@@ -32,48 +39,101 @@ export default function Orders() {
   const asClient  = orders.filter((o) => o.buyerId  === user?.id);
   const asCreator = orders.filter((o) => o.creatorId === user?.id);
 
+  const handleCancelOrder = (orderId) => {
+    showConfirm(
+      "¿Estás seguro de que deseas cancelar este encargo?",
+      "Cancelar encargo",
+      async () => {
+        setCancellingOrderId(orderId);
+        try {
+          const updated = await updateOrderStatus(Number(orderId), "CANCELLED");
+          setOrders((prevOrders) =>
+            prevOrders.map((o) => (o.id === orderId ? { ...o, ...updated, status: "CANCELLED" } : o))
+          );
+          showSuccess("Encargo cancelado correctamente.", "Encargo actualizado");
+        } catch {
+          showSuccess("Error al cancelar el encargo. Intentalo de nuevo mas tarde.", "Error");
+        } finally {
+          setCancellingOrderId(null);
+        }
+      }
+    );
+  };
+
+  const renderOrders = (orders, role) => (
+    orders.length === 0 ? (
+      <p className="orders-empty">
+        {role === "buyer" ? "No has realizado ningún encargo todavía." : "Aún no tienes encargos recibidos."}
+      </p>
+    ) : (
+      <ul className="orders-list">
+        {orders.map((o) => (
+          <OrderCard
+            key={o.id}
+            order={o}
+            role={role}
+            onCancel={handleCancelOrder}
+            isCancelling={cancellingOrderId === o.id}
+          />
+        ))}
+      </ul>
+    )
+  );
+
   return (
     <div className="orders-page">
       <h1 className="orders-page__title">Mis encargos</h1>
 
-      <section className="orders-section">
-        <h2 className="orders-section__heading">Como cliente</h2>
-        {asClient.length === 0 ? (
-          <p className="orders-empty">No has realizado ningún encargo todavía.</p>
-        ) : (
-          <ul className="orders-list">
-            {asClient.map((o) => (
-              <OrderCard 
-                key={o.id} 
-                order={o} 
-                role="buyer"
-              />
-            ))}
-          </ul>
-        )}
-      </section>
+      <div className="orders-tabs">
+        <button
+          className={`orders-tab ${activeTab === "client" ? "active" : ""}`}
+          onClick={() => setActiveTab("client")}
+        >
+          Como cliente
+        </button>
+        <button
+          className={`orders-tab ${activeTab === "creator" ? "active" : ""}`}
+          onClick={() => setActiveTab("creator")}
+        >
+          Como creador
+        </button>
+      </div>
 
-      <section className="orders-section">
-        <h2 className="orders-section__heading">Como creador</h2>
-        {asCreator.length === 0 ? (
-          <p className="orders-empty">Aún no tienes encargos recibidos.</p>
-        ) : (
-          <ul className="orders-list">
-            {asCreator.map((o) => (
-              <OrderCard 
-                key={o.id} 
-                order={o} 
-                role="creator"
-              />
-            ))}
-          </ul>
-        )}
-      </section>
+      <div className="orders-blobs">
+        <div className="decor-blob deco-1" aria-hidden="true" />
+        <div className="decor-blob deco-2" aria-hidden="true" />
+        <div className="decor-blob deco-3" aria-hidden="true" />
+        <div className="decor-blob deco-4" aria-hidden="true" />
+        <div className="decor-blob deco-5" aria-hidden="true" />
+        <div className="decor-blob deco-6" aria-hidden="true" />
+        <div className="decor-blob deco-7" aria-hidden="true" />
+        <div className="decor-blob deco-8" aria-hidden="true" />
+      </div>
+
+      {activeTab === "client" && renderOrders(asClient, "buyer")}
+      {activeTab === "creator" && renderOrders(asCreator, "creator")}
+
+      <PopupConfirm
+        isOpen={confirmState.isOpen}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        message={confirmState.message}
+        title={confirmState.title}
+        confirmText="Si, cancelar"
+        cancelText="Volver"
+      />
+
+      <PopupSuccess
+        isOpen={successState.isOpen}
+        onClose={hideSuccess}
+        message={successState.message}
+        title={successState.title}
+      />
     </div>
   );
 }
 
-function OrderCard({ order, role }) {
+function OrderCard({ order, role, onCancel, isCancelling }) {
   return (
     <li className="order-card">
       <div className="order-card__info">
@@ -95,6 +155,15 @@ function OrderCard({ order, role }) {
         <Link className="order-card__dispute-btn" to={`/orders/${order.id}/dispute`}>
           Ver disputa
         </Link>
+        {order.status !== "CANCELLED" && (
+          <button
+            className="order-card__cancel-btn"
+            onClick={() => onCancel(order.id)}
+            disabled={isCancelling}
+          >
+            {isCancelling ? "Cancelando..." : "Cancelar encargo"}
+          </button>
+        )}
       </div>
     </li>
   );

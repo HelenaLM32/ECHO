@@ -14,6 +14,8 @@
   margin-bottom: 100px;
   flex-direction: column;
   position: relative;
+  --parallax-x: 0px;
+  --parallax-y: 0px;
 
 }
 
@@ -81,6 +83,10 @@
   gap: 12px;
 }
 
+.home-container-search-section.with-selected-category {
+  margin-top: 12px;
+}
+
 .search-bar-integrated {
   flex: 1;
   min-width: 0;
@@ -90,8 +96,16 @@
   background-color: var(--true-white);
   display: flex;
   align-items: center;
-  padding: 4px;
+  padding: 4px 8px;
   gap: 8px;
+}
+
+.search-bar-icon {
+  width: 16px;
+  height: 16px;
+  margin-left: 10px;
+  flex-shrink: 0;
+  opacity: 0.7;
 }
 
 .search-bar-input {
@@ -100,9 +114,16 @@
   background: transparent;
   height: 100%;
   flex: 1;
-  font-size: 16px;
-  padding: 0 12px;
+  font-size: 15px;
+  padding: 0 12px 0 8px;
   min-width: 140px;
+}
+
+.search-bar-input::placeholder {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--black-secondary);
+  opacity: 0.9;
 }
 
 .search-type-filters {
@@ -186,20 +207,25 @@
   opacity: 0.9;
   will-change: transform, background-color, opacity;
   transition: transform 220ms cubic-bezier(.2,.9,.2,1), background-color 180ms ease, opacity 180ms ease;
+  transform: translate3d(
+    calc(var(--parallax-x) * var(--blob-shift-x, 0.7)),
+    calc(var(--parallax-y) * var(--blob-shift-y, 0.3)),
+    0
+  );
 }
 
 
 /* lado izquierdo */
-.decor-blob.deco-1{ width: 9.5vw; height: 5.5vw; left: -2%; top: 4%; border-radius: 999px; ; opacity: 0.8; }
-.decor-blob.deco-2{ width: 7.5vw; height: 4.2vw; left: 5%; top: 32%; border-radius: 999px; opacity: 0.3; }
-.decor-blob.deco-5{ width: 10.5vw; height: 7vw; left: 6%; top: 50%; border-radius: 22px; opacity: 0.6; }
-.decor-blob.deco-6{ width: 6.5vw; height: 4.5vw; left: 2%; top: 64%; border-radius: 18px; }
+.decor-blob.deco-1{ width: 9.5vw; height: 5.5vw; left: -2%; top: 4%; border-radius: 999px; opacity: 0.8; --blob-shift-x: -1.15; --blob-shift-y: -0.38; }
+.decor-blob.deco-2{ width: 7.5vw; height: 4.2vw; left: 5%; top: 32%; border-radius: 999px; opacity: 0.3; --blob-shift-x: -0.7; --blob-shift-y: 0.2; }
+.decor-blob.deco-5{ width: 10.5vw; height: 7vw; left: 6%; top: 50%; border-radius: 22px; opacity: 0.6; --blob-shift-x: -0.95; --blob-shift-y: 0.28; }
+.decor-blob.deco-6{ width: 6.5vw; height: 4.5vw; left: 2%; top: 64%; border-radius: 18px; --blob-shift-x: -0.65; --blob-shift-y: 0.22; }
 
 /* lado derecho */
-.decor-blob.deco-3{ width: 12.5vw; height: 5vw; right: 2%; top: 35%; border-radius: 26px; opacity: 0.45;}
-.decor-blob.deco-4{ width: 7.8vw; height: 7.8vw; right: 6%; top: 64%; border-radius: 50%;opacity: 0.6; }
-.decor-blob.deco-7{ width: 8vw; height: 8vw; right:1%; top: 4%; border-radius: 100px; }
-.decor-blob.deco-8{ width: 5.2vw; height: 5.2vw; right: 18%; top: 56%; border-radius: 50%;  opacity: 0.25;  }
+.decor-blob.deco-3{ width: 12.5vw; height: 5vw; right: 2%; top: 35%; border-radius: 26px; opacity: 0.45; --blob-shift-x: 1.05; --blob-shift-y: -0.24; }
+.decor-blob.deco-4{ width: 7.8vw; height: 7.8vw; right: 6%; top: 64%; border-radius: 50%; opacity: 0.6; --blob-shift-x: 0.8; --blob-shift-y: 0.34; }
+.decor-blob.deco-7{ width: 8vw; height: 8vw; right:1%; top: 4%; border-radius: 100px; --blob-shift-x: 1.2; --blob-shift-y: -0.4; }
+.decor-blob.deco-8{ width: 5.2vw; height: 5.2vw; right: 18%; top: 56%; border-radius: 50%; opacity: 0.25; --blob-shift-x: 0.66; --blob-shift-y: 0.18; }
 
 /* hace que los blobs esten debajo del titulo y los botones SIEMPRE */
 #home-container-top-text, #home-container-top-buttons { position: relative; z-index: 2; }

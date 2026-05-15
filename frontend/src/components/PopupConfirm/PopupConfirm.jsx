@@ -56,7 +56,15 @@ export const useConfirmPopup = () => {
 };
 
 // Componente visual del popup
-export const PopupConfirm = ({ isOpen, onConfirm, onCancel, message, title = 'Confirmar' }) => {
+export const PopupConfirm = ({
+  isOpen,
+  onConfirm,
+  onCancel,
+  message,
+  title = 'Confirmar',
+  confirmText = 'Eliminar',
+  cancelText = 'Cancelar',
+}) => {
   if (!isOpen) return null;
 
   return createPortal(
@@ -71,10 +79,10 @@ export const PopupConfirm = ({ isOpen, onConfirm, onCancel, message, title = 'Co
         <p className="popup-confirm-message">{message}</p>
         <div className="popup-confirm-buttons">
           <button className="popup-confirm-btn-cancel" onClick={onCancel}>
-            Cancelar
+            {cancelText}
           </button>
           <button className="popup-confirm-btn-confirm" onClick={onConfirm}>
-            Eliminar
+            {confirmText}
           </button>
         </div>
       </div>

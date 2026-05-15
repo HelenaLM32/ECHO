@@ -29,6 +29,7 @@ import ReviewsModal from "../../components/ReviewsModal/ReviewsModal";
 import ServiceCard from "../../components/ServiceCard/ServiceCard"; 
 import ServiceDetail from "../../components/ServiceDetail/ServiceDetail";
 import { PopupConfirm, useConfirmPopup } from "../../components/PopupConfirm/PopupConfirm";
+import { PopupSuccess, useSuccessPopup } from "../../components/PopupSuccess/PopupSuccess";
 
 import linkedinIcon from "../../assets/icons8-linkedin-24.png";
 import twitterIcon from "../../assets/icons8-x-24.png";
@@ -43,6 +44,7 @@ export default function Profile() {
   const bannerInputRef = useRef(null);
   const avatarInputRef = useRef(null);
   const { confirmState, showConfirm, handleConfirm, handleCancel } = useConfirmPopup();
+  const { successState, showSuccess, hideSuccess } = useSuccessPopup();
 
   const targetId = userId ? parseInt(userId) : user?.id;
   const isOwnProfile = !userId || parseInt(userId) === user?.id;
@@ -172,7 +174,9 @@ export default function Profile() {
     try {
       const updated = await updateBanner(user.id, file);
       setProfile(updated);
-    } catch { alert("Error al guardar la portada"); }
+    } catch {
+      showSuccess("Error al guardar la portada", "Error");
+    }
   };
 
   const handleAvatarChange = async (e) => {
@@ -181,7 +185,9 @@ export default function Profile() {
     try {
       const updated = await updateAvatar(user.id, file);
       setProfile(updated);
-    } catch { alert("Error al guardar el avatar"); }
+    } catch {
+      showSuccess("Error al guardar el avatar", "Error");
+    }
   };
 
   const handleFollow = async () => {
@@ -195,7 +201,9 @@ export default function Profile() {
         setIsFollowing(true);
       }
       setFollowStats(await getFollowStats(targetId));
-    } catch (error) { alert(error.message); }
+    } catch (error) {
+      showSuccess(error.message || "No se pudo completar la accion", "Error");
+    }
     finally { setFollowLoading(false); }
   };
 
@@ -207,7 +215,9 @@ export default function Profile() {
         try {
           await deleteVenue(id);
           setVenues((prev) => prev.filter((v) => v.id !== id));
-        } catch (err) { alert(err.message); }
+        } catch (err) {
+          showSuccess(err.message || "No se pudo eliminar el local", "Error");
+        }
       }
     );
   };
@@ -220,7 +230,9 @@ export default function Profile() {
         try {
           await deleteEvent(id);
           setEvents((prev) => prev.filter((ev) => ev.id !== id));
-        } catch (err) { alert(err.message); }
+        } catch (err) {
+          showSuccess(err.message || "No se pudo eliminar el evento", "Error");
+        }
       }
     );
   };
@@ -235,7 +247,7 @@ export default function Profile() {
           await deleteService(id, token);
           setServices((prev) => prev.filter((s) => s.id !== id));
         } catch (err) {
-          alert("Error al eliminar el servicio: " + err.message);
+          showSuccess("Error al eliminar el servicio: " + err.message, "Error");
         }
       }
     );
@@ -250,7 +262,7 @@ export default function Profile() {
           await deleteProject(id);
           setProjects((prev) => prev.filter((p) => p.id !== id));
         } catch (err) {
-          alert("Error al eliminar el proyecto: " + err.message);
+          showSuccess("Error al eliminar el proyecto: " + err.message, "Error");
         }
       }
     );
@@ -679,6 +691,13 @@ const renderEvents = () => {
         onCancel={handleCancel}
         message={confirmState.message}
         title={confirmState.title}
+      />
+
+      <PopupSuccess
+        isOpen={successState.isOpen}
+        onClose={hideSuccess}
+        message={successState.message}
+        title={successState.title}
       />
 
       <Footer />

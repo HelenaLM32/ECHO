@@ -4,10 +4,14 @@ import { useAuth } from "../../context/AuthContext";
 import { getProfileByUserId, updateProfile, updateCredentials, deleteAccount } from "../../services/profile";
 import "./EditProfile.css";
 import Footer from "../../components/Footer/Footer";
+import { PopupConfirm, useConfirmPopup } from "../../components/PopupConfirm/PopupConfirm";
+import { PopupSuccess, useSuccessPopup } from "../../components/PopupSuccess/PopupSuccess";
 
 export default function EditProfile() {
   const { user, loadingContext, logout } = useAuth();
   const navigate = useNavigate();
+  const { confirmState, showConfirm, handleConfirm, handleCancel } = useConfirmPopup();
+  const { successState, showSuccess, hideSuccess } = useSuccessPopup();
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -102,7 +106,7 @@ export default function EditProfile() {
     for (const rule of lengthRules) {
       const value = profileData[rule.key];
       if (value && value.length > rule.max) {
-        alert(`${rule.label} supera el máximo de ${rule.max} caracteres.`);
+        showSuccess(`${rule.label} supera el maximo de ${rule.max} caracteres.`, "Validacion");
         return;
       }
     }
@@ -112,7 +116,7 @@ export default function EditProfile() {
       await updateProfile(user.id, profileData);
       navigate("/profile");
     } catch (error) {
-      alert("Error al guardar los cambios: " + error.message);
+      showSuccess("Error al guardar los cambios: " + error.message, "Error");
     } finally {
       setSaving(false);
     }
@@ -170,16 +174,19 @@ export default function EditProfile() {
   };
 
   const handleDeleteAccount = async () => {
-    if (!window.confirm("¿Estás seguro de eliminar tu cuenta?")) return;
-    if (!window.confirm("Acción irreversible. ¿Borrar todo?")) return;
-
-    try {
-      await deleteAccount(user.id);
-      logout();
-      navigate("/");
-    } catch (error) {
-      alert("Error: " + error.message);
-    }
+    showConfirm(
+      "Esta accion es irreversible y eliminara tu cuenta permanentemente. ¿Quieres continuar?",
+      "Eliminar cuenta",
+      async () => {
+        try {
+          await deleteAccount(user.id);
+          logout();
+          navigate("/");
+        } catch (error) {
+          showSuccess("Error: " + error.message, "Error");
+        }
+      }
+    );
   };
 
   if (loading) return <div className="edit-loading">Cargando configuración...</div>;
@@ -338,6 +345,24 @@ export default function EditProfile() {
           </div>
         </section>
       </div>
+
+      <PopupConfirm
+        isOpen={confirmState.isOpen}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        message={confirmState.message}
+        title={confirmState.title}
+        confirmText="Si, eliminar"
+        cancelText="Cancelar"
+      />
+
+      <PopupSuccess
+        isOpen={successState.isOpen}
+        onClose={hideSuccess}
+        message={successState.message}
+        title={successState.title}
+      />
+
       <Footer />
     </div>
   );

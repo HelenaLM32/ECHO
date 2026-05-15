@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -15,9 +16,14 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class RateLimitingFilter extends OncePerRequestFilter {
 
-    private static final int MAX_REQUESTS_PER_MINUTE = 300;
-    private static final int MAX_TRACKED_IPS = 20_000;
-    private static final long WINDOW_MS = 60_000L;
+    @Value("${app.rate-limit.max-requests-per-minute:1_000_000}")
+    private int maxRequestsPerMinute;
+
+    @Value("${app.rate-limit.max-tracked-ips:50_000}")
+    private int maxTrackedIps;
+
+    @Value("${app.rate-limit.window-ms:60_000}")
+    private long windowMs;
 
     private final ConcurrentHashMap<String, AtomicInteger> requestCounts = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Long> windowStartTimes = new ConcurrentHashMap<>();
@@ -29,20 +35,20 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         String clientIP = resolveClientIP(request);
         long currentTime = System.currentTimeMillis();
 
-        long windowStart = windowStartTimes.getOrDefault(clientIP, currentTime);
+        long windowStart = windowStartTimes.computeIfAbsent(clientIP, k -> currentTime);
 
-        if (currentTime > windowStart + WINDOW_MS) {
+        if (currentTime > windowStart + windowMs) {
             requestCounts.put(clientIP, new AtomicInteger(0));
             windowStartTimes.put(clientIP, currentTime);
         }
 
-        if (requestCounts.size() > MAX_TRACKED_IPS) {
+        if (requestCounts.size() > maxTrackedIps) {
             requestCounts.clear();
             windowStartTimes.clear();
         }
 
         AtomicInteger count = requestCounts.computeIfAbsent(clientIP, k -> new AtomicInteger(0));
-        if (count.incrementAndGet() > MAX_REQUESTS_PER_MINUTE) {
+        if (count.incrementAndGet() > maxRequestsPerMinute) {
             response.setStatus(429);
             response.setContentType("application/json");
             response.getWriter().write("{\"status\":429,\"error\":\"Too Many Requests\"}");
@@ -56,7 +62,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         String xForwardedFor = request.getHeader("X-Forwarded-For");
         if (xForwardedFor != null && !xForwardedFor.isBlank()) {
             String[] parts = xForwardedFor.split(",");
-            return parts[parts.length - 1].trim();
+            return parts[0].trim();
         }
         return request.getRemoteAddr();
     }

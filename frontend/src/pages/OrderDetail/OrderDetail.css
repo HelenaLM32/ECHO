@@ -98,10 +98,39 @@
   font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
 .od-dispute-link:hover {
   background: var(--orange-secondary);
+}
+
+.od-cancel-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--status-cancelled) 45%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--status-cancelled-bg) 58%, var(--true-white));
+  color: var(--status-cancelled);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.od-cancel-btn:hover {
+  background: color-mix(in srgb, var(--status-cancelled-bg) 85%, var(--true-white));
+  border-color: color-mix(in srgb, var(--status-cancelled) 60%, transparent);
+}
+
+.od-cancel-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.od-cancel-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--status-cancelled) 20%, transparent);
 }
 
 .od-status-btn {
@@ -258,5 +287,16 @@
 
   .od-header {
     padding: 1rem;
+  }
+
+  .od-header__right {
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .od-dispute-link,
+  .od-cancel-btn {
+    width: 100%;
+    text-align: center;
   }
 }

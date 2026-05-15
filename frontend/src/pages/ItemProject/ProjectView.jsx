@@ -10,6 +10,7 @@ import { getAuthToken } from '../../services/session'
 import { useAuth } from '../../context/AuthContext'
 import { usePolling } from '../../hooks/usePolling'
 import { PopupConfirm, useConfirmPopup } from '../../components/PopupConfirm/PopupConfirm'
+import { PopupSuccess, useSuccessPopup } from '../../components/PopupSuccess/PopupSuccess'
 
 function RenderBlock({ block }) {
   if (!block) return null
@@ -59,6 +60,7 @@ export default function ProjectView({ projectId, onClose }) {
   const [commentsList, setCommentsList] = useState([])
   const { user, loadingContext } = useAuth()
   const { confirmState, showConfirm, handleConfirm, handleCancel } = useConfirmPopup()
+  const { successState, showSuccess, hideSuccess } = useSuccessPopup()
   const hasIncrementedView = useRef(false)
 
   const isProjectOwner = !!project?.item?.creatorId && user?.id === project.item.creatorId
@@ -139,7 +141,7 @@ export default function ProjectView({ projectId, onClose }) {
   function handleToggleLike() {
     const token = getAuthToken()
     if (!token) {
-      alert('Debes iniciar sesión para dar like')
+      showSuccess('Debes iniciar sesion para dar like', 'Accion requerida')
       return
     }
     fetchWithToken(`/item-projects/${project.id}/likes`, { method: 'POST' })
@@ -177,7 +179,7 @@ export default function ProjectView({ projectId, onClose }) {
             navigate(target)
           }
         } catch (e) {
-          alert('No se pudo borrar el proyecto: ' + (e.message || 'error'))
+          showSuccess('No se pudo borrar el proyecto: ' + (e.message || 'error'), 'Error')
         }
       }
     )
@@ -194,7 +196,7 @@ export default function ProjectView({ projectId, onClose }) {
           setProject(updatedProject)
           loadComments()
         } catch (e) {
-          alert('No se pudo borrar el comentario: ' + (e.message || 'error'))
+          showSuccess('No se pudo borrar el comentario: ' + (e.message || 'error'), 'Error')
         }
       }
     )
@@ -203,7 +205,7 @@ export default function ProjectView({ projectId, onClose }) {
   function handleAddComment(commentText) {
     const token = getAuthToken()
     if (!token) {
-      alert('Debes iniciar sesión para comentar')
+      showSuccess('Debes iniciar sesion para comentar', 'Accion requerida')
       return
     }
     if (!commentText || !commentText.trim()) return
@@ -292,6 +294,12 @@ export default function ProjectView({ projectId, onClose }) {
         onCancel={handleCancel}
         message={confirmState.message}
         title={confirmState.title}
+      />
+      <PopupSuccess
+        isOpen={successState.isOpen}
+        onClose={hideSuccess}
+        message={successState.message}
+        title={successState.title}
       />
       {showOrderModal && (
         <OrderModal

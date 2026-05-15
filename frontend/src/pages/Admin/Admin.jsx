@@ -16,11 +16,15 @@ import DisputePanel from "../../components/DisputePanel";
 import DetailModal from "../../components/DetailModal/DetailModal";
 import ServiceDetail from "../../components/ServiceDetail/ServiceDetail";
 import ProjectView from "../ItemProject/ProjectView";
+import { PopupConfirm, useConfirmPopup } from "../../components/PopupConfirm/PopupConfirm";
+import { PopupSuccess, useSuccessPopup } from "../../components/PopupSuccess/PopupSuccess";
 import "./Admin.css";
 
 export default function Admin() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { confirmState, showConfirm, handleConfirm, handleCancel } = useConfirmPopup();
+  const { successState, showSuccess, hideSuccess } = useSuccessPopup();
   const [view, setView] = useState("users");
   const [data, setData] = useState([]);
   const [disputes, setDisputes] = useState([]);
@@ -210,13 +214,18 @@ export default function Admin() {
   };
 
   const handleDeleteReview = async (id) => {
-    if (!window.confirm("¿Eliminar esta review?")) return;
-    try {
-      await deleteReview(id);
-      setReviews((prev) => prev.filter((r) => r.id !== id));
-    } catch {
-      alert("Error al eliminar la review.");
-    }
+    showConfirm(
+      "¿Eliminar esta review?",
+      "Confirmar eliminacion",
+      async () => {
+        try {
+          await deleteReview(id);
+          setReviews((prev) => prev.filter((r) => r.id !== id));
+        } catch {
+          showSuccess("Error al eliminar la review.", "Error");
+        }
+      }
+    );
   };
 
   const renderReviews = () => (
@@ -384,15 +393,19 @@ export default function Admin() {
   }, [assignServiceForm.serviceId, servicesCatalog]);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("¿Seguro que quieres borrar este registro?")) return;
-
-    try {
-      const endpoint = view === "users" ? `/users/${id}` : `/items/${id}`;
-      await fetchWithToken(endpoint, { method: "DELETE" });
-      setData(data.filter((item) => item.id !== id));
-    } catch {
-      alert("Fallo al ejecutar el borrado.");
-    }
+    showConfirm(
+      "¿Seguro que quieres borrar este registro?",
+      "Confirmar eliminacion",
+      async () => {
+        try {
+          const endpoint = view === "users" ? `/users/${id}` : `/items/${id}`;
+          await fetchWithToken(endpoint, { method: "DELETE" });
+          setData(data.filter((item) => item.id !== id));
+        } catch {
+          showSuccess("Fallo al ejecutar el borrado.", "Error");
+        }
+      }
+    );
   };
 
   const selectedOrder = useMemo(
@@ -1675,6 +1688,21 @@ export default function Admin() {
           onClose={() => setSelectedProjectId(null)}
         />
       )}
+
+      <PopupConfirm
+        isOpen={confirmState.isOpen}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        message={confirmState.message}
+        title={confirmState.title}
+      />
+
+      <PopupSuccess
+        isOpen={successState.isOpen}
+        onClose={hideSuccess}
+        message={successState.message}
+        title={successState.title}
+      />
     </div>
   );
 }

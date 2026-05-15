@@ -15,6 +15,7 @@ export default function Home() {
   const [animateIn, setAnimateIn] = useState(false);
   const [contentType, setContentType] = useState("proyectos");
   const sortDropdownRef = useRef(null);
+  const topContainerRef = useRef(null);
   const navigate = useNavigate();
   const params = useParams();
 
@@ -66,6 +67,33 @@ export default function Home() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    const container = topContainerRef.current;
+    if (!container) return;
+
+    const handleMouseMove = (event) => {
+      const rect = container.getBoundingClientRect();
+      const offsetX = Math.abs((event.clientX - (rect.left + rect.width / 2)) / (rect.width / 2));
+      const offsetY = Math.abs((event.clientY - (rect.top + rect.height / 2)) / (rect.height / 2));
+
+      container.style.setProperty("--parallax-x", `${offsetX * 14}px`);
+      container.style.setProperty("--parallax-y", `${offsetY * 5}px`);
+    };
+
+    const handleMouseLeave = () => {
+      container.style.setProperty("--parallax-x", "0px");
+      container.style.setProperty("--parallax-y", "0px");
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseout", handleMouseLeave);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseout", handleMouseLeave);
+    };
+  }, [selectedCategory]);
+
   // Handler de las categorias
   const handleSelect = (section) => {
     if (!section) {
@@ -100,7 +128,7 @@ export default function Home() {
 
       {/* Si no hay categoria seleccionada */}
       {!selectedCategory && (
-        <div className={`home-container-top ${animateIn ? 'animate-in' : ''}`}>
+        <div ref={topContainerRef} className={`home-container-top ${animateIn ? 'animate-in' : ''}`}>
           {/* decorative blobs (8 total) */}
           <div className="decor-blob deco-1" aria-hidden="true" />
           <div className="decor-blob deco-2" aria-hidden="true" />
@@ -125,8 +153,14 @@ export default function Home() {
         </div>
       )}
 
-      <div className="home-container-search-section">
+      <div className={`home-container-search-section${selectedCategory ? " with-selected-category" : ""}`}>
         <div className="search-bar-integrated">
+          <img
+            src="/project/ECHOSVGS/magnifying-glass-11-svgrepo-com.svg"
+            alt=""
+            aria-hidden="true"
+            className="search-bar-icon"
+          />
           <input
             type="text"
             placeholder="Buscar en Echo..."
