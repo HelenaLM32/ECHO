@@ -10,7 +10,7 @@ import {
 } from "../../services/profile";
 import { getVenuesByUser, deleteVenue } from "../../services/venues";
 import { getEventsByUser, deleteEvent } from "../../services/events";
-import { deleteService } from "../../services/servicesApi";
+import { deleteService } from "../../services/services";
 import { getProjectsByUserId, deleteProject } from "../../services/projects";
 import { getAuthToken } from "../../services/session";
 import { getAverageByUser, getReviewsByUser } from "../../services/reviews";
@@ -21,15 +21,19 @@ import {
   unfollowUser,
 } from "../../services/follows";
 
-import ProjectCard from "../../components/ProjectCard/ProjectCard";
+import ProjectCardWithLike from "../../components/Cards/ProjectCard/ProjectCardWithLike";
+import ServiceCard from "../../components/Cards/ServiceCard/ServiceCard";
+import VenueCard from "../../components/Cards/VenueCard/VenueCard";
+import EventCard from "../../components/Cards/EventCard/EventCard";
 import ProjectView from "../../pages/ItemProject/ProjectView";
-import Footer from "../../components/Footer/Footer";
-import DetailModal from "../../components/DetailModal/DetailModal";
-import ReviewsModal from "../../components/ReviewsModal/ReviewsModal";
-import ServiceCard from "../../components/ServiceCard/ServiceCard"; 
-import ServiceDetail from "../../components/ServiceDetail/ServiceDetail";
-import { PopupConfirm, useConfirmPopup } from "../../components/PopupConfirm/PopupConfirm";
-import { PopupSuccess, useSuccessPopup } from "../../components/PopupSuccess/PopupSuccess";
+import Footer from "../../components/Navigation/Footer/Footer";
+import DetailModal from "../../components/Modals/DetailModal/DetailModal";
+import ReviewsModal from "../../components/Modals/ReviewsModal/ReviewsModal";
+import PopupConfirm from "../../components/Modals/PopupConfirm/PopupConfirm";
+import PopupSuccess from "../../components/Modals/PopupSuccess/PopupSuccess";
+import ItemServiceDetail from "../../components/ItemService/ItemServiceDetail/ItemServiceDetail";
+import useConfirmPopup from "../../hooks/useConfirmPopup";
+import useSuccessPopup from "../../hooks/useSuccessPopup";
 
 import linkedinIcon from "../../assets/icons8-linkedin-24.png";
 import twitterIcon from "../../assets/icons8-x-24.png";
@@ -313,7 +317,7 @@ const renderVenues = () => {
   return (
     <div className="projects-section">
       {isOwnProfile && (
-        <button className="create-tab-btn" onClick={() => navigate("/venues/venue-create")}>
+        <button className="create-tab-btn" onClick={() => navigate("/venues/create")}>
           Crear un local
         </button>
       )}
@@ -323,37 +327,22 @@ const renderVenues = () => {
         <div className="projects-grid">
           {venues.map((v) => (
             <div key={v.id} className="pc-card-container">
-              <button type="button" className="pc-card-wrapper pc-card-button pc-card--small" onClick={() => openModal("venue", v)}>
-                <article className="pc-card">
-                  <div className="pc-cover">
-                    {v.img1 ? (
-                      <img src={v.img1} alt={v.name} className="pc-cover-img" />
-                    ) : (
-                      <div className="pc-cover-fallback">{v.name?.charAt(0).toUpperCase()}</div>
-                    )}
-                  </div>
-                  <div className="pc-footer">
-                    <div className="pc-footer-left">
-                      {profile.avatarUrl ? (
-                        <img src={profile.avatarUrl} alt="Avatar" className="pc-creator-avatar" />
-                      ) : (
-                        <div className="pc-creator-avatar pc-creator-fallback">
-                          {(profile.publicName || profile.username)?.charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                      <div className="pc-meta">
-                        <h3 className="pc-title">{v.name}</h3>
-                        <p className="pc-author">por <span className="pc-author-link">{profile.publicName || profile.username}</span></p>
-                      </div>
-                    </div>
-                  </div>
-                </article>
+              <button
+                type="button"
+                style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', width: '100%' }}
+                onClick={() => openModal("venue", v)}
+              >
+                <VenueCard venue={v} />
               </button>
 
               {isOwnProfile && (
                 <div className="pc-admin-actions">
                   <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/venues/${v.id}/edit`); }}>✎</button>
-                  <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteVenue(v.id); }}>✕</button>
+                  <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteVenue(v.id); }} aria-label="Eliminar">
+                    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z" fillRule="evenodd"/>
+                    </svg>
+                  </button>
                 </div>
               )}
 
@@ -371,7 +360,7 @@ const renderEvents = () => {
   return (
     <div className="projects-section">
       {isOwnProfile && (
-        <button className="create-tab-btn" onClick={() => navigate("/events/event-create")}>
+        <button className="create-tab-btn" onClick={() => navigate("/events/create")}>
           Crear un evento
         </button>
       )}
@@ -381,33 +370,21 @@ const renderEvents = () => {
         <div className="projects-grid">
           {events.map((ev) => (
             <div key={ev.id} className="pc-card-container">
-              <button type="button" className="pc-card-wrapper pc-card-button pc-card--small" onClick={() => openModal("event", ev)}>
-                <article className="pc-card">
-                  <div className="pc-cover">
-                    <div className="pc-price-top">
-                      {ev.precio && parseFloat(ev.precio) > 0 ? `${ev.precio}€` : "Gratis"}
-                    </div>
-                    {ev.img ? (
-                      <img src={ev.img} alt={ev.title} className="pc-cover-img" />
-                    ) : (
-                      <div className="pc-cover-fallback">{ev.title?.charAt(0).toUpperCase()}</div>
-                    )}
-                  </div>
-                  <div className="pc-footer">
-                    <div className="pc-footer-left">
-                      <img src={profile.avatarUrl} className="pc-creator-avatar" alt="Avatar" />
-                      <div className="pc-meta">
-                        <h3 className="pc-title">{ev.title}</h3>
-                        <p className="pc-author">por <span className="pc-author-link">{profile.publicName || profile.username}</span></p>
-                      </div>
-                    </div>
-                  </div>
-                </article>
+              <button
+                type="button"
+                style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', width: '100%' }}
+                onClick={() => openModal("event", ev)}
+              >
+                <EventCard event={ev} />
               </button>
               {isOwnProfile && (
                 <div className="pc-admin-actions">
                   <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/events/${ev.id}/edit`); }}>✎</button>
-                  <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteEvent(ev.id); }}>✕</button>
+                  <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteEvent(ev.id); }} aria-label="Eliminar">
+                    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z" fillRule="evenodd"/>
+                    </svg>
+                  </button>
                 </div>
               )}
             </div>
@@ -423,7 +400,7 @@ const renderEvents = () => {
     return (
       <div className="projects-section">
         {isOwnProfile && (
-          <button className="create-tab-btn" onClick={() => navigate("/profile/services/new")}>
+          <button className="create-tab-btn" onClick={() => navigate("/services/create")}>
             Crear servicio
           </button>
         )}
@@ -441,8 +418,12 @@ const renderEvents = () => {
                 />
                 {isOwnProfile && (
                   <div className="pc-admin-actions">
-                    <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/profile/services/${service.id}/edit`); }}>✎</button>
-                    <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteService(service.id); }}>✕</button>
+                    <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/services/${service.id}/edit`); }}>✎</button>
+                    <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteService(service.id); }} aria-label="Eliminar">
+                      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z" fillRule="evenodd"/>
+                      </svg>
+                    </button>
                   </div>
                 )}
               </div>
@@ -591,7 +572,7 @@ const renderEvents = () => {
             {activeTab === "Proyectos" && (
               <div className="projects-section">
                 {isOwnProfile && (
-                  <button className="create-tab-btn" onClick={() => navigate("/proyect")}>
+                  <button className="create-tab-btn" onClick={() => navigate("/projects/create")}>
                     Crear nuevo proyecto
                   </button>
                 )}
@@ -603,11 +584,15 @@ const renderEvents = () => {
                   <div className="projects-grid">
                     {projects.map((p) => (
                       <div key={p.id} className="pc-card-container">
-                        <ProjectCard project={p} onOpen={setSelectedProjectId} small={true} />
+                        <ProjectCardWithLike project={p} onOpen={setSelectedProjectId} small={true} />
                         {isOwnProfile && (
                           <div className="pc-admin-actions">
-                            <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/proyect/${p.id}/edit`); }}>✎</button>
-                            <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteProject(p.id); }}>✕</button>
+                            <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/projects/${p.id}/edit`); }}>✎</button>
+                            <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteProject(p.id); }} aria-label="Eliminar">
+                              <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z" fillRule="evenodd"/>
+                              </svg>
+                            </button>
                           </div>
                         )}
                       </div>
@@ -679,7 +664,7 @@ const renderEvents = () => {
         <ProjectView projectId={selectedProjectId} onClose={() => setSelectedProjectId(null)} />
       )}
       {selectedService && (
-        <ServiceDetail service={selectedService} onClose={() => setSelectedService(null)} />
+        <ItemServiceDetail service={selectedService} onClose={() => setSelectedService(null)} />
       )}
       {modal.open && (
         <DetailModal type={modal.type} data={modal.data} onClose={closeModal} />

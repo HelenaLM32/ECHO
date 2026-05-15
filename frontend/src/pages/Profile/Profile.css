@@ -442,18 +442,24 @@
 }
 
 .pc-btn-edit, .pc-btn-delete {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 12px;
-  font-weight: bold;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   transition: all 0.2s ease;
+  padding: 0;
+}
+
+.pc-btn-edit svg,
+.pc-btn-delete svg {
+  width: 10px;
+  height: 10px;
+  fill: var(--white);
 }
 
 .pc-btn-edit {

@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { getMyOrders, updateOrderStatus } from "../../services/orders";
-import { PopupConfirm, useConfirmPopup } from "../../components/PopupConfirm/PopupConfirm";
-import { PopupSuccess, useSuccessPopup } from "../../components/PopupSuccess/PopupSuccess";
+import PopupConfirm from "../../components/Modals/PopupConfirm/PopupConfirm";
+import PopupSuccess from "../../components/Modals/PopupSuccess/PopupSuccess";
+import useConfirmPopup from "../../hooks/useConfirmPopup";
+import useSuccessPopup from "../../hooks/useSuccessPopup";
 import "./Orders.css";
 
 const STATUS_LABELS = {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createVenue } from "../../services/venues";
-import Footer from "../../components/Footer/Footer";
+import Footer from "../../components/Navigation/Footer/Footer";
 import "../Events/CreateEvent.css";
 
 export default function CreateVenue() {
@@ -89,7 +89,7 @@ export default function CreateVenue() {
           </p>
         </header>
 
-        {error && <div className="msg error">{error}</div>}
+        {error && <div className="msg error" role="alert" aria-live="assertive">{error}</div>}
 
         <form onSubmit={handleSubmit} className="event-form">
           <div className="event-card">

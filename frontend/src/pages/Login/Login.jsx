@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
-import OAuthButtons from "../../components/OAuthButtons/OAuthButtons";
+import OAuthButtons from "../../components/UI/OAuthButtons/OAuthButtons";
 import "./Login.css";
 
 export default function Login() {
@@ -43,6 +43,7 @@ export default function Login() {
           <input
             type="email"
             placeholder="Correo electrónico..."
+            aria-label="Correo electrónico"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -52,6 +53,7 @@ export default function Login() {
           <input
             type="password"
             placeholder="Contraseña..."
+            aria-label="Contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -78,7 +80,7 @@ export default function Login() {
           </p>
         </form>
 
-        {errorUsers && <p className="error-text">{errorUsers}</p>}
+        {errorUsers && <p className="error-text" role="alert" aria-live="assertive">{errorUsers}</p>}
       </div>
 
       <div className="login-cont2">

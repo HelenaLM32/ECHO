@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "./Home.css";
 import ItemsList from "../../components/ItemsList/ItemsList";
 import SectionsList from "../../components/SectionsList/SectionsList";
-import Footer from "../../components/Footer/Footer";
+import Footer from "../../components/Navigation/Footer/Footer";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchSections } from "../../services/sections";
 
@@ -143,12 +143,20 @@ export default function Home() {
             <h3 id="top-h3-text">Explora el trabajo de nuestros talentosos artistas, inspirate y conecta con ellos subiendo proyectos o contratando servicios</h3>
           </div>
           <div id="home-container-top-buttons">
-            <div className="button-top" onClick={() => navigate('/proyect')}>
+            <button 
+              type="button"
+              className="button-top" 
+              onClick={() => navigate('/projects/create')}
+            >
               Crear un proyecto
-            </div>
-            <div className="button-top" onClick={() => navigate('/profile/services/new')}>
+            </button>
+            <button 
+              type="button"
+              className="button-top" 
+              onClick={() => navigate('/services/create')}
+            >
               Subir un servicio
-            </div>
+            </button>
           </div>
         </div>
       )}

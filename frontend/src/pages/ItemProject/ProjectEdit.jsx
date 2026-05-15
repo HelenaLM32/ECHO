@@ -1,17 +1,20 @@
 import { useState, useRef, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import './ProjectEditor.css'
-import Editor from '../../components/ItemProject/Editor'
+import Editor from '../../components/ItemProject/ItemProject/Editor'
 import useProjectStore, {
   BLOCK_TYPES,
   BLOCK_META,
-} from './store/useProjectStore'
-import { ActionButton } from '../../components/ActionButton/ActionButton'
+} from '../../store/useProjectStore'
+import { ActionButton } from '../../components/UI/ActionButton/ActionButton'
+import { AudioPlayer } from '../../components/ItemProject/ItemProject/Blocks'
 import { uploadFile } from '../../services/uploads'
 import { useAuth } from '../../context/AuthContext'
 import { getProjectById, updateProject, getCategories } from '../../services/projects'
-import { PopupConfirm, useConfirmPopup } from '../../components/PopupConfirm/PopupConfirm'
-import { PopupSuccess, useSuccessPopup } from '../../components/PopupSuccess/PopupSuccess'
+import PopupConfirm from '../../components/Modals/PopupConfirm/PopupConfirm'
+import PopupSuccess from '../../components/Modals/PopupSuccess/PopupSuccess'
+import useConfirmPopup from '../../hooks/useConfirmPopup'
+import useSuccessPopup from '../../hooks/useSuccessPopup'
 
 function ProjectSidebar({ onPreview }) {
   const addBlock = useProjectStore((s) => s.addBlock)
@@ -228,7 +231,11 @@ function ProjectSidebar({ onPreview }) {
                 onClick={() => {
                   setShowSpacing(false)
                   setShowColorPicker(false)
-                  setShowImagePicker(!showImagePicker)
+                  setShowImagePicker(true)
+                  // Abrir selector de archivos directamente si no hay imagen
+                  if (background.mode !== 'image' || !background.value) {
+                    setTimeout(() => pickBgImage(), 100)
+                  }
                 }}
               >
                 Imagen
@@ -240,21 +247,6 @@ function ProjectSidebar({ onPreview }) {
                   setShowImagePicker(false)
                   setShowSpacing(!showSpacing)
                 }}
-              >
-                Espaciado
-              </button>
-              <button
-                className={`backgroundModeButton${!showSpacing && background.mode === 'image' ? ' active' : ''}`}
-                onClick={() => {
-                  setShowSpacing(false)
-                  pickBgImage()
-                }}
-              >
-                Imagen
-              </button>
-              <button
-                className={`backgroundModeButton${showSpacing ? ' active' : ''}`}
-                onClick={() => setShowSpacing(true)}
               >
                 Espaciado
               </button>
@@ -574,7 +566,7 @@ function PreviewDialog({ onClose }) {
         }
         return null
       case BLOCK_TYPES.AUDIO:
-        return block.audioSrc ? <audio src={block.audioSrc} controls className="previewAudioPlayer" /> : null
+        return block.audioSrc ? <AudioPlayer src={block.audioSrc} preview /> : null
       default:
         return null
     }

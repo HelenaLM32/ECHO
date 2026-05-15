@@ -1,16 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getProjectById, deleteProject, deleteProjectComment } from '../../services/projects'
+import { fetchApi, fetchWithToken } from '../../services/config'
 import './ProjectEditor.css'
-import { BLOCK_TYPES, toEmbedUrl, parseJsonSafe } from './store/useProjectStore'
-import ProjectFooter from '../../components/ProjectFooter/ProjectFooter'
-import OrderModal from '../../components/OrderModal/OrderModal'
-import { API_URL, fetchApi, fetchWithToken } from '../../services/config'
-import { getAuthToken } from '../../services/session'
+import { BLOCK_TYPES, toEmbedUrl, parseJsonSafe } from '../../store/useProjectStore'
+import { AudioPlayer } from '../../components/ItemProject/ItemProject/Blocks'
+import ItemProjectFooter from '../../components/ItemProject/ItemProjectFooter/ItemProjectFooter'
+import OrderModal from '../../components/Modals/OrderModal/OrderModal'
+import PopupConfirm from '../../components/Modals/PopupConfirm/PopupConfirm'
+import PopupSuccess from '../../components/Modals/PopupSuccess/PopupSuccess'
+import useConfirmPopup from '../../hooks/useConfirmPopup'
+import useSuccessPopup from '../../hooks/useSuccessPopup'
 import { useAuth } from '../../context/AuthContext'
-import { usePolling } from '../../hooks/usePolling'
-import { PopupConfirm, useConfirmPopup } from '../../components/PopupConfirm/PopupConfirm'
-import { PopupSuccess, useSuccessPopup } from '../../components/PopupSuccess/PopupSuccess'
+import usePolling from '../../hooks/usePolling'
+import { getAuthToken } from '../../services/session'
 
 function RenderBlock({ block }) {
   if (!block) return null
@@ -43,7 +46,7 @@ function RenderBlock({ block }) {
       }
       return null
     case BLOCK_TYPES.AUDIO:
-      return block.audioSrc ? <audio src={block.audioSrc} controls className="previewAudioPlayer" /> : null
+      return block.audioSrc ? <AudioPlayer src={block.audioSrc} preview /> : null
     default:
       return null
   }
@@ -259,7 +262,7 @@ export default function ProjectView({ projectId, onClose }) {
             ))}
           </div>
           <div style={{ marginTop: 12 }}>
-            <ProjectFooter
+            <ItemProjectFooter
               name={(profile && profile.publicName) || project?.item?.title || 'Anónimo'}
               avatar={(profile && profile.avatarUrl) || null}
               likes={project?.likes || 0}

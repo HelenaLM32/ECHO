@@ -4,7 +4,8 @@ import { useAuth } from "../../context/AuthContext";
 import { getOrderById, updateOrderStatus } from "../../services/orders";
 import { createReview, getReviewByOrder } from "../../services/reviews";
 import OrderBoard from "../../components/OrderBoard/OrderBoard";
-import { PopupConfirm, useConfirmPopup } from "../../components/PopupConfirm/PopupConfirm";
+import PopupConfirm from "../../components/Modals/PopupConfirm/PopupConfirm";
+import useConfirmPopup from "../../hooks/useConfirmPopup";
 import "./OrderDetail.css";
 
 const STATUS_LABELS = {
