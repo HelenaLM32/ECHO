@@ -22,6 +22,8 @@ function ProjectSidebar({ onPreview }) {
   const [showAddContent, setShowAddContent] = useState(false)
   const [showEditProject, setShowEditProject] = useState(false)
   const [showSpacing, setShowSpacing] = useState(false)
+  const [showColorPicker, setShowColorPicker] = useState(false)
+  const [showImagePicker, setShowImagePicker] = useState(false)
   const colorInputRef = useRef(null)
 
   function handleClick(type) {
@@ -147,63 +149,68 @@ function ProjectSidebar({ onPreview }) {
             <div className="backgroundPanel">
               <div className="backgroundModeRow">
                 <button
-                  className={`backgroundModeButton${!showSpacing && background.mode === 'color' ? ' active' : ''}`}
+                  className={`backgroundModeButton${showColorPicker ? ' active' : ''}`}
                   onClick={() => {
                     setShowSpacing(false)
-                    setBackground('color', background.value || '#ffffff')
-                    colorInputRef.current?.click()
+                    setShowImagePicker(false)
+                    setShowColorPicker(!showColorPicker)
                   }}
                 >
                   Color
                 </button>
                 <button
-                  className={`backgroundModeButton${!showSpacing && background.mode === 'image' ? ' active' : ''}`}
+                  className={`backgroundModeButton${showImagePicker ? ' active' : ''}`}
                   onClick={() => {
                     setShowSpacing(false)
-                    pickBgImage()
+                    setShowColorPicker(false)
+                    setShowImagePicker(!showImagePicker)
                   }}
                 >
                   Imagen
                 </button>
                 <button
                   className={`backgroundModeButton${showSpacing ? ' active' : ''}`}
-                  onClick={() => setShowSpacing(true)}
+                  onClick={() => {
+                    setShowColorPicker(false)
+                    setShowImagePicker(false)
+                    setShowSpacing(!showSpacing)
+                  }}
                 >
                   Espaciado
                 </button>
               </div>
 
-              {/* Hidden color input */}
-              <input
-                ref={colorInputRef}
-                type="color"
-                value={background.value}
-                onChange={(e) => setBackground('color', e.target.value)}
-                style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}
-              />
+              {/* Color picker panel */}
+              {showColorPicker && (
+                <div className="colorInputWrapper">
+                  <label className="colorInputLabel">Color de fondo</label>
+                  <input
+                    ref={colorInputRef}
+                    type="color"
+                    value={background.value}
+                    onChange={(e) => setBackground('color', e.target.value)}
+                    className="modernColorInput"
+                  />
+                </div>
+              )}
 
-              {!showSpacing && (
-                <>
-                  {background.mode === 'image' && background.value && (
+              {/* Image picker panel */}
+              {showImagePicker && (
+                <div className="imagePickerPanel">
+                  {background.mode === 'image' && background.value ? (
                     <div className="backgroundImagePreview">
                       <img src={background.value} alt="bg" className="backgroundImageThumbnail" />
                       <button className="backgroundImageChangeButton" onClick={pickBgImage}>Cambiar</button>
                     </div>
+                  ) : (
+                    <button className="backgroundImageUploadButton" onClick={pickBgImage}>
+                      Seleccionar imagen
+                    </button>
                   )}
-
-                  <div
-                    className="backgroundPreviewSwatch"
-                    style={
-                      background.mode === 'image'
-                        ? { backgroundImage: `url(${background.value})`, backgroundSize: 'cover', backgroundPosition: 'center' }
-                        : background.mode === 'gradient'
-                          ? { background: background.value }
-                          : { background: background.value }
-                    }
-                  />
-                </>
+                </div>
               )}
 
+              {/* Spacing panel */}
               {showSpacing && (
                 <div className="spacingPanel" style={{ marginTop: 12 }}>
                   <h3 className="customizeHeading">Espaciado entre bloques</h3>
@@ -221,6 +228,18 @@ function ProjectSidebar({ onPreview }) {
                   </div>
                 </div>
               )}
+
+              {/* Preview swatch */}
+              {(showColorPicker || showImagePicker) && (
+                <div
+                  className="backgroundPreviewSwatch"
+                  style={
+                    background.mode === 'image'
+                      ? { backgroundImage: `url(${background.value})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+                      : { background: background.value }
+                  }
+                />
+              )}
             </div>
           )}
         </div>
@@ -229,7 +248,6 @@ function ProjectSidebar({ onPreview }) {
       {/* ── Isla 2: Acciones ─────────────── */}
       <div className="sidebarIsland actionsIsland">
         <button className="actionButton previewActionButton" onClick={onPreview}>
-          <span className="actionButtonIcon">👁</span>
           Vista previa
         </button>
         <SaveProjectButton />
@@ -246,7 +264,6 @@ function SaveProjectButton() {
   return (
     <>
       <button className="actionButton saveActionButton" onClick={() => setShowModal(true)}>
-        <span className="actionButtonIcon">💾</span>
         Guardar proyecto
       </button>
       {showModal && (

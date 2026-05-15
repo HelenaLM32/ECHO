@@ -22,6 +22,8 @@ function ProjectSidebar({ onPreview }) {
   const [showAddContent, setShowAddContent] = useState(false)
   const [showEditProject, setShowEditProject] = useState(false)
   const [showSpacing, setShowSpacing] = useState(false)
+  const [showColorPicker, setShowColorPicker] = useState(false)
+  const [showImagePicker, setShowImagePicker] = useState(false)
   const colorInputRef = useRef(null)
 
   function handleClick(type) {
@@ -147,14 +149,34 @@ function ProjectSidebar({ onPreview }) {
           <div className="backgroundPanel">
             <div className="backgroundModeRow">
               <button
-                className={`backgroundModeButton${!showSpacing && background.mode === 'color' ? ' active' : ''}`}
+                className={`backgroundModeButton${showColorPicker ? ' active' : ''}`}
                 onClick={() => {
                   setShowSpacing(false)
-                  setBackground('color', background.value || '#ffffff')
-                  colorInputRef.current?.click()
+                  setShowImagePicker(false)
+                  setShowColorPicker(!showColorPicker)
                 }}
               >
                 Color
+              </button>
+              <button
+                className={`backgroundModeButton${showImagePicker ? ' active' : ''}`}
+                onClick={() => {
+                  setShowSpacing(false)
+                  setShowColorPicker(false)
+                  setShowImagePicker(!showImagePicker)
+                }}
+              >
+                Imagen
+              </button>
+              <button
+                className={`backgroundModeButton${showSpacing ? ' active' : ''}`}
+                onClick={() => {
+                  setShowColorPicker(false)
+                  setShowImagePicker(false)
+                  setShowSpacing(!showSpacing)
+                }}
+              >
+                Espaciado
               </button>
               <button
                 className={`backgroundModeButton${!showSpacing && background.mode === 'image' ? ' active' : ''}`}
@@ -173,14 +195,19 @@ function ProjectSidebar({ onPreview }) {
               </button>
             </div>
 
-            {/* Hidden color input */}
-            <input
-              ref={colorInputRef}
-              type="color"
-              value={background.value}
-              onChange={(e) => setBackground('color', e.target.value)}
-              style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}
-            />
+            {/* Styled native color input */}
+            {showColorPicker && (
+              <div className="colorInputWrapper">
+                <label className="colorInputLabel">Color de fondo</label>
+                <input
+                  ref={colorInputRef}
+                  type="color"
+                  value={background.value}
+                  onChange={(e) => setBackground('color', e.target.value)}
+                  className="modernColorInput"
+                />
+              </div>
+            )}
 
             {!showSpacing && (
               <>

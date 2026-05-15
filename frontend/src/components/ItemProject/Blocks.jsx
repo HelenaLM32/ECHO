@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect } from 'react'
+import { useRef, useCallback, useEffect, useState } from 'react'
 import { toEmbedUrl } from '../../pages/ItemProject/store/useProjectStore'
 import { uploadFile } from '../../services/uploads'
 import './ItemProject.css'
@@ -42,6 +42,7 @@ const FONT_FAMILIES = [
 export function TextBlock({ block, onChange }) {
   const editorRef = useRef(null)
   const initialized = useRef(false)
+  const [activeFormats, setActiveFormats] = useState(new Set())
 
   useEffect(() => {
     if (editorRef.current && !initialized.current) {
@@ -50,6 +51,37 @@ export function TextBlock({ block, onChange }) {
       initialized.current = true
     }
   }, [block])
+
+  const updateActiveFormats = useCallback(() => {
+    const newActiveFormats = new Set()
+    TEXT_EDITOR_FORMATS.forEach((f) => {
+      if (!f.sep && document.queryCommandState(f.cmd)) {
+        newActiveFormats.add(f.cmd)
+      }
+    })
+    setActiveFormats(newActiveFormats)
+  }, [])
+
+  useEffect(() => {
+    const editor = editorRef.current
+    if (!editor) return
+
+    const handleSelectionChange = () => {
+      if (document.activeElement === editor) {
+        updateActiveFormats()
+      }
+    }
+
+    document.addEventListener('selectionchange', handleSelectionChange)
+    editor.addEventListener('keyup', updateActiveFormats)
+    editor.addEventListener('mouseup', updateActiveFormats)
+
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange)
+      editor.removeEventListener('keyup', updateActiveFormats)
+      editor.removeEventListener('mouseup', updateActiveFormats)
+    }
+  }, [updateActiveFormats])
 
   const handleEditorInput = useCallback(() => {
     if (editorRef.current) onChange({ content: editorRef.current.innerHTML })
@@ -105,7 +137,7 @@ export function TextBlock({ block, onChange }) {
             <button
               key={f.cmd}
               type="button"
-              className="toolbarActionButton"
+              className={`toolbarActionButton${activeFormats.has(f.cmd) ? ' active' : ''}`}
               title={f.title}
               onMouseDown={(e) => { e.preventDefault(); executeRichTextCommand(f.cmd) }}
             >

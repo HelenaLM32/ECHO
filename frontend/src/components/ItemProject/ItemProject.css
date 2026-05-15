@@ -271,6 +271,11 @@
 .headingSelect,
 .fontSelect {
   max-width: 160px;
+  min-height: 32px;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  margin-right: 8px;
 }
 
 .textInputArea:focus,
@@ -302,42 +307,51 @@
 
 .richTextToolbar {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
+  gap: 4px;
+  padding: 6px 8px;
   border: 1px solid var(--gray-stroke, #e0e0e0);
+  background: var(--true-white, #ffffff);
 }
 
 .textColorInput {
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  padding: 0;
+  background: transparent;
 }
 
 .toolbarActionButton {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--gray-stroke, #e0e0e0);
-  border-radius: 10px;
-  background: var(--white, #f8f8f8);
+  border: none;
+  border-radius: 6px;
+  background: transparent;
   color: var(--black-secondary, #353535);
   cursor: pointer;
+  transition: background 0.15s ease;
 }
 
 .toolbarActionButton:hover {
   background: var(--gray, #d9d9d9);
 }
 
+.toolbarActionButton.active {
+  background: var(--orange, #E95E23);
+  color: var(--true-white, #ffffff);
+}
+
 .toolbarDivider {
   width: 1px;
-  height: 20px;
+  height: 18px;
   background: var(--gray-stroke, #e0e0e0);
+  margin: 0 4px;
 }
 
 .richTextEditor {
