@@ -52,10 +52,15 @@ services:
         condition: service_healthy
     ports:
       - "${BACKEND_PORT:-8084}:8082"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.echo-api.rule=Host(`${API_TRAEFIK_HOST:-api.echoapp.site}`)"
+      - "traefik.http.services.echo-api.loadbalancer.server.port=8082"
     volumes:
       - ./uploads:/app/uploads
     networks:
       - internal
+      - proxy
     restart: unless-stopped
 
   frontend:
