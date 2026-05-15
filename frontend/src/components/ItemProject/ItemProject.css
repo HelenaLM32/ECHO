@@ -17,9 +17,10 @@
   -ms-overflow-style: none;
 }
 
-/* Dark mode override - use gray background instead of dark/black */
+/* Dark mode override */
 [data-theme="dark"] .editorBlockList {
-  background: var(--white, #242424) !important;
+  background: var(--white, #242424);
+  border-color: var(--gray-stroke, #505050);
 }
 
 .editorBlockList::-webkit-scrollbar {
@@ -120,17 +121,30 @@
 }
 
 .iconImg {
-  width: 42px;
-  height: 42px;
-  object-fit: contain;
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--orange);
+}
+
+.iconImg svg {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
 }
 
 .sidebarButtonIcon {
-  width: 30px;
-  height: 30px;
-  object-fit: contain;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin-right: 8px;
+  color: var(--orange);
+}
+
+.sidebarButtonIcon svg {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
 }
 
 .emptyActionLabel {
@@ -187,20 +201,26 @@
 }
 
 .blockActionButton {
-  width: 34px;
-  height: 34px;
+  width: 24px;
+  height: 24px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--gray-stroke, #e0e0e0);
-  border-radius: 12px;
-  background: var(--white, #f8f8f8);
+  border-radius: 8px;
+  background: var(--true-white, #f8f8f8);
   color: var(--black-secondary, #353535);
   cursor: pointer;
+  padding: 0;
 }
 
 .blockActionButton:hover {
   background: var(--true-white, #ffffff);
+}
+
+.blockActionButton svg {
+  width: 12px;
+  height: 12px;
 }
 
 .previewTextContent {
@@ -258,7 +278,7 @@
   padding: 12px 14px;
   border: 1px solid var(--gray-stroke, #e0e0e0);
   border-radius: 16px;
-  background: var(--white, #f8f8f8);
+  background: var(--true-white, #f8f8f8);
   color: var(--black, #282828);
   font-size: 0.95rem;
 }
@@ -347,6 +367,25 @@
   color: var(--true-white, #ffffff);
 }
 
+.toolbarIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: var(--orange);
+}
+
+.toolbarIcon svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.toolbarActionButton.active .toolbarIcon {
+  color: #ffffff;
+}
+
 .toolbarDivider {
   width: 1px;
   height: 18px;
@@ -359,9 +398,10 @@
   padding: 12px 14px;
   border: 1px solid var(--gray-stroke, #e0e0e0);
   border-radius: 16px;
-  background: var(--white, #f8f8f8);
+  background: var(--true-white, #f8f8f8);
   color: var(--black, #282828);
   font-size: 0.95rem;
+  font-weight: 400;
   line-height: 1.6;
   outline: none;
 }
@@ -461,28 +501,48 @@
 
 .galleryGridItem {
   position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
   border: 1px solid var(--gray-stroke, #e0e0e0);
-  padding: 4px;
+  border-radius: 18px;
+}
+
+.galleryGridItem img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .galleryItemRemoveButton {
   position: absolute;
   top: 6px;
   right: 6px;
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   border-radius: 50%;
   background: var(--shadow-medium, rgba(0, 0, 0, 0.08));
   color: var(--black, #282828);
   cursor: pointer;
+  padding: 0;
+  z-index: 2;
+}
+
+.galleryItemRemoveButton svg {
+  width: 10px;
+  height: 10px;
 }
 
 .galleryAddButton {
   display: grid;
   place-items: center;
-  min-height: 140px;
+  aspect-ratio: 1 / 1;
   border: 1px dashed var(--black-new, #000000);
+  border-radius: 18px;
   color: var(--black-secondary, #353535);
   font-size: 1.2rem;
   cursor: pointer;
@@ -533,10 +593,19 @@
 }
 
 .reorderClose {
-  width: 34px;
-  height: 34px;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
   cursor: pointer;
+  padding: 0;
+}
+
+.reorderClose svg {
+  width: 12px;
+  height: 12px;
 }
 
 .reorderList {
@@ -587,10 +656,19 @@
 }
 
 .reorderBtn {
-  width: 30px;
-  height: 30px;
-  border-radius: 12px;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
   cursor: pointer;
+  padding: 0;
+}
+
+.reorderBtn svg {
+  width: 12px;
+  height: 12px;
 }
 
 .reorderBtn:disabled {
