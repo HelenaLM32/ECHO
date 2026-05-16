@@ -246,3 +246,114 @@
         padding: 30px 18px 22px;
     }
 }
+
+/* ============================================
+   MEDIA QUERIES ADICIONALES - MÓVIL
+   ============================================ */
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+    .intro-page {
+        padding: 16px;
+    }
+
+    .intro-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .intro-header p {
+        font-size: 0.9rem;
+    }
+
+    .intro-card {
+        padding: 18px 16px;
+    }
+
+    .intro-card h2 {
+        font-size: 1.1rem;
+    }
+
+    .intro-card p {
+        font-size: 0.85rem;
+    }
+
+    .intro-btn {
+        padding: 10px 18px;
+        font-size: 0.85rem;
+    }
+
+    .intro-modal {
+        padding: 24px 16px 20px;
+    }
+
+    .intro-modal-title {
+        font-size: 1.1rem;
+    }
+
+    .intro-modal-body {
+        font-size: 0.85rem;
+    }
+
+    .intro-modal-close {
+        padding: 8px 16px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Móviles pequeños (480px) */
+@media (max-width: 480px) {
+    .intro-page {
+        padding: 12px;
+    }
+
+    .intro-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .intro-header p {
+        font-size: 0.85rem;
+    }
+
+    .intro-card {
+        padding: 16px 14px;
+        margin-bottom: 16px;
+    }
+
+    .intro-card h2 {
+        font-size: 1rem;
+    }
+
+    .intro-card p {
+        font-size: 0.8rem;
+    }
+
+    .intro-btn {
+        padding: 8px 14px;
+        font-size: 0.8rem;
+    }
+
+    .intro-modal {
+        padding: 20px 14px 18px;
+    }
+
+    .intro-modal-title {
+        font-size: 1rem;
+    }
+
+    .intro-modal-body {
+        font-size: 0.8rem;
+    }
+
+    .intro-modal-body ol {
+        margin: 0 0 10px 16px;
+    }
+
+    .intro-modal-body li {
+        margin-bottom: 5px;
+    }
+
+    .intro-modal-close {
+        padding: 6px 14px;
+        font-size: 0.75rem;
+    }
+}

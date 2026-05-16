@@ -564,3 +564,149 @@
     text-align: center;
   }
 }
+
+/* ============================================
+   MEDIA QUERIES ADICIONALES - MÓVIL
+   ============================================ */
+
+/* Tablets (768px) */
+@media (max-width: 768px) {
+  .admin-container {
+    width: 100%;
+    padding: 0 16px;
+  }
+
+  .admin-title {
+    font-size: 1.5rem;
+  }
+
+  .admin-tabs {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .admin-tab {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .admin-search-input {
+    font-size: 15px;
+    padding: 10px 14px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .admin-container {
+    margin-top: 16px;
+    padding: 0 12px;
+  }
+
+  .admin-title {
+    font-size: 1.25rem;
+  }
+
+  .admin-tabs {
+    gap: 4px;
+    padding: 6px;
+  }
+
+  .admin-tab {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    min-width: 80px;
+  }
+
+  .admin-search-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .admin-search-input {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+
+  .admin-content-item {
+    padding: 10px 12px;
+  }
+
+  .admin-content-item h3 {
+    font-size: 0.9rem;
+  }
+
+  .admin-content-item p {
+    font-size: 0.8rem;
+  }
+
+  .admin-type-badge {
+    font-size: 0.65rem;
+    padding: 3px 7px;
+  }
+}
+
+/* Móviles pequeños (480px) */
+@media (max-width: 480px) {
+  .admin-container {
+    padding: 0 8px;
+  }
+
+  .admin-title {
+    font-size: 1.1rem;
+  }
+
+  .admin-tabs {
+    gap: 3px;
+    padding: 4px;
+  }
+
+  .admin-tab {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    min-width: 70px;
+  }
+
+  .admin-search-input {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 6px 8px;
+    font-size: 0.75rem;
+  }
+
+  .admin-content-item {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .admin-content-item h3 {
+    font-size: 0.85rem;
+  }
+
+  .admin-content-item p {
+    font-size: 0.75rem;
+  }
+
+  .btn-secondary {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+}

@@ -239,6 +239,126 @@
   .btn-save { width: 100%; }
 }
 
+/* ============================================
+   MEDIA QUERIES ADICIONALES - MÓVIL
+   ============================================ */
+
+/* Tablets (768px) */
+@media (max-width: 768px) {
+  .event-container {
+    padding: 0 20px;
+  }
+
+  .event-title {
+    font-size: 1.75rem;
+  }
+
+  .event-card {
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .field-grid {
+    gap: 15px;
+  }
+
+  .image-upload-zone {
+    grid-template-columns: repeat(3, 130px);
+    gap: 12px;
+  }
+
+  .image-preview-box {
+    width: 130px;
+    height: 130px;
+  }
+}
+
+/* Móviles pequeños (480px) */
+@media (max-width: 480px) {
+  .event-page {
+    padding-top: 20px;
+  }
+
+  .event-container {
+    padding: 0 15px;
+  }
+
+  .event-header {
+    margin-bottom: 20px;
+  }
+
+  .event-title {
+    font-size: 1.5rem;
+  }
+
+  .event-desc {
+    font-size: 0.9rem;
+  }
+
+  .event-card {
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 14px;
+  }
+
+  .event-section-title {
+    font-size: 0.8rem;
+    margin-bottom: 18px;
+    padding-bottom: 8px;
+  }
+
+  .field-group {
+    margin-bottom: 16px;
+  }
+
+  .field-group label {
+    font-size: 0.75rem;
+  }
+
+  .input-field,
+  .textarea-field {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .field-hint {
+    font-size: 0.8rem;
+  }
+
+  .image-upload-zone {
+    grid-template-columns: repeat(2, 130px);
+    gap: 10px;
+  }
+
+  .image-preview-box {
+    width: 130px;
+    height: 130px;
+  }
+
+  .upload-icon {
+    font-size: 2rem;
+  }
+
+  .event-actions {
+    padding-top: 16px;
+    gap: 12px;
+  }
+
+  .btn-back-text {
+    font-size: 0.9rem;
+  }
+
+  .btn-save {
+    padding: 12px 30px;
+    font-size: 0.9rem;
+  }
+
+  .msg {
+    padding: 12px;
+    font-size: 0.85rem;
+  }
+}
+
 .image-upload-zone {
   display: grid;
   grid-template-columns: repeat(3, 150px);

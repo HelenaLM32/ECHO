@@ -300,3 +300,208 @@
     text-align: center;
   }
 }
+
+/* ============================================
+   MEDIA QUERIES ADICIONALES - MÓVIL
+   ============================================ */
+
+/* Tablets (768px) */
+@media (max-width: 768px) {
+  .od-page {
+    margin: 0 5%;
+    padding: 1.5rem 1rem;
+  }
+
+  .od-title {
+    font-size: 1.5rem;
+  }
+
+  .od-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .od-summary-card {
+    position: static;
+  }
+
+  .od-messages {
+    max-height: 350px;
+  }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .od-page {
+    margin: 0;
+    padding: 1rem;
+  }
+
+  .od-title {
+    font-size: 1.25rem;
+  }
+
+  .od-header {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .od-header__left {
+    gap: 0.75rem;
+  }
+
+  .od-header__img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .od-header__title {
+    font-size: 1rem;
+  }
+
+  .od-header__meta {
+    font-size: 0.8rem;
+  }
+
+  .od-section-title {
+    font-size: 0.75rem;
+  }
+
+  .od-messages {
+    max-height: 300px;
+    gap: 0.75rem;
+  }
+
+  .od-message {
+    max-width: 90%;
+    padding: 0.625rem 0.875rem;
+  }
+
+  .od-message__text {
+    font-size: 0.875rem;
+  }
+
+  .od-input-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .od-input {
+    min-height: 44px;
+  }
+
+  .od-send-btn {
+    width: 100%;
+    padding: 0.625rem;
+  }
+
+  .od-summary-title {
+    font-size: 0.8rem;
+  }
+
+  .od-summary-row {
+    font-size: 0.9rem;
+  }
+
+  .od-summary-row.total {
+    font-size: 1.1rem;
+  }
+
+  .od-review-section {
+    padding: 1rem;
+  }
+
+  .od-review-comment {
+    min-height: 80px;
+  }
+}
+
+/* Móviles pequeños (480px) */
+@media (max-width: 480px) {
+  .od-page {
+    padding: 0.75rem;
+  }
+
+  .od-title {
+    font-size: 1.1rem;
+  }
+
+  .od-back-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .od-header {
+    padding: 0.75rem;
+  }
+
+  .od-header__img {
+    width: 44px;
+    height: 44px;
+  }
+
+  .od-header__title {
+    font-size: 0.9rem;
+  }
+
+  .od-header__meta {
+    font-size: 0.75rem;
+  }
+
+  .od-status-badge {
+    font-size: 0.65rem;
+    padding: 3px 8px;
+  }
+
+  .od-section-title {
+    font-size: 0.7rem;
+  }
+
+  .od-messages {
+    max-height: 250px;
+    gap: 0.625rem;
+  }
+
+  .od-message {
+    max-width: 95%;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .od-message__text {
+    font-size: 0.8rem;
+  }
+
+  .od-message__time {
+    font-size: 0.65rem;
+  }
+
+  .od-summary-card {
+    padding: 1rem;
+  }
+
+  .od-summary-row {
+    font-size: 0.85rem;
+  }
+
+  .od-summary-row.total {
+    font-size: 1rem;
+  }
+
+  .od-review-section {
+    padding: 0.75rem;
+  }
+
+  .od-review-title {
+    font-size: 0.9rem;
+  }
+
+  .od-review-comment {
+    min-height: 70px;
+    padding: 0.625rem;
+  }
+
+  .od-review-submit {
+    width: 100%;
+    padding: 0.625rem;
+  }
+}

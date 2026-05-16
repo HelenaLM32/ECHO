@@ -181,3 +181,128 @@
         direction: ltr;
     }
 }
+
+/* ============================================
+   MEDIA QUERIES ADICIONALES - MÓVIL
+   ============================================ */
+
+/* Tablets (768px) */
+@media (max-width: 768px) {
+    .about-hero-title {
+        font-size: 2rem;
+    }
+
+    .about-hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .about-section-title {
+        font-size: 1.5rem;
+    }
+
+    .about-row-title {
+        font-size: 1.25rem;
+    }
+
+    .about-row-text {
+        font-size: 0.95rem;
+    }
+
+    .about-row-placeholder {
+        min-height: 200px;
+    }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+    .about-hero {
+        padding: 60px 16px 48px;
+    }
+
+    .about-hero-title {
+        font-size: 1.75rem;
+    }
+
+    .about-hero-subtitle {
+        font-size: 0.95rem;
+    }
+
+    .about-sections {
+        padding: 44px 16px 60px;
+        gap: 44px;
+    }
+
+    .about-section-title {
+        font-size: 1.25rem;
+        margin-bottom: 20px;
+    }
+
+    .about-row {
+        gap: 20px;
+    }
+
+    .about-row-title {
+        font-size: 1.1rem;
+    }
+
+    .about-row-text {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    .about-row-placeholder {
+        min-height: 180px;
+        border-radius: 14px;
+    }
+
+    .about-row-placeholder span {
+        font-size: 0.75rem;
+    }
+}
+
+/* Móviles pequeños (480px) */
+@media (max-width: 480px) {
+    .about-hero {
+        padding: 50px 12px 40px;
+    }
+
+    .about-hero-title {
+        font-size: 1.5rem;
+    }
+
+    .about-hero-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .about-sections {
+        padding: 36px 12px 48px;
+        gap: 36px;
+    }
+
+    .about-section-title {
+        font-size: 1.1rem;
+        margin-bottom: 16px;
+    }
+
+    .about-row {
+        gap: 16px;
+    }
+
+    .about-row-title {
+        font-size: 1rem;
+    }
+
+    .about-row-text {
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+    .about-row-placeholder {
+        min-height: 150px;
+        border-radius: 12px;
+    }
+
+    .about-row-placeholder span {
+        font-size: 0.7rem;
+    }
+}

@@ -195,3 +195,170 @@
     width: auto;
 }
 
+/* ============================================
+   MEDIA QUERIES - MÓVIL
+   ============================================ */
+
+/* Tablets (768px) */
+@media (max-width: 768px) {
+  .login-container {
+    grid-template-columns: 1fr;
+    overflow: auto;
+  }
+
+  .login-cont {
+    padding: 40px;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .login-cont h1 {
+    font-size: 50px;
+  }
+
+  .login-form {
+    max-width: 100%;
+  }
+
+  .login-cont2 {
+    display: none;
+  }
+
+  .btn-iniciar {
+    margin-top: 30px;
+  }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .login-cont {
+    padding: 30px 20px;
+    justify-content: flex-start;
+    padding-top: 60px;
+  }
+
+  .login-cont h1 {
+    font-size: 36px;
+    letter-spacing: -1px;
+  }
+
+  .login-form {
+    gap: 12px;
+  }
+
+  .login-cont input {
+    height: 46px;
+    padding: 0 16px;
+    font-size: 15px;
+  }
+
+  .btn-iniciar {
+    margin-top: 20px;
+    height: 46px;
+    font-size: 15px;
+  }
+
+  .oauth-buttons {
+    gap: 8px;
+  }
+
+  .oauth-btn {
+    height: 46px;
+    font-size: 14px;
+    padding: 0 16px;
+  }
+
+  .oauth-separator {
+    margin: 8px 0;
+    font-size: 12px;
+  }
+
+  .div-circulos {
+    margin-top: 30px;
+    gap: 8px;
+  }
+
+  .circulo {
+    width: 44px;
+    height: 44px;
+  }
+
+  .register-text {
+    font-size: 14px;
+  }
+
+  .auth-logo {
+    height: 28px;
+  }
+
+  .auth-logo-link {
+    margin-bottom: 24px;
+  }
+
+  .div-linia {
+    margin-top: 8px;
+  }
+}
+
+/* Móviles pequeños (480px) */
+@media (max-width: 480px) {
+  .login-cont {
+    padding: 20px 16px;
+    padding-top: 40px;
+  }
+
+  .login-cont h1 {
+    font-size: 28px;
+    letter-spacing: -0.5px;
+  }
+
+  .login-form {
+    gap: 10px;
+  }
+
+  .login-cont input {
+    height: 44px;
+    padding: 0 14px;
+    font-size: 14px;
+    border-radius: 20px;
+  }
+
+  .btn-iniciar {
+    margin-top: 16px;
+    height: 44px;
+    font-size: 14px;
+    border-radius: 20px;
+  }
+
+  .oauth-buttons {
+    gap: 6px;
+  }
+
+  .oauth-btn {
+    height: 44px;
+    font-size: 13px;
+    padding: 0 14px;
+    border-radius: 20px;
+  }
+
+  .oauth-separator {
+    margin: 6px 0;
+    font-size: 11px;
+  }
+
+  .div-circulos {
+    margin-top: 24px;
+    gap: 6px;
+  }
+
+  .circulo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .register-text {
+    font-size: 13px;
+    margin-top: 16px;
+  }
+}
+

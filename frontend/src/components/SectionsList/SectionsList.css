@@ -54,3 +54,57 @@
 .section-card.is-active .section-title {
     color: var(--black);
 }
+
+/* ============================================
+   MEDIA QUERIES - RESPONSIVE
+   ============================================ */
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+    .sections-container {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: center;
+        gap: 6px;
+        margin: 8px 0;
+        padding: 0 10px;
+    }
+
+    .section-item {
+        flex: 0 1 auto;
+    }
+
+    .section-card {
+        width: auto;
+        padding: 4px 14px;
+        font-size: 12px;
+        height: 32px;
+        border-radius: 20px;
+    }
+
+    .section-title {
+        font-size: 12px;
+    }
+}
+
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
+    .sections-container {
+        width: 85%;
+        max-width: 340px;
+        margin: 6px auto;
+        padding: 0;
+    }
+    
+    .section-card {
+        padding: 3px 10px;
+        font-size: 11px;
+        height: 28px;
+        border-radius: 15px;
+    }
+
+    .section-title {
+        font-size: 11px;
+    }
+}
