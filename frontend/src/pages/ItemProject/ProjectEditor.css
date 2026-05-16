@@ -647,13 +647,6 @@
   color: var(--black, #282828);
 }
 
-@media (max-width: 720px) {
-  .modal { width: 100%; padding: 20px }
-  .modalButtons { flex-direction: column-reverse; gap: 15px; }
-  .modalButton { width: 100%; }
-  .modalSave { padding: 14px 40px; }
-}
-
 .previewWindow {
   width: min(1600px, 100%);
   background: transparent;
@@ -790,7 +783,12 @@
   align-self: stretch;
 }
 
-@media (max-width: 1080px) {
+/* ============================================
+   MEDIA QUERIES - RESPONSIVE
+   ============================================ */
+
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
   .layoutPage {
     flex-direction: column;
     height: auto;
@@ -802,6 +800,7 @@
     height: auto;
     min-height: 50vh;
     overflow-y: visible;
+    padding: 20px;
   }
 
   .sidebarPanel {
@@ -814,15 +813,22 @@
     overflow-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    padding: 20px;
   }
 
   .sidebarPanel::-webkit-scrollbar {
     display: none;
   }
-}
 
-/* Tablets (768px) */
-@media (max-width: 768px) {
+  .sidebarContent {
+    gap: 20px;
+  }
+
+  .sidebarIsland {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
   .modal {
     width: 90%;
     padding: 24px;
@@ -872,6 +878,20 @@
   .sidebarPanel {
     max-height: 35vh;
     padding: 10px;
+  }
+
+  .sidebarContent {
+    gap: 16px;
+  }
+
+  .sidebarIsland {
+    padding: 16px;
+    border-radius: 16px;
+    gap: 12px;
+  }
+
+  .sidebarHeading {
+    font-size: 0.85rem;
   }
 
   .modal {
@@ -941,22 +961,58 @@
   .previewContentList {
     gap: 15px;
   }
+
+  .project-delete-button {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    top: 10px;
+    right: 10px;
+  }
 }
 
-/* Móviles pequeños (480px) */
-@media (max-width: 480px) {
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
   .layoutPage {
-    padding: 5px;
+    padding: 8px;
   }
 
   .editorArea {
-    padding: 5px;
+    padding: 8px;
     min-height: 35vh;
   }
 
   .sidebarPanel {
     max-height: 30vh;
     padding: 8px;
+  }
+
+  .sidebarContent {
+    gap: 12px;
+  }
+
+  .sidebarIsland {
+    padding: 12px;
+    border-radius: 14px;
+    gap: 10px;
+  }
+
+  .sidebarHeading {
+    font-size: 0.8rem;
+  }
+
+  .sidebarButtonGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .sidebarButton {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+
+  .sidebarButtonIcon svg {
+    width: 24px;
+    height: 24px;
   }
 
   .modal {
@@ -995,13 +1051,9 @@
     padding: 10px;
   }
 
-  .sidebarHeading {
+  .backgroundModeButton {
+    padding: 6px 10px;
     font-size: 0.8rem;
-  }
-
-  .sidebarButtonGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
   }
 
   .actionButton {
@@ -1019,5 +1071,19 @@
     width: 32px;
     height: 32px;
     font-size: 18px;
+    top: 8px;
+    right: 8px;
+  }
+
+  .project-delete-button {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    top: 8px;
+    right: 8px;
+  }
+
+  .pv-order-btn {
+    padding: 10px 24px;
+    font-size: 0.9rem;
   }
 }

@@ -153,19 +153,467 @@
   line-height: 1.35;
 }
 
-@media (max-width: 960px) {
+/* ============================================
+   MEDIA QUERIES - RESPONSIVE
+   ============================================ */
+
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
+  .editorBlockList {
+    max-width: 800px;
+    padding: 20px;
+    max-height: 65vh;
+  }
+
+  .emptyProjectCard {
+    padding: 50px 40px;
+  }
+
   .emptyProjectActions {
-    grid-template-columns: repeat(2, minmax(140px, 1fr));
+    grid-template-columns: repeat(3, minmax(140px, 1fr));
+  }
+
+  .blockContentArea {
+    max-width: 700px;
   }
 }
 
-@media (max-width: 620px) {
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .editorBlockList {
+    padding: 16px;
+    border-radius: 16px;
+    gap: 10px;
+    max-height: 60vh;
+  }
+
   .emptyProjectCard {
-    padding: 40px 20px;
+    padding: 40px 24px;
+    gap: 24px;
+  }
+
+  .emptyProjectTitle span {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+  }
+
+  .emptyProjectTitle strong {
+    font-size: clamp(1.2rem, 4vw, 2rem);
+  }
+
+  .emptyProjectHint {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .emptyProjectActions {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+    gap: 12px;
+  }
+
+  .emptyActionButton {
+    padding: 20px 12px;
+    min-height: 150px;
+    gap: 10px;
+  }
+
+  .emptyActionIcon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .iconImg svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .emptyActionLabel {
+    font-size: 0.85rem;
+  }
+
+  .blockCard {
+    padding: 10px;
+    border-radius: 40px;
+  }
+
+  .blockCard+.blockCard {
+    margin-top: 10px;
+  }
+
+  .blockContentArea {
+    max-width: 100%;
+    gap: 8px;
+  }
+
+  .textInputArea,
+  .videoUrlInput,
+  .backgroundGradientInput,
+  .headingSelect,
+  .fontSelect,
+  .uploadDropZone,
+  .galleryControlItem input,
+  .galleryControlItem select {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    border-radius: 14px;
+  }
+
+  .textInputArea {
+    min-height: 100px;
+  }
+
+  .richTextToolbar {
+    padding: 4px 6px;
+    border-radius: 14px;
+  }
+
+  .toolbarActionButton {
+    width: 26px;
+    height: 26px;
+  }
+
+  .toolbarIcon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .uploadDropZone {
+    min-height: 120px;
+  }
+
+  .audioPlayerWrapper {
+    padding: 8px 12px;
+    border-radius: 20px;
+  }
+
+  .audioPlayerCustom {
+    gap: 10px;
+  }
+
+  .audioPlayerPlayBtn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .audioPlayerPlayBtn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .audioPlayerTime {
+    font-size: 0.7rem;
+    min-width: 60px;
+  }
+
+  .galleryControlBar {
+    gap: 8px;
+  }
+
+  .galleryControlItem {
+    padding: 3px 6px;
+    font-size: 0.75rem;
+  }
+
+  .galleryGrid {
+    gap: 8px;
+  }
+
+  .reorderPanel {
+    width: min(380px, 95vw);
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .reorderItem {
+    padding: 10px 12px;
+    border-radius: 14px;
+  }
+
+  .previewEmptyMessage {
+    width: 80%;
+    font-size: 24px;
+    min-height: 200px;
+  }
+}
+
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
+  .editorBlockList {
+    padding: 12px;
+    border-radius: 14px;
+    gap: 8px;
+    max-height: 55vh;
+  }
+
+  .emptyProjectCard {
+    padding: 30px 16px;
+    gap: 20px;
+  }
+
+  .emptyProjectTitle span {
+    font-size: clamp(2rem, 10vw, 3rem);
+  }
+
+  .emptyProjectTitle strong {
+    font-size: clamp(1rem, 5vw, 1.6rem);
+  }
+
+  .emptyProjectHint {
+    font-size: 0.85rem;
+    line-height: 1.5;
   }
 
   .emptyProjectActions {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .emptyActionButton {
+    padding: 16px 12px;
+    min-height: 120px;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 16px;
+    border-radius: 16px;
+  }
+
+  .emptyActionIcon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .iconImg svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .emptyActionLabel {
+    font-size: 0.9rem;
+    text-align: left;
+  }
+
+  .blockCard {
+    padding: 8px;
+    border-radius: 30px;
+  }
+
+  .blockCard+.blockCard {
+    margin-top: 8px;
+  }
+
+  .blockCardHeader {
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .blockActionGroup {
+    gap: 6px;
+  }
+
+  .blockActionButton {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+  }
+
+  .blockActionButton svg {
+    width: 10px;
+    height: 10px;
+  }
+
+  .textInputArea,
+  .videoUrlInput,
+  .backgroundGradientInput,
+  .headingSelect,
+  .fontSelect,
+  .uploadDropZone,
+  .galleryControlItem input,
+  .galleryControlItem select {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    border-radius: 12px;
+    min-height: 40px;
+  }
+
+  .textInputArea {
+    min-height: 80px;
+  }
+
+  .richTextToolbar {
+    padding: 3px 4px;
+    border-radius: 12px;
+    gap: 2px;
+  }
+
+  .toolbarActionButton {
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+  }
+
+  .toolbarIcon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .toolbarDivider {
+    height: 16px;
+    margin: 0 2px;
+  }
+
+  .richTextEditor {
+    min-height: 80px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+  }
+
+  .uploadDropZone {
+    min-height: 100px;
+    font-size: 0.85rem;
+  }
+
+  .image {
+    max-height: 50vh;
+  }
+
+  .audioPlayerWrapper {
+    padding: 6px 10px;
+    border-radius: 18px;
+  }
+
+  .audioPlayerCustom {
+    gap: 8px;
+  }
+
+  .audioPlayerPlayBtn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .audioPlayerPlayBtn svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .audioPlayerProgress {
+    height: 3px;
+  }
+
+  .audioPlayerProgress::-webkit-slider-thumb {
+    width: 10px;
+    height: 10px;
+  }
+
+  .audioPlayerProgress::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+  }
+
+  .audioPlayerTime {
+    font-size: 0.65rem;
+    min-width: 50px;
+  }
+
+  .audioPlayerVolumeBtn {
+    width: 24px;
+    height: 24px;
+  }
+
+  .audioPlayerVolumeBtn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .galleryControlBar {
+    gap: 6px;
+  }
+
+  .galleryControlItem {
+    padding: 2px 5px;
+    font-size: 0.7rem;
+    gap: 6px;
+  }
+
+  .galleryControlItem input,
+  .galleryControlItem select {
+    min-height: 24px;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+  }
+
+  .galleryGrid {
+    gap: 6px;
+  }
+
+  .galleryItemRemoveButton {
+    width: 16px;
+    height: 16px;
+    top: 4px;
+    right: 4px;
+  }
+
+  .galleryItemRemoveButton svg {
+    width: 8px;
+    height: 8px;
+  }
+
+  .reorderToggle {
+    padding: 6px 10px;
+    font-size: 1rem;
+    border-radius: 10px;
+  }
+
+  .reorderPanel {
+    width: min(340px, 95vw);
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .reorderHeader {
+    margin-bottom: 12px;
+  }
+
+  .reorderList {
+    gap: 8px;
+  }
+
+  .reorderItem {
+    padding: 8px 10px;
+    border-radius: 12px;
+    gap: 10px;
+  }
+
+  .reorderIndex {
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
+  }
+
+  .reorderThumbnail {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+  }
+
+  .reorderLabel {
+    font-size: 0.85rem;
+  }
+
+  .reorderBtn {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+  }
+
+  .reorderBtn svg {
+    width: 10px;
+    height: 10px;
+  }
+
+  .previewEmptyMessage {
+    width: 90%;
+    font-size: 20px;
+    min-height: 160px;
   }
 }
 
