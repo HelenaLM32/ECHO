@@ -140,12 +140,10 @@
     height: 32px;
     width: auto;
 }
-
 .password-wrapper {
   position: relative;
   display: flex;
   align-items: center;
-  width: 100%;
 }
 
 .password-wrapper input {
@@ -155,18 +153,21 @@
 
 .toggle-password-btn {
   position: absolute;
-  right: 16px;          
-  top: 50%;             
-  transform: translateY(-50%); 
+  right: 12px;
   background: none;
   border: none;
   cursor: pointer;
   padding: 0;
-  display: flex;       
-  align-items: center; 
-  justify-content: center;
-  line-height: 1;
-  z-index: 2;           
+  display: flex;
+  align-items: center;
+}
+
+.toggle-password-btn svg {
+  width: 20px;
+  height: 20px;
+}
+.toggle-password-btn:hover svg {
+  fill: var(--orange);
 }
 
 /* ============================================

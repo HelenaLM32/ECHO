@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import OAuthButtons from "../../components/UI/OAuthButtons/OAuthButtons";
-import ojoAbierto from '../../assets/ojo-abierto.png';
+
 import "./Login.css";
 
 export default function Login() {
@@ -67,16 +67,13 @@ export default function Login() {
     type="button"
     className="toggle-password-btn"
   >
-    <img 
-      src={ojoAbierto} 
-      alt="Control de contraseña" 
-      style={{ 
-        width: '20px', 
-        height: '20px',
-        opacity: showPassword ? 1 : 0.4, 
-        transition: 'opacity 0.2s ease' 
-      }} 
-    />
+   <svg fill="#B8B4B0" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+  <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+  <g id="SVGRepo_iconCarrier">
+    <path d="M0 8c0-4.418 3.59-8 8-8 4.418 0 8 3.59 8 8 0 4.418-3.59 8-8 8-4.418 0-8-3.59-8-8zm2 0c0 3.307 2.686 6 6 6 3.307 0 6-2.686 6-6 0-3.307-2.686-6-6-6-3.307 0-6 2.686-6 6zm2 0c0-2.21 1.795-4 4-4 2.21 0 4 1.795 4 4 0 2.21-1.795 4-4 4-2.21 0-4-1.795-4-4zm2 0c0 1.112.895 2 2 2 1.112 0 2-.895 2-2 0-1.112-.895-2-2-2-1.112 0-2 .895-2 2z" fillRule="evenodd"></path>
+  </g>
+</svg>
   </button>
 </div>
 
