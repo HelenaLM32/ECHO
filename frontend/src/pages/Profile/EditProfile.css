@@ -193,3 +193,126 @@
   .edit-grid { grid-template-columns: 1fr; }
   .edit-card { padding: 20px; }
 }
+
+/* ============================================
+   MEDIA QUERIES ADICIONALES - MÓVIL
+   ============================================ */
+
+/* Tablets (768px) */
+@media (max-width: 768px) {
+  .edit-profile-container {
+    padding: 20px;
+  }
+
+  .edit-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .edit-card {
+    padding: 24px;
+  }
+
+  .edit-title {
+    font-size: 1.5rem;
+  }
+
+  .avatar-upload {
+    width: 100px;
+    height: 100px;
+  }
+
+  .avatar-placeholder {
+    font-size: 2rem;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 15px;
+  }
+
+  .social-row {
+    padding: 10px 12px;
+  }
+
+  .btn-save {
+    padding: 12px 24px;
+    font-size: 0.9rem;
+  }
+
+  .edit-iframe-preview {
+    height: 300px;
+  }
+}
+
+/* Móviles pequeños (480px) */
+@media (max-width: 480px) {
+  .edit-profile-container {
+    padding: 15px;
+  }
+
+  .edit-card {
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  .edit-title {
+    font-size: 1.25rem;
+  }
+
+  .avatar-upload {
+    width: 90px;
+    height: 90px;
+  }
+
+  .avatar-placeholder {
+    font-size: 1.75rem;
+  }
+
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  .form-group label {
+    font-size: 0.75rem;
+    margin-bottom: 5px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+
+  .social-section {
+    padding: 15px;
+  }
+
+  .social-row {
+    padding: 8px 10px;
+  }
+
+  .social-label {
+    font-size: 0.8rem;
+    width: 60px;
+  }
+
+  .edit-actions {
+    margin-top: 15px;
+  }
+
+  .btn-save {
+    width: 100%;
+    padding: 12px;
+    font-size: 0.85rem;
+  }
+
+  .msg {
+    padding: 10px;
+    font-size: 0.8rem;
+  }
+
+  .edit-iframe-preview {
+    height: 250px;
+  }
+}

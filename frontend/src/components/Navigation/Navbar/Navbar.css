@@ -262,3 +262,410 @@
     background-color: var(--black-secondary);
     color: var(--white);
 }
+
+/* Logo */
+.logo {
+    height: 32px;
+    width: auto;
+    display: block;
+}
+
+/* ============================================
+   MEDIA QUERIES - RESPONSIVE NAVBAR
+   ============================================ */
+
+/* Desktop (1024px) */
+@media (max-width: 1024px) {
+    .nav-links {
+        margin-left: 30px;
+        gap: 15px;
+    }
+    
+    .nav-item {
+        padding: 5px 6px 5px 16px;
+    }
+    
+    .nav-item-label {
+        font-size: 16px;
+    }
+    
+    .nav-left {
+        margin-left: 15px;
+    }
+    
+    .nav-right {
+        margin-right: 20px;
+    }
+}
+
+/* Tablets (768px) */
+@media (max-width: 768px) {
+    .nav-bar {
+        padding: 6px;
+    }
+    
+    .nav-left {
+        width: 60px;
+        margin-left: 10px;
+    }
+    
+    .nav-links {
+        margin-left: 15px;
+        gap: 10px;
+    }
+    
+    .nav-item {
+        padding: 4px 5px 4px 12px;
+    }
+    
+    .nav-item::before {
+        width: 5px;
+        height: 5px;
+        left: 4px;
+    }
+    
+    .nav-item-label {
+        font-size: 14px;
+    }
+    
+    .nav-right {
+        margin-right: 15px;
+        gap: 8px;
+    }
+    
+    .nav-user-avatar {
+        width: 34px;
+        height: 34px;
+    }
+    
+    .nav-avatar-initials {
+        font-size: 14px;
+    }
+    
+    .btn {
+        padding-left: 20px;
+        padding-right: 20px;
+        height: 38px;
+        font-size: 14px;
+    }
+    
+    /* Dropdowns más compactos */
+    .nav-dropdown-menu {
+        min-width: 150px;
+        padding: 6px;
+    }
+    
+    .nav-dropdown-link {
+        font-size: 13px;
+        padding: 6px 8px 6px 18px;
+    }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+    .nav-bar {
+        padding: 8px 10px;
+        flex-wrap: wrap;
+    }
+    
+    .nav-left {
+        width: 55px;
+        margin-left: 5px;
+    }
+    
+    /* Ocultar links de navegación en móvil, mostrar menú hamburguesa */
+    .nav-links {
+        display: none;
+        width: 100%;
+        order: 3;
+        margin-left: 0;
+        margin-top: 10px;
+        flex-direction: column;
+        gap: 5px;
+        padding: 10px 0;
+        border-top: 1px solid var(--gray-stroke);
+    }
+    
+    .nav-links.active {
+        display: flex;
+    }
+    
+    .nav-item {
+        padding: 10px 15px;
+        width: 100%;
+        border-radius: 8px;
+    }
+    
+    .nav-item::before {
+        left: 5px;
+    }
+    
+    /* Botón hamburguesa */
+    .nav-mobile-toggle {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 40px;
+        height: 40px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        gap: 5px;
+        margin-left: auto;
+        margin-right: 10px;
+    }
+    
+    .nav-mobile-toggle span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: var(--black);
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-mobile-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+    
+    .nav-mobile-toggle.active span:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .nav-mobile-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px);
+    }
+    
+    .nav-right {
+        margin-right: 5px;
+        gap: 6px;
+    }
+    
+    .nav-user-avatar {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .nav-avatar-initials {
+        font-size: 12px;
+    }
+    
+    .btn {
+        padding-left: 15px;
+        padding-right: 15px;
+        height: 36px;
+        font-size: 13px;
+    }
+    
+    .btn-secondary,
+    .btn-primary {
+        font-size: 13px;
+    }
+    
+    /* Ajustar dropdowns */
+    .nav-dropdown-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        pointer-events: auto;
+        box-shadow: none;
+        border: none;
+        background: transparent;
+        padding: 5px 0 5px 15px;
+        min-width: 0;
+    }
+    
+    .nav-dropdown-link {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+}
+
+/* Móviles pequeños (480px) */
+@media (max-width: 480px) {
+    .nav-bar {
+        padding: 6px 8px;
+    }
+    
+    .nav-left {
+        width: 50px;
+        margin-left: 5px;
+    }
+    
+    .nav-mobile-toggle {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .nav-mobile-toggle span {
+        width: 20px;
+        height: 2px;
+    }
+    
+    .nav-right {
+        margin-right: 5px;
+        gap: 5px;
+    }
+    
+    .nav-user-avatar {
+        width: 30px;
+        height: 30px;
+        border-width: 1.5px;
+    }
+    
+    .nav-avatar-initials {
+        font-size: 11px;
+    }
+    
+    .btn {
+        padding-left: 12px;
+        padding-right: 12px;
+        height: 34px;
+        font-size: 12px;
+    }
+    
+    .btn-secondary,
+    .btn-primary {
+        font-size: 12px;
+    }
+    
+    .nav-item-label {
+        font-size: 14px;
+    }
+    
+    .nav-dropdown-link {
+        font-size: 12px;
+        padding: 6px 8px;
+    }
+}
+
+/* Desktop - Ocultar menú hamburguesa */
+@media (min-width: 601px) {
+    .nav-mobile-toggle {
+        display: none;
+    }
+}
+
+/* ============================================
+   MEJORAS ADICIONALES RESPONSIVE NAVBAR
+   ============================================ */
+
+/* Pantallas muy pequeñas (400px) */
+@media (max-width: 400px) {
+    .logo {
+        height: 24px;
+    }
+    
+    .nav-left {
+        width: 40px;
+    }
+    
+    .nav-mobile-toggle {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .nav-mobile-toggle span {
+        width: 18px;
+    }
+    
+    .nav-right {
+        gap: 4px;
+    }
+    
+    .nav-user-avatar {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .nav-avatar-initials {
+        font-size: 10px;
+    }
+    
+    .btn {
+        padding-left: 10px;
+        padding-right: 10px;
+        height: 32px;
+        font-size: 11px;
+    }
+    
+    .nav-item-label {
+        font-size: 13px;
+    }
+}
+
+/* Pantallas muy grandes (1400px+) */
+@media (min-width: 1400px) {
+    .nav-links {
+        margin-left: 80px;
+        gap: 25px;
+    }
+    
+    .nav-item-label {
+        font-size: 20px;
+    }
+    
+    .logo {
+        height: 40px;
+    }
+    
+    .nav-user-avatar {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .nav-avatar-initials {
+        font-size: 18px;
+    }
+    
+    .btn {
+        padding-left: 35px;
+        padding-right: 35px;
+        height: 46px;
+        font-size: 16px;
+    }
+}
+
+/* Orientación landscape en móviles */
+@media (max-height: 500px) and (orientation: landscape) {
+    .nav-bar {
+        padding: 4px 8px;
+    }
+    
+    .nav-links.active {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+    
+    .nav-item {
+        padding: 6px 10px;
+    }
+}
+
+/* Mejoras de accesibilidad - focus visible */
+.nav-mobile-toggle:focus-visible {
+    outline: 2px solid var(--orange);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Transiciones suaves para el menú móvil */
+.nav-links {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.nav-links:not(.active) {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
+
+@media (min-width: 601px) {
+    .nav-links {
+        opacity: 1 !important;
+        transform: none !important;
+        pointer-events: auto !important;
+    }
+}

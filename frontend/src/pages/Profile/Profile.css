@@ -474,3 +474,161 @@
 
 .pc-btn-edit:hover { background-color: var(--black); transform: scale(1.1); color: var(--white);}
 .pc-btn-delete:hover { background-color: var(--black); transform: scale(1.1); }
+
+/* ============================================
+   MEDIA QUERIES - MÓVIL
+   ============================================ */
+
+/* Tablets (768px) */
+@media (max-width: 768px) {
+  .profile-banner-wrapper {
+    height: 200px;
+  }
+
+  .avatar-float-wrapper {
+    padding: 0 20px;
+    margin-top: -50px;
+  }
+
+  .avatar-container {
+    width: 100px;
+    height: 100px;
+  }
+
+  .profile-content {
+    padding: 20px;
+  }
+
+  .content-tabs {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tab-item {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
+
+  .projects-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+  }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .profile-banner-wrapper {
+    height: 160px;
+  }
+
+  .avatar-float-wrapper {
+    padding: 0 16px;
+    margin-top: -40px;
+  }
+
+  .avatar-container {
+    width: 80px;
+    height: 80px;
+    border-width: 3px;
+  }
+
+  .profile-content {
+    padding: 16px;
+  }
+
+  .content-tabs {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tab-item {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    flex: 1;
+    min-width: 80px;
+  }
+
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .pc-admin-actions {
+    top: 4px;
+    right: 4px;
+  }
+
+  .pc-btn-edit,
+  .pc-btn-delete {
+    width: 24px;
+    height: 24px;
+  }
+
+  .pc-btn-edit svg,
+  .pc-btn-delete svg {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+/* Móviles pequeños (480px) */
+@media (max-width: 480px) {
+  .profile-banner-wrapper {
+    height: 140px;
+  }
+
+  .avatar-float-wrapper {
+    padding: 0 12px;
+    margin-top: -35px;
+  }
+
+  .avatar-container {
+    width: 70px;
+    height: 70px;
+    border-width: 3px;
+  }
+
+  .profile-content {
+    padding: 12px;
+  }
+
+  .main-layout {
+    gap: 20px;
+  }
+
+  .content-tabs {
+    gap: 4px;
+    padding: 4px;
+  }
+
+  .tab-item {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    border-radius: 8px;
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .display-label {
+    font-size: 0.7rem;
+    margin: 20px 0 6px;
+  }
+
+  .display-text,
+  .display-bio {
+    font-size: 0.85rem;
+  }
+
+  .btn-edit-info {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .social-header {
+    justify-content: center;
+    margin: 10px 0;
+  }
+}

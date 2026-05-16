@@ -141,3 +141,134 @@
     width: auto;
 }
 
+/* ============================================
+   MEDIA QUERIES - MÓVIL
+   ============================================ */
+
+/* Tablets (768px) */
+@media (max-width: 768px) {
+  .register-container {
+    grid-template-columns: 1fr;
+  }
+
+  .register-cont {
+    padding: 40px;
+  }
+
+  .register-cont h1 {
+    font-size: 50px;
+  }
+
+  .register-form {
+    max-width: 100%;
+  }
+
+  .register-cont2 {
+    display: none;
+  }
+
+  .btn-register {
+    margin-top: 40px;
+  }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .register-cont {
+    padding: 30px 20px;
+  }
+
+  .register-cont h1 {
+    font-size: 36px;
+    letter-spacing: -1px;
+  }
+
+  .register-form {
+    gap: 12px;
+  }
+
+  .register-cont input {
+    height: 46px;
+    padding: 0 16px;
+    font-size: 15px;
+  }
+
+  .btn-register {
+    margin-top: 30px;
+    height: 46px;
+    font-size: 15px;
+  }
+
+  .register-circles {
+    margin-top: 30px;
+    gap: 8px;
+  }
+
+  .register-circle {
+    width: 44px;
+    height: 44px;
+  }
+
+  .register-text {
+    font-size: 14px;
+    margin-top: 30px;
+  }
+
+  .auth-logo {
+    height: 28px;
+  }
+
+  .auth-logo-link {
+    margin-bottom: 24px;
+  }
+}
+
+/* Móviles pequeños (480px) */
+@media (max-width: 480px) {
+  .register-cont {
+    padding: 20px 16px;
+  }
+
+  .register-cont h1 {
+    font-size: 28px;
+    letter-spacing: -0.5px;
+  }
+
+  .register-form {
+    gap: 10px;
+  }
+
+  .register-cont input {
+    height: 44px;
+    padding: 0 14px;
+    font-size: 14px;
+    border-radius: 20px;
+  }
+
+  .btn-register {
+    margin-top: 24px;
+    height: 44px;
+    font-size: 14px;
+    border-radius: 20px;
+  }
+
+  .register-line {
+    margin-top: 16px;
+  }
+
+  .register-circles {
+    margin-top: 24px;
+    gap: 6px;
+  }
+
+  .register-circle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .register-text {
+    font-size: 13px;
+    margin-top: 24px;
+  }
+}
+

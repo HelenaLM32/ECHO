@@ -196,3 +196,113 @@
     margin-top: 24px !important;
   }
 }
+
+/* ============================================
+   MEDIA QUERIES ADICIONALES - MÓVIL
+   ============================================ */
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .legal-hero {
+    padding: 70px 12px 20px;
+  }
+
+  .legal-hero-inner {
+    padding: 24px 18px;
+    border-radius: 14px;
+  }
+
+  .legal-title {
+    font-size: 1.5rem;
+  }
+
+  .legal-updated {
+    font-size: 0.8rem;
+  }
+
+  .legal-main {
+    padding: 0 12px 20px;
+  }
+
+  .legal-article {
+    padding: 20px 16px 24px;
+    border-radius: 14px;
+  }
+
+  .legal-section {
+    margin-top: 16px;
+    padding-top: 16px;
+  }
+
+  .legal-section h2 {
+    font-size: 1rem;
+  }
+
+  .legal-section p {
+    font-size: 0.9rem;
+  }
+
+  .legal-contact {
+    padding: 14px 16px !important;
+    margin-top: 20px !important;
+  }
+
+  .legal-contact h3 {
+    font-size: 1rem;
+  }
+}
+
+/* Móviles pequeños (480px) */
+@media (max-width: 480px) {
+  .legal-hero {
+    padding: 60px 10px 16px;
+  }
+
+  .legal-hero-inner {
+    padding: 20px 14px;
+    border-radius: 12px;
+  }
+
+  .legal-title {
+    font-size: 1.25rem;
+  }
+
+  .legal-updated {
+    font-size: 0.75rem;
+  }
+
+  .legal-main {
+    padding: 0 10px 16px;
+  }
+
+  .legal-article {
+    padding: 16px 12px 20px;
+    border-radius: 12px;
+  }
+
+  .legal-section {
+    margin-top: 14px;
+    padding-top: 14px;
+  }
+
+  .legal-section h2 {
+    font-size: 0.9rem;
+  }
+
+  .legal-section p {
+    font-size: 0.85rem;
+  }
+
+  .legal-contact {
+    padding: 12px 14px !important;
+    margin-top: 18px !important;
+  }
+
+  .legal-contact h3 {
+    font-size: 0.9rem;
+  }
+
+  .legal-contact p {
+    font-size: 0.8rem;
+  }
+}
