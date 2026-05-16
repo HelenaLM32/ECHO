@@ -105,22 +105,12 @@
   margin: 0;
 }
 
-@media (max-width: 700px) {
-  .od-dispute-page {
-    padding: 1.25rem 1rem;
-  }
-
-  .od-dispute-header {
-    padding: 1rem;
-  }
-}
-
 /* ============================================
-   MEDIA QUERIES ADICIONALES - MÓVIL
+   MEDIA QUERIES - RESPONSIVE
    ============================================ */
 
-/* Tablets (768px) */
-@media (max-width: 768px) {
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
   .od-dispute-page {
     margin: 0 10%;
     padding: 1.5rem 1rem;
@@ -137,6 +127,10 @@
   .od-dispute-open-btn {
     padding: 0.5rem 0.875rem;
     font-size: 0.8rem;
+  }
+
+  .od-dispute-header {
+    padding: 1rem;
   }
 }
 
@@ -185,8 +179,8 @@
   }
 }
 
-/* Móviles pequeños (480px) */
-@media (max-width: 480px) {
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
   .od-dispute-page {
     margin: 0;
     padding: 0.75rem;

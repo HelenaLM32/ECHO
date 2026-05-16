@@ -70,7 +70,7 @@ export default function VenueEventReviews({ targetId, targetType }) {
           setCount(avg.count || 0);
         }
       })
-      .catch(() => {})
+      .catch((err) => { console.error("Error al cargar reviews:", err); })
       .finally(() => mounted && setLoading(false));
     return () => { mounted = false; };
   }, [targetId, targetType]);

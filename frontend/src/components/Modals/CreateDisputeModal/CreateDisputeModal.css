@@ -147,7 +147,12 @@
   cursor: not-allowed;
 }
 
-@media (max-width: 640px) {
+/* ============================================
+   MEDIA QUERIES - RESPONSIVE
+   ============================================ */
+
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
   .create-dispute-modal-content {
     padding: 16px;
     border-radius: 14px;
@@ -155,5 +160,39 @@
 
   .create-dispute-modal-actions {
     flex-direction: column;
+  }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .create-dispute-form-group textarea {
+    min-height: 100px;
+  }
+
+  .create-dispute-btn-secondary,
+  .create-dispute-btn-primary {
+    font-size: 0.85rem;
+    padding: 9px 12px;
+  }
+}
+
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
+  .create-dispute-modal-content {
+    padding: 14px;
+    border-radius: 12px;
+  }
+
+  .create-dispute-modal-header h2 {
+    font-size: 1.05rem;
+  }
+
+  .create-dispute-form-group label {
+    font-size: 0.82rem;
+  }
+
+  .create-dispute-form-group textarea {
+    min-height: 90px;
+    padding: 9px 10px;
   }
 }

@@ -23,7 +23,7 @@
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--orange);
-  background: rgba(233, 94, 35, 0.1);
+  background: var(--orange-light);
   padding: 4px 10px;
   border-radius: 12px;
 }
@@ -34,7 +34,7 @@
   font-weight: 500;
   margin: 0 0 16px 0;
   padding: 10px 14px;
-  background: rgba(233, 94, 35, 0.08);
+  background: var(--orange-lighter);
   border-radius: 8px;
   border-left: 3px solid var(--orange);
 }
@@ -67,17 +67,17 @@
   border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 4px 12px var(--shadow-light);
 }
 
 .spp-card:hover {
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 8px 24px var(--shadow-medium);
   border-color: var(--orange);
 }
 
 .spp-card.selected {
   border-color: var(--orange);
-  box-shadow: 0 4px 16px rgba(233, 94, 35, 0.2);
+  box-shadow: 0 4px 16px var(--shadow-orange);
 }
 
 .spp-card-cover {
@@ -116,7 +116,7 @@
   justify-content: center;
   font-size: 14px;
   font-weight: 700;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px var(--shadow-medium);
 }
 
 .spp-card-footer {
@@ -133,7 +133,7 @@
   object-fit: cover;
   flex-shrink: 0;
   background: var(--orange);
-  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 2px 6px var(--shadow-light);
 }
 
 .spp-avatar-fallback {
@@ -169,7 +169,30 @@
   font-weight: 500;
 }
 
-@media (max-width: 768px) {
+/* ============================================
+   MEDIA QUERIES - RESPONSIVE
+   ============================================ */
+
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
+  .spp-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+  }
+
+  .spp-card-cover {
+    height: 110px;
+  }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .spp-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
   .spp-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
@@ -178,10 +201,97 @@
   .spp-card-cover {
     height: 100px;
   }
+
+  .spp-card-footer {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .spp-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .spp-card-title {
+    font-size: 0.75rem;
+  }
+
+  .spp-card-author {
+    font-size: 0.65rem;
+  }
+
+  .spp-selected-badge {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    top: 6px;
+    right: 6px;
+  }
+
+  .spp-warning {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
 }
 
-@media (max-width: 480px) {
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
+  .spp-title {
+    font-size: 0.75rem;
+  }
+
+  .spp-counter {
+    font-size: 0.8rem;
+    padding: 3px 8px;
+  }
+
   .spp-grid {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .spp-card {
+    border-radius: 12px;
+  }
+
+  .spp-card-cover {
+    height: 90px;
+  }
+
+  .spp-card-footer {
+    padding: 10px;
+  }
+
+  .spp-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .spp-card-title {
+    font-size: 0.85rem;
+  }
+
+  .spp-card-author {
+    font-size: 0.75rem;
+  }
+
+  .spp-cover-fallback {
+    font-size: 1.5rem;
+  }
+
+  .spp-selected-badge {
+    width: 26px;
+    height: 26px;
+    font-size: 13px;
+  }
+
+  .spp-empty {
+    padding: 20px;
+    font-size: 13px;
+  }
+
+  .spp-loading {
+    padding: 16px;
+    font-size: 13px;
   }
 }

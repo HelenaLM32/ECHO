@@ -1,3 +1,5 @@
+@import '../Auth.css';
+
 .register-container {
     background-color: var(--true-white);
     display: grid;
@@ -44,7 +46,7 @@
 .register-cont input:focus {
     outline: none;
     border-color: var(--gray);
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 8px var(--shadow-light);
 }
 
 
@@ -171,11 +173,11 @@
 }
 
 /* ============================================
-   MEDIA QUERIES - MÓVIL
+   MEDIA QUERIES - RESPONSIVE
    ============================================ */
 
-/* Tablets (768px) */
-@media (max-width: 768px) {
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
   .register-container {
     grid-template-columns: 1fr;
   }
@@ -242,18 +244,10 @@
     font-size: 14px;
     margin-top: 30px;
   }
-
-  .auth-logo {
-    height: 28px;
-  }
-
-  .auth-logo-link {
-    margin-bottom: 24px;
-  }
 }
 
-/* Móviles pequeños (480px) */
-@media (max-width: 480px) {
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
   .register-cont {
     padding: 20px 16px;
   }

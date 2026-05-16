@@ -228,7 +228,12 @@
   margin: 15px 0;
 }
 
-@media (max-width: 680px) {
+/* ============================================
+   MEDIA QUERIES - RESPONSIVE
+   ============================================ */
+
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
   .dispute-panel {
     padding: 15px;
   }
@@ -240,5 +245,44 @@
 
   .messages-list {
     max-height: 340px;
+  }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .message-header {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}
+
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
+  .dispute-panel {
+    padding: 12px;
+  }
+
+  .dispute-reason,
+  .dispute-resolution,
+  .message-form,
+  .close-form,
+  .close-dispute-section {
+    padding: 12px;
+  }
+
+  .message-item {
+    padding: 10px;
+  }
+
+  .messages-list {
+    max-height: 280px;
   }
 }

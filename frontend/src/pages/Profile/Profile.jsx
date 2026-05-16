@@ -12,7 +12,7 @@ import { getVenuesByUser, deleteVenue } from "../../services/venues";
 import { getEventsByUser, deleteEvent } from "../../services/events";
 import { deleteService } from "../../services/services";
 import { getProjectsByUserId, deleteProject } from "../../services/projects";
-import { getAuthToken } from "../../services/session";
+
 import { getAverageByUser, getReviewsByUser } from "../../services/reviews";
 import {
   getFollowStats,
@@ -31,7 +31,7 @@ import DetailModal from "../../components/Modals/DetailModal/DetailModal";
 import ReviewsModal from "../../components/Modals/ReviewsModal/ReviewsModal";
 import PopupConfirm from "../../components/Modals/PopupConfirm/PopupConfirm";
 import PopupSuccess from "../../components/Modals/PopupSuccess/PopupSuccess";
-import ItemServiceDetail from "../../components/ItemService/ItemServiceDetail/ItemServiceDetail";
+import ServiceDetail from "../../components/ItemService/ServiceDetail/ServiceDetail";
 import useConfirmPopup from "../../hooks/useConfirmPopup";
 import useSuccessPopup from "../../hooks/useSuccessPopup";
 
@@ -101,75 +101,104 @@ export default function Profile() {
 
   useEffect(() => {
     if (!targetId) return;
-    getFollowStats(targetId).then(setFollowStats).catch(() => { });
+    getFollowStats(targetId).then(setFollowStats).catch((err) => { console.error("Error al obtener estadísticas de seguimiento:", err); });
     getAverageByUser(targetId)
       .then((data) => setReviewStats({ average: data.average, count: data.count ?? 0 }))
-      .catch(() => { });
+      .catch((err) => { console.error("Error al obtener promedio de reviews:", err); });
 
     if (user && !isOwnProfile) {
-      checkIsFollowing(targetId).then((data) => setIsFollowing(data.following)).catch(() => { });
+      checkIsFollowing(targetId).then((data) => setIsFollowing(data.following)).catch((err) => { console.error("Error al verificar estado de seguimiento:", err); });
     }
   }, [targetId, user, isOwnProfile]);
 
   useEffect(() => {
     if (!targetId || !profile) return;
+    let mounted = true;
 
     const loadTabContent = async () => {
       switch (activeTab) {
         case "Productos":
           setItemsLoading(p => ({ ...p, products: true }));
-          try { setProducts(await getProfileProducts(targetId)); } catch { setProducts([]); }
-          setItemsLoading(p => ({ ...p, products: false }));
+          try { 
+            const data = await getProfileProducts(targetId);
+            if (mounted) setProducts(data);
+          } catch { 
+            if (mounted) setProducts([]);
+          }
+          if (mounted) setItemsLoading(p => ({ ...p, products: false }));
           break;
         case "Servicios":
           setItemsLoading(p => ({ ...p, services: true }));
           try { 
             const servicesData = await getProfileServices(targetId);
-            setServices(servicesData); 
+            if (mounted) setServices(servicesData);
           } catch { 
-            setServices([]); 
+            if (mounted) setServices([]);
           }
-          setItemsLoading(p => ({ ...p, services: false }));
+          if (mounted) setItemsLoading(p => ({ ...p, services: false }));
           break;
         case "Locales":
           setItemsLoading(p => ({ ...p, venues: true }));
-          try { setVenues(await getVenuesByUser(targetId)); } catch { setVenues([]); }
-          setItemsLoading(p => ({ ...p, venues: false }));
+          try { 
+            const data = await getVenuesByUser(targetId);
+            if (mounted) setVenues(data);
+          } catch { 
+            if (mounted) setVenues([]);
+          }
+          if (mounted) setItemsLoading(p => ({ ...p, venues: false }));
           break;
         case "Eventos":
           setItemsLoading(p => ({ ...p, events: true }));
-          try { setEvents(await getEventsByUser(targetId)); } catch { setEvents([]); }
-          setItemsLoading(p => ({ ...p, events: false }));
+          try { 
+            const data = await getEventsByUser(targetId);
+            if (mounted) setEvents(data);
+          } catch { 
+            if (mounted) setEvents([]);
+          }
+          if (mounted) setItemsLoading(p => ({ ...p, events: false }));
           break;
         case "Proyectos":
           setItemsLoading(p => ({ ...p, projects: true }));
-          try { setProjects(await getProjectsByUserId(targetId)); } catch { setProjects([]); }
-          setItemsLoading(p => ({ ...p, projects: false }));
+          try { 
+            const data = await getProjectsByUserId(targetId);
+            if (mounted) setProjects(data);
+          } catch { 
+            if (mounted) setProjects([]);
+          }
+          if (mounted) setItemsLoading(p => ({ ...p, projects: false }));
           break;
         default: break;
       }
     };
     loadTabContent();
+    return () => { mounted = false; };
   }, [activeTab, targetId, profile]);
 
   // Poll for updated projects every 30 seconds to refresh views/likes in real-time
   useEffect(() => {
     if (activeTab !== "Proyectos" || !targetId) return;
 
+    let mounted = true;
     const pollProjects = async () => {
       try {
         const updatedProjects = await getProjectsByUserId(targetId);
+        if (!mounted) return;
         if (updatedProjects && Array.isArray(updatedProjects)) {
           setProjects((prev) => {
             const updatedMap = new Map(updatedProjects.map((p) => [p.id, p]));
             return prev.map((p) => updatedMap.get(p.id) || p);
           });
         }
-      } catch { }
+      } catch (err) {
+        if (mounted) console.error("Error en polling de proyectos:", err);
+      }
     };
 
     const interval = setInterval(pollProjects, 30000);
-    return () => clearInterval(interval);
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+    };
   }, [activeTab, targetId]);
 
   const handleBannerChange = async (e) => {
@@ -247,8 +276,7 @@ export default function Profile() {
       "Confirmar eliminación",
       async () => {
         try {
-          const token = getAuthToken();
-          await deleteService(id, token);
+          await deleteService(id);
           setServices((prev) => prev.filter((s) => s.id !== id));
         } catch (err) {
           showSuccess("Error al eliminar el servicio: " + err.message, "Error");
@@ -295,9 +323,11 @@ export default function Profile() {
             {items.map((item) => (
               <div key={item.id} className="item-card">
                 <div className="item-image-container">
-
-                  <img src={item.images[0]} alt={item.title} className="item-card-img" />
-
+                  {item.images && item.images.length > 0 ? (
+                    <img src={item.images[0]} alt={item.title} className="item-card-img" />
+                  ) : (
+                    <div className="item-card-img-placeholder">{item.title?.charAt(0)?.toUpperCase() || '?'}</div>
+                  )}
                 </div>
                 <div className="item-info">
                   <h3 className="item-title">{item.title}</h3>
@@ -664,7 +694,7 @@ const renderEvents = () => {
         <ProjectView projectId={selectedProjectId} onClose={() => setSelectedProjectId(null)} />
       )}
       {selectedService && (
-        <ItemServiceDetail service={selectedService} onClose={() => setSelectedService(null)} />
+        <ServiceDetail service={selectedService} onClose={() => setSelectedService(null)} />
       )}
       {modal.open && (
         <DetailModal type={modal.type} data={modal.data} onClose={closeModal} />

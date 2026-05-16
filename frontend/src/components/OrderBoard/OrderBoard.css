@@ -168,7 +168,12 @@
   cursor: not-allowed;
 }
 
-@media (max-width: 680px) {
+/* ============================================
+   MEDIA QUERIES - RESPONSIVE
+   ============================================ */
+
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
   .ob-wrapper {
     padding: 1rem;
   }
@@ -184,5 +189,37 @@
 
   .ob-form__btn {
     width: 100%;
+  }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .ob-messages {
+    max-height: 360px;
+  }
+
+  .ob-bubble {
+    max-width: 92%;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .ob-bubble__text {
+    font-size: 0.85rem;
+  }
+}
+
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
+  .ob-wrapper {
+    padding: 0.75rem;
+  }
+
+  .ob-title {
+    font-size: 1rem;
+  }
+
+  .ob-form__input {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
   }
 }

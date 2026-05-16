@@ -162,8 +162,12 @@
   text-decoration: underline;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
+/* ============================================
+   MEDIA QUERIES - RESPONSIVE
+   ============================================ */
+
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
   .legal-hero {
     padding: 78px 16px 24px;
   }
@@ -196,10 +200,6 @@
     margin-top: 24px !important;
   }
 }
-
-/* ============================================
-   MEDIA QUERIES ADICIONALES - MÓVIL
-   ============================================ */
 
 /* Móviles grandes (600px) */
 @media (max-width: 600px) {
@@ -252,8 +252,8 @@
   }
 }
 
-/* Móviles pequeños (480px) */
-@media (max-width: 480px) {
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
   .legal-hero {
     padding: 60px 10px 16px;
   }

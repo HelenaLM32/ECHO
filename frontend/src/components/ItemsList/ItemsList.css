@@ -7,30 +7,20 @@
     justify-items: center;
 }
 
+/* Pantallas grandes (1200px) */
 @media (max-width: 1200px) {
     .items-list-container {
         grid-template-columns: repeat(4, 1fr);
+        justify-items: center;
     }
 }
 
-@media (max-width: 900px) {
-    .items-list-container {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
+/* Móviles grandes (600px) */
 @media (max-width: 600px) {
     .items-list-container {
         grid-template-columns: repeat(2, 1fr);
         gap: 16px;
-    }
-}
-
-@media (max-width: 480px) {
-    .items-list-container {
-        grid-template-columns: 1fr;
-        gap: 16px;
-        padding: 0 12px;
+        justify-items: center;
     }
 }
 
@@ -40,5 +30,6 @@
         grid-template-columns: 1fr;
         gap: 12px;
         padding: 0 8px;
+        justify-items: center;
     }
 }

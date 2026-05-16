@@ -1,6 +1,5 @@
-import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import styles from '../ProjectCard/ProjectCard.module.css'
+import styles from './ServiceCard.module.css'
 
 export default function ServiceCard({ service, onOpen, small = false }) {
   const navigate = useNavigate()

@@ -7,7 +7,7 @@ import ProjectView from '../../../pages/ItemProject/ProjectView';
 import OrderModal from '../../Modals/OrderModal/OrderModal';
 import { useAuth } from '../../../context/AuthContext';
 import { usePolling } from '../../../hooks/usePolling';
-import './ItemServiceDetail.css';
+import './ServiceDetail.css';
 
 const parsePrice = (value) => {
   if (value === null || value === undefined || value === '') return 0;
@@ -15,7 +15,7 @@ const parsePrice = (value) => {
   return isNaN(parsed) ? 0 : parsed;
 };
 
-function ItemServiceDetail({ service, onClose }) {
+function ServiceDetail({ service, onClose }) {
   const navigate = useNavigate()
   const { user } = useAuth();
   const [creatorProfile, setCreatorProfile] = useState(null);
@@ -185,4 +185,4 @@ function ItemServiceDetail({ service, onClose }) {
   );
 }
 
-export default ItemServiceDetail;
+export default ServiceDetail;

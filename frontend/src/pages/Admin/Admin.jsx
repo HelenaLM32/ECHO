@@ -14,7 +14,7 @@ import { getAllDisputes } from "../../services/disputes";
 import { getAllReviews, deleteReview } from "../../services/reviews";
 import DisputePanel from "../../components/DisputePanel";
 import DetailModal from "../../components/Modals/DetailModal/DetailModal";
-import ItemServiceDetail from "../../components/ItemService/ItemServiceDetail/ItemServiceDetail";
+import ServiceDetail from "../../components/ItemService/ServiceDetail/ServiceDetail";
 import PopupConfirm from "../../components/Modals/PopupConfirm/PopupConfirm";
 import PopupSuccess from "../../components/Modals/PopupSuccess/PopupSuccess";
 import useConfirmPopup from "../../hooks/useConfirmPopup";
@@ -1677,7 +1677,7 @@ export default function Admin() {
       )}
 
       {selectedService && (
-        <ItemServiceDetail
+        <ServiceDetail
           service={selectedService}
           onClose={() => setSelectedService(null)}
         />

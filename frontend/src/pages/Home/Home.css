@@ -209,7 +209,7 @@
   height: 16px;
   margin-left: 10px;
   flex-shrink: 0;
-  opacity: 0.7;
+  color: var(--black);
 }
 
 .search-bar-input {
@@ -271,23 +271,6 @@
   width: 100%;
 }
 
-.button-selected-category {
-  background-color: var(--orange);
-  text-align: center;
-  align-content: center;
-  cursor: pointer;
-  border: none;
-  color: white;
-  font-weight: 600;
-  text-decoration: none;
-  font-size: 20px;
-  height: 30px;
-  padding: 5px 30px;
-  border-radius: 100px;
-  transition: all 0.3s ease;
-  padding: 0 28px;
-}
-
 /* Dropdown de ordenamiento */
 .home-sort-dropdown {
   position: relative;
@@ -320,7 +303,7 @@
 
 .home-sort-dropdown.open .home-sort-trigger {
   border-color: var(--orange);
-  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.14);
+  box-shadow: 0 0 0 3px var(--shadow-orange);
 }
 
 .home-sort-dropdown.open .home-sort-icon {
@@ -351,7 +334,7 @@
   background: var(--true-white);
   border: 1px solid var(--gray-stroke);
   border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 24px var(--shadow-medium);
   padding: 8px;
   z-index: 1000;
   opacity: 0;
@@ -409,19 +392,6 @@
 .empty-state {
   color: var(--black-secondary);
   font-weight: 600;
-}
-
-#top-p-text {
-  margin-top: 30px;
-  font-size: 30px;
-  margin-left: 100px;
-  font-weight: 200;
-  width: 70%;
-}
-
-.items-list-container {
-  width: 100%;
-  padding: 0 20px;
 }
 
 /* ============================================
@@ -595,12 +565,6 @@
     padding: 0 15px;
   }
   
-  .button-selected-category {
-    font-size: 16px;
-    padding: 4px 20px;
-    height: 28px;
-  }
-  
   /* Grid de items */
   .home-container-sections {
     align-items: center;
@@ -621,10 +585,6 @@
   .home-container-item-section > * {
     width: 100%;
     max-width: 350px;
-  }
-
-  .items-list-container {
-    padding: 0 10px;
   }
 }
 
@@ -706,7 +666,7 @@
   
   .search-bar-integrated {
     min-height: 46px;
-    padding: 3px;
+    padding: 15px;
   }
 
   .search-type-filters {
@@ -759,13 +719,6 @@
     min-height: 44px;
   }
   
-  /* Categoría */
-  .button-selected-category {
-    font-size: 15px;
-    height: 32px;
-    padding: 0 20px;
-  }
-  
   /* Grid - 1 columna vertical */
   .home-container-sections {
     width: 85%;
@@ -795,7 +748,4 @@
     max-width: 358px;
   }
 
-  .items-list-container {
-    padding: 0 8px;
-  }
 }

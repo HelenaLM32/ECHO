@@ -1,0 +1,51 @@
+/* ============================================
+   SHARED AUTH STYLES (Login & Register)
+   ============================================ */
+
+.auth-logo-link {
+    display: block;
+    margin-bottom: 32px;
+    align-self: flex-start;
+}
+
+.auth-logo {
+    height: 32px;
+    width: auto;
+}
+
+/* ============================================
+   MEDIA QUERIES - RESPONSIVE
+   ============================================ */
+
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
+    .auth-logo {
+        height: 28px;
+    }
+
+    .auth-logo-link {
+        margin-bottom: 24px;
+    }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+    .auth-logo {
+        height: 24px;
+    }
+
+    .auth-logo-link {
+        margin-bottom: 20px;
+    }
+}
+
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
+    .auth-logo {
+        height: 22px;
+    }
+
+    .auth-logo-link {
+        margin-bottom: 16px;
+    }
+}

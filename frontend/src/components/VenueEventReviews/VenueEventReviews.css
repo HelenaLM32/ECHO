@@ -261,8 +261,41 @@
   color: var(--error);
 }
 
-/* ── Responsive ── */
-@media (max-width: 500px) {
+/* ============================================
+   MEDIA QUERIES - RESPONSIVE
+   ============================================ */
+
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
+  .ver-form {
+    padding: 14px;
+  }
+
+  .ver-item {
+    padding: 11px 13px;
+  }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .ver-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ver-form-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ver-submit-btn {
+    text-align: center;
+    width: 100%;
+  }
+}
+
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
   .ver-item-top { flex-wrap: wrap; }
   .ver-form      { padding: 12px; }
 }

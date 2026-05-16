@@ -1,0 +1,175 @@
+@import '../../styles/variables.css';
+
+/* ProjectView Specific Styles - Responsive */
+
+.project-delete-button {
+  position: fixed;
+  top: 72px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: var(--error);
+  color: var(--true-white);
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.project-delete-button:hover {
+  background: var(--error-dark);
+}
+
+/* Base styles */
+.project-view-window {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-radius: 16px;
+}
+
+.project-view-content {
+  padding: 0 20px;
+}
+
+/* Footer container */
+.project-footer-container {
+  margin-top: 12px;
+}
+
+/* Order button container */
+.project-order-container {
+  display: flex;
+  justify-content: center;
+  padding: 12px 24px 28px;
+}
+
+.pv-order-btn {
+  background: var(--orange);
+  color: var(--true-white);
+  border: none;
+  border-radius: 100px;
+  padding: 14px 36px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.pv-order-btn:hover {
+  background: var(--black);
+}
+
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
+  .project-view-container {
+    max-width: 1000px;
+  }
+  
+  .project-view-content {
+    padding: 0 16px;
+  }
+  
+  .previewWindow {
+    max-width: 1000px;
+  }
+  
+  .previewContentList {
+    padding: 0 16px;
+  }
+
+  .project-delete-button {
+    top: 62px;
+    right: 16px;
+    width: 38px;
+    height: 38px;
+  }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .project-view-container {
+    max-width: 100%;
+  }
+  
+  .project-view-content {
+    padding: 0 12px;
+  }
+  
+  .previewOverlay {
+    padding: 10px;
+  }
+  
+  .previewWindow {
+    max-width: 100%;
+    border-radius: 12px;
+  }
+  
+  .previewContentList {
+    padding: 0 12px;
+  }
+  
+  .previewEmptyMessage {
+    font-size: 20px;
+    width: 80%;
+  }
+  
+  .previewContentItem {
+    margin-bottom: 16px;
+  }
+
+  .project-delete-button {
+    top: 60px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
+  .project-view-container {
+    max-width: 100%;
+  }
+  
+  .project-view-content {
+    padding: 0 8px;
+  }
+  
+  .previewOverlay {
+    padding: 8px;
+  }
+  
+  .previewWindow {
+    max-width: 100%;
+    border-radius: 10px;
+  }
+  
+  .previewContentList {
+    padding: 0 8px;
+  }
+  
+  .previewEmptyMessage {
+    font-size: 18px;
+    width: 90%;
+  }
+  
+  .previewContentItem {
+    margin-bottom: 12px;
+  }
+  
+  .pv-order-btn {
+    padding: 12px 24px;
+    font-size: 0.9rem;
+  }
+
+  .project-delete-button {
+    top: 64px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+  }
+}

@@ -20,6 +20,8 @@
     /* Naranja más oscuro para superar 4.5:1 sobre fondos claros */
     --orange: #C94F12;
     --orange-secondary: #E86030;
+    --orange-light: rgba(201, 79, 18, 0.1);
+    --orange-lighter: rgba(201, 79, 18, 0.08);
 
     --gray: #D4D1CE;
     --gray-dark: #D8D5D2;
@@ -35,6 +37,7 @@
 
     --shadow-light: rgba(0, 0, 0, 0.06);
     --shadow-medium: rgba(0, 0, 0, 0.10);
+    --shadow-orange: rgba(233, 94, 35, 0.35);
     --overlay-dark: rgba(0, 0, 0, 0.7);
 
     --error: #B91C1C;
@@ -75,6 +78,8 @@
     /* Naranja más claro/brillante para superar 4.5:1 sobre fondos oscuros */
     --orange: #FF7640;
     --orange-secondary: #FFA070;
+    --orange-light: rgba(255, 118, 64, 0.15);
+    --orange-lighter: rgba(255, 118, 64, 0.12);
 
     --gray: #3A3A3A;
     --gray-dark: #444444;
@@ -90,6 +95,7 @@
 
     --shadow-light: rgba(0, 0, 0, 0.20);
     --shadow-medium: rgba(0, 0, 0, 0.35);
+    --shadow-orange: rgba(255, 107, 53, 0.45);
     --overlay-dark: rgba(0, 0, 0, 0.75);
 
     --error: #FF6B6B;

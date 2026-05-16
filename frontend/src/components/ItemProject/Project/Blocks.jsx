@@ -1,7 +1,6 @@
 import { useRef, useCallback, useEffect, useState } from 'react'
-import { toEmbedUrl } from '../../../store/useProjectStore'
 import { uploadFile } from '../../../services/uploads'
-import './ItemProject.css'
+import './Project.css'
 
 // Componente reutilizable para el reproductor de audio
 export function AudioPlayer({ src, preview = false, inEditor = false }) {
@@ -415,7 +414,7 @@ export function GalleryBlock({ block, onChange }) {
     onChange({ images: block.images.filter((_, i) => i !== index) })
   }
 
-  const aspectRatio = aspect === 'square' ? '1' : aspect === 'landscape'
+  const aspectRatio = aspect === 'square' ? '1' : 'auto'
 
   return (
     <div className="blockContentArea">
@@ -442,12 +441,12 @@ export function GalleryBlock({ block, onChange }) {
       <div
         className="galleryGrid"
         style={{
-          gridTemplateColumns: `repeat(${columns}, 1fr)`,
-          gap: `${gap}px`,
+          '--gallery-columns': columns,
+          '--gallery-gap': `${gap}px`,
         }}
       >
         {block.images.map((src, i) => (
-          <div key={i} className="galleryGridItem" style={{ aspectRatio }}>
+          <div key={i} className="galleryGridItem" style={{ '--item-aspect-ratio': aspectRatio }}>
             <img src={src} alt={`gallery-${i}`} />
             <button className="galleryItemRemoveButton" onClick={() => removeImage(i)} title="Eliminar">
               <svg width="12" height="12" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
@@ -456,7 +455,7 @@ export function GalleryBlock({ block, onChange }) {
             </button>
           </div>
         ))}
-        <label className="galleryAddButton" style={{ aspectRatio }}>
+        <label className="galleryAddButton" style={{ '--item-aspect-ratio': aspectRatio }}>
           <span>+</span>
           <input type="file" accept="image/*" multiple onChange={handleFiles} hidden />
         </label>
@@ -481,8 +480,6 @@ export function VideoBlock({ block, onChange }) {
       onChange({ url: '' })
     }
   }
-
-  const embedSrc = block.url ? toEmbedUrl(block.url) : ''
 
   return (
     <div className="blockContentArea">

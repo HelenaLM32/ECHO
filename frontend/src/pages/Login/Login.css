@@ -1,3 +1,5 @@
+@import '../Auth.css';
+
 .login-container {
     background-color: var(--true-white);
     display: grid;
@@ -34,7 +36,7 @@
 .login-cont input:focus {
     outline: none;                                
     border-color: var(--gray);                        
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);     
+    box-shadow: 0 0 8px var(--shadow-light);     
 }
 
 .login-cont2 {
@@ -86,7 +88,7 @@
     align-items: center;
     gap: 10px;
     margin: 4px 0;
-    color: #979797;
+    color: var(--gray-dark-secondary);
     font-size: 13px;
 }
 
@@ -95,7 +97,7 @@
     content: "";
     flex: 1;
     height: 1px;
-    background: #e0e0e0;
+    background: var(--gray-stroke);
 }
 
 .oauth-buttons {
@@ -121,30 +123,30 @@
 }
 
 .oauth-btn.google {
-    background-color: #F3F3F3;
-    border: 1px solid #F3F3F3;
-    color: #282828;
+    background-color: var(--gray);
+    border: 1px solid var(--gray);
+    color: var(--black);
 }
 
 .oauth-btn.github {
-    background-color: #282828;
-    border: 1px solid #282828;
-    color: #fff;
+    background-color: var(--black);
+    border: 1px solid var(--black);
+    color: var(--true-white);
 }
 
 .oauth-btn.google:hover {
-    background-color: #e0e0e0;
-    border-color: #e0e0e0;
+    background-color: var(--gray-stroke);
+    border-color: var(--gray-stroke);
 }
 
 .oauth-btn.github:hover {
-    background-color: #E95E23;
-    border-color: #E95E23;
+    background-color: var(--orange);
+    border-color: var(--orange);
 }
 
 .div-linia {
     height: 1px;
-    background-color: #e0e0e0;
+    background-color: var(--gray-stroke);
     margin-top: 10px;
 }
 
@@ -226,11 +228,11 @@
 }
 
 /* ============================================
-   MEDIA QUERIES - MÓVIL
+   MEDIA QUERIES - RESPONSIVE
    ============================================ */
 
-/* Tablets (768px) */
-@media (max-width: 768px) {
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
   .login-container {
     grid-template-columns: 1fr;
     overflow: auto;
@@ -317,21 +319,13 @@
     font-size: 14px;
   }
 
-  .auth-logo {
-    height: 28px;
-  }
-
-  .auth-logo-link {
-    margin-bottom: 24px;
-  }
-
   .div-linia {
     margin-top: 8px;
   }
 }
 
-/* Móviles pequeños (480px) */
-@media (max-width: 480px) {
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
   .login-cont {
     padding: 20px 16px;
     padding-top: 40px;
