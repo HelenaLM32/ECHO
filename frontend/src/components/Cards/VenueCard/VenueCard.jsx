@@ -1,6 +1,6 @@
 import styles from '../ProjectCard/ProjectCard.module.css';
 
-function VenueCard({ venue }) {
+function VenueCard({ venue, onOpen }) {
   const name = venue.name || 'Local';
   const address = venue.address || '';
   const capacity = venue.capacity;
@@ -8,7 +8,11 @@ function VenueCard({ venue }) {
   const initials = name.charAt(0).toUpperCase();
 
   return (
-    <div className={`${styles.cardWrapper} ${styles.cardButton} ${styles.small}`}>
+    <div
+      className={`${styles.cardWrapper} ${styles.cardButton} ${styles.small}`}
+      onClick={() => onOpen && onOpen(venue)}
+      style={{ cursor: 'pointer' }}
+    >
       <article className={styles.card}>
         <div className={styles.cover}>
           {coverImg ? (

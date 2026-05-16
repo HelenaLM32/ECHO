@@ -1,6 +1,6 @@
 import styles from '../ProjectCard/ProjectCard.module.css';
 
-function EventCard({ event }) {
+function EventCard({ event, onOpen }) {
   const title = event.title || 'Evento';
   const coverImg = event.img;
   const precio = event.precio;
@@ -10,7 +10,11 @@ function EventCard({ event }) {
   const initials = title.charAt(0).toUpperCase();
 
   return (
-    <div className={`${styles.cardWrapper} ${styles.cardButton} ${styles.small}`}>
+    <div
+      className={`${styles.cardWrapper} ${styles.cardButton} ${styles.small}`}
+      onClick={() => onOpen && onOpen(event)}
+      style={{ cursor: 'pointer' }}
+    >
       <article className={styles.card}>
         <div className={styles.cover}>
           <div className={styles.priceTop}>

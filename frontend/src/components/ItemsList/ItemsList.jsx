@@ -11,6 +11,7 @@ import { getAllServices } from "../../services/services";
 import { getAllVenues } from "../../services/venues";
 import { getAllEvents } from "../../services/events";
 import { getAllProfiles } from "../../services/profile";
+import DetailModal from "../Modals/DetailModal/DetailModal";
 import "./ItemsList.css";
 
 function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "recent", contentType = "proyectos" }) {
@@ -20,6 +21,8 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
+  const [selectedVenue, setSelectedVenue] = useState(null);
+const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -129,16 +132,10 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
         const creator = (item?.creatorName || "").toLowerCase();
         return name.includes(normalizedSearch) || desc.includes(normalizedSearch) || creator.includes(normalizedSearch);
       }
-      if (contentType === "locales") {
-        const name = (item?.name || "").toLowerCase();
-        const address = (item?.address || "").toLowerCase();
-        return name.includes(normalizedSearch) || address.includes(normalizedSearch);
-      }
-      if (contentType === "eventos") {
-        const title = (item?.title || "").toLowerCase();
-        const desc = (item?.description || "").toLowerCase();
-        return title.includes(normalizedSearch) || desc.includes(normalizedSearch);
-      }
+      if (contentType === "locales")
+    return <VenueCard key={item.id} venue={item} onOpen={setSelectedVenue} />;
+  if (contentType === "eventos")
+    return <EventCard key={item.id} event={item} onOpen={setSelectedEvent} />;
       if (contentType === "perfiles") {
         const name = (item?.publicName || "").toLowerCase();
         const username = (item?.username || "").toLowerCase();
@@ -186,12 +183,12 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
             };
             return <ServiceCard key={item.id} service={item} profile={profile} onOpen={() => setSelectedService(item)} />;
           }
-          if (contentType === "locales") {
-            return <VenueCard key={item.id} venue={item} />;
-          }
-          if (contentType === "eventos") {
-            return <EventCard key={item.id} event={item} />;
-          }
+         if (contentType === "locales") {
+  return <VenueCard key={item.id} venue={item} onOpen={setSelectedVenue} />;
+}
+if (contentType === "eventos") {
+  return <EventCard key={item.id} event={item} onOpen={setSelectedEvent} />;
+}
           if (contentType === "perfiles") {
             return <ProfileCard key={item.userId || item.id} profile={item} />;
           }
@@ -204,6 +201,12 @@ function ItemsList({ searchQuery = "", selectedCategoryId = null, sortBy = "rece
       {selectedService && (
         <ItemServiceDetail service={selectedService} onClose={() => setSelectedService(null)} />
       )}
+      {selectedVenue && (
+  <DetailModal type="venue" data={selectedVenue} onClose={() => setSelectedVenue(null)} />
+)}
+{selectedEvent && (
+  <DetailModal type="event" data={selectedEvent} onClose={() => setSelectedEvent(null)} />
+)}
     </div>
   );
 }
