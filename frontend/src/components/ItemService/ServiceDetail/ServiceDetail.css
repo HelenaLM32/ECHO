@@ -263,7 +263,12 @@
   gap: 16px;
 }
 
-@media (max-width: 768px) {
+/* ============================================
+   MEDIA QUERIES - RESPONSIVE
+   ============================================ */
+
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
   .service-detail-overlay {
     padding: 16px;
   }
@@ -297,7 +302,23 @@
   }
 }
 
-@media (max-width: 480px) {
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .service-detail-info {
+    padding: 20px;
+  }
+
+  .service-detail-title {
+    font-size: 22px;
+  }
+
+  .service-detail-image-section {
+    height: 220px;
+  }
+}
+
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
   .service-detail-overlay {
     padding: 0;
   }

@@ -1,3 +1,5 @@
+@import '../Auth.css';
+
 .register-container {
     background-color: var(--true-white);
     display: grid;
@@ -174,11 +176,9 @@
    MEDIA QUERIES - RESPONSIVE
    ============================================ */
 
-/* Tablets (768px) */
-@media (max-width: 768px) {
-@import '../Auth.css';
-
-.register-container {
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
+  .register-container {
     grid-template-columns: 1fr;
   }
 
@@ -246,8 +246,8 @@
   }
 }
 
-/* Móviles pequeños (480px) */
-@media (max-width: 480px) {
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
   .register-cont {
     padding: 20px 16px;
   }

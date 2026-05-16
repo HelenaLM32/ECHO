@@ -14,15 +14,38 @@
 }
 
 /* ============================================
-   MEDIA QUERIES
+   MEDIA QUERIES - RESPONSIVE
    ============================================ */
 
-@media (max-width: 768px) {
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
     .auth-logo {
         height: 28px;
     }
 
     .auth-logo-link {
         margin-bottom: 24px;
+    }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+    .auth-logo {
+        height: 24px;
+    }
+
+    .auth-logo-link {
+        margin-bottom: 20px;
+    }
+}
+
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
+    .auth-logo {
+        height: 22px;
+    }
+
+    .auth-logo-link {
+        margin-bottom: 16px;
     }
 }

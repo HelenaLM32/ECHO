@@ -110,7 +110,12 @@
   background-color: var(--gray-dark);
 }
 
-@media (max-width: 768px) {
+/* ============================================
+   MEDIA QUERIES - RESPONSIVE
+   ============================================ */
+
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
   .service-form {
     padding: 24px;
     margin: 16px;
@@ -122,5 +127,21 @@
 
   .form-actions button {
     width: 100%;
+  }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .service-form {
+    padding: 20px 16px;
+    margin: 12px;
+  }
+}
+
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
+  .service-form {
+    padding: 16px 12px;
+    margin: 8px;
   }
 }

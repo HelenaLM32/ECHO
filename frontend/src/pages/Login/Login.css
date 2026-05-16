@@ -1,3 +1,5 @@
+@import '../Auth.css';
+
 .login-container {
     background-color: var(--true-white);
     display: grid;
@@ -226,14 +228,12 @@
 }
 
 /* ============================================
-   MEDIA QUERIES - MÓVIL
+   MEDIA QUERIES - RESPONSIVE
    ============================================ */
 
-/* Tablets (768px) */
-@media (max-width: 768px) {
-@import '../Auth.css';
-
-.login-container {
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
+  .login-container {
     grid-template-columns: 1fr;
     overflow: auto;
   }
@@ -324,8 +324,8 @@
   }
 }
 
-/* Móviles pequeños (480px) */
-@media (max-width: 480px) {
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
   .login-cont {
     padding: 20px 16px;
     padding-top: 40px;

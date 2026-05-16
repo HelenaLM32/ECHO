@@ -237,19 +237,20 @@
     margin-bottom: 7px;
 }
 
-@media (max-width: 640px) {
-    .intro-card {
-        padding: 20px 18px;
-    }
-
-    .intro-modal {
-        padding: 30px 18px 22px;
-    }
-}
-
 /* ============================================
-   MEDIA QUERIES ADICIONALES - MÓVIL
+   MEDIA QUERIES - RESPONSIVE
    ============================================ */
+
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
+  .intro-card {
+    padding: 20px 18px;
+  }
+
+  .intro-modal {
+    padding: 30px 18px 22px;
+  }
+}
 
 /* Móviles grandes (600px) */
 @media (max-width: 600px) {
@@ -300,8 +301,8 @@
     }
 }
 
-/* Móviles pequeños (480px) */
-@media (max-width: 480px) {
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
     .intro-page {
         padding: 12px;
     }

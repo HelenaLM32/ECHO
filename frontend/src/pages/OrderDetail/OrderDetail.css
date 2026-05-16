@@ -280,33 +280,12 @@
   margin: 0;
 }
 
-@media (max-width: 700px) {
-  .od-page {
-    padding: 1.2rem 1rem;
-  }
-
-  .od-header {
-    padding: 1rem;
-  }
-
-  .od-header__right {
-    align-items: stretch;
-    width: 100%;
-  }
-
-  .od-dispute-link,
-  .od-cancel-btn {
-    width: 100%;
-    text-align: center;
-  }
-}
-
 /* ============================================
-   MEDIA QUERIES ADICIONALES - MÓVIL
+   MEDIA QUERIES - RESPONSIVE
    ============================================ */
 
-/* Tablets (768px) */
-@media (max-width: 768px) {
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
   .od-page {
     margin: 0 5%;
     padding: 1.5rem 1rem;
@@ -327,6 +306,21 @@
 
   .od-messages {
     max-height: 350px;
+  }
+
+  .od-header {
+    padding: 1rem;
+  }
+
+  .od-header__right {
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .od-dispute-link,
+  .od-cancel-btn {
+    width: 100%;
+    text-align: center;
   }
 }
 
@@ -416,8 +410,8 @@
   }
 }
 
-/* Móviles pequeños (480px) */
-@media (max-width: 480px) {
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
   .od-page {
     padding: 0.75rem;
   }
