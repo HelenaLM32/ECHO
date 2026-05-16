@@ -1,6 +1,18 @@
 import { fetchApi, fetchWithToken } from "./config";
 import { uploadFile } from './uploads'
 
+function dataURLtoFile(dataUrl, filename = 'file') {
+  const arr = dataUrl.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+}
+
 async function createItem(itemPayload) {
   const res = await fetchWithToken('/items/register', {
     method: 'POST',
@@ -55,7 +67,7 @@ async function replaceEmbeddedMedia(project) {
     if (b.type === 'IMAGE') {
       if (typeof b.src === 'string' && b.src.startsWith('data:')) {
         const file = dataURLtoFile(b.src)
-        try { b.src = await uploadFile(file, 'images') } catch (e) { /* silent fail */ }
+        try { b.src = await uploadFile(file, 'images') } catch (e) { console.error('Failed to upload image block:', e) }
       }
     }
     if (b.type === 'GALLERY') {
@@ -64,7 +76,7 @@ async function replaceEmbeddedMedia(project) {
           const src = b.images[i]
           if (typeof src === 'string' && src.startsWith('data:')) {
             const file = dataURLtoFile(src)
-            try { b.images[i] = await uploadFile(file, 'images') } catch (e) { /* silent fail */ }
+             try { b.images[i] = await uploadFile(file, 'images') } catch (e) { console.error('Failed to upload gallery image:', e) }
           }
         }
       }
@@ -72,13 +84,13 @@ async function replaceEmbeddedMedia(project) {
     if (b.type === 'VIDEO') {
       if (typeof b.url === 'string' && b.url.startsWith('data:')) {
         const file = dataURLtoFile(b.url)
-        try { b.url = await uploadFile(file, 'video') } catch (e) { /* silent fail */ }
+        try { b.url = await uploadFile(file, 'video') } catch (e) { console.error('Failed to upload video block:', e) }
       }
     }
     if (b.type === 'AUDIO') {
       if (typeof b.audioSrc === 'string' && b.audioSrc.startsWith('data:')) {
         const file = dataURLtoFile(b.audioSrc)
-        try { b.audioSrc = await uploadFile(file, 'audio') } catch (e) { /* silent fail */ }
+        try { b.audioSrc = await uploadFile(file, 'audio') } catch (e) { console.error('Failed to upload audio block:', e) }
       }
     }
   }
@@ -88,7 +100,7 @@ async function replaceEmbeddedMedia(project) {
   let bg = clone.background
   if (bg && bg.mode === 'image' && typeof bg.value === 'string' && bg.value.startsWith('data:')) {
     const file = dataURLtoFile(bg.value)
-    try { bg.value = await uploadFile(file, 'images') } catch (e) { /* silent fail */ }
+    try { bg.value = await uploadFile(file, 'images') } catch (e) { console.error('Failed to upload background image:', e) }
     clone.background = bg
   }
 

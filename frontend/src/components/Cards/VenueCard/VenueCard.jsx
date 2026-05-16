@@ -1,4 +1,4 @@
-import styles from '../ProjectCard/ProjectCard.module.css';
+import styles from './VenueCard.module.css';
 
 function VenueCard({ venue, onOpen }) {
   const name = venue.name || 'Local';
@@ -8,10 +8,10 @@ function VenueCard({ venue, onOpen }) {
   const initials = name.charAt(0).toUpperCase();
 
   return (
-    <div
-      className={`${styles.cardWrapper} ${styles.cardButton} ${styles.small}`}
+    <button
+      className={styles.cardButton}
       onClick={() => onOpen && onOpen(venue)}
-      style={{ cursor: 'pointer' }}
+      type="button"
     >
       <article className={styles.card}>
         <div className={styles.cover}>
@@ -25,17 +25,15 @@ function VenueCard({ venue, onOpen }) {
           <div className={styles.footerLeft}>
             <div>
               <h3 className={styles.title}>{name}</h3>
-              {address && <p className={styles.author}>{address}</p>}
+              {address && <p className={styles.address}>{address}</p>}
             </div>
           </div>
           {capacity != null && (
-            <div className={styles.stats}>
-              <span className={styles.statItem}>{capacity} cap.</span>
-            </div>
+            <span className={styles.capacity}>{capacity} cap.</span>
           )}
         </div>
       </article>
-    </div>
+    </button>
   );
 }
 

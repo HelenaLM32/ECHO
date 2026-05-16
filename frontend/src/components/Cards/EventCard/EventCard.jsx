@@ -1,4 +1,4 @@
-import styles from '../ProjectCard/ProjectCard.module.css';
+import styles from './EventCard.module.css';
 
 function EventCard({ event, onOpen }) {
   const title = event.title || 'Evento';
@@ -10,10 +10,10 @@ function EventCard({ event, onOpen }) {
   const initials = title.charAt(0).toUpperCase();
 
   return (
-    <div
-      className={`${styles.cardWrapper} ${styles.cardButton} ${styles.small}`}
+    <button
+      className={`${styles.cardButton}`}
       onClick={() => onOpen && onOpen(event)}
-      style={{ cursor: 'pointer' }}
+      type="button"
     >
       <article className={styles.card}>
         <div className={styles.cover}>
@@ -30,12 +30,12 @@ function EventCard({ event, onOpen }) {
           <div className={styles.footerLeft}>
             <div>
               <h3 className={styles.title}>{title}</h3>
-              {startDate && <p className={styles.author}>{startDate}</p>}
+              {startDate && <p className={styles.date}>{startDate}</p>}
             </div>
           </div>
         </div>
       </article>
-    </div>
+    </button>
   );
 }
 

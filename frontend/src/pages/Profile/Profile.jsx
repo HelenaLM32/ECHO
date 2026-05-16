@@ -113,43 +113,65 @@ export default function Profile() {
 
   useEffect(() => {
     if (!targetId || !profile) return;
+    let mounted = true;
 
     const loadTabContent = async () => {
       switch (activeTab) {
         case "Productos":
           setItemsLoading(p => ({ ...p, products: true }));
-          try { setProducts(await getProfileProducts(targetId)); } catch { setProducts([]); }
-          setItemsLoading(p => ({ ...p, products: false }));
+          try { 
+            const data = await getProfileProducts(targetId);
+            if (mounted) setProducts(data);
+          } catch { 
+            if (mounted) setProducts([]);
+          }
+          if (mounted) setItemsLoading(p => ({ ...p, products: false }));
           break;
         case "Servicios":
           setItemsLoading(p => ({ ...p, services: true }));
           try { 
             const servicesData = await getProfileServices(targetId);
-            setServices(servicesData); 
+            if (mounted) setServices(servicesData);
           } catch { 
-            setServices([]); 
+            if (mounted) setServices([]);
           }
-          setItemsLoading(p => ({ ...p, services: false }));
+          if (mounted) setItemsLoading(p => ({ ...p, services: false }));
           break;
         case "Locales":
           setItemsLoading(p => ({ ...p, venues: true }));
-          try { setVenues(await getVenuesByUser(targetId)); } catch { setVenues([]); }
-          setItemsLoading(p => ({ ...p, venues: false }));
+          try { 
+            const data = await getVenuesByUser(targetId);
+            if (mounted) setVenues(data);
+          } catch { 
+            if (mounted) setVenues([]);
+          }
+          if (mounted) setItemsLoading(p => ({ ...p, venues: false }));
           break;
         case "Eventos":
           setItemsLoading(p => ({ ...p, events: true }));
-          try { setEvents(await getEventsByUser(targetId)); } catch { setEvents([]); }
-          setItemsLoading(p => ({ ...p, events: false }));
+          try { 
+            const data = await getEventsByUser(targetId);
+            if (mounted) setEvents(data);
+          } catch { 
+            if (mounted) setEvents([]);
+          }
+          if (mounted) setItemsLoading(p => ({ ...p, events: false }));
           break;
         case "Proyectos":
           setItemsLoading(p => ({ ...p, projects: true }));
-          try { setProjects(await getProjectsByUserId(targetId)); } catch { setProjects([]); }
-          setItemsLoading(p => ({ ...p, projects: false }));
+          try { 
+            const data = await getProjectsByUserId(targetId);
+            if (mounted) setProjects(data);
+          } catch { 
+            if (mounted) setProjects([]);
+          }
+          if (mounted) setItemsLoading(p => ({ ...p, projects: false }));
           break;
         default: break;
       }
     };
     loadTabContent();
+    return () => { mounted = false; };
   }, [activeTab, targetId, profile]);
 
   // Poll for updated projects every 30 seconds to refresh views/likes in real-time
@@ -301,9 +323,11 @@ export default function Profile() {
             {items.map((item) => (
               <div key={item.id} className="item-card">
                 <div className="item-image-container">
-
-                  <img src={item.images[0]} alt={item.title} className="item-card-img" />
-
+                  {item.images && item.images.length > 0 ? (
+                    <img src={item.images[0]} alt={item.title} className="item-card-img" />
+                  ) : (
+                    <div className="item-card-img-placeholder">{item.title?.charAt(0)?.toUpperCase() || '?'}</div>
+                  )}
                 </div>
                 <div className="item-info">
                   <h3 className="item-title">{item.title}</h3>

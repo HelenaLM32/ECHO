@@ -1,5 +1,4 @@
 import { useRef, useCallback, useEffect, useState } from 'react'
-import { toEmbedUrl } from '../../../store/useProjectStore'
 import { uploadFile } from '../../../services/uploads'
 import './Project.css'
 
@@ -415,7 +414,7 @@ export function GalleryBlock({ block, onChange }) {
     onChange({ images: block.images.filter((_, i) => i !== index) })
   }
 
-  const aspectRatio = aspect === 'square' ? '1' : aspect === 'landscape'
+  const aspectRatio = aspect === 'square' ? '1' : 'auto'
 
   return (
     <div className="blockContentArea">
@@ -481,8 +480,6 @@ export function VideoBlock({ block, onChange }) {
       onChange({ url: '' })
     }
   }
-
-  const embedSrc = block.url ? toEmbedUrl(block.url) : ''
 
   return (
     <div className="blockContentArea">

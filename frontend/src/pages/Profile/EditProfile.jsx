@@ -60,8 +60,8 @@ export default function EditProfile() {
         });
         setCredentials((prev) => ({ ...prev, username: data.username || "" }));
       })
-      .catch(() => {
-        // Error silenciado
+      .catch((e) => {
+        console.error('Error loading profile:', e)
       })
       .finally(() => setLoading(false));
   }, [user, loadingContext]);

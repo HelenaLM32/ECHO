@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./Home.css";
 import ItemsList from "../../components/ItemsList/ItemsList";
 import SectionsList from "../../components/SectionsList/SectionsList";
@@ -34,7 +34,7 @@ export default function Home() {
         const data = await fetchSections();
         if (mounted) setSections(data || []);
       } catch (e) {
-        // Error silenciado
+        console.error('Error fetching sections:', e)
       }
     })();
     return () => (mounted = false);

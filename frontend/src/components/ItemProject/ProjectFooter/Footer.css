@@ -125,13 +125,41 @@
 
 .pf-like-btn {
     border: 2px solid var(--black);
-    background: var(--black);
-    color: var(--white);
+    background: var(--white);
+    color: var(--black);
     font-weight: 600;
 }
 
 .pf-like-btn .pf-stat-icon {
     color: var(--true-white);
+}
+
+[data-theme="dark"] .pf-like-btn {
+    background: var(--true-white);
+    border-color: #ffffff;
+    color: var(--black);
+}
+
+[data-theme="dark"] .pf-like-btn .pf-stat-icon {
+    color: var(--black);
+}
+
+.pf-like-btn.liked {
+    color: var(--orange);
+}
+
+.pf-like-btn.liked .pf-stat-icon {
+    fill: var(--orange);
+    color: var(--orange);
+}
+
+[data-theme="dark"] .pf-like-btn.liked {
+    color: var(--orange);
+}
+
+[data-theme="dark"] .pf-like-btn.liked .pf-stat-icon {
+    fill: var(--orange);
+    color: var(--orange);
 }
 
 .pf-counter,
@@ -145,19 +173,6 @@
     width: var(--pf-stat-icon-size);
     height: var(--pf-stat-icon-size);
     fill: currentColor;
-    color: inherit;
-}
-
-.pf-like-btn.liked .pf-stat-icon {
-    color: var(--orange);
-}
-
-.pf-like-btn .pf-stat-icon {
-    color: var(--white);
-}
-
-.pf-icon-inactive {
-    opacity: 0.5;
 }
 
 .pf-like-btn,

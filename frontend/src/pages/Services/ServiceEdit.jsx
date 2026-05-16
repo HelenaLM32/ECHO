@@ -37,8 +37,8 @@ export default function ServiceEdit() {
       try {
         const cats = await getCategories();
         setCategories(cats);
-      } catch {
-        // Error silenciado
+      } catch (e) {
+        console.error('Error loading categories:', e)
       } finally {
         setLoadingCategories(false);
       }

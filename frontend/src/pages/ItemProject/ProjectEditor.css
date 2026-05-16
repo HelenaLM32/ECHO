@@ -49,12 +49,15 @@
    MEDIA QUERIES - RESPONSIVE
    ============================================ */
 
+/* Pantallas grandes (1200px) */
 @media (max-width: 1200px) {
   .layoutPage {
+    position: relative;
     flex-direction: column;
     height: auto;
     min-height: 100vh;
     overflow: visible;
+    top: 0;
   }
 
   .editorArea {
@@ -68,42 +71,38 @@
     position: relative;
     width: 100%;
     height: auto;
-    max-height: 40vh;
+    max-height: none;
     border-left: none;
     border-top: 1px solid var(--gray-stroke, #e0e0e0);
-    overflow-y: auto;
-    padding: 20px;
+    overflow-y: visible;
+    padding: 24px;
   }
 }
 
+/* Móviles grandes (600px) */
 @media (max-width: 600px) {
   .layoutPage {
-    padding: 10px;
+    min-height: auto;
   }
 
   .editorArea {
-    padding: 10px;
+    padding: 16px;
     min-height: 40vh;
   }
 
   .sidebarPanel {
-    max-height: 35vh;
-    padding: 10px;
+    padding: 20px 16px;
   }
 }
 
+/* iPhone 12/13/14 (390px) */
 @media (max-width: 390px) {
-  .layoutPage {
-    padding: 8px;
-  }
-
   .editorArea {
-    padding: 8px;
+    padding: 12px;
     min-height: 35vh;
   }
 
   .sidebarPanel {
-    max-height: 30vh;
-    padding: 8px;
+    padding: 16px 12px;
   }
 }

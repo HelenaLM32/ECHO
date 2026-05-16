@@ -57,16 +57,10 @@ export default function Footer({ name, avatar, likes = 0, views = 0, comments = 
                 <div className="pf-divider"></div>
                 <div className="pf-stats-row">
                     {price && <button className="pf-price-btn">{price.toFixed(2)}€</button>}
-                    <button className="pf-like-btn" onClick={onLike} aria-pressed={isLiked}>
-                        {isLiked ? (
-                            <svg className="pf-stat-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4 16H0V6h4V0h6v4h6v12H4zM6 2v12h8v-1h-2v-2h2v-1h-2V8h2V6H8V2H6zM2 8v6h2V8H2z" fillRule="evenodd"/>
-                            </svg>
-                        ) : (
-                            <svg className="pf-stat-icon pf-icon-inactive" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4 16H0V6h4V0h6v4h6v12H4zM6 2v12h8v-1h-2v-2h2v-1h-2V8h2V6H8V2H6zM2 8v6h2V8H2z" fillRule="evenodd"/>
-                            </svg>
-                        )} {likes}
+                    <button className={`pf-like-btn${isLiked ? ' liked' : ''}`} onClick={onLike} aria-pressed={isLiked}>
+                        <svg className="pf-stat-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 16H0V6h4V0h6v4h6v12H4zM6 2v12h8v-1h-2v-2h2v-1h-2V8h2V6H8V2H6zM2 8v6h2V8H2z" fillRule="evenodd"/>
+                        </svg> {likes}
                     </button>
                     <span className="pf-counter">
                         <svg className="pf-stat-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">

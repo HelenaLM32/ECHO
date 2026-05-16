@@ -87,16 +87,6 @@ CREATE TABLE orders (
     FOREIGN KEY (item_id) REFERENCES items(id)
 );
 
-CREATE TABLE payments (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    order_id INT UNIQUE NOT NULL,
-    stripe_tx_id VARCHAR(255),
-    total_amount DOUBLE NOT NULL,
-    platform_fee DOUBLE NOT NULL,
-    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
-);
-
 CREATE TABLE events (
     id             INT AUTO_INCREMENT PRIMARY KEY,
     venue_id       INT NOT NULL,
@@ -206,9 +196,7 @@ INSERT INTO categories (name, slug, description, icon_url, is_active) VALUES
 
 INSERT INTO roles (name) VALUES
     ('ADMIN'),
-    ('USER'),
-    ('CREATOR'),
-    ('VENUE_MANAGER');
+    ('USER');
 
 CREATE TABLE disputes (
     id INT AUTO_INCREMENT PRIMARY KEY,

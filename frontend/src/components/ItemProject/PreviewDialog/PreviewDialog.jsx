@@ -1,28 +1,6 @@
-import useProjectStore, { BLOCK_TYPES } from '../../../store/useProjectStore'
+import useProjectStore, { BLOCK_TYPES, toEmbedUrl } from '../../../store/useProjectStore'
 import { AudioPlayer } from '../Project/Blocks'
 import './PreviewDialog.css'
-
-/**
- * Convierte URLs de video a formato embed
- * @param {string} raw - URL del video
- * @returns {string} URL en formato embed
- */
-function toEmbedUrl(raw) {
-  try {
-    const url = new URL(raw)
-    if (url.hostname.includes('youtube.com') && url.searchParams.get('v'))
-      return `https://www.youtube.com/embed/${url.searchParams.get('v')}`
-    if (url.hostname === 'youtu.be')
-      return `https://www.youtube.com/embed${url.pathname}`
-    if (url.hostname.includes('vimeo.com')) {
-      const id = url.pathname.replace('/', '')
-      return `https://player.vimeo.com/video/${id}`
-    }
-  } catch { 
-    /* no-op */ 
-  }
-  return raw
-}
 
 /**
  * Diálogo de vista previa del proyecto

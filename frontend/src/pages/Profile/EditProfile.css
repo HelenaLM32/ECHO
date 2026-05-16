@@ -148,7 +148,7 @@
 }
 
 .btn-save {
-  background: var(--orange);
+  background-color: var(--error);
   color: var(--true-white);
   border: none;
   border-radius: 50px;
@@ -160,7 +160,6 @@
 
 .btn-save:hover {
   background: var(--black);
-  transform: translateY(-2px);
 }
 
 /* Mensajes */
