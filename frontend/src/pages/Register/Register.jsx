@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
+import ojoAbierto from '../../assets/ojo-abierto.png';
 import "./Register.css";
 
 export default function Register() {
@@ -10,14 +11,29 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [errorUsers, setErrorUsers] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
   const { register } = useAuth();
   const { theme } = useTheme();
   const logoSrc = theme === "dark" ? "/logo-white.svg" : "/logo.svg";
 
+  const validatePassword = (pwd) => {
+  if (pwd.length < 8) return "La contraseña debe tener al menos 8 caracteres.";
+  if (!/[A-Z]/.test(pwd)) return "La contraseña debe contener al menos 1 letra mayúscula.";
+  if (!/[0-9]/.test(pwd)) return "La contraseña debe contener al menos 1 número.";
+  return null;
+};
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const passwordError = validatePassword(password);
+  if (passwordError) {
+    setErrorUsers(passwordError);
+    return;
+  }
+
     setLoadingUsers(true);
     setErrorUsers(null);
 
@@ -25,7 +41,12 @@ export default function Register() {
       await register(email, username, password);
       navigate("/");
     } catch (err) {
+      const msg = err.message?.toLowerCase() || "";
+    if (msg.includes("password") || msg.includes("contraseña")) {
+      setErrorUsers("La contraseña debe tener al menos 8 caracteres, 1 mayúscula y 1 número.");
+    } else {
       setErrorUsers(err.message);
+    }
     } finally {
       setLoadingUsers(false);
     }
@@ -60,15 +81,33 @@ export default function Register() {
             disabled={loadingUsers}
           />
 
-          <input
-            type="password"
-            placeholder="Contraseña..."
-            aria-label="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            disabled={loadingUsers}
-          />
+          <div className="password-wrapper">
+  <input
+    type={showPassword ? "text" : "password"}
+    placeholder="Contraseña..."
+    aria-label="Contraseña"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    required
+    disabled={loadingUsers}
+  />
+  <button 
+    onClick={() => setShowPassword(!showPassword)} 
+    type="button"
+    className="toggle-password-btn"
+  >
+    <img 
+      src={ojoAbierto} 
+      alt="Control de contraseña" 
+      style={{ 
+        width: '20px', 
+        height: '20px',
+        opacity: showPassword ? 1 : 0.4, 
+        transition: 'opacity 0.2s ease' 
+      }} 
+    />
+  </button>
+</div>
 
           <button className="btn-register" type="submit" disabled={loadingUsers}>
             {loadingUsers ? "Creando cuenta..." : "Registrarse"}

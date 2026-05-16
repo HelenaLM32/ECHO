@@ -141,6 +141,34 @@
     width: auto;
 }
 
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 44px;
+}
+
+.toggle-password-btn {
+  position: absolute;
+  right: 16px;          
+  top: 50%;             
+  transform: translateY(-50%); 
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;       
+  align-items: center; 
+  justify-content: center;
+  line-height: 1;
+  z-index: 2;           
+}
+
 /* ============================================
    MEDIA QUERIES - MÓVIL
    ============================================ */

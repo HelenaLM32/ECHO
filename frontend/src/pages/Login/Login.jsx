@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import OAuthButtons from "../../components/UI/OAuthButtons/OAuthButtons";
+import ojoAbierto from '../../assets/ojo-abierto.png';
 import "./Login.css";
 
 export default function Login() {
@@ -10,6 +11,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [errorUsers, setErrorUsers] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -50,15 +52,33 @@ export default function Login() {
             disabled={loadingUsers}
           />
 
-          <input
-            type="password"
-            placeholder="Contraseña..."
-            aria-label="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            disabled={loadingUsers}
-          />
+          <div className="password-wrapper">
+  <input
+    type={showPassword ? "text" : "password"}
+    placeholder="Contraseña..."
+    aria-label="Contraseña"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    required
+    disabled={loadingUsers}
+  />
+  <button 
+    onClick={() => setShowPassword(!showPassword)} 
+    type="button"
+    className="toggle-password-btn"
+  >
+    <img 
+      src={ojoAbierto} 
+      alt="Control de contraseña" 
+      style={{ 
+        width: '20px', 
+        height: '20px',
+        opacity: showPassword ? 1 : 0.4, 
+        transition: 'opacity 0.2s ease' 
+      }} 
+    />
+  </button>
+</div>
 
           <button className="btn-iniciar" type="submit" disabled={loadingUsers}>
             {loadingUsers ? "Verificando..." : "Iniciar sesión"}
