@@ -476,42 +476,20 @@
 .pc-btn-delete:hover { background-color: var(--black); transform: scale(1.1); }
 
 /* ============================================
-   MEDIA QUERIES - MÓVIL
+   MEDIA QUERIES - RESPONSIVE
    ============================================ */
 
-/* Tablets (768px) */
-@media (max-width: 768px) {
-  .profile-banner-wrapper {
-    height: 200px;
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
+  .profile-layout-container {
+    max-width: 1000px;
+    gap: 40px;
+    padding: 0 25px 60px;
   }
 
   .avatar-float-wrapper {
-    padding: 0 20px;
-    margin-top: -50px;
-  }
-
-  .avatar-container {
-    width: 100px;
-    height: 100px;
-  }
-
-  .profile-content {
-    padding: 20px;
-  }
-
-  .content-tabs {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .tab-item {
-    padding: 8px 14px;
-    font-size: 0.9rem;
-  }
-
-  .projects-grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 12px;
+    max-width: 1000px;
+    padding: 0 25px;
   }
 }
 
@@ -524,6 +502,8 @@
   .avatar-float-wrapper {
     padding: 0 16px;
     margin-top: -40px;
+    display: flex;
+    justify-content: center;
   }
 
   .avatar-container {
@@ -532,13 +512,66 @@
     border-width: 3px;
   }
 
-  .profile-content {
-    padding: 16px;
+  /* CAMBIO PRINCIPAL: Layout vertical con sidebar arriba */
+  .profile-layout-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 0 16px 40px;
+    max-width: 100%;
+  }
+
+  /* Sidebar arriba */
+  .profile-sidebar {
+    order: 1;
+    width: 100%;
+  }
+
+  .sidebar-info {
+    text-align: center;
+  }
+
+  .display-name {
+    font-size: 1.5rem;
+    margin: 10px 0 5px;
+  }
+
+  .username {
+    margin-bottom: 10px;
+  }
+
+  .profile-rating-badge {
+    margin: 0 auto 12px;
+  }
+
+  .follow-stats {
+    justify-content: center;
+    margin: 12px 0;
+  }
+
+  .btn-follow-action,
+  .btn-edit-info {
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Main content debajo */
+  .profile-main {
+    order: 2;
+    width: 100%;
+  }
+
+  .social-header {
+    justify-content: center;
+    margin: 10px 0;
   }
 
   .content-tabs {
     flex-wrap: wrap;
     gap: 6px;
+    width: 100%;
+    justify-content: center;
   }
 
   .tab-item {
@@ -551,6 +584,15 @@
   .projects-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
+  }
+
+  .items-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .calendar-iframe {
+    height: 400px;
   }
 
   .pc-admin-actions {
@@ -571,8 +613,8 @@
   }
 }
 
-/* Móviles pequeños (480px) */
-@media (max-width: 480px) {
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
   .profile-banner-wrapper {
     height: 140px;
   }
@@ -588,12 +630,44 @@
     border-width: 3px;
   }
 
-  .profile-content {
-    padding: 12px;
+  .profile-layout-container {
+    gap: 24px;
+    padding: 0 12px 30px;
   }
 
-  .main-layout {
-    gap: 20px;
+  .display-name {
+    font-size: 1.3rem;
+  }
+
+  .username {
+    font-size: 0.9rem;
+  }
+
+  .display-location {
+    font-size: 0.8rem;
+  }
+
+  .follow-stats {
+    font-size: 0.85rem;
+    gap: 12px;
+  }
+
+  .display-label {
+    font-size: 0.7rem;
+    margin: 18px 0 6px;
+  }
+
+  .display-text,
+  .display-bio {
+    font-size: 0.85rem;
+    margin-bottom: 14px;
+  }
+
+  .btn-follow-action,
+  .btn-edit-info {
+    padding: 10px;
+    font-size: 0.9rem;
+    max-width: 280px;
   }
 
   .content-tabs {
@@ -612,23 +686,33 @@
     gap: 12px;
   }
 
-  .display-label {
-    font-size: 0.7rem;
-    margin: 20px 0 6px;
+  .items-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 
-  .display-text,
-  .display-bio {
+  .item-info {
+    padding: 12px;
+  }
+
+  .item-title {
+    font-size: 0.95rem;
+  }
+
+  .item-price {
+    font-size: 1rem;
+  }
+
+  .calendar-iframe {
+    height: 350px;
+  }
+
+  .calendar-title {
     font-size: 0.85rem;
   }
 
-  .btn-edit-info {
-    padding: 10px;
+  .empty-state {
+    padding: 30px 20px;
     font-size: 0.9rem;
-  }
-
-  .social-header {
-    justify-content: center;
-    margin: 10px 0;
   }
 }

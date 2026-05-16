@@ -189,55 +189,89 @@
   border: none;
 }
 
-@media (max-width: 600px) {
-  .edit-grid { grid-template-columns: 1fr; }
-  .edit-card { padding: 20px; }
-}
-
 /* ============================================
-   MEDIA QUERIES ADICIONALES - MÓVIL
+   MEDIA QUERIES - RESPONSIVE
    ============================================ */
 
-/* Tablets (768px) */
-@media (max-width: 768px) {
-  .edit-profile-container {
-    padding: 20px;
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
+  .edit-topbar {
+    max-width: 900px;
+    padding: 0 25px;
   }
 
-  .edit-grid {
-    grid-template-columns: 1fr;
+  .edit-container {
+    max-width: 900px;
+    padding: 0 25px;
+  }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .edit-topbar {
+    padding: 0 20px;
+    margin: 0 auto 25px;
+  }
+
+  .btn-back {
+    padding: 8px 20px;
+    font-size: 0.9rem;
+    margin-top: 15px;
+  }
+
+  .edit-container {
+    padding: 0 20px;
     gap: 20px;
   }
 
   .edit-card {
     padding: 24px;
+    border-radius: 14px;
   }
 
-  .edit-title {
-    font-size: 1.5rem;
+  .edit-section-title {
+    font-size: 0.95rem;
+    margin-bottom: 16px;
   }
 
-  .avatar-upload {
-    width: 100px;
-    height: 100px;
+  .edit-section-desc {
+    font-size: 0.85rem;
+    padding: 10px;
   }
 
-  .avatar-placeholder {
-    font-size: 2rem;
+  .edit-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 
-  .form-group input,
-  .form-group textarea {
-    font-size: 15px;
+  .edit-field {
+    margin-bottom: 12px;
+  }
+
+  .edit-field input,
+  .edit-textarea {
+    padding: 10px;
+    font-size: 0.9rem;
   }
 
   .social-row {
-    padding: 10px 12px;
+    padding: 8px 12px;
+  }
+
+  .social-label {
+    font-size: 0.8rem;
+    width: 70px;
+  }
+
+  .edit-actions {
+    justify-content: center;
   }
 
   .btn-save {
-    padding: 12px 24px;
+    padding: 12px 30px;
     font-size: 0.9rem;
+    width: auto;
+    min-width: 200px;
   }
 
   .edit-iframe-preview {
@@ -245,56 +279,73 @@
   }
 }
 
-/* Móviles pequeños (480px) */
-@media (max-width: 480px) {
-  .edit-profile-container {
-    padding: 15px;
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
+  .edit-topbar {
+    padding: 0 16px;
+    margin: 0 auto 20px;
+  }
+
+  .btn-back {
+    padding: 8px 18px;
+    font-size: 0.85rem;
+  }
+
+  .edit-container {
+    padding: 0 16px;
+    gap: 16px;
   }
 
   .edit-card {
     padding: 18px;
-    border-radius: 14px;
+    border-radius: 12px;
   }
 
-  .edit-title {
-    font-size: 1.25rem;
-  }
-
-  .avatar-upload {
-    width: 90px;
-    height: 90px;
-  }
-
-  .avatar-placeholder {
-    font-size: 1.75rem;
-  }
-
-  .form-group {
+  .edit-section-title {
+    font-size: 0.9rem;
     margin-bottom: 14px;
   }
 
-  .form-group label {
+  .edit-section-desc {
+    font-size: 0.8rem;
+    padding: 8px;
+    margin-bottom: 16px;
+  }
+
+  .edit-grid {
+    gap: 14px;
+  }
+
+  .edit-field {
+    margin-bottom: 10px;
+  }
+
+  .edit-field label {
     font-size: 0.75rem;
-    margin-bottom: 5px;
   }
 
-  .form-group input,
-  .form-group textarea {
-    font-size: 14px;
-    padding: 10px 14px;
+  .edit-field input,
+  .edit-textarea {
+    padding: 10px;
+    font-size: 0.9rem;
   }
 
-  .social-section {
-    padding: 15px;
+  .social-rows {
+    gap: 10px;
   }
 
   .social-row {
     padding: 8px 10px;
+    gap: 10px;
   }
 
   .social-label {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     width: 60px;
+  }
+
+  .social-row input {
+    font-size: 0.85rem;
   }
 
   .edit-actions {
@@ -314,5 +365,9 @@
 
   .edit-iframe-preview {
     height: 250px;
+  }
+
+  .calendar-preview {
+    margin-top: 16px;
   }
 }
