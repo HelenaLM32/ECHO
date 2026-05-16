@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../../context/AuthContext'
-import './ItemProjectFooter.css'
+import './Footer.css'
 
-export default function ItemProjectFooter({ name, avatar, likes = 0, views = 0, comments = 0, price = null, commentItems = [], onLike, onSubmitComment, onDeleteComment, currentUserId, projectOwnerId, isAdmin = false, isLiked = false }) {
+export default function Footer({ name, avatar, likes = 0, views = 0, comments = 0, price = null, commentItems = [], onLike, onSubmitComment, onDeleteComment, currentUserId, projectOwnerId, isAdmin = false, isLiked = false }) {
     const [draft, setDraft] = useState('')
     const navigate = useNavigate()
     const { user } = useAuth()

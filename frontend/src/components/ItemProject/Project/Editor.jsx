@@ -4,7 +4,7 @@ import { uploadFile } from '../../../services/uploads'
 import useProjectStore, { BLOCK_TYPES, BLOCK_META, reorder } from '../../../store/useProjectStore'
 import { TextBlock, ImageBlock, GalleryBlock, VideoBlock, AudioBlock, AudioPlayer } from './Blocks'
 import { ActionButton } from '../../UI/ActionButton/ActionButton'
-import './ItemProject.css'
+import './Project.css'
 
 function BlockRenderer({ block, onChange, preview }) {
   switch (block.type) {

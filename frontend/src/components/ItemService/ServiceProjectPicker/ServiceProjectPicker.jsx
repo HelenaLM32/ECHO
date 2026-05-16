@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import { getProjectsByUserId } from '../../../services/projects';
 import { BLOCK_TYPES, parseJsonSafe } from '../../../store/useProjectStore';
-import './ItemServiceProjectPicker.css';
+import './ServiceProjectPicker.css';
 
 function getCover(project) {
   const blocks = parseJsonSafe(project.blocks) || [];
@@ -16,7 +16,7 @@ function getCover(project) {
   return null;
 }
 
-function ItemServiceProjectPicker({ selectedProjects, onSelectionChange, maxSelection = 6 }) {
+function ServiceProjectPicker({ selectedProjects, onSelectionChange, maxSelection = 6 }) {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
@@ -115,4 +115,4 @@ function ItemServiceProjectPicker({ selectedProjects, onSelectionChange, maxSele
   );
 }
 
-export default ItemServiceProjectPicker;
+export default ServiceProjectPicker;

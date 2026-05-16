@@ -1,0 +1,28 @@
+/* ============================================
+   SHARED AUTH STYLES (Login & Register)
+   ============================================ */
+
+.auth-logo-link {
+    display: block;
+    margin-bottom: 32px;
+    align-self: flex-start;
+}
+
+.auth-logo {
+    height: 32px;
+    width: auto;
+}
+
+/* ============================================
+   MEDIA QUERIES
+   ============================================ */
+
+@media (max-width: 768px) {
+    .auth-logo {
+        height: 28px;
+    }
+
+    .auth-logo-link {
+        margin-bottom: 24px;
+    }
+}

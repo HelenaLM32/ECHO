@@ -1178,13 +1178,15 @@
 
 .galleryGrid {
   display: grid;
-  gap: 10px;
+  grid-template-columns: repeat(var(--gallery-columns, 3), 1fr);
+  gap: var(--gallery-gap, 10px);
 }
 
 .galleryGridItem {
   position: relative;
   overflow: hidden;
   border: 1px solid var(--gray-stroke, #e0e0e0);
+  aspect-ratio: var(--item-aspect-ratio, auto);
 }
 
 .galleryGridItem img {

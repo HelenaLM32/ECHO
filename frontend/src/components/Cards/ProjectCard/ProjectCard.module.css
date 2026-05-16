@@ -19,7 +19,7 @@
 
 .card {
   background: var(--white);
-  border: 1px solid rgba(116, 122, 138, 0.14);
+  border: 1px solid var(--gray-stroke);
   border-radius: 16px;
   overflow: hidden;
   display: flex;
@@ -32,13 +32,13 @@
 }
 
 .card:hover {
-  background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(0, 0, 0, 0.05) 100%);
+  background: linear-gradient(135deg, var(--orange-secondary) 0%, var(--gray) 100%);
 }
 
 .cover {
   width: 100%;
   height: 200px;
-  background: linear-gradient(180deg, rgba(235, 238, 244, 0.95), rgba(216, 221, 232, 0.98));
+  background: linear-gradient(180deg, var(--gray-light) 0%, var(--gray) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,7 +65,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.16));
+  background: linear-gradient(180deg, var(--shadow-light) 0%, var(--shadow-medium) 100%);
   pointer-events: none;
 }
 
@@ -86,13 +86,6 @@
   font-weight: 700;
   font-size: 2.5rem;
   color: var(--black-secondary);
-}
-
-.innerImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 0;
 }
 
 .text {
@@ -236,6 +229,65 @@
   font-size: 0.7rem;
 }
 
-.small .statLabel {
-  font-size: 0.65rem;
+/* ============================================
+   MEDIA QUERIES - RESPONSIVE
+   ============================================ */
+
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
+  .cardWrapper {
+    align-items: center;
+  }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .cardWrapper {
+    align-items: center;
+  }
+  
+  .card {
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
+  }
+  
+  .cover {
+    height: 180px;
+  }
+}
+
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
+  .cardWrapper {
+    align-items: center;
+    width: 100%;
+  }
+  
+  .card {
+    width: 100%;
+    min-width: unset;
+    max-width: 340px;
+  }
+  
+  .cover {
+    height: 200px;
+  }
+  
+  .footer {
+    padding: 12px;
+  }
+  
+  .creatorAvatar {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .title {
+    font-size: 1rem;
+  }
+  
+  .author {
+    font-size: 0.8rem;
+  }
 }

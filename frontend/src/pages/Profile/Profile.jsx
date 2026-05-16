@@ -12,7 +12,7 @@ import { getVenuesByUser, deleteVenue } from "../../services/venues";
 import { getEventsByUser, deleteEvent } from "../../services/events";
 import { deleteService } from "../../services/services";
 import { getProjectsByUserId, deleteProject } from "../../services/projects";
-import { getAuthToken } from "../../services/session";
+
 import { getAverageByUser, getReviewsByUser } from "../../services/reviews";
 import {
   getFollowStats,
@@ -31,7 +31,7 @@ import DetailModal from "../../components/Modals/DetailModal/DetailModal";
 import ReviewsModal from "../../components/Modals/ReviewsModal/ReviewsModal";
 import PopupConfirm from "../../components/Modals/PopupConfirm/PopupConfirm";
 import PopupSuccess from "../../components/Modals/PopupSuccess/PopupSuccess";
-import ItemServiceDetail from "../../components/ItemService/ItemServiceDetail/ItemServiceDetail";
+import ServiceDetail from "../../components/ItemService/ServiceDetail/ServiceDetail";
 import useConfirmPopup from "../../hooks/useConfirmPopup";
 import useSuccessPopup from "../../hooks/useSuccessPopup";
 
@@ -101,13 +101,13 @@ export default function Profile() {
 
   useEffect(() => {
     if (!targetId) return;
-    getFollowStats(targetId).then(setFollowStats).catch(() => { });
+    getFollowStats(targetId).then(setFollowStats).catch((err) => { console.error("Error al obtener estadísticas de seguimiento:", err); });
     getAverageByUser(targetId)
       .then((data) => setReviewStats({ average: data.average, count: data.count ?? 0 }))
-      .catch(() => { });
+      .catch((err) => { console.error("Error al obtener promedio de reviews:", err); });
 
     if (user && !isOwnProfile) {
-      checkIsFollowing(targetId).then((data) => setIsFollowing(data.following)).catch(() => { });
+      checkIsFollowing(targetId).then((data) => setIsFollowing(data.following)).catch((err) => { console.error("Error al verificar estado de seguimiento:", err); });
     }
   }, [targetId, user, isOwnProfile]);
 
@@ -156,20 +156,27 @@ export default function Profile() {
   useEffect(() => {
     if (activeTab !== "Proyectos" || !targetId) return;
 
+    let mounted = true;
     const pollProjects = async () => {
       try {
         const updatedProjects = await getProjectsByUserId(targetId);
+        if (!mounted) return;
         if (updatedProjects && Array.isArray(updatedProjects)) {
           setProjects((prev) => {
             const updatedMap = new Map(updatedProjects.map((p) => [p.id, p]));
             return prev.map((p) => updatedMap.get(p.id) || p);
           });
         }
-      } catch { }
+      } catch (err) {
+        if (mounted) console.error("Error en polling de proyectos:", err);
+      }
     };
 
     const interval = setInterval(pollProjects, 30000);
-    return () => clearInterval(interval);
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+    };
   }, [activeTab, targetId]);
 
   const handleBannerChange = async (e) => {
@@ -247,8 +254,7 @@ export default function Profile() {
       "Confirmar eliminación",
       async () => {
         try {
-          const token = getAuthToken();
-          await deleteService(id, token);
+          await deleteService(id);
           setServices((prev) => prev.filter((s) => s.id !== id));
         } catch (err) {
           showSuccess("Error al eliminar el servicio: " + err.message, "Error");
@@ -664,7 +670,7 @@ const renderEvents = () => {
         <ProjectView projectId={selectedProjectId} onClose={() => setSelectedProjectId(null)} />
       )}
       {selectedService && (
-        <ItemServiceDetail service={selectedService} onClose={() => setSelectedService(null)} />
+        <ServiceDetail service={selectedService} onClose={() => setSelectedService(null)} />
       )}
       {modal.open && (
         <DetailModal type={modal.type} data={modal.data} onClose={closeModal} />

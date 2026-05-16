@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import ItemServiceProjectPicker from '../../ItemServiceProjectPicker/ItemServiceProjectPicker';
+import ServiceProjectPicker from '../ServiceProjectPicker/ServiceProjectPicker';
 import { getCategories } from '../../../services/projects';
-import './ItemServiceForm.css';
+import './ServiceForm.css';
 
-function ItemServiceForm({ initialData = {}, onSubmit, onCancel, saving = false }) {
+function ServiceForm({ initialData = {}, onSubmit, onCancel, saving = false }) {
   const [formData, setFormData] = useState({
     name: initialData.name || '',
     description: initialData.description || '',
@@ -149,7 +149,7 @@ function ItemServiceForm({ initialData = {}, onSubmit, onCancel, saving = false 
         )}
       </div>
 
-      <ItemServiceProjectPicker
+      <ServiceProjectPicker
         selectedProjects={formData.projectIds}
         onSelectionChange={handleProjectsChange}
       />
@@ -165,4 +165,4 @@ function ItemServiceForm({ initialData = {}, onSubmit, onCancel, saving = false 
 );
 }
 
-export default ItemServiceForm;
+export default ServiceForm;

@@ -1,0 +1,115 @@
+/* ProjectView Specific Styles - Responsive */
+
+/* Base styles */
+.project-view-window {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-radius: 16px;
+}
+
+.project-view-content {
+  padding: 0 20px;
+}
+
+/* Footer container */
+.project-footer-container {
+  margin-top: 12px;
+}
+
+/* Order button container */
+.project-order-container {
+  display: flex;
+  justify-content: center;
+  padding: 12px 24px 28px;
+}
+
+/* Pantallas grandes (1200px) */
+@media (max-width: 1200px) {
+  .project-view-container {
+    max-width: 1000px;
+  }
+  
+  .project-view-content {
+    padding: 0 16px;
+  }
+  
+  .previewWindow {
+    max-width: 1000px;
+  }
+  
+  .previewContentList {
+    padding: 0 16px;
+  }
+}
+
+/* Móviles grandes (600px) */
+@media (max-width: 600px) {
+  .project-view-container {
+    max-width: 100%;
+  }
+  
+  .project-view-content {
+    padding: 0 12px;
+  }
+  
+  .previewOverlay {
+    padding: 10px;
+  }
+  
+  .previewWindow {
+    max-width: 100%;
+    border-radius: 12px;
+  }
+  
+  .previewContentList {
+    padding: 0 12px;
+  }
+  
+  .previewEmptyMessage {
+    font-size: 20px;
+    width: 80%;
+  }
+  
+  .previewContentItem {
+    margin-bottom: 16px;
+  }
+}
+
+/* iPhone 12/13/14 (390px) */
+@media (max-width: 390px) {
+  .project-view-container {
+    max-width: 100%;
+  }
+  
+  .project-view-content {
+    padding: 0 8px;
+  }
+  
+  .previewOverlay {
+    padding: 8px;
+  }
+  
+  .previewWindow {
+    max-width: 100%;
+    border-radius: 10px;
+  }
+  
+  .previewContentList {
+    padding: 0 8px;
+  }
+  
+  .previewEmptyMessage {
+    font-size: 18px;
+    width: 90%;
+  }
+  
+  .previewContentItem {
+    margin-bottom: 12px;
+  }
+  
+  .pv-order-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}

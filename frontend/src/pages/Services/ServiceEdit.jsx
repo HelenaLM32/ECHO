@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getServiceById, updateService } from "../../services/services";
 import { getCategories } from "../../services/projects";
 import { uploadFile } from "../../services/uploads";
-import ItemServiceProjectPicker from "../../components/ItemService/ItemServiceProjectPicker/ItemServiceProjectPicker";
+import ServiceProjectPicker from "../../components/ItemService/ServiceProjectPicker/ServiceProjectPicker";
 import Footer from "../../components/Navigation/Footer/Footer";
 import { getAuthToken } from "../../services/session";
 import "./Services.css";
@@ -299,7 +299,7 @@ export default function ServiceEdit() {
 
           <div className="service-card">
             <h2 className="service-section-title">Proyectos Relacionados</h2>
-            <ItemServiceProjectPicker
+            <ServiceProjectPicker
               selectedProjects={form.projectIds}
               onSelectionChange={handleProjectsChange}
             />

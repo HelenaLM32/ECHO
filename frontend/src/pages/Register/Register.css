@@ -44,7 +44,7 @@
 .register-cont input:focus {
     outline: none;
     border-color: var(--gray);
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 8px var(--shadow-light);
 }
 
 
@@ -171,12 +171,14 @@
 }
 
 /* ============================================
-   MEDIA QUERIES - MÓVIL
+   MEDIA QUERIES - RESPONSIVE
    ============================================ */
 
 /* Tablets (768px) */
 @media (max-width: 768px) {
-  .register-container {
+@import '../Auth.css';
+
+.register-container {
     grid-template-columns: 1fr;
   }
 
@@ -241,14 +243,6 @@
   .register-text {
     font-size: 14px;
     margin-top: 30px;
-  }
-
-  .auth-logo {
-    height: 28px;
-  }
-
-  .auth-logo-link {
-    margin-bottom: 24px;
   }
 }
 

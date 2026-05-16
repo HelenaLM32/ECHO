@@ -5,7 +5,7 @@ import VenueCard from "../../components/Cards/VenueCard/VenueCard";
 import EventCard from "../../components/Cards/EventCard/EventCard";
 import ProfileCard from "../../components/Cards/ProfileCard/ProfileCard";
 import ProjectView from "../../pages/ItemProject/ProjectView";
-import ItemServiceDetail from "../../components/ItemService/ItemServiceDetail/ItemServiceDetail";
+import ServiceDetail from "../../components/ItemService/ServiceDetail/ServiceDetail";
 import { getAllProjects } from "../../services/projects";
 import { getAllServices } from "../../services/services";
 import { getAllVenues } from "../../services/venues";
@@ -56,48 +56,26 @@ const [selectedEvent, setSelectedEvent] = useState(null);
         getAllServices()
       ])
         .then(([projectsList, servicesList]) => {
-          if (projectsList && Array.isArray(projectsList)) {
-            setProjects((prev) => {
-              const updatedMap = new Map(projectsList.map((p) => [p.id, p]));
-              return prev.map((p) => updatedMap.get(p.id) || p);
+          setItems((prevItems) => {
+            const updatedProjectsMap = new Map((projectsList || []).map((p) => [p.id, p]));
+            const updatedServicesMap = new Map((servicesList || []).map((s) => [s.id, s]));
+            
+            return prevItems.map((item) => {
+              // Check if item is a project
+              if (item?.item?.type === 'project' || item?.type === 'project') {
+                const updated = updatedProjectsMap.get(item.id);
+                return updated || item;
+              }
+              // Check if item is a service
+              if (item?.item?.type === 'service' || item?.type === 'service') {
+                const updated = updatedServicesMap.get(item.id);
+                return updated || item;
+              }
+              return item;
             });
-          }
-          if (servicesList && Array.isArray(servicesList)) {
-            setServices((prev) => {
-              const updatedMap = new Map(servicesList.map((s) => [s.id, s]));
-              return prev.map((s) => updatedMap.get(s.id) || s);
-            });
-          }
+          });
         })
-        .catch(() => { });
-    };
-
-    const interval = setInterval(pollItems, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Poll for updated projects and services every 30 seconds to refresh views/likes in real-time
-  useEffect(() => {
-    const pollItems = () => {
-      Promise.all([
-        getAllProjects(),
-        getAllServices()
-      ])
-        .then(([projectsList, servicesList]) => {
-          if (projectsList && Array.isArray(projectsList)) {
-            setProjects((prev) => {
-              const updatedMap = new Map(projectsList.map((p) => [p.id, p]));
-              return prev.map((p) => updatedMap.get(p.id) || p);
-            });
-          }
-          if (servicesList && Array.isArray(servicesList)) {
-            setServices((prev) => {
-              const updatedMap = new Map(servicesList.map((s) => [s.id, s]));
-              return prev.map((s) => updatedMap.get(s.id) || s);
-            });
-          }
-        })
-        .catch(() => { });
+        .catch((err) => { console.error("Error en polling de items:", err); });
     };
 
     const interval = setInterval(pollItems, 30000);
@@ -199,7 +177,7 @@ if (contentType === "eventos") {
         <ProjectView projectId={selectedProjectId} onClose={() => setSelectedProjectId(null)} />
       )}
       {selectedService && (
-        <ItemServiceDetail service={selectedService} onClose={() => setSelectedService(null)} />
+        <ServiceDetail service={selectedService} onClose={() => setSelectedService(null)} />
       )}
       {selectedVenue && (
   <DetailModal type="venue" data={selectedVenue} onClose={() => setSelectedVenue(null)} />

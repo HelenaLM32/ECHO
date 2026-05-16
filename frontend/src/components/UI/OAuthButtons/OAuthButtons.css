@@ -13,7 +13,7 @@
   gap: 10px;
   padding: 11px 20px;
   border-radius: 8px;
-  border: 1px solid #333;
+  border: 1px solid var(--black);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -23,5 +23,5 @@
 
 .oauth-btn:hover  { opacity: 0.85; transform: translateY(-1px); }
 .oauth-btn:active { transform: translateY(0); }
-.oauth-btn.google { background: #fff; color: #333; }
-.oauth-btn.github { background: #24292e; color: #fff; }
+.oauth-btn.google { background: var(--true-white); color: var(--black); }
+.oauth-btn.github { background: var(--black); color: var(--true-white); }

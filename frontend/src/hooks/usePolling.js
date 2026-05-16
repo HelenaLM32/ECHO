@@ -20,8 +20,8 @@ export function usePolling(callback, interval = 30000, enabled = true) {
     const executeCallback = () => {
       try {
         savedCallback.current();
-      } catch {
-        // Silently handle polling errors
+      } catch (err) {
+        console.error("Error en polling:", err);
       }
     };
 

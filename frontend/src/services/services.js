@@ -1,32 +1,27 @@
 import { fetchApi, fetchWithToken } from './config.js';
 
-export const createService = (data, token) => {
+export const createService = (data) => {
   return fetchWithToken('/services', {
     method: 'POST',
-    body: JSON.stringify(data),
-    headers: { 'Authorization': `Bearer ${token}` }
+    body: JSON.stringify(data)
   });
 };
 
-export const updateService = (id, data, token) => {
+export const updateService = (id, data) => {
   return fetchWithToken(`/services/${id}`, {
     method: 'PUT',
-    body: JSON.stringify(data),
-    headers: { 'Authorization': `Bearer ${token}` }
+    body: JSON.stringify(data)
   });
 };
 
-export const deleteService = (id, token) => {
+export const deleteService = (id) => {
   return fetchWithToken(`/services/${id}`, {
-    method: 'DELETE',
-    headers: { 'Authorization': `Bearer ${token}` }
+    method: 'DELETE'
   });
 };
 
-export const getMyServices = (token) => {
-  return fetchWithToken('/services/me', {
-    headers: { 'Authorization': `Bearer ${token}` }
-  });
+export const getMyServices = () => {
+  return fetchWithToken('/services/me');
 };
 
 export const getServiceById = (id) => {
