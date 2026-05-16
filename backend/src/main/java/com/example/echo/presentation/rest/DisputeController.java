@@ -116,4 +116,20 @@ public class DisputeController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
         }
     }
+
+    @org.springframework.web.bind.annotation.PatchMapping("/{disputeId}/close")
+    public ResponseEntity<String> closeDispute(@PathVariable Integer disputeId,
+            @RequestBody String json) {
+        try {
+            UserDTO user = getCurrentUser();
+            if (!isAdmin(user)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("{\"error\":\"Solo un administrador puede cerrar disputas\"}");
+            }
+            String result = disputeService.closeDisputeFromJson(disputeId, json, user.getId(), true);
+            return ResponseEntity.ok(result);
+        } catch (ServiceException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"" + e.getMessage() + "\"}");
+        }
+    }
 }

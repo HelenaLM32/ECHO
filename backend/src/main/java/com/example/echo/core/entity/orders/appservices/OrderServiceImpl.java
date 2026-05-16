@@ -109,11 +109,18 @@ public class OrderServiceImpl implements OrderService {
         UserDTO user  = resolveUser(email);
         OrderDTO order = resolveOrder(id);
 
-        if (!user.getId().equals(order.getCreatorId())) {
-            throw new ServiceException("Solo el creador puede cambiar el estado del encargo");
+        boolean isAdmin   = user.getRoles() != null &&
+                user.getRoles().stream().anyMatch(r -> "ADMIN".equals(r.getName()));
+        boolean isCreator = user.getId().equals(order.getCreatorId());
+        boolean isBuyer   = user.getId().equals(order.getBuyerId());
+
+        String normalized = normalizeStatus(status);
+
+        if (!isAdmin && !isCreator && !(isBuyer && "CANCELLED".equals(normalized))) {
+            throw new ServiceException("No tienes permiso para cambiar el estado de este encargo");
         }
 
-        order.setStatus(normalizeStatus(status));
+        order.setStatus(normalized);
         return serializer().serialize(orderRepository.save(order));
     }
 
