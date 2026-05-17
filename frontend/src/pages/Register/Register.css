@@ -134,12 +134,12 @@
 }
 .auth-logo-link {
     display: block;
-    margin-bottom: 32px;
-    align-self: flex-start;
+    margin-bottom: 24px;
+    align-self: center;
 }
 
 .auth-logo {
-    height: 32px;
+    height: 80px;
     width: auto;
 }
 .password-wrapper {
