@@ -55,3 +55,47 @@ export async function createDevItem(payload) {
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 }
+
+export async function createDevProject(payload) {
+  const res = await fetchWithToken("/admin/dev/projects", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+export async function createDevService(payload) {
+  const res = await fetchWithToken("/admin/dev/services", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+export async function createDevVenue(payload) {
+  const res = await fetchWithToken("/admin/dev/venues", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+export async function createDevEvent(payload) {
+  const res = await fetchWithToken("/admin/dev/events", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+export async function deleteDevContent(type, id) {
+  const res = await fetchWithToken(`/admin/dev/content/${encodeURIComponent(type)}/${id}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return true;
+}
