@@ -515,7 +515,7 @@
     }
 
     .nav-mobile-link {
-        font-size: 17px;
+        font-size: 20px;
         padding: 14px 16px;
     }
 }
@@ -555,7 +555,7 @@
     
     .nav-mobile-link {
         min-height: 48px;
-        font-size: 15px;
+        font-size: 17px;
         padding: 12px 14px;
     }
 
