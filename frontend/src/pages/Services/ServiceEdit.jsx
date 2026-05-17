@@ -50,11 +50,7 @@ export default function ServiceEdit() {
   useEffect(() => {
     const loadService = async () => {
       try {
-        const response = await getServiceById(id);
-        if (!response.ok) {
-          throw new Error("Error al cargar el servicio");
-        }
-        const data = await response.json();
+        const data = await getServiceById(id);
 
         setForm({
           name: data.name || "",
@@ -69,8 +65,9 @@ export default function ServiceEdit() {
           setExistingImageUrl(data.coverImageUrl);
           setImgPreview(data.coverImageUrl);
         }
-      } catch {
-        setError("Error al cargar el servicio");
+      } catch (err) {
+        console.error('Error loading service:', err);
+        setError("Error al cargar el servicio: " + (err.message || 'Error desconocido'));
       } finally {
         setLoadingService(false);
       }
@@ -108,7 +105,7 @@ export default function ServiceEdit() {
     if (form.price && form.price.trim() !== "") {
       const parsedPrice = parseFloat(form.price);
       if (isNaN(parsedPrice) || parsedPrice < 0) {
-        setError("El precio debe ser un numero valido mayor o igual a 0");
+        setError("El precio debe ser un número válido mayor o igual a 0");
         return;
       }
       priceValue = parsedPrice;
@@ -135,12 +132,7 @@ export default function ServiceEdit() {
         coverImageUrl: coverImageUrl,
       };
 
-      const response = await updateService(id, submitData, token);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || "Error al actualizar el servicio");
-      }
+      await updateService(id, submitData);
 
       navigate("/profile");
     } catch (err) {
@@ -167,7 +159,7 @@ export default function ServiceEdit() {
         <header className="service-header">
           <h1 className="service-title">Editar servicio</h1>
           <p className="service-desc">
-            Modifica la informacion de tu servicio.
+            Modifica la información de tu servicio.
           </p>
         </header>
 
@@ -175,7 +167,7 @@ export default function ServiceEdit() {
 
         <form onSubmit={handleSubmit} className="service-form">
           <div className="service-card">
-            <h2 className="service-section-title">Informacion General</h2>
+            <h2 className="service-section-title">Información General</h2>
 
             <div className="field-group">
               <label>Nombre del servicio *</label>

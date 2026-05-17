@@ -59,11 +59,11 @@ function SaveProjectModal({ onClose, exportJSON, user, mode = 'create' }) {
   async function handleSubmit(e) {
     e.preventDefault()
     if (!title || title.trim().length < 3) {
-      showSuccess('El titulo debe tener al menos 3 caracteres', 'Alto ahi!', 'warning')
+      showSuccess('El título debe tener al menos 3 caracteres', 'Alto ahí!', 'warning')
       return
     }
     if (!categoryId) {
-      showSuccess('Debes seleccionar una categoria', 'Alto ahi!', 'warning')
+      showSuccess('Debes seleccionar una categoría', 'Alto ahí!', 'warning')
       return
     }
     
@@ -72,7 +72,7 @@ function SaveProjectModal({ onClose, exportJSON, user, mode = 'create' }) {
     if (basePrice && basePrice.trim() !== '') {
       const parsedPrice = Number(basePrice)
       if (Number.isNaN(parsedPrice) || parsedPrice < 0) {
-        showSuccess('El precio debe ser un numero valido mayor o igual a 0', 'Alto ahi!', 'warning')
+        showSuccess('El precio debe ser un número válido mayor o igual a 0', 'Alto ahí!', 'warning')
         return
       }
       price = parsedPrice
@@ -112,14 +112,16 @@ function SaveProjectModal({ onClose, exportJSON, user, mode = 'create' }) {
         showSuccess('Proyecto guardado correctamente (id: ' + (createdProject.id || createdProject.item?.id) + ')', 'Éxito')
       } else {
         // Actualizar proyecto existente
+        const numericId = Number(id)
         const projectPayload = {
+          id: numericId,
           blocks: JSON.stringify(data.blocks || []),
           background: JSON.stringify(data.background || {}),
           blockGap: data.blockGap || 0,
           published: false,
           slug,
           item: {
-            id: Number(id),
+            id: numericId,
             title: title.trim(),
             description: description ? description.trim() : null,
             basePrice: price,

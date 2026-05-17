@@ -212,17 +212,7 @@ function ProjectSidebar({ onPreview, mode = 'create' }) {
                 </div>
               )}
 
-              {/* Preview swatch */}
-              {(showColorPicker || showImagePicker) && (
-                <div
-                  className="backgroundPreviewSwatch"
-                  style={
-                    background.mode === 'image'
-                      ? { backgroundImage: `url(${background.value})`, backgroundSize: 'cover', backgroundPosition: 'center' }
-                      : { background: background.value }
-                  }
-                />
-              )}
+
             </div>
           )}
         </div>

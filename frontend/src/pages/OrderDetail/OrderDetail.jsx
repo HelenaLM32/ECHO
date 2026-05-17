@@ -23,7 +23,7 @@ const NEXT_STATUSES = {
 };
 
 export default function OrderDetail() {
-  const { orderId } = useParams();
+  const { id } = useParams();
   const { user }    = useAuth();
   const navigate    = useNavigate();
   const { confirmState, showConfirm, handleConfirm, handleCancel: handleConfirmCancel } = useConfirmPopup();
@@ -41,18 +41,18 @@ export default function OrderDetail() {
 
   useEffect(() => {
     setLoading(true);
-    getOrderById(Number(orderId))
+    getOrderById(Number(id))
       .then(setOrder)
       .catch((e) => setError(e.message || "No se pudo cargar el encargo"))
       .finally(() => setLoading(false));
-  }, [orderId]);
+  }, [id]);
 
   useEffect(() => {
     if (!order || order.status !== "COMPLETED") return;
-    getReviewByOrder(Number(orderId))
+    getReviewByOrder(Number(id))
       .then(setReview)
       .catch(() => setReview(null));
-  }, [order, orderId]);
+  }, [order, id]);
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
@@ -60,7 +60,7 @@ export default function OrderDetail() {
     setReviewSubmitting(true);
     setReviewError("");
     try {
-      const saved = await createReview(Number(orderId), reviewScore, reviewComment);
+      const saved = await createReview(Number(id), reviewScore, reviewComment);
       setReview(saved);
     } catch (err) {
       setReviewError(err.message || "Error al enviar la review");
@@ -73,7 +73,7 @@ export default function OrderDetail() {
     setUpdating(true);
     setError("");
     try {
-      const updated = await updateOrderStatus(Number(orderId), newStatus);
+      const updated = await updateOrderStatus(Number(id), newStatus);
       setOrder(updated);
     } catch (e) {
       setError(e.message || "Error al actualizar el estado");

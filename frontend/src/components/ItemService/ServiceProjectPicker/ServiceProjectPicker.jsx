@@ -59,7 +59,7 @@ function ServiceProjectPicker({ selectedProjects, onSelectionChange, maxSelectio
       </div>
       
       {selectedProjects.length >= maxSelection && (
-        <p className="spp-warning">Has alcanzado el maximo de proyectos seleccionados.</p>
+        <p className="spp-warning">Has alcanzado el máximo de proyectos seleccionados.</p>
       )}
       
       {projects.length === 0 ? (
@@ -67,7 +67,7 @@ function ServiceProjectPicker({ selectedProjects, onSelectionChange, maxSelectio
       ) : (
         <div className="spp-grid">
           {projects.map(project => {
-            const title = project.title || project.item?.title || 'Proyecto sin titulo';
+            const title = project.title || project.item?.title || 'Proyecto sin título';
             const cover = getCover(project);
             const isSelected = selectedProjects.includes(project.id);
             

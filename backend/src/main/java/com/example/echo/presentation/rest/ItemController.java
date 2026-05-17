@@ -2,19 +2,28 @@ package com.example.echo.presentation.rest;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.core.entity.items.appservices.ItemService;
+import com.example.echo.core.entity.items.persistence.ItemRepository;
+import com.example.echo.core.entity.items.dto.ItemDTO;
+import com.example.echo.core.entity.user.persistence.UserRepository;
+import com.example.echo.core.entity.user.dto.UserDTO;
 
 @RestController
 @RequestMapping("/items")
 public class ItemController {
 
     private final ItemService itemService;
+    private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
 
-    public ItemController(ItemService itemService) {
+    public ItemController(ItemService itemService, ItemRepository itemRepository, UserRepository userRepository) {
         this.itemService = itemService;
+        this.itemRepository = itemRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -49,8 +58,25 @@ public class ItemController {
     @PutMapping(value = "/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updateItem(@PathVariable Integer id, @RequestBody String itemJson) {
+    public ResponseEntity<String> updateItem(@PathVariable Integer id, @RequestBody String itemJson, Authentication authentication) {
         try {
+            // Verificar autorización
+            String email = authentication.getName();
+            UserDTO currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ServiceException("Usuario no autenticado"));
+            
+            ItemDTO existing = itemRepository.findById(id)
+                .orElseThrow(() -> new ServiceException("Item no encontrado"));
+            
+            // Verificar si es el creador o admin
+            boolean isCreator = existing.getCreatorId().equals(currentUser.getId());
+            boolean isAdmin = currentUser.getRoles().stream()
+                .anyMatch(r -> r.getName().equals("ADMIN"));
+            
+            if (!isCreator && !isAdmin) {
+                return ResponseEntity.status(403).body("No autorizado para editar este item");
+            }
+            
             return ResponseEntity.ok(itemService.updateFromJson(itemJson));
         } catch (ServiceException e) {
             return ResponseEntity.status(400).body(e.getMessage());
@@ -58,8 +84,25 @@ public class ItemController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteItem(@PathVariable Integer id) {
+    public ResponseEntity<String> deleteItem(@PathVariable Integer id, Authentication authentication) {
         try {
+            // Verificar autorización
+            String email = authentication.getName();
+            UserDTO currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ServiceException("Usuario no autenticado"));
+            
+            ItemDTO existing = itemRepository.findById(id)
+                .orElseThrow(() -> new ServiceException("Item no encontrado"));
+            
+            // Verificar si es el creador o admin
+            boolean isCreator = existing.getCreatorId().equals(currentUser.getId());
+            boolean isAdmin = currentUser.getRoles().stream()
+                .anyMatch(r -> r.getName().equals("ADMIN"));
+            
+            if (!isCreator && !isAdmin) {
+                return ResponseEntity.status(403).body("No autorizado para eliminar este item");
+            }
+            
             itemService.deleteById(id);
             return ResponseEntity.ok().build();
         } catch (ServiceException e) {

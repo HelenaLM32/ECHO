@@ -33,7 +33,7 @@
     var(--true-white)
   );
   border: 1px solid var(--gray-stroke);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   padding: 1.1rem 1.3rem;
   flex-wrap: wrap;
   box-shadow: 0 12px 28px var(--shadow-light);

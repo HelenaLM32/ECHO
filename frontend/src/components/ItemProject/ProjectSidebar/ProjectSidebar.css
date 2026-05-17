@@ -121,7 +121,7 @@
   width: 100%;
   padding: 14px 16px;
   border: 1px solid var(--gray-stroke, #e0e0e0);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   background: var(--true-white, #ffffff);
   color: var(--black, #282828);
   font-size: 0.95rem;
@@ -357,7 +357,7 @@
 
   .sidebarIsland {
     padding: 16px;
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
     gap: 12px;
   }
 

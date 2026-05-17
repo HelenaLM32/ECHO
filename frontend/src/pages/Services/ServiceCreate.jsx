@@ -72,7 +72,7 @@ export default function ServiceCreate() {
     if (form.price && form.price.trim() !== '') {
       const parsedPrice = parseFloat(form.price);
       if (isNaN(parsedPrice) || parsedPrice < 0) {
-        setError("El precio debe ser un numero valido mayor o igual a 0");
+        setError("El precio debe ser un número válido mayor o igual a 0");
         return;
       }
       priceValue = parsedPrice;
@@ -120,7 +120,7 @@ export default function ServiceCreate() {
         <header className="service-header">
           <h1 className="service-title">Crear un servicio</h1>
           <p className="service-desc">
-            Completa la informacion para publicar tu servicio en la plataforma.
+            Completa la información para publicar tu servicio en la plataforma.
           </p>
         </header>
 
@@ -128,7 +128,7 @@ export default function ServiceCreate() {
 
         <form onSubmit={handleSubmit} className="service-form">
           <div className="service-card">
-            <h2 className="service-section-title">Informacion General</h2>
+            <h2 className="service-section-title">Información General</h2>
 
             <div className="field-group">
               <label>Nombre del servicio *</label>

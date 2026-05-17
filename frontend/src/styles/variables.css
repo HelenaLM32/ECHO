@@ -17,6 +17,21 @@
     --true-white: #FFFFFF;
     --white: #F7F5F3;
 
+    /* Design System - Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+
+    /* Design System - Spacing Scale */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 48px;
+
     /* Naranja más oscuro para superar 4.5:1 sobre fondos claros */
     --orange: #C94F12;
     --orange-secondary: #E86030;
@@ -71,6 +86,9 @@
 
     --true-white: #1A1A1A;
     --white: #252525;
+
+    /* Design System - Border Radius (inherited from light mode) */
+    /* Design System - Spacing Scale (inherited from light mode) */
 
     /* Naranja más claro/brillante para superar 4.5:1 sobre fondos oscuros */
     --orange: #FF7640;

@@ -3,6 +3,7 @@ package com.example.echo.core.entity.categories.appservices;
 import com.example.echo.core.entity.categories.dto.CategoryDTO;
 import com.example.echo.core.entity.categories.persistence.CategoryRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import java.util.Optional;
  * Kept intentionally minimal and commented for clarity.
  */
 @Service
+@Transactional
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository repository;

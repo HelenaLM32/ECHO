@@ -177,7 +177,7 @@ export default function EditProfile() {
 
   const handleDeleteAccount = async () => {
     showConfirm(
-      "Esta accion es irreversible y eliminara tu cuenta permanentemente. ¿Quieres continuar?",
+      "Esta acción es irreversible y eliminará tu cuenta permanentemente. ¿Quieres continuar?",
       "Eliminar cuenta",
       async () => {
         try {

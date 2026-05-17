@@ -16,7 +16,9 @@ public class ProfileMapper {
 
     public static ObjectNode toResponseNode(ProfileDTO profile, UserDTO user, ObjectMapper mapper) {
         ObjectNode node = mapper.createObjectNode();
-        node.put("id", profile.getId());
+        if (profile.getId() != null) {
+            node.put("id", profile.getId());
+        }
         node.put("userId", profile.getUserId());
         node.put("username", user.getUsername());
         node.put("email", user.getEmail());

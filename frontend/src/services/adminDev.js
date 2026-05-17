@@ -1,9 +1,9 @@
 import { fetchWithToken } from "./config";
+import { handleResponse } from './errorHandler.js';
 
 export async function getDevOrders() {
   const res = await fetchWithToken("/admin/dev/orders");
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  return handleResponse(res, 'Error al obtener los pedidos de desarrollo');
 }
 
 export async function createDevOrder(payload) {
@@ -11,22 +11,19 @@ export async function createDevOrder(payload) {
     method: "POST",
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  return handleResponse(res, 'Error al crear el pedido de desarrollo');
 }
 
 export async function updateDevOrderStatus(orderId, status) {
   const res = await fetchWithToken(`/admin/dev/orders/${orderId}/status?status=${encodeURIComponent(status)}`, {
     method: "PATCH",
   });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  return handleResponse(res, 'Error al actualizar el estado del pedido');
 }
 
 export async function getDevOrderMessages(orderId) {
   const res = await fetchWithToken(`/admin/dev/orders/${orderId}/messages`);
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  return handleResponse(res, 'Error al obtener los mensajes del pedido');
 }
 
 export async function createDevOrderMessage(orderId, senderId, content) {
@@ -34,8 +31,7 @@ export async function createDevOrderMessage(orderId, senderId, content) {
     method: "POST",
     body: JSON.stringify({ senderId, content }),
   });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  return handleResponse(res, 'Error al crear el mensaje del pedido');
 }
 
 export async function createDevUser(payload) {
@@ -43,8 +39,7 @@ export async function createDevUser(payload) {
     method: "POST",
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  return handleResponse(res, 'Error al crear el usuario de desarrollo');
 }
 
 export async function createDevItem(payload) {
