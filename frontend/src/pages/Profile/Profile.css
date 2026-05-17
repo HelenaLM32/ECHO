@@ -257,11 +257,20 @@
 }
 
 .social-link {
-    padding: 4px;
-    transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; 
+  height: 32px;
 }
 
-.social-link:hover { opacity: 0.8; }
+.social-link svg {
+  width: 24px; 
+  height: 24px;
+  transition: transform 0.2s ease;
+}
+
+
 
 /* --- Tabs --- */
 .content-tabs {
@@ -562,10 +571,6 @@
     width: 100%;
   }
 
-  .social-header {
-    justify-content: center;
-    margin: 10px 0;
-  }
 
   .content-tabs {
     flex-wrap: wrap;

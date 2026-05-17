@@ -37,8 +37,8 @@ export default function Login() {
     <div className="login-container">
       <div className="login-cont">
         <Link to="/" className="auth-logo-link">
-          <img src={logoSrc} alt="Echo" className="auth-logo" />
-        </Link>
+        <img src={logoSrc} alt="Echo" className="auth-logo" />
+      </Link>
         <h1>Bienvenido de nuevo</h1>
 
         <form onSubmit={handleSubmit} className="login-form">

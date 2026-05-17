@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
+import OAuthButtons from "../../components/UI/OAuthButtons/OAuthButtons";
 
 import "./Register.css";
 
@@ -111,13 +112,13 @@ export default function Register() {
             {loadingUsers ? "Creando cuenta..." : "Registrarse"}
           </button>
 
-          <div className="register-line"></div>
-
-          <div className="register-circles">
-            <div className="register-circle"></div>
-            <div className="register-circle"></div>
-            <div className="register-circle"></div>
-          </div>
+          <div className="oauth-separator">
+                      <span>o continúa con</span>
+                    </div>
+          
+                    <OAuthButtons />
+          
+                    <div className="div-linia"></div>
 
           <p className="register-text">
             ¿Ya eres miembro?{" "}

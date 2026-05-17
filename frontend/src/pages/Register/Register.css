@@ -172,6 +172,66 @@
   fill: var(--orange);
 }
 
+.oauth-separator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 4px 0;
+    color: var(--gray-dark-secondary);
+    font-size: 13px;
+}
+
+.oauth-separator::before,
+.oauth-separator::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--gray-stroke);
+}
+
+.oauth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.oauth-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 20px;
+    height: 50px;
+    border-radius: 25px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s ease;
+    width: 100%;
+}
+
+.oauth-btn.google {
+    background-color: var(--gray);
+    border: 1px solid var(--gray);
+    color: var(--black);
+}
+
+
+
+.oauth-btn.google:hover {
+    background-color: var(--gray-stroke);
+    border-color: var(--gray-stroke);
+}
+
+
+.div-linia {
+    height: 1px;
+    background-color: var(--gray-stroke);
+    margin-top: 10px;
+}
+
+
 /* ============================================
    MEDIA QUERIES - RESPONSIVE
    ============================================ */
@@ -292,6 +352,22 @@
   .register-text {
     font-size: 13px;
     margin-top: 24px;
+  }
+
+   .oauth-buttons {
+    gap: 6px;
+  }
+
+  .oauth-btn {
+    height: 44px;
+    font-size: 13px;
+    padding: 0 14px;
+    border-radius: 20px;
+  }
+
+  .oauth-separator {
+    margin: 6px 0;
+    font-size: 11px;
   }
 }
 

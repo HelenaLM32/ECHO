@@ -35,9 +35,6 @@ import ServiceDetail from "../../components/ItemService/ServiceDetail/ServiceDet
 import useConfirmPopup from "../../hooks/useConfirmPopup";
 import useSuccessPopup from "../../hooks/useSuccessPopup";
 
-import linkedinIcon from "../../assets/icons8-linkedin-24.png";
-import twitterIcon from "../../assets/icons8-x-24.png";
-import instagramIcon from "../../assets/icons8-instagram-24.png";
 import "./Profile.css";
 
 
@@ -569,21 +566,22 @@ const renderEvents = () => {
 
         <main className="profile-main">
           <div className="social-header">
-            {profile.linkedin && (
-              <a href={profile.linkedin} className="social-link" target="_blank" rel="noreferrer">
-                <img src={linkedinIcon} alt="LinkedIn" />
-              </a>
-            )}
+           {profile.linkedin && (
+  <a href={profile.linkedin} className="social-link" target="_blank" rel="noreferrer">
+   <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 256 256"><path fill="#3D3D3D" d="M216 24H40a16 16 0 0 0-16 16v176a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V40a16 16 0 0 0-16-16Zm0 192H40V40h176v176ZM96 112v64a8 8 0 0 1-16 0v-64a8 8 0 0 1 16 0Zm88 28v36a8 8 0 0 1-16 0v-36a20 20 0 0 0-40 0v36a8 8 0 0 1-16 0v-64a8 8 0 0 1 15.79-1.78A36 36 0 0 1 184 140Zm-84-56a12 12 0 1 1-12-12a12 12 0 0 1 12 12Z"/></svg>
+  </a>
+)}
             {profile.instagram && (
-              <a href={profile.instagram} className="social-link" target="_blank" rel="noreferrer">
-                <img src={instagramIcon} alt="Instagram" />
-              </a>
-            )}
-            {profile.twitter && (
-              <a href={profile.twitter} className="social-link" target="_blank" rel="noreferrer">
-                <img src={twitterIcon} alt="Twitter" />
-              </a>
-            )}
+  <a href={profile.instagram} className="social-link" target="_blank" rel="noreferrer">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#3D3D3D" d="M17.34 5.46a1.2 1.2 0 1 0 1.2 1.2a1.2 1.2 0 0 0-1.2-1.2Zm4.6 2.42a7.59 7.59 0 0 0-.46-2.43a4.94 4.94 0 0 0-1.16-1.77a4.7 4.7 0 0 0-1.77-1.15a7.3 7.3 0 0 0-2.43-.47C15.06 2 14.72 2 12 2s-3.06 0-4.12.06a7.3 7.3 0 0 0-2.43.47a4.78 4.78 0 0 0-1.77 1.15a4.7 4.7 0 0 0-1.15 1.77a7.3 7.3 0 0 0-.47 2.43C2 8.94 2 9.28 2 12s0 3.06.06 4.12a7.3 7.3 0 0 0 .47 2.43a4.7 4.7 0 0 0 1.15 1.77a4.78 4.78 0 0 0 1.77 1.15a7.3 7.3 0 0 0 2.43.47C8.94 22 9.28 22 12 22s3.06 0 4.12-.06a7.3 7.3 0 0 0 2.43-.47a4.7 4.7 0 0 0 1.77-1.15a4.85 4.85 0 0 0 1.16-1.77a7.59 7.59 0 0 0 .46-2.43c0-1.06.06-1.4.06-4.12s0-3.06-.06-4.12ZM20.14 16a5.61 5.61 0 0 1-.34 1.86a3.06 3.06 0 0 1-.75 1.15a3.19 3.19 0 0 1-1.15.75a5.61 5.61 0 0 1-1.86.34c-1 .05-1.37.06-4 .06s-3 0-4-.06a5.73 5.73 0 0 1-1.94-.3a3.27 3.27 0 0 1-1.1-.75a3 3 0 0 1-.74-1.15a5.54 5.54 0 0 1-.4-1.9c0-1-.06-1.37-.06-4s0-3 .06-4a5.54 5.54 0 0 1 .35-1.9A3 3 0 0 1 5 5a3.14 3.14 0 0 1 1.1-.8A5.73 5.73 0 0 1 8 3.86c1 0 1.37-.06 4-.06s3 0 4 .06a5.61 5.61 0 0 1 1.86.34a3.06 3.06 0 0 1 1.19.8a3.06 3.06 0 0 1 .75 1.1a5.61 5.61 0 0 1 .34 1.9c.05 1 .06 1.37.06 4s-.01 3-.06 4ZM12 6.87A5.13 5.13 0 1 0 17.14 12A5.12 5.12 0 0 0 12 6.87Zm0 8.46A3.33 3.33 0 1 1 15.33 12A3.33 3.33 0 0 1 12 15.33Z"/></svg>
+  </a>
+)}
+
+{profile.twitter && (
+  <a href={profile.twitter} className="social-link" target="_blank" rel="noreferrer">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#3D3D3D"><path fill="none" stroke="#3D3D3D" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m13.081 10.712l-4.786-6.71a.6.6 0 0 0-.489-.252H5.28a.6.6 0 0 0-.488.948l6.127 8.59m2.162-2.576l6.127 8.59a.6.6 0 0 1-.488.948h-2.526a.6.6 0 0 1-.489-.252l-4.786-6.71m2.162-2.576l5.842-6.962m-8.004 9.538L5.077 20.25"/></svg>
+  </a>
+)}
           </div>
 
           <nav className="content-tabs">

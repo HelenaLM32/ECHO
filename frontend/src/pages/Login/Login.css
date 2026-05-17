@@ -128,21 +128,13 @@
     color: var(--black);
 }
 
-.oauth-btn.github {
-    background-color: var(--black);
-    border: 1px solid var(--black);
-    color: var(--true-white);
-}
+
 
 .oauth-btn.google:hover {
     background-color: var(--gray-stroke);
     border-color: var(--gray-stroke);
 }
 
-.oauth-btn.github:hover {
-    background-color: var(--orange);
-    border-color: var(--orange);
-}
 
 .div-linia {
     height: 1px;
@@ -150,20 +142,7 @@
     margin-top: 10px;
 }
 
-.div-circulos {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;  
-    margin-top: 40px;
-    gap: 10px;               
-}
 
-.circulo {
-    width: 54px;
-    height: 54px;
-    background-color: var(--black);
-    border-radius: 100%;
-}
 
 .register-text {
     color: var(--black);          
