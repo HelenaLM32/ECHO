@@ -118,8 +118,7 @@ export default function AdminDevelopPanel({
       </section>
 
       <section className="dev-card">
-        <h2>Crear Proyecto (seguro)</h2>
-        <p className="admin-empty">El creador se toma del usuario autenticado.</p>
+        <h2>Crear Proyecto</h2>
         <form className="dev-form" onSubmit={onCreateProject}>
           <label>
             Asignar a usuario
