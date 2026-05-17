@@ -40,10 +40,26 @@
   color: var(--error);
 }
 
+.popup-success-icon--info {
+  background-color: var(--gray);
+  color: var(--black);
+}
+
+.popup-success-icon--error {
+  background-color: var(--error);
+  color: var(--true-white);
+}
+
 .popup-success-skull-icon {
   width: 24px;
   height: 24px;
   fill: currentColor;
+}
+
+.popup-success-svg-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 
 .popup-success-title {

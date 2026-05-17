@@ -145,7 +145,7 @@ export default function ProjectView({ projectId, onClose }) {
   function handleToggleLike() {
     const token = getAuthToken()
     if (!token) {
-      showSuccess('Debes iniciar sesion para dar like', 'Accion requerida')
+      showSuccess('Debes iniciar sesion para dar like', 'Accion requerida', 'info')
       return
     }
     fetchWithToken(`/item-projects/${project.id}/likes`, { method: 'POST' })
@@ -209,7 +209,7 @@ export default function ProjectView({ projectId, onClose }) {
   function handleAddComment(commentText) {
     const token = getAuthToken()
     if (!token) {
-      showSuccess('Debes iniciar sesion para comentar', 'Accion requerida')
+      showSuccess('Debes iniciar sesion para comentar', 'Accion requerida', 'info')
       return
     }
     if (!commentText || !commentText.trim()) return

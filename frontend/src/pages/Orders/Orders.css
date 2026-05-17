@@ -182,7 +182,6 @@
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 999px;
-  background: var(--orange);
   color: var(--true-white);
   font-size: 0.78rem;
   font-weight: 700;
@@ -190,10 +189,25 @@
   transition: background 0.2s;
 }
 
-.order-card__actions .order-card__link:hover,
+.order-card__actions .order-card__link {
+  background: var(--complementary-blue);
+}
+
+.order-card__actions .order-card__link:hover {
+  background: var(--complementary-blue-secondary);
+}
+
 .order-card__dispute-btn:hover,
 .order-card__cancel-btn:hover {
   background: var(--orange-secondary);
+}
+
+.order-card__cancel-btn {
+  background: var(--error);
+}
+
+.order-card__cancel-btn:hover {
+  background: color-mix(in srgb, var(--error) 86%, var(--black));
 }
 
 .orders-blobs {

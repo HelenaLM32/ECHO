@@ -117,7 +117,7 @@ public class DisputeController {
         }
     }
 
-    @org.springframework.web.bind.annotation.PatchMapping("/{disputeId}/close")
+    @PatchMapping("/{disputeId}/close")
     public ResponseEntity<String> closeDispute(@PathVariable Integer disputeId,
             @RequestBody String json) {
         try {
