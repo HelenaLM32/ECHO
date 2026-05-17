@@ -1,9 +1,9 @@
-import { API_URL, fetchWithToken } from "./config";
+import { fetchApi } from "./config"; 
 
 export const getFollowStats = async (userId) => {
- const response = await fetch(`${API_URL}/follows/stats/${userId}`);
- if (!response.ok) throw new Error("Error al obtener estadisticas");
- return response.json();
+  const response = await fetchApi(`/follows/stats/${userId}`);
+  if (!response.ok) throw new Error("Error al obtener estadisticas");
+  return response.json();
 };
 
 export const checkIsFollowing = async (targetId) => {
