@@ -162,6 +162,15 @@
   background: var(--black);
 }
 
+/* Botón de eliminar cuenta - solo este en rojo */
+.btn-save.btn-delete {
+  background-color: var(--error);
+}
+
+.btn-save.btn-delete:hover {
+  background: var(--error-dark);
+}
+
 /* Mensajes */
 .msg {
   padding: 12px;

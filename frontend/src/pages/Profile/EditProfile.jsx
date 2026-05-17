@@ -341,7 +341,7 @@ export default function EditProfile() {
             Al eliminar tu cuenta, todos tus datos se perderán de forma permanente.
           </p>
           <div className="edit-actions">
-            <button className="btn-save" onClick={handleDeleteAccount}>
+            <button className="btn-save btn-delete" onClick={handleDeleteAccount}>
               Eliminar mi cuenta permanentemente
             </button>
           </div>
