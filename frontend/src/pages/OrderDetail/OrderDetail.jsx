@@ -245,7 +245,7 @@ export default function OrderDetail() {
         onCancel={handleConfirmCancel}
         message={confirmState.message}
         title={confirmState.title}
-        confirmText="Si, cancelar"
+        confirmText="Sí, cancelar"
         cancelText="Volver"
       />
     </div>

@@ -137,15 +137,15 @@ export default function ServiceCreate() {
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                placeholder="Ej: Diseno de logo profesional"
+                placeholder="Ej: Diseño de logo profesional"
                 className="input-field"
               />
             </div>
 
             <div className="field-group">
-              <label>Categoria *</label>
+              <label>Categoría *</label>
               {loadingCategories ? (
-                <div className="field-hint">Cargando categorias...</div>
+                <div className="field-hint">Cargando categorías...</div>
               ) : (
                 <select
                   name="categoryId"
@@ -153,7 +153,7 @@ export default function ServiceCreate() {
                   onChange={handleChange}
                   className="input-field"
                 >
-                  <option value="">Selecciona una categoria</option>
+                  <option value="">Selecciona una categoría</option>
                   {categories.map((cat) => (
                     <option key={cat.id} value={cat.id}>
                       {cat.name}

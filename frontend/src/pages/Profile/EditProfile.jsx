@@ -108,7 +108,7 @@ export default function EditProfile() {
     for (const rule of lengthRules) {
       const value = profileData[rule.key];
       if (value && value.length > rule.max) {
-        showSuccess(`${rule.label} supera el maximo de ${rule.max} caracteres.`, "Validacion");
+        showSuccess(`${rule.label} supera el máximo de ${rule.max} caracteres.`, "Validación");
         return;
       }
     }
@@ -354,7 +354,7 @@ export default function EditProfile() {
         onCancel={handleCancel}
         message={confirmState.message}
         title={confirmState.title}
-        confirmText="Si, eliminar"
+        confirmText="Sí, eliminar"
         cancelText="Cancelar"
       />
 
