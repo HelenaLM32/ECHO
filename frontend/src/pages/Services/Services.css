@@ -33,7 +33,7 @@
 .service-card {
   background: var(--true-white);
   border: 1px solid var(--gray-stroke);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   padding: 32px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.03);
   margin-bottom: 24px;

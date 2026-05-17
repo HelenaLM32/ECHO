@@ -1,9 +1,9 @@
 import { fetchWithToken } from "./config.js";
+import { handleResponse } from './errorHandler.js';
 
 export async function getOrderMessages(orderId) {
   const res = await fetchWithToken(`/orders/${orderId}/messages`);
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  return handleResponse(res, 'Error al obtener los mensajes del pedido');
 }
 
 export async function sendOrderMessage(orderId, content) {
@@ -11,6 +11,5 @@ export async function sendOrderMessage(orderId, content) {
     method: "POST",
     body: JSON.stringify({ content }),
   });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  return handleResponse(res, 'Error al enviar el mensaje');
 }

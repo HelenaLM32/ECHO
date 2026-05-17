@@ -197,7 +197,7 @@ export default function Admin() {
   const handleDeleteReview = async (id) => {
     showConfirm(
       "¿Eliminar esta review?",
-      "Confirmar eliminacion",
+      "Confirmar eliminación",
       async () => {
         try {
           await deleteReview(id);
@@ -297,7 +297,7 @@ export default function Admin() {
   const handleDelete = async (id) => {
     showConfirm(
       "¿Seguro que quieres borrar este registro?",
-      "Confirmar eliminacion",
+      "Confirmar eliminación",
       async () => {
         try {
           const endpoint = view === "users" ? `/users/${id}` : `/items/${id}`;

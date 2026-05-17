@@ -1,16 +1,14 @@
 import { fetchWithToken } from "./config.js";
-
+import { handleResponse } from './errorHandler.js';
 
 export async function getMyOrders() {
   const res = await fetchWithToken("/orders");
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  return handleResponse(res, 'Error al obtener tus pedidos');
 }
 
 export async function getOrderById(orderId) {
   const res = await fetchWithToken(`/orders/${orderId}`);
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  return handleResponse(res, 'Error al obtener el pedido');
 }
 
 export async function createOrder(itemId, finalPrice) {
@@ -18,14 +16,12 @@ export async function createOrder(itemId, finalPrice) {
     method: "POST",
     body: JSON.stringify({ itemId, finalPrice: finalPrice ?? null }),
   });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  return handleResponse(res, 'Error al crear el pedido');
 }
 
 export async function updateOrderStatus(orderId, status) {
   const res = await fetchWithToken(`/orders/${orderId}/status?status=${encodeURIComponent(status)}`, {
     method: "PATCH",
   });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  return handleResponse(res, 'Error al actualizar el estado del pedido');
 }

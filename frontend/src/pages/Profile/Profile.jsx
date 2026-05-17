@@ -40,15 +40,15 @@ import "./Profile.css";
 
 export default function Profile() {
   const { user, loadingContext } = useAuth();
-  const { userId } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const bannerInputRef = useRef(null);
   const avatarInputRef = useRef(null);
   const { confirmState, showConfirm, handleConfirm, handleCancel } = useConfirmPopup();
   const { successState, showSuccess, hideSuccess } = useSuccessPopup();
 
-  const targetId = userId ? parseInt(userId) : user?.id;
-  const isOwnProfile = !userId || parseInt(userId) === user?.id;
+  const targetId = id ? parseInt(id) : user?.id;
+  const isOwnProfile = !id || parseInt(id) === user?.id;
 
   const [profile, setProfile] = useState(null);
   const [products, setProducts] = useState([]);
@@ -232,7 +232,7 @@ export default function Profile() {
       }
       setFollowStats(await getFollowStats(targetId));
     } catch (error) {
-      showSuccess(error.message || "No se pudo completar la accion", "Error");
+      showSuccess(error.message || "No se pudo completar la acción", "Error");
     }
     finally { setFollowLoading(false); }
   };

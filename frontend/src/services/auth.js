@@ -1,4 +1,5 @@
 import { API_URL } from "./config";
+import { handleResponse } from './errorHandler.js';
 
 export const loginService = async (email, password) => {
   const res = await fetch(`${API_URL}/users/login`, {
@@ -9,12 +10,7 @@ export const loginService = async (email, password) => {
     body: JSON.stringify({ email, password }),
   });
 
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(errorText || "Error al iniciar sesión");
-  }
-
-  return await res.json();
+  return handleResponse(res, 'Error al iniciar sesión');
 };
 
 export const registerService = async (email, username, password) => {
@@ -26,10 +22,5 @@ export const registerService = async (email, username, password) => {
     body: JSON.stringify({ email, username, password }),
   });
 
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(errorText || "Error al registrar");
-  }
-
-  return await res.json();
+  return handleResponse(res, 'Error al registrar');
 };

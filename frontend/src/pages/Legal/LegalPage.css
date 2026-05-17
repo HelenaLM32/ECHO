@@ -134,7 +134,7 @@
 .legal-contact {
   background: linear-gradient(135deg, rgba(233, 94, 35, 0.04), rgba(42, 95, 121, 0.04));
   border: 1px solid var(--border-orange);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   padding: 20px 22px;
   margin-top: 32px !important;
   padding-top: 20px !important;

@@ -1,6 +1,6 @@
 .dispute-panel {
   border: 1px solid var(--gray-stroke);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   padding: 20px 20px 18px;
   margin: 20px 0;
   background: linear-gradient(

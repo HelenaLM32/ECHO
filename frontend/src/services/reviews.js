@@ -1,5 +1,6 @@
 import { fetchWithToken } from "./config.js";
 import { API_URL } from "./config.js";
+import { handleResponse } from './errorHandler.js';
 
 export async function createReview(orderId, score, comment) {
   const res = await fetchWithToken("/reviews", {
@@ -22,24 +23,20 @@ export async function getReviewByOrder(orderId) {
 
 export async function getReviewsByUser(userId) {
   const res = await fetch(`${API_URL}/reviews/user/${userId}`);
-  if (!res.ok) throw new Error("Error al obtener reviews");
-  return res.json();
+  return handleResponse(res, 'Error al obtener reviews');
 }
 
 export async function getAverageByUser(userId) {
   const res = await fetch(`${API_URL}/reviews/user/${userId}/average`);
-  if (!res.ok) throw new Error("Error al obtener media");
-  return res.json();
+  return handleResponse(res, 'Error al obtener media');
 }
 
 export async function getAllReviews() {
   const res = await fetchWithToken("/reviews");
-  if (!res.ok) throw new Error("Error al obtener reviews");
-  return res.json();
+  return handleResponse(res, 'Error al obtener reviews');
 }
 
 export async function deleteReview(reviewId) {
   const res = await fetchWithToken(`/reviews/${reviewId}`, { method: "DELETE" });
-  if (!res.ok) throw new Error("Error al eliminar la review");
-  return res.json();
+  return handleResponse(res, 'Error al eliminar la review');
 }

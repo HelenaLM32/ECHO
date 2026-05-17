@@ -1,15 +1,14 @@
 import { API_URL, fetchApi, fetchWithToken } from "./config";
+import { handleResponse } from './errorHandler.js';
 
 export const getAllEvents = async () => {
   const res = await fetchApi('/events');
-  if (!res.ok) throw new Error('Error al obtener los eventos');
-  return res.json();
+  return handleResponse(res, 'Error al obtener los eventos');
 };
 
 export const getEventsByUser = async (userId) => {
   const res = await fetch(`${API_URL}/events/user/${userId}`);
-  if (!res.ok) throw new Error("Error al cargar eventos");
-  return res.json();
+  return handleResponse(res, 'Error al cargar eventos');
 };
 
 export const createEvent = async (data, imgFile) => {
@@ -29,11 +28,7 @@ export const createEvent = async (data, imgFile) => {
     body: formData,
   });
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || "Error al crear evento");
-  }
-  return res.json();
+  return handleResponse(res, 'Error al crear evento');
 };
 
 export const updateEvent = async (eventId, data, imgFile, removeImg = false) => {
@@ -64,23 +59,17 @@ export const updateEvent = async (eventId, data, imgFile, removeImg = false) => 
     body: formData,
   });
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || "Error al actualizar evento");
-  }
-  return res.json();
+  return handleResponse(res, 'Error al actualizar evento');
 };
 
 export const deleteEvent = async (eventId) => {
   const res = await fetchWithToken(`/events/${eventId}`, {
     method: "DELETE",
   });
-  if (!res.ok) throw new Error("Error al eliminar evento");
-  return res.json();
+  return handleResponse(res, 'Error al eliminar evento');
 };
 
 export const getEventById = async (eventId) => {
   const res = await fetchWithToken(`/events/${eventId}`);
-  if (!res.ok) throw new Error("Error al cargar el evento");
-  return res.json();
+  return handleResponse(res, 'Error al cargar el evento');
 };

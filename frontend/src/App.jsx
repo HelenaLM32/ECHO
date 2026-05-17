@@ -58,7 +58,7 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/oauth/callback" element={<OAuthCallback />} />
-        <Route path="/profile/:userId" element={<Profile />} />
+        <Route path="/profile/:id" element={<Profile />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/cookies" element={<CookiesPolicy />} />
@@ -83,13 +83,13 @@ function AppContent() {
           </ProtectedRoute>
         } />
 
-        <Route path="/orders/:orderId" element={
+        <Route path="/orders/:id" element={
           <ProtectedRoute>
             <OrderDetail />
           </ProtectedRoute>
         } />
 
-        <Route path="/orders/:orderId/dispute" element={
+        <Route path="/orders/:id/dispute" element={
           <ProtectedRoute>
             <OrderDispute />
           </ProtectedRoute>
@@ -107,13 +107,13 @@ function AppContent() {
           </ProtectedRoute>
         } />
 
-        <Route path="/venues/:venueId/edit" element={
+        <Route path="/venues/:id/edit" element={
           <ProtectedRoute>
             <EditVenue />
           </ProtectedRoute>
         } />
 
-        <Route path="/events/:eventId/edit" element={
+        <Route path="/events/:id/edit" element={
           <ProtectedRoute>
             <EditEvent />
           </ProtectedRoute>
@@ -131,7 +131,7 @@ function AppContent() {
           </ProtectedRoute>
         } />
 
-        <Route path="/project/:id" element={
+        <Route path="/projects/:id" element={
           <ProtectedRoute>
             <ProjectView />
           </ProtectedRoute>

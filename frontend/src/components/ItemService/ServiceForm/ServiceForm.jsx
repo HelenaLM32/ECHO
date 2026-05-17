@@ -90,9 +90,9 @@ function ServiceForm({ initialData = {}, onSubmit, onCancel, saving = false }) {
       </div>
 
       <div className="form-group">
-        <label htmlFor="categoryId">Categoria *</label>
+        <label htmlFor="categoryId">Categoría *</label>
         {loadingCategories ? (
-          <div>Cargando categorias...</div>
+          <div>Cargando categorías...</div>
         ) : (
           <select
             id="categoryId"
@@ -101,7 +101,7 @@ function ServiceForm({ initialData = {}, onSubmit, onCancel, saving = false }) {
             onChange={handleChange}
             required
           >
-            <option value="">Selecciona una categoria</option>
+            <option value="">Selecciona una categoría</option>
             {categories.map(category => (
               <option key={category.id} value={category.id}>
                 {category.name}

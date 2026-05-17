@@ -3,3 +3,4 @@ export { default as ProjectCardWithLike } from './ProjectCard/ProjectCardWithLik
 export { default as EventCard } from './EventCard/EventCard'
 export { default as VenueCard } from './VenueCard/VenueCard'
 export { default as ServiceCard } from './ServiceCard/ServiceCard'
+export { default as ProfileCard } from './ProfileCard/ProfileCard'

@@ -1,9 +1,9 @@
 import { API_URL, fetchApi, fetchWithToken } from "./config";
+import { handleResponse } from './errorHandler.js';
 
 export const getAllVenues = async () => {
   const res = await fetchApi('/venues');
-  if (!res.ok) throw new Error('Error al obtener los locales');
-  return res.json();
+  return handleResponse(res, 'Error al obtener los locales');
 };
 
 export const createVenue = async (formData) => {
@@ -11,33 +11,17 @@ export const createVenue = async (formData) => {
     method: "POST",
     body: formData,
   });
-
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(errorText || "Error al crear el local");
-  }
-
-  return await res.json();
+  return handleResponse(res, 'Error al crear el local');
 };
 
 export const getVenuesByUser = async (userId) => {
   const res = await fetchWithToken(`/venues/user/${userId}`);
-
-  if (!res.ok) {
-    throw new Error("Error al obtener los locales");
-  }
-
-  return await res.json();
+  return handleResponse(res, 'Error al obtener los locales');
 };
 
 export const getVenueById = async (venueId) => {
   const res = await fetchWithToken(`/venues/${venueId}`);
-
-  if (!res.ok) {
-    throw new Error("Error al obtener el local");
-  }
-
-  return await res.json();
+  return handleResponse(res, 'Error al obtener el local');
 };
 
 export const updateVenue = async (venueId, formData) => {
@@ -45,23 +29,12 @@ export const updateVenue = async (venueId, formData) => {
     method: "PUT",
     body: formData,
   });
-
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(errorText || "Error al actualizar el local");
-  }
-
-  return await res.json();
+  return handleResponse(res, 'Error al actualizar el local');
 };
 
 export const deleteVenue = async (venueId) => {
   const res = await fetchWithToken(`/venues/${venueId}`, {
     method: "DELETE",
   });
-
-  if (!res.ok) {
-    throw new Error("Error al eliminar el local");
-  }
-
-  return res.ok;
+  return handleResponse(res, 'Error al eliminar el local');
 };

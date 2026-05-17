@@ -14,8 +14,10 @@ import com.example.echo.core.entity.user.dto.UserDTO;
 import com.example.echo.core.entity.user.persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class OrderMessageServiceImpl implements OrderMessageService {
 
     @Autowired

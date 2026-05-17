@@ -13,7 +13,7 @@ function isNotFoundError(message) {
 }
 
 export default function OrderDispute() {
-  const { orderId } = useParams();
+  const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -36,12 +36,12 @@ export default function OrderDispute() {
       setError("");
       setDispute(null);
       try {
-        const loadedOrder = await getOrderById(Number(orderId));
+        const loadedOrder = await getOrderById(Number(id));
         if (cancelled) return;
         setOrder(loadedOrder);
 
         try {
-          const loadedDispute = await getDisputeByOrderId(Number(orderId));
+          const loadedDispute = await getDisputeByOrderId(Number(id));
           if (cancelled) return;
           setDispute(loadedDispute);
         } catch (err) {
@@ -65,7 +65,7 @@ export default function OrderDispute() {
     return () => {
       cancelled = true;
     };
-  }, [orderId]);
+  }, [id]);
 
   const handleDisputeCreated = (created) => {
     setDispute(created);
@@ -91,13 +91,13 @@ export default function OrderDispute() {
 
   return (
     <div className="od-dispute-page">
-      <button className="od-dispute-back" onClick={() => navigate(`/orders/${orderId}`)}>
+      <button className="od-dispute-back" onClick={() => navigate(`/orders/${id}`)}>
         ← Volver al encargo
       </button>
 
       <header className="od-dispute-header">
         <div>
-          <h1 className="od-dispute-title">Disputa del encargo #{orderId}</h1>
+          <h1 className="od-dispute-title">Disputa del encargo #{id}</h1>
           {order && <p className="od-dispute-sub">{order.itemTitle ?? "Encargo"}</p>}
         </div>
         <div className="od-dispute-actions">
@@ -125,7 +125,7 @@ export default function OrderDispute() {
 
       {showCreateModal && (
         <CreateDisputeModal
-          orderId={Number(orderId)}
+          orderId={Number(id)}
           onClose={() => setShowCreateModal(false)}
           onSuccess={handleDisputeCreated}
         />

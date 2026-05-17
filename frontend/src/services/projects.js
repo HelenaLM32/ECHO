@@ -1,5 +1,6 @@
 import { fetchApi, fetchWithToken } from "./config";
 import { uploadFile } from './uploads'
+import { handleResponse } from './errorHandler.js';
 
 function dataURLtoFile(dataUrl, filename = 'file') {
   const arr = dataUrl.split(',');
@@ -109,8 +110,7 @@ async function replaceEmbeddedMedia(project) {
 
 async function getCategories() {
   const res = await fetchApi('/categories')
-  if (!res.ok) throw new Error(await res.text())
-  return res.json()
+  return handleResponse(res, 'Error al obtener las categorías')
 }
 
 async function getAllProjects() {
@@ -134,7 +134,10 @@ async function getProjectsByUserId(userId) {
 
 async function getProjectById(id) {
   const res = await fetchApi(`/item-projects/${id}`)
-  if (!res.ok) throw new Error(await res.text())
+  if (!res.ok) {
+    const errorText = await res.text()
+    throw new Error(errorText || `Error ${res.status}: No se pudo cargar el proyecto`)
+  }
   return res.json()
 }
 
@@ -142,16 +145,14 @@ async function deleteProject(projectId) {
   const res = await fetchWithToken(`/item-projects/${projectId}`, {
     method: 'DELETE',
   })
-  if (!res.ok) throw new Error(await res.text())
-  return true
+  return handleResponse(res, 'Error al eliminar el proyecto')
 }
 
 async function deleteProjectComment(projectId, commentId) {
   const res = await fetchWithToken(`/item-projects/${projectId}/comments/${commentId}`, {
     method: 'DELETE',
   })
-  if (!res.ok) throw new Error(await res.text())
-  return res.json()
+  return handleResponse(res, 'Error al eliminar el comentario')
 }
 
 async function updateProject(id, projectPayload) {
@@ -175,7 +176,7 @@ async function updateProject(id, projectPayload) {
 async function checkUserLiked(projectId) {
   const res = await fetchWithToken(`/item-projects/${projectId}/likes/status`)
   if (!res.ok) return { liked: false }
-  return res.json()
+  return handleResponse(res, 'Error al verificar like')
 }
 
 export { createItem, createProject, getCategories, getAllProjects, getProjectsByUserId, getProjectById, deleteProject, deleteProjectComment, updateProject, checkUserLiked }

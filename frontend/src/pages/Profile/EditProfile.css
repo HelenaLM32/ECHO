@@ -45,7 +45,7 @@
 .edit-card {
   background: var(--true-white);
   border: 1px solid var(--gray-stroke);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   padding: 32px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
@@ -160,6 +160,15 @@
 
 .btn-save:hover {
   background: var(--black);
+}
+
+/* Botón de eliminar cuenta - solo este en rojo */
+.btn-save.btn-delete {
+  background-color: var(--error);
+}
+
+.btn-save.btn-delete:hover {
+  background: var(--error-dark);
 }
 
 /* Mensajes */

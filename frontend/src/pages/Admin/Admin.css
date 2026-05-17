@@ -19,7 +19,7 @@
   gap: 8px;
   margin-bottom: 22px;
   padding: 10px;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   background: linear-gradient(
     135deg,
     color-mix(in srgb, var(--orange) 9%, var(--true-white)),
@@ -58,7 +58,7 @@
   margin-top: 10px;
   background: var(--true-white);
   border: 1px solid var(--gray-stroke);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: 0 12px 26px var(--shadow-light);
 }
@@ -136,7 +136,7 @@
 .dev-card {
   background: var(--true-white);
   border: 1px solid var(--gray-stroke);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   padding: 18px;
   box-shadow: 0 10px 24px var(--shadow-light);
   display: flex;

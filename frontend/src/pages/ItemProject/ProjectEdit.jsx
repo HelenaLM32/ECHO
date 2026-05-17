@@ -31,7 +31,8 @@ function ProjectEdit() {
         }
         setLoading(false)
       } catch (err) {
-        setError('Error al cargar el proyecto')
+        console.error('Error cargando proyecto:', err)
+        setError('Error al cargar el proyecto: ' + (err.message || 'Error desconocido'))
         setLoading(false)
       }
     }

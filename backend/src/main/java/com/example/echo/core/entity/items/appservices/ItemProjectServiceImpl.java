@@ -128,16 +128,61 @@ public class ItemProjectServiceImpl implements ItemProjectService {
 
     protected ItemProjectDTO updateProject(String projectJson) throws ServiceException {
         try {
+            log.info("Received project JSON for update: {}", projectJson);
             ItemProjectDTO dto = jsonSerializer().deserialize(projectJson, ItemProjectDTO.class);
-            ItemProjectDTO existing = this.getById(dto.getId());
-            if (dto.getItem() != null && dto.getItem().getId() != null) {
-                Integer itemId = dto.getItem().getId();
-                ItemDTO managed = itemRepository.findById(itemId).orElse(null);
-                if (managed == null)
-                    throw new ServiceException("Referenced item not found: " + itemId);
-                existing.setItem(managed);
+            
+            log.info("Deserialized DTO - id: {}, item: {}", 
+                dto.getId(), 
+                dto.getItem() != null ? dto.getItem().getId() : "null");
+            
+            // Extraer ID del proyecto (puede venir en dto.id o en dto.item.id)
+            Integer projectId = dto.getId();
+            if (projectId == null && dto.getItem() != null) {
+                projectId = dto.getItem().getId();
             }
-            // copy mutable fields
+            
+            if (projectId == null) {
+                throw new ServiceException("Project ID is required for update");
+            }
+            
+            log.info("Updating project with ID: {}", projectId);
+            
+            // Asegurar que el DTO tenga el ID correcto
+            dto.setId(projectId);
+            
+            ItemProjectDTO existing = this.getById(projectId);
+            log.info("Found existing project: {}", existing != null ? existing.getId() : "null");
+            
+            // Update Item fields (title, description, price, category)
+            if (dto.getItem() != null) {
+                ItemDTO itemToUpdate = existing.getItem();
+                if (itemToUpdate != null) {
+                    log.info("Updating item fields - title: {}, description: {}, basePrice: {}, categoryId: {}",
+                        dto.getItem().getTitle(),
+                        dto.getItem().getDescription(),
+                        dto.getItem().getBasePrice(),
+                        dto.getItem().getCategoryId());
+                    
+                    if (dto.getItem().getTitle() != null) {
+                        itemToUpdate.setTitle(dto.getItem().getTitle());
+                    }
+                    if (dto.getItem().getDescription() != null) {
+                        itemToUpdate.setDescription(dto.getItem().getDescription());
+                    }
+                    if (dto.getItem().getBasePrice() != null) {
+                        itemToUpdate.setBasePrice(dto.getItem().getBasePrice());
+                    }
+                    if (dto.getItem().getCategoryId() != null) {
+                        itemToUpdate.setCategoryId(dto.getItem().getCategoryId());
+                    }
+                    
+                    // Save the updated item
+                    itemRepository.save(itemToUpdate);
+                    log.info("Item saved successfully");
+                }
+            }
+            
+            // copy mutable fields of ItemProject
             existing.setBlocks(dto.getBlocks());
             existing.setBackground(dto.getBackground());
             existing.setBlockGap(dto.getBlockGap());
@@ -146,7 +191,14 @@ public class ItemProjectServiceImpl implements ItemProjectService {
             if (dto.getLikes() != null) existing.setLikes(dto.getLikes());
             if (dto.getViews() != null) existing.setViews(dto.getViews());
             if (dto.getComments() != null) existing.setComments(dto.getComments());
-            return projectRepository.save(existing);
+            
+            log.info("Saving project with blocks: {}, background: {}", 
+                dto.getBlocks() != null ? "present" : "null",
+                dto.getBackground() != null ? "present" : "null");
+            
+            ItemProjectDTO saved = projectRepository.save(existing);
+            log.info("Project saved successfully: {}", saved.getId());
+            return saved;
         } catch (Exception e) {
             log.error("Error updating project", e);
             throw new ServiceException("Error updating project: " + e.getMessage(), e);
@@ -189,10 +241,15 @@ public class ItemProjectServiceImpl implements ItemProjectService {
     public String getByIdToJson(Integer id) throws ServiceException {
         try {
             ItemProjectDTO dto = this.getById(id);
+            log.info("Project {} loaded, item exists: {}", id, dto.getItem() != null);
+            if (dto.getItem() != null) {
+                log.info("Project {} creatorId: {}", id, dto.getItem().getCreatorId());
+            }
             ObjectNode node = mapper.valueToTree(dto);
             embedProfile(node, dto.getItem() != null ? dto.getItem().getCreatorId() : null);
             return mapper.writeValueAsString(node);
         } catch (Exception e) {
+            log.error("Error getting project {} to JSON: {}", id, e.getMessage(), e);
             throw new ServiceException(e.getMessage(), e);
         }
     }

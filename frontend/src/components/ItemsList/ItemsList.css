@@ -18,7 +18,7 @@
 /* Móviles grandes (600px) */
 @media (max-width: 600px) {
     .items-list-container {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
         gap: 16px;
         justify-items: center;
     }

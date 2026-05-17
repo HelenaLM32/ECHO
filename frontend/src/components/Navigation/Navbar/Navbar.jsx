@@ -55,7 +55,7 @@ export default function Navbar() {
             <div className="nav-item nav-dropdown nav-resources-dropdown" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Menú de recursos">
               <span className="nav-item-label">Recursos</span>
               <div className="nav-dropdown-menu" role="menu">
-                <Link to="/introduccion" className="nav-dropdown-link" role="menuitem" onClick={closeMobileMenu}>Introduccion</Link>
+                <Link to="/introduccion" className="nav-dropdown-link" role="menuitem" onClick={closeMobileMenu}>Introducción</Link>
                 <Link to="/sobre-nosotros" className="nav-dropdown-link" role="menuitem" onClick={closeMobileMenu}>Sobre nosotros</Link>
               </div>
             </div>
@@ -101,7 +101,7 @@ export default function Navbar() {
         {!isAuthPage && (
           <div className={`nav-mobile-menu ${mobileMenuOpen ? "active" : ""}`} role="menu" aria-label="Menú móvil principal">
             <Link to="/" className="nav-mobile-link" role="menuitem" onClick={closeMobileMenu}>Explorar</Link>
-            <Link to="/introduccion" className="nav-mobile-link" role="menuitem" onClick={closeMobileMenu}>Introduccion</Link>
+            <Link to="/introduccion" className="nav-mobile-link" role="menuitem" onClick={closeMobileMenu}>Introducción</Link>
             <Link to="/sobre-nosotros" className="nav-mobile-link" role="menuitem" onClick={closeMobileMenu}>
               <span>Sobre </span>
               <span className="nav-echo-highlight">echo</span>
