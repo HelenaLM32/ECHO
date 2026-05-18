@@ -18,7 +18,7 @@ public class DisputeDTO {
     private String resolution;
     private LocalDateTime createdAt;
     private LocalDateTime closedAt;
-    @OneToMany(mappedBy = "disputeId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Transient
     private List<DisputeMessageDTO> messages;
 
     public DisputeDTO() {
