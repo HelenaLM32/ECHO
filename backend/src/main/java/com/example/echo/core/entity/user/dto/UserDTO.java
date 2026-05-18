@@ -1,6 +1,5 @@
 package com.example.echo.core.entity.user.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
@@ -29,7 +28,7 @@ public class UserDTO {
     private String username;
 
     @Column(nullable = true)
-    @JsonIgnore
+    @JsonProperty(value = "password", access = JsonProperty.Access.WRITE_ONLY)
     @JacksonXmlProperty(localName = "password")
     private String password;
 

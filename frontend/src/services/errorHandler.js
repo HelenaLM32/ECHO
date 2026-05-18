@@ -1,7 +1,21 @@
 export async function handleResponse(res, defaultMessage = 'Error en la operaci√≥n') {
   if (!res.ok) {
     const errorText = await res.text();
-    throw new Error(errorText || defaultMessage);
+    if (!errorText) {
+      throw new Error(defaultMessage);
+    }
+
+    try {
+      const parsedError = JSON.parse(errorText);
+      const message =
+        parsedError?.error ||
+        parsedError?.message ||
+        parsedError?.details ||
+        errorText;
+      throw new Error(String(message));
+    } catch {
+      throw new Error(errorText || defaultMessage);
+    }
   }
   
   const contentType = res.headers.get('content-type');
@@ -12,7 +26,7 @@ export async function handleResponse(res, defaultMessage = 'Error en la operaci√
   }
   
   if (contentType && contentType.includes('application/json')) {
-    return res.json();
+    return JSON.parse(rawText);
   }
   
   return res.text();

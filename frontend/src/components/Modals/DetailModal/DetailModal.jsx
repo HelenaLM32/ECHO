@@ -115,6 +115,15 @@ export default function DetailModal({ type, data, onClose }) {
                     <span>{data.categoria}</span>
                   </p>
                 )}
+                {(data.venueName || data.venueId) && (
+  <p className="modal-field">
+    <span>Local</span>
+    <span>
+      {data.venueName || `Local #${data.venueId}`}
+      {data.venueAddress && ` · ${data.venueAddress}`}
+    </span>
+  </p>
+)}
                 <p className="modal-field">
                   <span>Fecha</span>
                   <span>
