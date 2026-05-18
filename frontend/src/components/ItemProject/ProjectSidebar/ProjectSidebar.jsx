@@ -8,10 +8,6 @@ import { useAuth } from '../../../context/AuthContext'
 import { IconChevronUp, IconChevronDown, IconImage, IconText, IconGallery, IconVideo, IconAudio } from '../../UI/Icons/Icons'
 import './ProjectSidebar.css'
 
-/**
- * Botón para guardar proyecto - Abre el modal de guardado
- * @param {string} mode - 'create' o 'edit'
- */
 function SaveProjectButton({ mode = 'create' }) {
   const exportJSON = useProjectStore((s) => s.exportJSON)
   const { user } = useAuth()
@@ -34,12 +30,6 @@ function SaveProjectButton({ mode = 'create' }) {
   )
 }
 
-/**
- * Sidebar para edición de proyectos
- * @param {Object} props
- * @param {Function} props.onPreview - Callback para mostrar vista previa
- * @param {string} props.mode - 'create' o 'edit'
- */
 function ProjectSidebar({ onPreview, mode = 'create' }) {
   const addBlock = useProjectStore((s) => s.addBlock)
   const addBlockWithData = useProjectStore((s) => s.addBlockWithData)
@@ -83,7 +73,6 @@ function ProjectSidebar({ onPreview, mode = 'create' }) {
 
   return (
     <div className="sidebarContent">
-      {/* ── Isla 1: Configuración del proyecto ─────────────── */}
       <div className="sidebarIsland">
         <div className="editSection">
           <button className="editProjectButton" onClick={() => setShowAddContent(!showAddContent)}>
@@ -122,7 +111,6 @@ function ProjectSidebar({ onPreview, mode = 'create' }) {
           )}
         </div>
 
-        {/* ── Edit Project Button ─────────────── */}
         <div className="editSection">
           <button className="editProjectButton" onClick={() => setShowEditProject(!showEditProject)}>
             Editar proyecto
@@ -149,7 +137,6 @@ function ProjectSidebar({ onPreview, mode = 'create' }) {
                     setShowSpacing(false)
                     setShowColorPicker(false)
                     setShowImagePicker(true)
-                    // Abrir selector de archivos directamente si no hay imagen
                     if (background.mode !== 'image' || !background.value) {
                       setTimeout(() => pickBgImage(), 100)
                     }
@@ -169,7 +156,6 @@ function ProjectSidebar({ onPreview, mode = 'create' }) {
                 </button>
               </div>
 
-              {/* Color picker panel */}
               {showColorPicker && (
                 <div className="colorInputWrapper">
                   <label className="colorInputLabel">Color de fondo</label>
@@ -183,7 +169,6 @@ function ProjectSidebar({ onPreview, mode = 'create' }) {
                 </div>
               )}
 
-              {/* Image picker panel - solo muestra vista previa si hay imagen */}
               {showImagePicker && background.mode === 'image' && background.value && (
                 <div className="imagePickerPanel">
                   <div className="backgroundImagePreview">
@@ -193,7 +178,6 @@ function ProjectSidebar({ onPreview, mode = 'create' }) {
                 </div>
               )}
 
-              {/* Spacing panel */}
               {showSpacing && (
                 <div className="spacingPanel">
                   <h3 className="customizeHeading">Espaciado entre bloques</h3>
@@ -218,7 +202,6 @@ function ProjectSidebar({ onPreview, mode = 'create' }) {
         </div>
       </div>
 
-      {/* ── Isla 2: Acciones ─────────────── */}
       <div className="sidebarIsland actionsIsland">
         <button className="actionButton previewActionButton" onClick={onPreview}>
           Vista previa

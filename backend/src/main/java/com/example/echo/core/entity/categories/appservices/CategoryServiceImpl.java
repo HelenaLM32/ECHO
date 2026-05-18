@@ -8,17 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Simple implementation of `CategoryService` that delegates to the persistence port.
- * Kept intentionally minimal and commented for clarity.
- */
 @Service
 @Transactional
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository repository;
 
-    // Spring will inject the JPA repository (which implements CategoryRepository)
     public CategoryServiceImpl(CategoryRepository repository) {
         this.repository = repository;
     }
@@ -40,7 +35,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDTO save(CategoryDTO dto) {
-        // Business rules could be added here before saving.
         return repository.save(dto);
     }
 

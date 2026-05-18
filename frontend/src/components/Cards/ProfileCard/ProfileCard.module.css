@@ -4,7 +4,13 @@
 
 /* Hacer la card de perfil menos alta */
 .profileCard .cover {
-  height: 120px;
+  height: 100px;
+}
+
+.profileCard {
+  height: 280px;
+  min-height: 280px;
+  max-height: 280px;
 }
 
 /* Reducir el espacio del footer */

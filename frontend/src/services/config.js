@@ -11,7 +11,6 @@ function buildApiBases() {
     bases.push(API_FALLBACK_URL);
   }
 
-  // Optional local-only fallback when proxy /api is unstable during development.
   if (
     ENABLE_LOCAL_API_FALLBACK &&
     typeof window !== "undefined" &&

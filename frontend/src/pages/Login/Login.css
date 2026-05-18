@@ -23,20 +23,42 @@
     letter-spacing: -1.8px;
 }
 
-.login-cont input {
+.login-cont input,
+.login-form input {
     background-color: var(--gray);       
     border: 1px solid var(--gray);       
     border-radius: 25px;             
     height: 50px;                    
     padding: 0 20px;                  
-    color: var(--gray-dark-secondary);                   
+    color: #000000;                 
     font-size: 16px;             
+}
+
+/* en darkmode el texto debe ser blanco */
+html[data-theme="dark"] .login-cont input,
+html[data-theme="dark"] .login-form input {
+    color: #ffffff !important;
+}
+
+/* en darkmode el texto debe ser blanco si o si */
+html[data-theme="dark"] .login-cont input,
+html[data-theme="dark"] .login-form input {
+    color: var(--true-white) !important;
 }
 
 .login-cont input:focus {
     outline: none;                                
-    border-color: var(--gray);                        
+    border-color: var(--orange);                        
     box-shadow: 0 0 8px var(--shadow-light);     
+}
+
+/* placeholder mas visible */
+.login-cont input::placeholder {
+    color: var(--gray-dark-secondary);
+}
+
+[data-theme="dark"] .login-cont input::placeholder {
+    color: var(--black-secondary);
 }
 
 .login-cont2 {

@@ -2,7 +2,6 @@ import { useRef, useCallback, useEffect, useState } from 'react'
 import { uploadFile } from '../../../services/uploads'
 import './Project.css'
 
-// Componente reutilizable para el reproductor de audio
 export function AudioPlayer({ src, preview = false, inEditor = false }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)

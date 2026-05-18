@@ -1,15 +1,11 @@
 import { useCallback } from 'react'
 import { uploadFile } from '../services/uploads'
 
-/**
- * Hook para manejar la selección y subida de archivos
- * @param {Function} addBlockWithData - Función para agregar bloque con datos
- * @returns {Object} Objeto con funciones de file picking
- */
+// Hook que crea inputs ocultos para seleccionar archivos (img, video, audio)
+// Sube los archivos al servidor y devuelve las urls
+// Recibe: funcion para añadir el bloque al proyecto
+// Devuelve: funciones pickImage, pickVideo, pickGallery, pickAudio
 export const useFilePicker = (addBlockWithData) => {
-  /**
-   * Selecciona imágenes y las sube
-   */
   const pickImage = useCallback(() => {
     const input = document.createElement('input')
     input.type = 'file'
@@ -30,9 +26,6 @@ export const useFilePicker = (addBlockWithData) => {
     input.click()
   }, [addBlockWithData])
 
-  /**
-   * Selecciona video y lo sube
-   */
   const pickVideo = useCallback(() => {
     const input = document.createElement('input')
     input.type = 'file'
@@ -51,9 +44,6 @@ export const useFilePicker = (addBlockWithData) => {
     input.click()
   }, [addBlockWithData])
 
-  /**
-   * Selecciona múltiples imágenes para galería
-   */
   const pickGallery = useCallback(() => {
     const input = document.createElement('input')
     input.type = 'file'
@@ -76,9 +66,6 @@ export const useFilePicker = (addBlockWithData) => {
     input.click()
   }, [addBlockWithData])
 
-  /**
-   * Selecciona audio y lo sube
-   */
   const pickAudio = useCallback(() => {
     const input = document.createElement('input')
     input.type = 'file'

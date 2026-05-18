@@ -26,7 +26,6 @@ public class ItemServiceRequest {
     @Size(max = 6)
     private List<Integer> projectIds;
 
-    // Getters and setters
     public String getName() {
         return name;
     }

@@ -171,7 +171,6 @@ export default function Profile() {
     return () => { mounted = false; };
   }, [activeTab, targetId, profile]);
 
-  // Poll for updated projects every 30 seconds to refresh views/likes in real-time
   useEffect(() => {
     if (activeTab !== "Proyectos" || !targetId) return;
 
@@ -237,65 +236,28 @@ export default function Profile() {
     finally { setFollowLoading(false); }
   };
 
-  const handleDeleteVenue = (id) => {
+  // Elimina cualquier tipo de item (venue, event, service o project)
+  // Recibe: el id del item, el tipo, la funcion de borrado y el setter del estado
+  const handleDeleteItem = (id, type, deleteFn, setStateFn, itemName) => {
     showConfirm(
-      "¿Eliminar este local?",
+      `¿Eliminar este ${itemName}?`,
       "Confirmar eliminación",
       async () => {
         try {
-          await deleteVenue(id);
-          setVenues((prev) => prev.filter((v) => v.id !== id));
+          await deleteFn(id);
+          setStateFn((prev) => prev.filter((item) => item.id !== id));
         } catch (err) {
-          showSuccess(err.message || "No se pudo eliminar el local", "Error");
+          showSuccess(err.message || `No se pudo eliminar el ${itemName}`, "Error");
         }
       }
     );
   };
 
-  const handleDeleteEvent = (id) => {
-    showConfirm(
-      "¿Eliminar este evento?",
-      "Confirmar eliminación",
-      async () => {
-        try {
-          await deleteEvent(id);
-          setEvents((prev) => prev.filter((ev) => ev.id !== id));
-        } catch (err) {
-          showSuccess(err.message || "No se pudo eliminar el evento", "Error");
-        }
-      }
-    );
-  };
-
-  const handleDeleteService = (id) => {
-    showConfirm(
-      "¿Eliminar este servicio?",
-      "Confirmar eliminación",
-      async () => {
-        try {
-          await deleteService(id);
-          setServices((prev) => prev.filter((s) => s.id !== id));
-        } catch (err) {
-          showSuccess("Error al eliminar el servicio: " + err.message, "Error");
-        }
-      }
-    );
-  };
-
-  const handleDeleteProject = (id) => {
-    showConfirm(
-      "¿Eliminar este proyecto?",
-      "Confirmar eliminación",
-      async () => {
-        try {
-          await deleteProject(id);
-          setProjects((prev) => prev.filter((p) => p.id !== id));
-        } catch (err) {
-          showSuccess("Error al eliminar el proyecto: " + err.message, "Error");
-        }
-      }
-    );
-  };
+  // Wrappers específicos que usan la funcion generica
+  const handleDeleteVenue = (id) => handleDeleteItem(id, 'venue', deleteVenue, setVenues, 'local');
+  const handleDeleteEvent = (id) => handleDeleteItem(id, 'event', deleteEvent, setEvents, 'evento');
+  const handleDeleteService = (id) => handleDeleteItem(id, 'service', deleteService, setServices, 'servicio');
+  const handleDeleteProject = (id) => handleDeleteItem(id, 'project', deleteProject, setProjects, 'proyecto');
 
   const handleOpenReviews = () => {
     getReviewsByUser(targetId)
@@ -364,7 +326,7 @@ const renderVenues = () => {
 
               {isOwnProfile && (
                 <div className="pc-admin-actions">
-                  <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/venues/${v.id}/edit`); }}>✎</button>
+                  <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/venues/${v.id}/edit`); }} aria-label="Editar"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 20H21M16.5 3.5C16.8978 3.10217 17.4374 2.87868 18 2.87868C18.2786 2.87868 18.5544 2.93355 18.8118 3.04016C19.0692 3.14677 19.303 3.30301 19.5 3.5C19.697 3.69699 19.8532 3.93083 19.9598 4.18821C20.0665 4.44558 20.1213 4.72143 20.1213 5C20.1213 5.27857 20.0665 5.55442 19.9598 5.81179C19.8532 6.06917 19.697 6.30301 19.5 6.5L7 19L3 20L4 16L16.5 3.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
                   <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteVenue(v.id); }} aria-label="Eliminar">
                     <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                       <path d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z" fillRule="evenodd"/>
@@ -406,7 +368,7 @@ const renderEvents = () => {
               </button>
               {isOwnProfile && (
                 <div className="pc-admin-actions">
-                  <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/events/${ev.id}/edit`); }}>✎</button>
+                  <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/events/${ev.id}/edit`); }} aria-label="Editar"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 20H21M16.5 3.5C16.8978 3.10217 17.4374 2.87868 18 2.87868C18.2786 2.87868 18.5544 2.93355 18.8118 3.04016C19.0692 3.14677 19.303 3.30301 19.5 3.5C19.697 3.69699 19.8532 3.93083 19.9598 4.18821C20.0665 4.44558 20.1213 4.72143 20.1213 5C20.1213 5.27857 20.0665 5.55442 19.9598 5.81179C19.8532 6.06917 19.697 6.30301 19.5 6.5L7 19L3 20L4 16L16.5 3.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
                   <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteEvent(ev.id); }} aria-label="Eliminar">
                     <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                       <path d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z" fillRule="evenodd"/>
@@ -445,7 +407,7 @@ const renderEvents = () => {
                 />
                 {isOwnProfile && (
                   <div className="pc-admin-actions">
-                    <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/services/${service.id}/edit`); }}>✎</button>
+                    <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/services/${service.id}/edit`); }} aria-label="Editar"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 20H21M16.5 3.5C16.8978 3.10217 17.4374 2.87868 18 2.87868C18.2786 2.87868 18.5544 2.93355 18.8118 3.04016C19.0692 3.14677 19.303 3.30301 19.5 3.5C19.697 3.69699 19.8532 3.93083 19.9598 4.18821C20.0665 4.44558 20.1213 4.72143 20.1213 5C20.1213 5.27857 20.0665 5.55442 19.9598 5.81179C19.8532 6.06917 19.697 6.30301 19.5 6.5L7 19L3 20L4 16L16.5 3.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
                     <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteService(service.id); }} aria-label="Eliminar">
                       <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                         <path d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z" fillRule="evenodd"/>
@@ -615,7 +577,7 @@ const renderEvents = () => {
                         <ProjectCardWithLike project={p} onOpen={setSelectedProjectId} small={true} />
                         {isOwnProfile && (
                           <div className="pc-admin-actions">
-                            <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/projects/${p.id}/edit`); }}>✎</button>
+                            <button className="pc-btn-edit" onClick={(e) => { e.stopPropagation(); navigate(`/projects/${p.id}/edit`); }} aria-label="Editar"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 20H21M16.5 3.5C16.8978 3.10217 17.4374 2.87868 18 2.87868C18.2786 2.87868 18.5544 2.93355 18.8118 3.04016C19.0692 3.14677 19.303 3.30301 19.5 3.5C19.697 3.69699 19.8532 3.93083 19.9598 4.18821C20.0665 4.44558 20.1213 4.72143 20.1213 5C20.1213 5.27857 20.0665 5.55442 19.9598 5.81179C19.8532 6.06917 19.697 6.30301 19.5 6.5L7 19L3 20L4 16L16.5 3.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
                             <button className="pc-btn-delete" onClick={(e) => { e.stopPropagation(); handleDeleteProject(p.id); }} aria-label="Eliminar">
                               <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z" fillRule="evenodd"/>

@@ -97,6 +97,15 @@
   font-size: 0.95rem;
   transition: var(--transition);
   outline: none;
+  color: #000000;
+  background-color: #ffffff;
+}
+
+/* en darkmode el texto y fondo cambian */
+html[data-theme="dark"] .edit-field input,
+html[data-theme="dark"] .edit-textarea {
+  color: #ffffff !important;
+  background-color: #1a1a1a;
 }
 
 .edit-field input:focus, .edit-textarea:focus {
@@ -138,6 +147,11 @@
   background: transparent;
   outline: none;
   padding: 5px;
+  color: #000000;
+}
+
+html[data-theme="dark"] .social-row input {
+  color: #ffffff !important;
 }
 
 /* Acciones y Botones */

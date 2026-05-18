@@ -3,10 +3,6 @@ package com.example.echo.core.entity.categories.mappers;
 import com.example.echo.core.entity.categories.dto.CategoryDTO;
 import com.example.echo.core.entity.categories.model.Category;
 
-/**
- * Simple mapper between domain `Category` and JPA `CategoryDTO`.
- * Keeps logic minimal: maps fields one-to-one.
- */
 public class CategoryMapper {
 
     public static Category categoryFromDTO(CategoryDTO dto) {

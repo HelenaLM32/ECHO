@@ -5,7 +5,6 @@ import { useAuth } from "../../context/AuthContext";
 const API = import.meta.env.VITE_API_URL || "/api";
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI || window.location.origin + "/oauth/callback";
 
-// Flag outside the component so it survives StrictMode double-mount
 let oauthHandled = false;
 
 export default function OAuthCallback() {
@@ -13,9 +12,6 @@ export default function OAuthCallback() {
   const { oauthLogin } = useAuth();
 
   useEffect(() => {
-    // Reset on every fresh navigation to this page
-    // (the flag is module-level so it persists across StrictMode remounts
-    //  but resets when the user navigates away and back)
     if (oauthHandled) return;
     oauthHandled = true;
 
@@ -26,7 +22,6 @@ export default function OAuthCallback() {
     const provider    = sessionStorage.getItem("oauth_provider");
     const savedState  = sessionStorage.getItem("oauth_state");
 
-    // Clean up session storage immediately so a refresh doesn't re-trigger
     sessionStorage.removeItem("oauth_state");
     sessionStorage.removeItem("oauth_provider");
 

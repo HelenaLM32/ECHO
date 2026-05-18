@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 
-/* ── Block types & metadata ─────────────────── */
 export const BLOCK_TYPES = {
   TEXT: 'TEXT',
   IMAGE: 'IMAGE',
@@ -31,7 +30,6 @@ export const BLOCK_META = {
   [BLOCK_TYPES.AUDIO]: { label: 'Audio', icon: 'audio.svg' },
 }
 
-/* ── Utilities ──────────────────────────────── */
 export function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -71,7 +69,6 @@ export function parseJsonSafe(value) {
   }
 }
 
-/* ── Store ──────────────────────────────────── */
 const STORAGE_KEY = 'echo-project-draft'
 
 function loadDraft() {
@@ -90,10 +87,6 @@ function defaultState() {
   }
 }
 
-/**
- * Store global del proyecto con Zustand.
- * Gestiona wizard, portada, info, bloques y persistencia.
- */
 const useProjectStore = create((set, get) => ({
   ...defaultState(),
   ...(loadDraft() || {}),

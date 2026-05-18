@@ -1,6 +1,8 @@
 import { useState, useCallback } from 'react';
 
-// Hook para manejar popup de éxito
+// Este hook sirve para mostrar un popup cuando algo sale bien
+// Devuelve: el estado del popup y funciones para mostrarlo y ocultarlo
+// Ejemplo: const { showSuccess } = useSuccessPopup();
 export const useSuccessPopup = () => {
   const [state, setState] = useState({
     isOpen: false,

@@ -1,6 +1,8 @@
 import { useState, useCallback } from 'react';
 
-// Hook para manejar el popup de confirmación
+// Hook para mostrar un popup de confirmacion (tipo "¿estas seguro?")
+// Recibe callbacks para cuando el usuario acepta o cancela
+// Devuelve: estado del popup y funciones para mostrar/ocultar/confirmar/cancelar
 export const useConfirmPopup = () => {
   const [state, setState] = useState({
     isOpen: false,

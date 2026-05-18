@@ -60,7 +60,6 @@ public class ItemController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateItem(@PathVariable Integer id, @RequestBody String itemJson, Authentication authentication) {
         try {
-            // Verificar autorización
             String email = authentication.getName();
             UserDTO currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ServiceException("Usuario no autenticado"));
@@ -68,7 +67,6 @@ public class ItemController {
             ItemDTO existing = itemRepository.findById(id)
                 .orElseThrow(() -> new ServiceException("Item no encontrado"));
             
-            // Verificar si es el creador o admin
             boolean isCreator = existing.getCreatorId().equals(currentUser.getId());
             boolean isAdmin = currentUser.getRoles().stream()
                 .anyMatch(r -> r.getName().equals("ADMIN"));
@@ -86,7 +84,6 @@ public class ItemController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteItem(@PathVariable Integer id, Authentication authentication) {
         try {
-            // Verificar autorización
             String email = authentication.getName();
             UserDTO currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ServiceException("Usuario no autenticado"));
@@ -94,7 +91,6 @@ public class ItemController {
             ItemDTO existing = itemRepository.findById(id)
                 .orElseThrow(() -> new ServiceException("Item no encontrado"));
             
-            // Verificar si es el creador o admin
             boolean isCreator = existing.getCreatorId().equals(currentUser.getId());
             boolean isAdmin = currentUser.getRoles().stream()
                 .anyMatch(r -> r.getName().equals("ADMIN"));

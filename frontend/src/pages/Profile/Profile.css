@@ -302,16 +302,35 @@
 
 .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(3, 300px);
+    gap: 24px;
     margin-top: 14px;
+    justify-content: start;
 }
 
 /* --- Grid & Cards (Productos / Servicios / Locales / Eventos) --- */
 .items-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(3, 300px);
     gap: 24px;
+    justify-content: start;
+}
+
+/* Responsive grids para Profile */
+@media (max-width: 1000px) {
+    .projects-grid,
+    .items-grid {
+        grid-template-columns: repeat(2, 300px);
+        gap: 20px;
+    }
+}
+
+@media (max-width: 650px) {
+    .projects-grid,
+    .items-grid {
+        grid-template-columns: 300px;
+        gap: 16px;
+    }
 }
 
 .item-card {
@@ -466,8 +485,8 @@
 
 .pc-btn-edit svg,
 .pc-btn-delete svg {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   fill: var(--white);
 }
 
@@ -613,8 +632,8 @@
 
   .pc-btn-edit svg,
   .pc-btn-delete svg {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
   }
 }
 

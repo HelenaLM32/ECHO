@@ -135,7 +135,6 @@ public class ItemProjectServiceImpl implements ItemProjectService {
                 dto.getId(), 
                 dto.getItem() != null ? dto.getItem().getId() : "null");
             
-            // Extraer ID del proyecto (puede venir en dto.id o en dto.item.id)
             Integer projectId = dto.getId();
             if (projectId == null && dto.getItem() != null) {
                 projectId = dto.getItem().getId();
@@ -147,13 +146,11 @@ public class ItemProjectServiceImpl implements ItemProjectService {
             
             log.info("Updating project with ID: {}", projectId);
             
-            // Asegurar que el DTO tenga el ID correcto
             dto.setId(projectId);
             
             ItemProjectDTO existing = this.getById(projectId);
             log.info("Found existing project: {}", existing != null ? existing.getId() : "null");
             
-            // Update Item fields (title, description, price, category)
             if (dto.getItem() != null) {
                 ItemDTO itemToUpdate = existing.getItem();
                 if (itemToUpdate != null) {
@@ -176,7 +173,6 @@ public class ItemProjectServiceImpl implements ItemProjectService {
                         itemToUpdate.setCategoryId(dto.getItem().getCategoryId());
                     }
                     
-                    // Save the updated item
                     itemRepository.save(itemToUpdate);
                     log.info("Item saved successfully");
                 }
@@ -365,7 +361,6 @@ public class ItemProjectServiceImpl implements ItemProjectService {
                 likedNow = true;
             }
 
-            // Build response node: project + profile + liked flag
             ItemProjectDTO dto = this.getById(projectId);
             ObjectNode node = mapper.valueToTree(dto);
             Integer creatorId = dto.getItem() != null ? dto.getItem().getCreatorId() : null;
@@ -400,11 +395,9 @@ public class ItemProjectServiceImpl implements ItemProjectService {
     @Override
     public void deleteById(Integer id) throws ServiceException {
         this.getById(id);
-        // Eliminar relaciones con servicios primero para evitar error de clave foránea
         entityManager.createNativeQuery("DELETE FROM item_service_projects WHERE project_id = :projectId")
                 .setParameter("projectId", id)
                 .executeUpdate();
-        // Eliminar likes y comentarios asociados al proyecto
         entityManager.createNativeQuery("DELETE FROM project_likes WHERE project_id = :projectId")
                 .setParameter("projectId", id)
                 .executeUpdate();

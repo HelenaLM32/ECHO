@@ -6,7 +6,6 @@ import ProjectCardWithLike from '../../Cards/ProjectCard/ProjectCardWithLike';
 import ProjectView from '../../../pages/ItemProject/ProjectView';
 import OrderModal from '../../Modals/OrderModal/OrderModal';
 import { useAuth } from '../../../context/AuthContext';
-import { usePolling } from '../../../hooks/usePolling';
 import './ServiceDetail.css';
 
 const parsePrice = (value) => {
@@ -43,13 +42,11 @@ function ServiceDetail({ service, onClose }) {
               const fullProject = await getProjectById(projectSummary.id);
               fullProjects.push(fullProject);
             } catch {
-              // Silently skip failed project loads
             }
           }
           setFullServiceProjects(fullProjects);
         }
       } catch {
-        // Silently handle errors
       } finally {
         setLoading(false);
       }
@@ -57,30 +54,6 @@ function ServiceDetail({ service, onClose }) {
 
     loadCreatorData();
   }, [service?.creatorId, service?.projects]);
-
-  // Poll for updated projects every 30 seconds to refresh views/likes in real-time
-  usePolling(
-    async () => {
-      if (!service?.projects?.length) return;
-      try {
-        const fullProjects = [];
-        for (const projectSummary of service.projects) {
-          try {
-            const fullProject = await getProjectById(projectSummary.id);
-            fullProjects.push(fullProject);
-          } catch {
-            // Silently skip failed project loads
-          }
-        }
-        setFullServiceProjects((prev) => {
-          const updatedMap = new Map(fullProjects.map((p) => [p.id, p]));
-          return prev.map((p) => updatedMap.get(p.id) || p);
-        });
-      } catch { }
-    },
-    30000,
-    !!service?.projects?.length
-  );
 
   if (!service) return null;
 
@@ -90,8 +63,12 @@ function ServiceDetail({ service, onClose }) {
   return (
     <>
       <div className="service-detail-overlay" onClick={onClose}>
+        <button className="service-detail-close" onClick={onClose} aria-label="Cerrar">
+        <svg className="service-detail-close-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z" fillRule="evenodd"/>
+        </svg>
+      </button>
         <div className="service-detail-window" onClick={(e) => e.stopPropagation()}>
-        <button className="service-detail-close" onClick={onClose}>✕</button>
 
         <div className="service-detail-content">
           <div className="service-detail-image-section">
@@ -171,7 +148,7 @@ function ServiceDetail({ service, onClose }) {
 
       {showOrderModal && (
         <OrderModal
-          itemId={service.id}
+          itemId={service.itemId}
           itemTitle={service.name || 'Servicio'}
           basePrice={price > 0 ? price : null}
           onClose={() => setShowOrderModal(false)}

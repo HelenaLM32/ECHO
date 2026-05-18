@@ -151,7 +151,6 @@ CREATE TABLE IF NOT EXISTS item_projects (
   CONSTRAINT fk_item_projects_item FOREIGN KEY (id) REFERENCES items(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Tabla para likes por usuario en proyectos
 CREATE TABLE IF NOT EXISTS project_likes (
     user_id INT NOT NULL,
     project_id INT NOT NULL,
@@ -160,7 +159,6 @@ CREATE TABLE IF NOT EXISTS project_likes (
     FOREIGN KEY (project_id) REFERENCES item_projects(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Tabla para comentarios de proyectos
 CREATE TABLE IF NOT EXISTS project_comments (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     project_id INT NOT NULL,
@@ -171,7 +169,6 @@ CREATE TABLE IF NOT EXISTS project_comments (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Indexes (plain CREATE INDEX is compatible with MySQL versions)
 CREATE INDEX idx_item_projects_slug ON item_projects(slug);
 CREATE INDEX idx_item_projects_published ON item_projects(published);
 

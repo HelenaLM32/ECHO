@@ -10,7 +10,6 @@ function ProjectEditor() {
   const [showPreview, setShowPreview] = useState(false)
   const reset = useProjectStore((s) => s.reset)
 
-  // Resetear el store al entrar para crear un proyecto nuevo
   useEffect(() => {
     reset()
   }, [reset])

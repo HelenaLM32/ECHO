@@ -17,7 +17,8 @@ public class Order {
         StringBuilder msg = new StringBuilder();
         if (buyerId == null || buyerId <= 0) msg.append("buyerId inválido; ");
         if (itemId == null || itemId <= 0)   msg.append("itemId inválido; ");
-        if (finalPrice == null || finalPrice < 0) msg.append("finalPrice inválido; ");
+        if (finalPrice == null) finalPrice = 0.0;
+        if (finalPrice < 0) msg.append("finalPrice inválido; ");
         if (!msg.isEmpty()) throw new BuildException(msg.toString().trim());
         o.buyerId    = buyerId;
         o.itemId     = itemId;

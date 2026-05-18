@@ -29,29 +29,39 @@
 }
 
 .modal-close-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px; /* Cambiado a la derecha para estilo estándar */
+  position: fixed;
+  top: 89px;
+  right: 24px;
   background: var(--true-white);
-  color: var(--black-new);
+  color: var(--black);
   border: 1px solid var(--gray-stroke);
-  border-radius: 50%;
+  border-radius: 40px;
   width: 40px;
   height: 40px;
-  font-size: 16px;
+  font-size: 1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
+  z-index: 1001;
   transition: all 0.2s ease;
 }
 
 .modal-close-btn:hover {
   background: var(--orange);
-  color: #FFFFFF;
+  color: var(--true-white);
   border-color: var(--orange);
-  transform: rotate(90deg);
+}
+
+.modal-close-icon {
+  width: 16px;
+  height: 16px;
+  fill: var(--black);
+  transition: fill 0.2s ease;
+}
+
+.modal-close-btn:hover .modal-close-icon {
+  fill: var(--true-white);
 }
 
 .modal-img {

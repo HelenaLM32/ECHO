@@ -94,7 +94,8 @@ public class OrderServiceImpl implements OrderService {
             if (dto.getFinalPrice() == null) {
                 ItemDTO item = itemRepository.findById(dto.getItemId())
                         .orElseThrow(() -> new ServiceException("Item no encontrado"));
-                dto = new OrderDTO(null, buyer.getId(), dto.getItemId(), item.getBasePrice(), "PENDING");
+                Double price = item.getBasePrice() != null ? item.getBasePrice() : 0.0;
+                dto = new OrderDTO(null, buyer.getId(), dto.getItemId(), price, "PENDING");
             } else {
                 dto = new OrderDTO(null, buyer.getId(), dto.getItemId(), dto.getFinalPrice(), "PENDING");
             }
@@ -146,7 +147,8 @@ public class OrderServiceImpl implements OrderService {
             ItemDTO item = itemRepository.findById(dto.getItemId())
                     .orElseThrow(() -> new ServiceException("Item no encontrado"));
 
-            Double finalPrice = dto.getFinalPrice() == null ? item.getBasePrice() : dto.getFinalPrice();
+            Double finalPrice = dto.getFinalPrice() != null ? dto.getFinalPrice() : 
+                    (item.getBasePrice() != null ? item.getBasePrice() : 0.0);
             String status = normalizeStatus(dto.getStatus());
 
             OrderDTO toSave = new OrderDTO(null, dto.getBuyerId(), dto.getItemId(), finalPrice, status);

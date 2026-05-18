@@ -50,7 +50,6 @@ public class ItemServiceService {
             throw new IllegalArgumentException("Maximum 6 projects allowed");
         }
 
-        // Verify projects belong to creator
         if (request.getProjectIds() != null) {
             List<ItemProjectDTO> projects = projectRepository.findAllById(request.getProjectIds());
             if (projects.size() != request.getProjectIds().size()) {
@@ -63,7 +62,6 @@ public class ItemServiceService {
             }
         }
 
-        // Create Item first
         ItemDTO item = new ItemDTO();
         item.setCreatorId(creator.getId());
         item.setTitle(request.getName());
@@ -73,11 +71,9 @@ public class ItemServiceService {
         item.setCategoryId(request.getCategoryId());
         item = itemRepository.save(item);
 
-        // Get category name for ItemService
         CategoryDTO category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
 
-        // Create ItemService
         ItemService itemService = new ItemService();
         itemService.setItem(item);
         itemService.setName(request.getName());
@@ -112,7 +108,6 @@ public class ItemServiceService {
             throw new IllegalArgumentException("Maximum 6 projects allowed");
         }
 
-        // Verify projects
         if (request.getProjectIds() != null) {
             List<ItemProjectDTO> projects = projectRepository.findAllById(request.getProjectIds());
             if (projects.size() != request.getProjectIds().size()) {
@@ -125,18 +120,15 @@ public class ItemServiceService {
             }
         }
 
-        // Get category name for ItemService
         CategoryDTO category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
 
-        // Update ItemService fields
         itemService.setName(request.getName());
         itemService.setDescription(request.getDescription());
         itemService.setDeliveryDuration(request.getDeliveryDuration());
         itemService.setCategory(category.getName());
         itemService.setCoverImageUrl(request.getCoverImageUrl());
 
-        // Update associated Item in cascade (shared fields)
         ItemDTO item = itemService.getItem();
         item.setTitle(request.getName());
         item.setDescription(request.getDescription());
@@ -165,13 +157,10 @@ public class ItemServiceService {
             throw new SecurityException("Not authorized");
         }
 
-        // Get the associated item before deleting the service
         Integer itemId = itemService.getItem().getId();
         
-        // Delete the service first
         itemServiceRepository.delete(itemService);
         
-        // Delete the associated item in cascade
         itemRepository.deleteById(itemId);
     }
 
@@ -206,12 +195,10 @@ public class ItemServiceService {
         response.setDeliveryDuration(itemService.getDeliveryDuration());
         response.setCategory(itemService.getCategory());
         response.setCategoryId(itemService.getItem().getCategoryId());
-        // Price comes from the associated Item (basePrice)
         response.setPrice(itemService.getItem().getBasePrice());
         response.setCoverImageUrl(itemService.getCoverImageUrl());
         response.setCreatorId(itemService.getCreator().getId().longValue());
 
-        // Add creator info with profile data
         UserDTO creator = itemService.getCreator();
         if (creator != null) {
             ProfileDTO profile = profileRepository.findByUserId(creator.getId()).orElse(null);

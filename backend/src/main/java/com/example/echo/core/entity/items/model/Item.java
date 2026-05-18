@@ -24,9 +24,6 @@ public class Item {
     @Column(name = "base_price")
     private Double basePrice;
 
-    /**
-     * Item type (e.g. "PRODUCT", "SERVICE").
-     */
     @Column(name = "item_type", nullable = false)
     private String itemType;
 
@@ -82,9 +79,6 @@ public class Item {
         return message.trim();
     }
 
-    // --------------------------------------------------
-    // Protected setters
-    // --------------------------------------------------
     protected int setCreatorId(Integer creatorId) {
         if (creatorId != null && Check.isPositive(creatorId)) {
             this.creatorId = creatorId;
@@ -114,7 +108,6 @@ public class Item {
     }
 
     protected int setBasePrice(Double basePrice) {
-        // Price is optional - null or >= 0 is valid
         if (basePrice == null) {
             this.basePrice = null;
             return 0;
@@ -146,9 +139,6 @@ public class Item {
         return -1;
     }
 
-    // --------------------------------------------------
-    // Public getters
-    // --------------------------------------------------
     public Integer getId() {
         return id;
     }

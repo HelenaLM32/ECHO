@@ -45,7 +45,6 @@ public class ItemService {
     )
     private Set<ItemProjectDTO> projects;
 
-    // Getters and setters
     public Long getId() {
         return id;
     }

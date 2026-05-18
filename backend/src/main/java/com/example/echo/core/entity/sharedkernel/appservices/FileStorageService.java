@@ -65,7 +65,6 @@ public class FileStorageService {
         
         logger.info("File stored successfully at: {}", destination);
 
-        // Return a proxy-friendly relative URL so it works across environments.
         return buildPublicUploadPath(subDir, filename);
     }
 

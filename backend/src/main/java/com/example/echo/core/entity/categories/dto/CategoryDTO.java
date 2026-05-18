@@ -5,9 +5,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import jakarta.persistence.*;
 
-/**
- * JPA entity for the `categories` table.
- */
 @Entity
 @Table(name = "categories")
 public class CategoryDTO {

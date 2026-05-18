@@ -89,7 +89,6 @@ public class OAuthController {
                         new HttpEntity<>(tokenParams, tokenHeaders),
                         String.class);
             } catch (HttpClientErrorException ex) {
-                // Google returns 400 for expired/already-used codes
                 String googleError = ex.getResponseBodyAsString();
                 return ResponseEntity.status(400)
                         .body("{\"error\":\"Google token exchange failed\",\"detail\":" +
@@ -140,7 +139,6 @@ public class OAuthController {
 
                 UserDTO saved = userRepository.save(newUser);
 
-                // Only create profile if it doesn't exist yet
                 if (profileRepository.findByUserId(saved.getId()).isEmpty()) {
                     ProfileDTO profile = new ProfileDTO();
                     profile.setUserId(saved.getId());
