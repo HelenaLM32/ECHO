@@ -63,6 +63,14 @@ public class EventDTO {
     @JsonProperty("creatorPublicName")
     private String creatorPublicName;
 
+    @Formula("(SELECT v.name FROM venues v WHERE v.id = venue_id LIMIT 1)")
+    @JsonProperty("venueName")
+    private String venueName;
+
+    @Formula("(SELECT v.address FROM venues v WHERE v.id = venue_id LIMIT 1)")
+    @JsonProperty("venueAddress")
+    private String venueAddress;
+
     public EventDTO() {
     }
 
@@ -133,6 +141,14 @@ public class EventDTO {
 
     public String getCreatorPublicName() {
         return creatorPublicName;
+    }
+
+    public String getVenueName() {
+        return venueName;
+    }
+
+    public String getVenueAddress() {
+        return venueAddress;
     }
 
     public void setId(Integer id) {
