@@ -26,6 +26,7 @@ export async function handleResponse(res, defaultMessage = 'Error en la operaci√
   }
   
   if (contentType && contentType.includes('application/json')) {
+    const rawText = await res.text();
     return JSON.parse(rawText);
   }
   
