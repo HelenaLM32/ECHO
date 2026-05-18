@@ -22,6 +22,7 @@ export default function Register() {
   const validatePassword = (pwd) => {
   if (pwd.length < 8) return "La contraseña debe tener al menos 8 caracteres.";
   if (!/[A-Z]/.test(pwd)) return "La contraseña debe contener al menos 1 letra mayúscula.";
+  if (!/[a-z]/.test(pwd)) return "La contraseña debe contener al menos 1 letra minúscula.";
   if (!/[0-9]/.test(pwd)) return "La contraseña debe contener al menos 1 número.";
   return null;
 };
@@ -44,7 +45,7 @@ export default function Register() {
     } catch (err) {
       const msg = err.message?.toLowerCase() || "";
     if (msg.includes("password") || msg.includes("contraseña")) {
-      setErrorUsers("La contraseña debe tener al menos 8 caracteres, 1 mayúscula y 1 número.");
+      setErrorUsers("La contraseña debe tener al menos 8 caracteres, 1 mayúscula, 1 minúscula y 1 número.");
     } else {
       setErrorUsers(err.message);
     }
