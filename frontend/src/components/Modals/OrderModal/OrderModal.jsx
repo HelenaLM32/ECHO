@@ -3,15 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { createOrder } from "../../../services/orders";
 import "./OrderModal.css";
 
-/**
- * Modal de confirmación de encargo.
- *
- * Props:
- *   itemId     {number}   – id del item en el backend
- *   itemTitle  {string}   – nombre del servicio o proyecto
- *   basePrice  {number}   – precio base del item
- *   onClose    {function} – cierra el modal sin confirmar
- */
 export default function OrderModal({ itemId, itemTitle, basePrice, onClose }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);

@@ -1,5 +1,8 @@
 import { useState } from "react";
 
+// Hook enorme que gestiona todos los formularios del panel de admin
+// Tiene estados para cada form (ordenes, usuarios, proyectos, servicios, venues, eventos)
+// Y funciones para actualizar campos, resetear, etc
 const INITIAL_CREATE_ORDER_FORM = {
   buyerId: "",
   itemId: "",

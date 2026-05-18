@@ -19,18 +19,39 @@
 }
 
 .previewCloseButton {
-  position: fixed;
+  position: absolute;
   top: 24px;
   right: 24px;
   width: 40px;
   height: 40px;
-  border: 1px solid var(--gray-stroke, #e0e0e0);
+  border: 1px solid var(--gray-stroke);
   border-radius: 40px;
-  background: var(--true-white, #ffffff);
-  color: var(--black, #282828);
+  background: var(--true-white);
+  color: var(--black);
   font-size: 1rem;
   cursor: pointer;
-  z-index: 10;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.previewCloseButton:hover {
+  background: var(--orange);
+  color: var(--true-white);
+  border-color: var(--orange);
+}
+
+.preview-close-icon {
+  width: 16px;
+  height: 16px;
+  fill: var(--black);
+  transition: fill 0.2s ease;
+}
+
+.previewCloseButton:hover .preview-close-icon {
+  fill: var(--true-white);
 }
 
 .previewWindow {

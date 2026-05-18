@@ -33,20 +33,36 @@
     max-width: 600px;
 }
 
-.register-cont input {
+.register-cont input,
+.register-form input {
     background-color: var(--gray);
     border: 1px solid var(--gray);
     border-radius: 25px;
     height: 50px;
     padding: 0 20px;
-    color: var(--gray-dark-secondary);
+    color: #000000;
     font-size: 16px;
+}
+
+/* en darkmode el texto debe ser blanco */
+html[data-theme="dark"] .register-cont input,
+html[data-theme="dark"] .register-form input {
+    color: #ffffff !important;
 }
 
 .register-cont input:focus {
     outline: none;
-    border-color: var(--gray);
+    border-color: var(--orange);
     box-shadow: 0 0 8px var(--shadow-light);
+}
+
+/* placeholder mas visible */
+.register-cont input::placeholder {
+    color: var(--gray-dark-secondary);
+}
+
+[data-theme="dark"] .register-cont input::placeholder {
+    color: var(--black-secondary);
 }
 
 

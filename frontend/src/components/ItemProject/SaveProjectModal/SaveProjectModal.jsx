@@ -5,14 +5,6 @@ import useSuccessPopup from '../../../hooks/useSuccessPopup'
 import PopupSuccess from '../../Modals/PopupSuccess/PopupSuccess'
 import './SaveProjectModal.css'
 
-/**
- * Modal para guardar/actualizar proyectos
- * @param {Object} props
- * @param {Function} props.onClose - Callback para cerrar el modal
- * @param {Function} props.exportJSON - Función para exportar datos del proyecto
- * @param {Object} props.user - Usuario actual
- * @param {string} props.mode - 'create' o 'edit'
- */
 function SaveProjectModal({ onClose, exportJSON, user, mode = 'create' }) {
   const navigate = useNavigate()
   const { id } = useParams()
@@ -25,7 +17,6 @@ function SaveProjectModal({ onClose, exportJSON, user, mode = 'create' }) {
   const [loadingProject, setLoadingProject] = useState(mode === 'edit')
   const [saving, setSaving] = useState(false)
 
-  // Cargar categorías
   useEffect(() => {
     let mounted = true
     getCategories()
@@ -34,7 +25,6 @@ function SaveProjectModal({ onClose, exportJSON, user, mode = 'create' }) {
     return () => { mounted = false }
   }, [])
 
-  // Cargar datos del proyecto si estamos en modo edición
   useEffect(() => {
     if (mode === 'edit' && id) {
       const loadProject = async () => {
@@ -67,7 +57,6 @@ function SaveProjectModal({ onClose, exportJSON, user, mode = 'create' }) {
       return
     }
     
-    // Precio es opcional, pero si se introduce debe ser válido
     let price = null
     if (basePrice && basePrice.trim() !== '') {
       const parsedPrice = Number(basePrice)
@@ -84,7 +73,6 @@ function SaveProjectModal({ onClose, exportJSON, user, mode = 'create' }) {
       const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 
       if (mode === 'create') {
-        // Crear nuevo proyecto
         const itemPayload = {
           creatorId: user?.id,
           title: title.trim(),
@@ -111,7 +99,6 @@ function SaveProjectModal({ onClose, exportJSON, user, mode = 'create' }) {
         const createdProject = await createProject(projectPayload)
         showSuccess('Proyecto guardado correctamente (id: ' + (createdProject.id || createdProject.item?.id) + ')', 'Éxito')
       } else {
-        // Actualizar proyecto existente
         const numericId = Number(id)
         const projectPayload = {
           id: numericId,
@@ -137,7 +124,6 @@ function SaveProjectModal({ onClose, exportJSON, user, mode = 'create' }) {
       try {
         if (user?.id) navigate(`/profile/${user.id}`)
       } catch (e) {
-        // Navigation error silenced
       }
     } catch (err) {
       showSuccess('Error al guardar: ' + (err.message || err), 'Error')

@@ -1,15 +1,17 @@
 .sections-container {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
     margin: 8px 0 12px 0;
     width: 100%;
+    justify-content: center;
 }
 
 .section-card {
-    padding: 1px 30px;
+    padding: 8px 20px;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 15px;
-    height: 45px;
+    font-size: 14px;
+    height: 42px;
     background-color: var(--gray-dark);
     border: 1px solid var(--gray-dark);
     border-radius: 100px;
@@ -18,19 +20,21 @@
     justify-content: center;
     cursor: pointer;
     opacity: 0.7;
-
-   
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .section-card:hover {
     transition: 150ms;
     background-color: var(--gray-dark-secondary);
-    transition: 150ms;
+    opacity: 1;
+}
 
-    span {
-        transition: 150ms;
-        color: var(--black);
-    }
+.section-card:hover span {
+    transition: 150ms;
+    color: var(--black);
 }
 
 .section-title {
@@ -38,7 +42,6 @@
     text-align: center;
     color: var(--black-secondary);
 }
-
 
 .sections-loading {
     margin: 8px 0;
@@ -59,14 +62,27 @@
    MEDIA QUERIES - RESPONSIVE
    ============================================ */
 
-/* Móviles grandes (600px) */
+/* Tablets (900px) */
+@media (max-width: 900px) {
+    .sections-container {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
+    }
+    
+    .section-card {
+        padding: 6px 16px;
+        font-size: 13px;
+        height: 38px;
+    }
+}
+
+/* Móviles grandes (600px) - Cards flotantes */
 @media (max-width: 600px) {
     .sections-container {
         display: flex;
         flex-wrap: wrap;
-        flex-direction: row;
         justify-content: center;
-        gap: 6px;
+        gap: 8px;
         margin: 8px 0;
         padding: 0 10px;
     }
@@ -76,15 +92,30 @@
     }
 
     .section-card {
-        width: auto;
-        padding: 4px 14px;
+        padding: 6px 14px;
         font-size: 12px;
-        height: 32px;
+        height: 34px;
         border-radius: 20px;
+        width: auto;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .section-title {
         font-size: 12px;
+    }
+}
+
+/* Móviles medianos (480px) */
+@media (max-width: 480px) {
+    .sections-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .section-card {
+        padding: 4px 10px;
+        font-size: 11px;
+        height: 34px;
     }
 }
 

@@ -29,6 +29,7 @@
   min-width: 300px;
   max-width: 300px;
   position: relative;
+  flex-shrink: 0;
 }
 
 .card:hover {

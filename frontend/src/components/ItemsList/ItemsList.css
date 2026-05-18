@@ -1,35 +1,48 @@
 .items-list-container {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 40px 22px;
+    grid-template-columns: repeat(auto-fill, 300px);
+    gap: 32px;
     width: 100%;
     box-sizing: border-box;
-    justify-items: center;
+    justify-content: space-between;
 }
 
-/* Pantallas grandes (1200px) */
+/* Pantallas grandes (1500px) */
+@media (max-width: 1500px) {
+    .items-list-container {
+        grid-template-columns: repeat(4, 300px);
+    }
+}
+
+/* Pantallas medianas (1200px) */
 @media (max-width: 1200px) {
     .items-list-container {
-        grid-template-columns: repeat(4, 1fr);
-        justify-items: center;
+        grid-template-columns: repeat(3, 300px);
+        gap: 30px 20px;
+    }
+}
+
+/* Tablets (900px) */
+@media (max-width: 900px) {
+    .items-list-container {
+        grid-template-columns: repeat(2, 300px);
+        gap: 24px 16px;
     }
 }
 
 /* Móviles grandes (600px) */
 @media (max-width: 600px) {
     .items-list-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: 300px;
         gap: 16px;
-        justify-items: center;
     }
 }
 
 /* iPhone 12/13/14 (390px) */
 @media (max-width: 390px) {
     .items-list-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: 280px;
         gap: 12px;
         padding: 0 8px;
-        justify-items: center;
     }
 }

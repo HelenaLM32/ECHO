@@ -13,13 +13,11 @@ function ProjectEdit() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // Cargar proyecto existente al iniciar
   useEffect(() => {
     const loadProject = async () => {
       try {
         const project = await getProjectById(id)
         if (project) {
-          // Inicializar el store con los datos del proyecto
           const blocks = typeof project.blocks === 'string' ? JSON.parse(project.blocks) : project.blocks
           const background = typeof project.background === 'string' ? JSON.parse(project.background) : project.background
           

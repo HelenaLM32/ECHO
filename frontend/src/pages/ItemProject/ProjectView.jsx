@@ -13,7 +13,6 @@ import PopupSuccess from '../../components/Modals/PopupSuccess/PopupSuccess'
 import useConfirmPopup from '../../hooks/useConfirmPopup'
 import useSuccessPopup from '../../hooks/useSuccessPopup'
 import { useAuth } from '../../context/AuthContext'
-import usePolling from '../../hooks/usePolling'
 import { getAuthToken } from '../../services/session'
 
 function RenderBlock({ block }) {
@@ -86,7 +85,6 @@ export default function ProjectView({ projectId, onClose }) {
 
   useEffect(() => {
     if (!project || !project.item || !project.item.creatorId) return
-    // Profile is already included in the project response
     setProfile(project.profile || null)
   }, [project])
 
@@ -98,10 +96,8 @@ export default function ProjectView({ projectId, onClose }) {
       .catch(() => setCommentsList([]))
   }, [project?.id])
 
-  // increment views once when project is loaded in the preview (only for logged users)
   useEffect(() => {
     if (loadingContext || !project?.id || hasIncrementedView.current) return
-    // Only count views for authenticated users
     if (!user?.id) {
       hasIncrementedView.current = true
       return
@@ -114,22 +110,6 @@ export default function ProjectView({ projectId, onClose }) {
       .then((data) => { if (data) setProject(data) })
       .catch((err) => { console.error("Error al incrementar views:", err); })
   }, [project?.id, user?.id, loadingContext])
-
-  // Poll for updated views count every 30 seconds to show real-time updates
-  usePolling(
-    () => {
-      fetchWithToken(`/item-projects/${project.id}`)
-        .then((r) => r.ok ? r.json() : null)
-        .then((data) => {
-          if (data && data.views !== undefined) {
-            setProject(prev => prev ? { ...prev, views: data.views } : prev)
-          }
-        })
-        .catch((err) => { console.error("Error en polling de views:", err); })
-    },
-    30000,
-    !!project?.id
-  )
 
   const [isLiked, setIsLiked] = useState(false)
 
@@ -151,7 +131,6 @@ export default function ProjectView({ projectId, onClose }) {
     fetchWithToken(`/item-projects/${project.id}/likes`, { method: 'POST' })
       .then((r) => { if (!r.ok) throw new Error('Error like'); return r.json() })
       .then((data) => {
-        // response includes updated project fields and `liked` flag
         setProject(data)
         setIsLiked(Boolean(data.liked))
       })
@@ -241,7 +220,6 @@ export default function ProjectView({ projectId, onClose }) {
       onClose()
       return
     }
-    // Prefer returning to the profile of the project creator if available, otherwise go back in history
     const creatorId = project?.item?.creatorId
     if (creatorId) navigate(`/profile/${creatorId}`)
     else navigate(-1)
@@ -262,7 +240,9 @@ export default function ProjectView({ projectId, onClose }) {
           }}
           aria-label="Cerrar"
         >
-          ✕
+          <svg className="preview-close-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 14.545L1.455 16 8 9.455 14.545 16 16 14.545 9.455 8 16 1.455 14.545 0 8 6.545 1.455 0 0 1.455 6.545 8z" fillRule="evenodd"/>
+          </svg>
         </button>
         {canDeleteProject && (
           <button className="project-delete-button" onClick={(e) => { e.stopPropagation(); handleDeleteProject(); }} aria-label="Borrar proyecto">

@@ -48,7 +48,6 @@ const [selectedEvent, setSelectedEvent] = useState(null);
       .finally(() => setLoading(false));
   }, [contentType]);
 
-  // Poll for updated projects and services every 30 seconds to refresh views/likes in real-time
   useEffect(() => {
     const pollItems = () => {
       Promise.all([

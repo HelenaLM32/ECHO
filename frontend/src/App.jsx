@@ -15,13 +15,11 @@ import Orders from './pages/Orders/Orders';
 import OrderDetail from './pages/OrderDetail/OrderDetail';
 import OrderDispute from './pages/OrderDetail/OrderDispute';
 
-// Rutas de HEAD (Eventos y Locales)
 import CreateEvent from './pages/Events/CreateEvent';
 import CreateVenue from './pages/Venues/CreateVenue';
 import EditVenue from './pages/Venues/EditVenue';
 import EditEvent from './pages/Events/EditEvent';
 
-// Rutas de main (Proyectos y Legal)
 import ProjectEditor from './pages/ItemProject/ProjectEditor.jsx';
 import ProjectEdit from './pages/ItemProject/ProjectEdit.jsx';
 import ProjectView from './pages/ItemProject/ProjectView.jsx';
@@ -31,7 +29,6 @@ import CookiesPolicy from './pages/Legal/CookiesPolicy';
 import Introduction from './pages/Resources/Introduction';
 import AboutUs from './pages/Resources/AboutUs';
 
-// Rutas de servicios
 import ServiceCreate from './pages/Services/ServiceCreate';
 import ServiceEdit from './pages/Services/ServiceEdit';
 

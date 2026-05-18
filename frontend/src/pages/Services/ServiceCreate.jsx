@@ -5,12 +5,11 @@ import { getCategories } from "../../services/projects";
 import { uploadFile } from "../../services/uploads";
 import ServiceProjectPicker from "../../components/ItemService/ServiceProjectPicker/ServiceProjectPicker";
 import Footer from "../../components/Navigation/Footer/Footer";
-import { getAuthToken } from "../../services/session";
+
 import "./Services.css";
 
 export default function ServiceCreate() {
   const navigate = useNavigate();
-  const token = getAuthToken();
   
   const [form, setForm] = useState({
     name: "",
@@ -59,53 +58,65 @@ export default function ServiceCreate() {
     setForm(prev => ({ ...prev, projectIds }));
   };
 
+  // Comprueba que los campos obligatorios esten rellenos
+  const validateForm = () => {
+    if (!form.name || !form.categoryId) {
+      setError("Nombre y categoria son obligatorios");
+      return false;
+    }
+    return true;
+  };
+
+  // Parsea el precio y valida que sea un numero correcto
+  const parsePriceValue = () => {
+    if (!form.price || form.price.trim() === '') {
+      return null;
+    }
+    const parsedPrice = parseFloat(form.price);
+    if (isNaN(parsedPrice) || parsedPrice < 0) {
+      setError("El precio debe ser un número válido mayor o igual a 0");
+      return null;
+    }
+    return parsedPrice;
+  };
+
+  // Sube la imagen de portada si hay alguna seleccionada
+  const uploadCoverImage = async () => {
+    if (!imgFile) return null;
+    try {
+      return await uploadFile(imgFile, 'images');
+    } catch (e) {
+      throw new Error("Error al subir la imagen");
+    }
+  };
+
+  // Construye el objeto con todos los datos del servicio
+  const buildSubmitData = (priceValue, coverImageUrl) => ({
+    name: form.name,
+    description: form.description,
+    deliveryDuration: parseInt(form.deliveryDuration) || 1,
+    categoryId: parseInt(form.categoryId),
+    price: priceValue,
+    projectIds: form.projectIds.map(id => Number(id)),
+    coverImageUrl: coverImageUrl
+  });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!form.name || !form.categoryId) {
-      setError("Nombre y categoria son obligatorios");
-      return;
-    }
+    if (!validateForm()) return;
     
-    // Precio es opcional, pero si se introduce debe ser válido
-    let priceValue = null;
-    if (form.price && form.price.trim() !== '') {
-      const parsedPrice = parseFloat(form.price);
-      if (isNaN(parsedPrice) || parsedPrice < 0) {
-        setError("El precio debe ser un número válido mayor o igual a 0");
-        return;
-      }
-      priceValue = parsedPrice;
-    }
+    const priceValue = parsePriceValue();
+    if (priceValue === null && form.price) return;
 
     setLoading(true);
     setError("");
     
     try {
-      // Subir imagen primero si existe
-      let coverImageUrl = null;
-      if (imgFile) {
-        coverImageUrl = await uploadFile(imgFile, 'images');
-      }
+      const coverImageUrl = await uploadCoverImage();
+      const submitData = buildSubmitData(priceValue, coverImageUrl);
       
-      // Preparar datos para enviar
-      const submitData = {
-        name: form.name,
-        description: form.description,
-        deliveryDuration: parseInt(form.deliveryDuration) || 1,
-        categoryId: parseInt(form.categoryId),
-        price: priceValue,
-        projectIds: form.projectIds.map(id => Number(id)),
-        coverImageUrl: coverImageUrl
-      };
-      
-      const response = await createService(submitData, token);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || "Error al crear el servicio");
-      }
-      
+      await createService(submitData);
       navigate("/profile");
     } catch (err) {
       setError(err.message || "Error al crear el servicio");

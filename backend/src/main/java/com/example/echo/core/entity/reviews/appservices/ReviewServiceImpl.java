@@ -61,7 +61,6 @@ public class ReviewServiceImpl implements ReviewService {
             dto.setComment(review.getComment());
 
             ReviewDTO saved = reviewRepository.save(dto);
-            // Re-fetch to populate @Formula fields
             return serializer.serialize(reviewRepository.findById(saved.getId()).get());
         } catch (ServiceException e) {
             throw e;

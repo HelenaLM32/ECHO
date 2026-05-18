@@ -22,7 +22,6 @@ async function createItem(itemPayload) {
   })
   if (!res.ok) throw new Error(await res.text())
   const text = await res.text()
-  // Robust parse: server sometimes returns JSON string; handle nested string
   try {
     const parsed = JSON.parse(text)
     if (typeof parsed === 'string') return JSON.parse(parsed)
@@ -34,11 +33,8 @@ async function createItem(itemPayload) {
 }
 
 async function createProject(projectPayload) {
-  // Ensure any embedded base64 media are uploaded first and replaced with URLs.
-  // Accept projectPayload.blocks/background as either JSON string or objects.
   const payload = await replaceEmbeddedMedia(projectPayload)
 
-  // Backend expects blocks and background as JSON strings (stored in DB as text)
   if (payload.blocks && typeof payload.blocks !== 'string') payload.blocks = JSON.stringify(payload.blocks)
   if (payload.background && typeof payload.background !== 'string') payload.background = JSON.stringify(payload.background)
 
@@ -56,7 +52,6 @@ async function createProject(projectPayload) {
 async function replaceEmbeddedMedia(project) {
   const clone = JSON.parse(JSON.stringify(project))
 
-  // Normalize blocks to array for processing
   let blocksArr = clone.blocks
   if (typeof blocksArr === 'string') {
     try { blocksArr = JSON.parse(blocksArr) } catch { blocksArr = [] }
@@ -64,7 +59,6 @@ async function replaceEmbeddedMedia(project) {
   if (!Array.isArray(blocksArr)) blocksArr = []
 
   for (let b of blocksArr) {
-    // image block: b.src may be data URL
     if (b.type === 'IMAGE') {
       if (typeof b.src === 'string' && b.src.startsWith('data:')) {
         const file = dataURLtoFile(b.src)
@@ -97,7 +91,6 @@ async function replaceEmbeddedMedia(project) {
   }
   clone.blocks = blocksArr
 
-  // background image
   let bg = clone.background
   if (bg && bg.mode === 'image' && typeof bg.value === 'string' && bg.value.startsWith('data:')) {
     const file = dataURLtoFile(bg.value)
@@ -117,7 +110,6 @@ async function getAllProjects() {
   const res = await fetchApi('/item-projects');
   if (!res.ok) throw new Error(await res.text());
   const data = await res.json();
-  // Ensure we always return an array
   return Array.isArray(data) ? data : [];
 }
 
@@ -156,10 +148,8 @@ async function deleteProjectComment(projectId, commentId) {
 }
 
 async function updateProject(id, projectPayload) {
-  // Ensure any embedded base64 media are uploaded first and replaced with URLs.
   const payload = await replaceEmbeddedMedia(projectPayload)
 
-  // Backend expects blocks and background as JSON strings
   if (payload.blocks && typeof payload.blocks !== 'string') payload.blocks = JSON.stringify(payload.blocks)
   if (payload.background && typeof payload.background !== 'string') payload.background = JSON.stringify(payload.background)
 

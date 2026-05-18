@@ -1,9 +1,5 @@
 package com.example.echo.core.entity.categories.model;
 
-/**
- * Simple domain model for Category.
- * This is a lightweight POJO used for business validation and logic.
- */
 public class Category {
 
     private Integer id;
