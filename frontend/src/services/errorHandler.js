@@ -30,7 +30,12 @@ export async function handleResponse(res, defaultMessage = 'Error en la operaci√
     return JSON.parse(rawText);
   }
   
-  return res.text();
+  const rawText = await res.text();
+  try {
+    return JSON.parse(rawText);
+  } catch {
+    return rawText;
+  }
 }
 
 export const handleApiResponse = handleResponse;
