@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo.core.entity.items.persistence.ItemRepository;
 import com.example.echo.core.entity.items.dto.ItemDTO;
@@ -16,7 +17,8 @@ import com.example.echo.core.entity.sharedkernel.appservices.serializers.Seriali
 import com.example.echo.core.entity.sharedkernel.exceptions.BuildException;
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 
-@Controller
+@Service
+@Transactional
 public class ItemServiceImpl implements ItemService {
 
     @Autowired

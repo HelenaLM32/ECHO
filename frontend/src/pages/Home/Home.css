@@ -571,15 +571,16 @@
   }
 
   .home-container-item-section {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
     align-items: center;
-    justify-content: center;
+    justify-items: center;
     gap: 20px;
     margin-top: 30px;
     margin-bottom: 60px;
     margin-left: auto;
     margin-right: auto;
+    width: 100%;
   }
   
   .home-container-item-section > * {

@@ -20,7 +20,7 @@
   width: 700px;
   max-width: 100%;
   background: var(--true-white, #ffffff);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   padding: 32px;
   box-shadow: 0 4px 12px var(--shadow-light);
   box-sizing: border-box;

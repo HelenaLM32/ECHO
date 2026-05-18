@@ -10,12 +10,14 @@ import com.example.echo.core.entity.sharedkernel.appservices.serializers.Jackson
 import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
+@Transactional
 public class ReviewServiceImpl implements ReviewService {
 
     @Autowired

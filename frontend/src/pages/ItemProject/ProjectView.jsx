@@ -55,8 +55,8 @@ function RenderBlock({ block }) {
 
 export default function ProjectView({ projectId, onClose }) {
   const navigate = useNavigate()
-  const { id: routeId } = useParams()
-  const id = projectId || routeId
+  const { id } = useParams()
+  const projectViewId = projectId || id
   const [project, setProject] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -77,12 +77,12 @@ export default function ProjectView({ projectId, onClose }) {
   useEffect(() => {
     let mounted = true
     setLoading(true)
-    getProjectById(id)
+    getProjectById(projectViewId)
       .then((p) => { if (mounted) setProject(p) })
       .catch((e) => { if (mounted) setError(e.message || String(e)) })
       .finally(() => { if (mounted) setLoading(false) })
     return () => { mounted = false }
-  }, [id])
+  }, [projectViewId])
 
   useEffect(() => {
     if (!project || !project.item || !project.item.creatorId) return
@@ -145,7 +145,7 @@ export default function ProjectView({ projectId, onClose }) {
   function handleToggleLike() {
     const token = getAuthToken()
     if (!token) {
-      showSuccess('Debes iniciar sesion para dar like', 'Accion requerida')
+      showSuccess('Debes iniciar sesion para dar like', 'Accion requerida', 'info')
       return
     }
     fetchWithToken(`/item-projects/${project.id}/likes`, { method: 'POST' })
@@ -209,7 +209,7 @@ export default function ProjectView({ projectId, onClose }) {
   function handleAddComment(commentText) {
     const token = getAuthToken()
     if (!token) {
-      showSuccess('Debes iniciar sesion para comentar', 'Accion requerida')
+      showSuccess('Debes iniciar sesion para comentar', 'Accion requerida', 'info')
       return
     }
     if (!commentText || !commentText.trim()) return

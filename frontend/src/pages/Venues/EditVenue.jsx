@@ -6,7 +6,7 @@ import "../Events/CreateEvent.css";
 
 export default function EditVenue() {
   const navigate = useNavigate();
-  const { venueId } = useParams();
+  const { id } = useParams();
 
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
@@ -29,7 +29,7 @@ export default function EditVenue() {
 
   useEffect(() => {
     setFetchLoading(true);
-    getVenueById(venueId)
+    getVenueById(id)
       .then((venue) => {
         setFormData({
           name:      venue.name      || "",
@@ -46,7 +46,7 @@ export default function EditVenue() {
       })
       .catch(() => setError("No se pudo cargar el local"))
       .finally(() => setFetchLoading(false));
-  }, [venueId]);
+  }, [id]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -103,7 +103,7 @@ export default function EditVenue() {
   newImages.forEach((img) => { if (img) data.append("images", img); });
 
   try {
-    await updateVenue(venueId, data);
+    await updateVenue(id, data);
     setSuccess("Local actualizado correctamente");
     setTimeout(() => navigate("/profile"), 1200);
   } catch (err) {

@@ -281,6 +281,7 @@
     color: var(--black);
     line-height: 1.5;
     white-space: pre-wrap;
+    font-weight: 100;
 }
 
 /* ============================================

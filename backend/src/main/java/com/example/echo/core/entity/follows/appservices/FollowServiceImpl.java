@@ -6,8 +6,10 @@ import com.example.echo.core.entity.sharedkernel.exceptions.ServiceException;
 import com.example.echo.core.entity.user.persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class FollowServiceImpl implements FollowService {
 
     @Autowired

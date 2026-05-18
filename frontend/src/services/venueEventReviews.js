@@ -1,19 +1,18 @@
 import { API_URL, fetchWithToken } from "./config";
+import { handleResponse } from './errorHandler.js';
 
 export const getReviewsByTarget = async (targetId, targetType) => {
   const res = await fetch(
     `${API_URL}/venue-event-reviews?targetId=${targetId}&targetType=${targetType}`
   );
-  if (!res.ok) throw new Error("Error al cargar reviews");
-  return res.json();
+  return handleResponse(res, 'Error al cargar reviews');
 };
 
 export const getAverageByTarget = async (targetId, targetType) => {
   const res = await fetch(
     `${API_URL}/venue-event-reviews/average?targetId=${targetId}&targetType=${targetType}`
   );
-  if (!res.ok) throw new Error("Error al cargar media");
-  return res.json();
+  return handleResponse(res, 'Error al cargar media');
 };
 
 export const createReview = async ({ targetId, targetType, score, comment }) => {
@@ -22,17 +21,12 @@ export const createReview = async ({ targetId, targetType, score, comment }) => 
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ targetId, targetType, score, comment }),
   });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || "Error al crear review");
-  }
-  return res.json();
+  return handleResponse(res, 'Error al crear review');
 };
 
 export const deleteReview = async (reviewId) => {
   const res = await fetchWithToken(`/venue-event-reviews/${reviewId}`, {
     method: "DELETE",
   });
-  if (!res.ok) throw new Error("Error al eliminar review");
-  return res.json();
+  return handleResponse(res, 'Error al eliminar review');
 };

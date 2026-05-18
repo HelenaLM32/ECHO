@@ -1,5 +1,5 @@
 import { fetchApi } from "./config.js";
-
+import { handleResponse } from './errorHandler.js';
 
 export async function fetchSections() {
     try {

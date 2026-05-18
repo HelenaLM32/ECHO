@@ -8,7 +8,7 @@ import "./CreateEvent.css";
 
 export default function EditEvent() {
   const navigate = useNavigate();
-  const { eventId } = useParams();
+  const { id } = useParams();
   const { user } = useAuth();
 
   const [venues, setVenues] = useState([]);
@@ -42,7 +42,7 @@ export default function EditEvent() {
 
   useEffect(() => {
     setFetchLoading(true);
-    getEventById(eventId)
+    getEventById(id)
       .then((event) => {
         const toLocalInput = (isoString) => {
           if (!isoString) return "";
@@ -65,7 +65,7 @@ export default function EditEvent() {
       })
       .catch(() => setError("No se pudo cargar el evento"))
       .finally(() => setFetchLoading(false));
-  }, [eventId]);
+  }, [id]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -119,7 +119,7 @@ export default function EditEvent() {
 
   try {
     await updateEvent(
-      eventId,
+      id,
       {
         title:        form.title,
         description:  form.description,  

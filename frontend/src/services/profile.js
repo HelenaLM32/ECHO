@@ -1,27 +1,24 @@
 import { API_URL, fetchWithToken, fetchApi } from "./config";
+import { handleResponse } from './errorHandler.js';
 
 export const getAllProfiles = async () => {
   const response = await fetchApi('/profiles');
-  if (!response.ok) throw new Error("Error al obtener los perfiles");
-  return response.json();
+  return handleResponse(response, 'Error al obtener los perfiles');
 };
 
 export const getProfileByUserId = async (userId) => {
   const response = await fetch(`${API_URL}/profiles/${userId}`);
-  if (!response.ok) throw new Error("Error al obtener el perfil");
-  return response.json();
+  return handleResponse(response, 'Error al obtener el perfil');
 };
 
 export const getProfileProducts = async (userId) => {
   const response = await fetch(`${API_URL}/profiles/${userId}/products`);
-  if (!response.ok) throw new Error("Error al obtener los productos");
-  return response.json();
+  return handleResponse(response, 'Error al obtener los productos');
 };
 
 export const getProfileServices = async (userId) => {
   const response = await fetch(`${API_URL}/services/user/${userId}`);
-  if (!response.ok) throw new Error("Error al obtener los servicios");
-  return response.json();
+  return handleResponse(response, 'Error al obtener los servicios');
 };
 
 export const updateProfile = async (userId, profileData) => {
@@ -30,11 +27,7 @@ export const updateProfile = async (userId, profileData) => {
     body: JSON.stringify(profileData),
   });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(errorText || "Error al actualizar el perfil");
-  }
-  return response.json();
+  return handleResponse(response, 'Error al actualizar el perfil');
 };
 
 export const updateCredentials = async (userId, credentialsData) => {
@@ -43,8 +36,7 @@ export const updateCredentials = async (userId, credentialsData) => {
     body: JSON.stringify(credentialsData),
   });
 
-  if (!response.ok) throw new Error("Error al actualizar las credenciales");
-  return response.json();
+  return handleResponse(response, 'Error al actualizar las credenciales');
 };
 
 export const updateAvatar = async (userId, file) => {
@@ -56,8 +48,7 @@ export const updateAvatar = async (userId, file) => {
     body: formData,
   });
 
-  if (!response.ok) throw new Error("Error al actualizar el avatar");
-  return response.json();
+  return handleResponse(response, 'Error al actualizar el avatar');
 };
 
 export const updateBanner = async (userId, file) => {
@@ -69,14 +60,13 @@ export const updateBanner = async (userId, file) => {
     body: formData,
   });
 
-  if (!response.ok) throw new Error("Error al actualizar la portada");
-  return response.json();
+  return handleResponse(response, 'Error al actualizar la portada');
 };
 
 export const deleteAccount = async (userId) => {
   const response = await fetchWithToken(`/users/${userId}`, {
     method: "DELETE",
   });
-  if (!response.ok) throw new Error("Error al eliminar la cuenta");
-  return response.json();
+  
+  return handleResponse(response, 'Error al eliminar la cuenta');
 };

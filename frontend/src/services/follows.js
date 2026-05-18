@@ -1,45 +1,27 @@
-import { fetchApi } from "./config"; 
+import { API_URL, fetchWithToken } from "./config";
+import { handleResponse } from './errorHandler.js';
 
 export const getFollowStats = async (userId) => {
-  const response = await fetchApi(`/follows/stats/${userId}`);
-  if (!response.ok) throw new Error("Error al obtener estadisticas");
-  return response.json();
+  const response = await fetch(`${API_URL}/follows/stats/${userId}`);
+  return handleResponse(response, 'Error al obtener estadísticas');
 };
 
 export const checkIsFollowing = async (targetId) => {
- const response = await fetchWithToken(`/follows/check/${targetId}`);
- if (!response.ok) return { following: false };
- return response.json();
-};
-
-const parseResponse = async (res) => {
- const text = await res.text();
- if (!text) return {};
- try {
- return JSON.parse(text);
- } catch {
- return { message: text };
- }
+  const response = await fetchWithToken(`/follows/check/${targetId}`);
+  if (!response.ok) return { following: false };
+  return handleResponse(response, 'Error al verificar seguimiento');
 };
 
 export const followUser = async (targetId) => {
- const response = await fetchWithToken(`/follows/${targetId}`, {
- method: "POST",
- });
- if (!response.ok) {
- const text = await response.text();
- throw new Error(text || "Error al seguir");
- }
- return parseResponse(response);
+  const response = await fetchWithToken(`/follows/${targetId}`, {
+    method: "POST",
+  });
+  return handleResponse(response, 'Error al seguir');
 };
 
 export const unfollowUser = async (targetId) => {
- const response = await fetchWithToken(`/follows/${targetId}`, {
- method: "DELETE",
- });
- if (!response.ok) {
- const text = await response.text();
- throw new Error(text || "Error al dejar de seguir");
- }
- return parseResponse(response);
+  const response = await fetchWithToken(`/follows/${targetId}`, {
+    method: "DELETE",
+  });
+  return handleResponse(response, 'Error al dejar de seguir');
 };

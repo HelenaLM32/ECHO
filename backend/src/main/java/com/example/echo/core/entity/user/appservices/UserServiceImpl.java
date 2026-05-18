@@ -7,7 +7,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo.core.entity.role.dto.RoleDTO;
 import com.example.echo.core.entity.role.persistence.RoleRepository;
@@ -26,7 +27,8 @@ import com.example.echo.core.entity.user.persistence.UserRepository;
 import com.example.echo.infrastructure.security.PasswordValidator;
 import com.example.echo.security.JwtUtil;
 
-@Controller
+@Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -182,10 +184,10 @@ public class UserServiceImpl implements UserService {
             }
 
             UserDTO user = userRepository.findByEmail(loginDTO.getEmail())
-                    .orElseThrow(() -> new ServiceException("Email not found"));
+                    .orElse(null);
 
-            if (!passwordValidator.matchesPassword(loginDTO.getPassword(), user.getPassword())) {
-                throw new ServiceException("Incorrect password");
+            if (user == null || !passwordValidator.matchesPassword(loginDTO.getPassword(), user.getPassword())) {
+                throw new ServiceException("Credenciales inválidas");
             }
 
             List<String> roles = extractRoleNames(user);

@@ -54,7 +54,7 @@ export default function Orders() {
           );
           showSuccess("Encargo cancelado correctamente.", "Encargo actualizado");
         } catch {
-          showSuccess("Error al cancelar el encargo. Intentalo de nuevo mas tarde.", "Error");
+          showSuccess("Error al cancelar el encargo. Inténtalo de nuevo más tarde.", "Error");
         } finally {
           setCancellingOrderId(null);
         }
@@ -121,7 +121,7 @@ export default function Orders() {
         onCancel={handleCancel}
         message={confirmState.message}
         title={confirmState.title}
-        confirmText="Si, cancelar"
+        confirmText="Sí, cancelar"
         cancelText="Volver"
       />
 

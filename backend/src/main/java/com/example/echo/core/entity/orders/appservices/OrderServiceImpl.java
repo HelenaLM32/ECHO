@@ -14,11 +14,13 @@ import com.example.echo.core.entity.user.dto.UserDTO;
 import com.example.echo.core.entity.user.persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class OrderServiceImpl implements OrderService {
 
     private static final List<String> ALLOWED_STATUSES = List.of("PENDING", "IN_PROGRESS", "COMPLETED", "CANCELLED");
